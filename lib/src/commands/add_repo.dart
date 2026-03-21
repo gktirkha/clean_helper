@@ -1,45 +1,75 @@
 import 'dart:io';
 
 import '../functions/init/run_dart_format.dart';
+import '../functions/repo/generate_api_paths.dart';
 import '../functions/repo/generate_data_repo.dart';
+import '../functions/repo/generate_data_source_base.dart';
 import '../functions/repo/generate_domain_repo.dart';
+import '../functions/repo/generate_request_model.dart';
+import '../functions/repo/generate_response_model.dart';
+import '../functions/repo/generate_rest_data_source.dart';
 import '../functions/shared/ensure_pubspec.dart';
+import '../functions/shared/read_package_name.dart';
 
 void addRepo(List<String> args) {
   ensurePubspec();
 
   if (args.length < 2) {
-    stderr.writeln(
-      '❌ Usage: dart run tools/generate_repo.dart <feature|core> <repo_name>',
-    );
+    stderr.writeln('❌ Usage: dart run bin/add_repo.dart <feature> <repo_name>');
+    stderr.writeln('   Example: dart run bin/add_repo.dart home invoice');
     exit(1);
   }
 
-  final scope = args[0].toLowerCase();
+  final feature = args[0].toLowerCase();
   final repoName = args[1].toLowerCase();
+  final packageName = readPackageName();
 
-  final String domainDir;
-  final String dataDir;
-  final String domainToDataImport;
+  final dataDir = 'lib/features/$feature/data';
+  final domainDir = 'lib/features/$feature/domain/repositories';
 
-  if (scope == 'core') {
-    domainDir = 'lib/core/domain/repositories';
-    dataDir = 'lib/core/data/repositories';
-    domainToDataImport =
-        '../../domain/repositories/${repoName}_repository.dart';
-  } else {
-    domainDir = 'lib/features/$scope/domain/repositories';
-    dataDir = 'lib/features/$scope/data/repositories';
-    domainToDataImport =
-        '../../domain/repositories/${repoName}_repository.dart';
+  for (final dir in [
+    '$dataDir/constants',
+    '$dataDir/datasources',
+    '$dataDir/models/requests',
+    '$dataDir/models/response',
+    '$dataDir/repositories',
+    domainDir,
+  ]) {
+    Directory(dir).createSync(recursive: true);
   }
 
-  Directory(domainDir).createSync(recursive: true);
-  Directory(dataDir).createSync(recursive: true);
+  stdout.writeln('🚀 Generating data layer: feature=$feature, repo=$repoName');
 
   generateDomainRepo(domainDir, repoName);
-  generateDataRepo(dataDir, repoName, domainToDataImport);
+  generateApiPaths(dataDir, feature, repoName);
+  generateDataSourceBase(dataDir, repoName);
+  generateRestDataSource(dataDir, feature, repoName, packageName);
+  generateRequestModel(dataDir, repoName);
+  generateResponseModel(dataDir, repoName);
+  generateDataRepo(dataDir, feature, repoName, packageName);
+
   runDartFormat();
 
-  stdout.writeln('✅ Repository "$repoName" generated in $scope.');
+  stdout.writeln();
+  stdout.writeln(
+    '✅ Data layer for "$repoName" generated in feature "$feature".',
+  );
+  stdout.writeln();
+  stdout.writeln('Next steps:');
+  stdout.writeln(
+    '  1. Add your endpoint paths to $dataDir/constants/${feature}_api_paths.dart',
+  );
+  stdout.writeln(
+    '  2. Add method signatures to $dataDir/datasources/${repoName}_data_source_base.dart',
+  );
+  stdout.writeln(
+    '  3. Add @GET/@POST methods to $dataDir/datasources/rest_${repoName}_data_source.dart',
+  );
+  stdout.writeln('  4. Add fields to the request/response models.');
+  stdout.writeln(
+    '  5. Implement repository methods in $dataDir/repositories/${repoName}_repository_impl.dart',
+  );
+  stdout.writeln(
+    '  6. dart run build_runner build --delete-conflicting-outputs',
+  );
 }
