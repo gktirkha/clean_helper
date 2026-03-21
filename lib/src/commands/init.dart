@@ -12,8 +12,9 @@ import '../functions/init/run_dart_format.dart';
 import '../functions/init/run_slang.dart';
 import '../functions/shared/ensure_pubspec.dart';
 import '../functions/shared/read_package_name.dart';
+import 'add_network_module.dart';
 
-void runInit() {
+void runInit({bool withNetwork = false}) {
   ensurePubspec();
 
   final packageName = readPackageName();
@@ -28,6 +29,7 @@ void runInit() {
   generateHomeFeature(packageName);
   installDependencies();
   addFlutterAssetsToPubSpec();
+  if (withNetwork) addNetworkModule();
   runSlang();
   runBuildRunner();
   runDartFormat();

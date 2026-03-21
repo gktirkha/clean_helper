@@ -3,6 +3,15 @@ import 'package:args/command_runner.dart';
 import '../../commands/init.dart';
 
 class InitCommand extends Command<void> {
+  InitCommand() {
+    argParser.addFlag(
+      'network',
+      abbr: 'n',
+      negatable: false,
+      help: 'Also set up the network layer (Dio, Retrofit, Chucker).',
+    );
+  }
+
   @override
   String get name => 'init';
 
@@ -11,5 +20,5 @@ class InitCommand extends Command<void> {
       'Scaffold a Flutter clean architecture project in the current directory.';
 
   @override
-  void run() => runInit();
+  void run() => runInit(withNetwork: argResults!['network'] as bool);
 }
