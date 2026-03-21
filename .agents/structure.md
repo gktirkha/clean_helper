@@ -3,14 +3,23 @@
 ```
 clean_helpers/
 ├── bin/
-│   ├── init.dart               → calls runInit()
-│   ├── add_feature.dart        → calls addFeature(args)
-│   ├── add_repo.dart           → calls addRepo(args)
-│   └── add_entity.dart         → calls addEntity(args)
+│   ├── clean_helpers.dart      → main entry point (CleanHelpersRunner)
+│   ├── init.dart               → legacy: calls runInit() directly
+│   ├── add_feature.dart        → legacy: calls addFeature(args) directly
+│   ├── add_repo.dart           → legacy: calls addRepo(args) directly
+│   └── add_entity.dart         → legacy: calls addEntity(args) directly
 │
 ├── lib/
 │   ├── clean_helpers.dart      # Exports commands only
 │   └── src/
+│       ├── runner/             # CLI wiring (args + cli_completion)
+│       │   ├── clean_helpers_runner.dart   → CleanHelpersRunner (CompletionCommandRunner)
+│       │   └── commands/
+│       │       ├── init_command.dart
+│       │       ├── add_feature_command.dart
+│       │       ├── add_repo_command.dart
+│       │       └── add_entity_command.dart
+│       │
 │       ├── commands/           # One file = one public entry-point function
 │       │   ├── init.dart               → runInit()
 │       │   ├── add_feature.dart        → addFeature(List<String>)
