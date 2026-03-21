@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import '../functions/entity/generate_entity_file.dart';
 import '../functions/init/run_dart_format.dart';
 import '../functions/repo/generate_api_paths.dart';
 import '../functions/repo/generate_data_repo.dart';
@@ -26,6 +27,7 @@ void addRepo(List<String> args) {
 
   final dataDir = 'lib/features/$feature/data';
   final domainDir = 'lib/features/$feature/domain/repositories';
+  final entitiesDir = 'lib/features/$feature/domain/entities';
 
   for (final dir in [
     '$dataDir/constants',
@@ -34,12 +36,14 @@ void addRepo(List<String> args) {
     '$dataDir/models/response',
     '$dataDir/repositories',
     domainDir,
+    entitiesDir,
   ]) {
     Directory(dir).createSync(recursive: true);
   }
 
   stdout.writeln('🚀 Generating data layer: feature=$feature, repo=$repoName');
 
+  generateEntityFile(entitiesDir, repoName);
   generateDomainRepo(domainDir, repoName);
   generateApiPaths(dataDir, feature, repoName);
   generateDataSourceBase(dataDir, repoName);
@@ -70,6 +74,6 @@ void addRepo(List<String> args) {
     '  5. Implement repository methods in $dataDir/repositories/${repoName}_repository_impl.dart',
   );
   stdout.writeln(
-    '  6. dart run build_runner build --delete-conflicting-outputs',
+    '  6. Run: fvm dart run build_runner build --delete-conflicting-outputs',
   );
 }
