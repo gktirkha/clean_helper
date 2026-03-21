@@ -8,6 +8,7 @@ import 'commands/build_runner_command.dart';
 import 'commands/init_command.dart';
 import 'commands/regenerate_router_command.dart';
 import 'commands/remove_feature_command.dart';
+import 'commands/generate_localizations_command.dart';
 
 class CleanHelperRunner extends CompletionCommandRunner<void> {
   CleanHelperRunner()
@@ -23,5 +24,6 @@ class CleanHelperRunner extends CompletionCommandRunner<void> {
     addCommand(BuildRunnerCommand());
     addCommand(RemoveFeatureCommand());
     addCommand(RegenerateRouterCommand());
+    addCommand(GenerateLocalizationsCommand());
   }
 }

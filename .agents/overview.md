@@ -20,6 +20,7 @@ routing, DI, BLoC state management, and all required dependencies in one command
 | `clean-helper build_runner [clean\|build\|watch]` | Run build_runner in the current project (default: build) |
 | `clean-helper remove_feature <name>` | Remove a feature and deregister its router |
 | `clean-helper regenerate_router` | Scan all features on disk and regenerate `router_module.dart` |
+| `clean-helper generate_localizations` | Generate locales using slang |
 
 `<scope>` is either `core` or a feature name (e.g. `home`, `auth`).
 
@@ -42,4 +43,5 @@ export 'src/commands/build_runner.dart';
 export 'src/commands/init.dart';
 export 'src/commands/remove_feature.dart';
 export 'src/commands/regenerate_router.dart';
+export 'src/commands/generate_localizations.dart';
 ```

@@ -32,6 +32,7 @@ clean-helper install-completion-files
 | `clean-helper build_runner [clean\|build\|watch]` | Run build_runner in the current project (default: build) |
 | `clean-helper remove_feature <name>` | Remove a feature and deregister its router |
 | `clean-helper regenerate_router` | Scan all features on disk and regenerate `router_module.dart` |
+| `clean-helper generate_localizations` | Generate locales using slang |
 
 `<scope>` is either `core` or a feature name (e.g. `home`, `auth`).
 
@@ -213,6 +214,14 @@ clean-helper regenerate_router
 ```
 
 Scans `lib/features/` for any feature that has a `router/<feature>_router.dart` file and regenerates `lib/app/router/router_module.dart` from scratch. `router_module.dart` is fully managed by the tool — do not edit it manually. Useful when the module has drifted out of sync or after manual edits to the features directory.
+
+### `generate_localizations` — Generate locales
+
+```bash
+clean-helper generate_localizations
+```
+
+Runs `dart run slang` to regenerate `lib/core/generated/locales/locales.g.dart` from `assets/locales/en.locale.json`.
 
 ---
 
