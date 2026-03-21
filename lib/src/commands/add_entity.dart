@@ -1,20 +1,11 @@
 import 'dart:io';
 
-// Usage:
-//   dart run tools/generate_entity.dart <feature|core> <entity_name> [folder]
-//
-// Examples:
-//   dart run tools/generate_entity.dart home invoice
-//   dart run tools/generate_entity.dart home invoice requests
-//   dart run tools/generate_entity.dart core error
+import '../functions/entity/generate_entity_file.dart';
+import '../functions/entity/generate_model_file.dart';
+import '../functions/shared/ensure_pubspec.dart';
 
 void addEntity(List<String> args) {
-  if (!File('pubspec.yaml').existsSync()) {
-    stderr.writeln(
-      '❌ pubspec.yaml not found. Run this tool from the Flutter project root.',
-    );
-    exit(1);
-  }
+  ensurePubspec();
 
   if (args.length < 2) {
     stderr.writeln(
@@ -46,53 +37,8 @@ void addEntity(List<String> args) {
   Directory(entityDir).createSync(recursive: true);
   Directory(modelDir).createSync(recursive: true);
 
-  _generateEntity(entityDir, entityName);
-  _generateModel(modelDir, entityName, entityToModelImport);
+  generateEntityFile(entityDir, entityName);
+  generateModelFile(modelDir, entityName, entityToModelImport);
 
   stdout.writeln('✅ Entity "$entityName" generated in $scope.');
 }
-
-void _generateEntity(String dir, String name) {
-  final className = _pascalCase(name);
-  final path = '$dir/${name}_entity.dart';
-
-  _write(path, '''
-abstract class ${className}Entity {}
-''');
-  stdout.writeln('  📄 $path');
-}
-
-void _generateModel(String dir, String name, String entityImport) {
-  final className = _pascalCase(name);
-  final path = '$dir/${name}_model.dart';
-
-  _write(path, '''
-import 'package:freezed_annotation/freezed_annotation.dart';
-
-import '$entityImport';
-
-part '${name}_model.freezed.dart';
-part '${name}_model.g.dart';
-
-@freezed
-sealed class ${className}Model with _\$${className}Model implements ${className}Entity {
-  const factory ${className}Model() = _${className}Model;
-
-  factory ${className}Model.fromJson(Map<String, dynamic> json) =>
-      _\$${className}ModelFromJson(json);
-}
-''');
-  stdout.writeln('  📄 $path');
-}
-
-void _write(String path, String content) {
-  final file = File(path);
-  if (file.existsSync()) {
-    stdout.writeln('  ⏭  Skipped (exists): $path');
-    return;
-  }
-  file.writeAsStringSync(content);
-}
-
-String _pascalCase(String input) =>
-    input.split('_').map((e) => e[0].toUpperCase() + e.substring(1)).join();

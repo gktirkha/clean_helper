@@ -1,19 +1,11 @@
 import 'dart:io';
 
-// Usage:
-//   dart run tools/generate_repo.dart <feature|core> <repo_name>
-//
-// Examples:
-//   dart run tools/generate_repo.dart home invoice
-//   dart run tools/generate_repo.dart core user
+import '../functions/repo/generate_data_repo.dart';
+import '../functions/repo/generate_domain_repo.dart';
+import '../functions/shared/ensure_pubspec.dart';
 
 void addRepo(List<String> args) {
-  if (!File('pubspec.yaml').existsSync()) {
-    stderr.writeln(
-      '❌ pubspec.yaml not found. Run this tool from the Flutter project root.',
-    );
-    exit(1);
-  }
+  ensurePubspec();
 
   if (args.length < 2) {
     stderr.writeln(
@@ -44,45 +36,8 @@ void addRepo(List<String> args) {
   Directory(domainDir).createSync(recursive: true);
   Directory(dataDir).createSync(recursive: true);
 
-  _generateDomainRepo(domainDir, repoName);
-  _generateDataRepo(dataDir, repoName, domainToDataImport);
+  generateDomainRepo(domainDir, repoName);
+  generateDataRepo(dataDir, repoName, domainToDataImport);
 
   stdout.writeln('✅ Repository "$repoName" generated in $scope.');
 }
-
-void _generateDomainRepo(String dir, String name) {
-  final className = _pascalCase(name);
-  final path = '$dir/${name}_repository.dart';
-
-  _write(path, '''
-abstract interface class ${className}Repository {}
-''');
-  stdout.writeln('  📄 $path');
-}
-
-void _generateDataRepo(String dir, String name, String domainImport) {
-  final className = _pascalCase(name);
-  final path = '$dir/${name}_repository_impl.dart';
-
-  _write(path, '''
-import 'package:injectable/injectable.dart';
-
-import '$domainImport';
-
-@LazySingleton(as: ${className}Repository)
-class ${className}RepositoryImpl implements ${className}Repository {}
-''');
-  stdout.writeln('  📄 $path');
-}
-
-void _write(String path, String content) {
-  final file = File(path);
-  if (file.existsSync()) {
-    stdout.writeln('  ⏭  Skipped (exists): $path');
-    return;
-  }
-  file.writeAsStringSync(content);
-}
-
-String _pascalCase(String input) =>
-    input.split('_').map((e) => e[0].toUpperCase() + e.substring(1)).join();
