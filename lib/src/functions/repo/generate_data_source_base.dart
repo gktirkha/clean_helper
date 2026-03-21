@@ -8,16 +8,7 @@ void generateDataSourceBase(String dataDir, String repoName) {
   final path = '$dataDir/datasources/${repoName}_data_source_base.dart';
 
   writeFile(path, '''
-import 'package:retrofit/http.dart';
-
-import '../models/requests/${repoName}_request_model.dart';
-import '../models/response/${repoName}_response_model.dart';
-
-abstract interface class ${className}DataSourceBase {
-  // TODO: add method signatures
-  // Example:
-  // Future<${className}ResponseModel> get$className(@Body() ${className}RequestModel request);
-}
+abstract interface class ${className}DataSourceBase {}
 ''');
   stdout.writeln('  📄 $path');
 }

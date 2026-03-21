@@ -10,7 +10,6 @@ void generateApiPaths(String dataDir, String feature, String repoName) {
 
   writeFile(path, '''
 sealed class ${className}ApiPaths {
-  // TODO: replace with real endpoint paths
   static const String $repoName = '/api/${kebabCase(feature)}/';
 }
 ''');
