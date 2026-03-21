@@ -30,7 +30,13 @@ void installDependencies() {
     'flutter_gen_runner',
   ];
 
-  runCommand(['flutter', 'pub', 'add', 'flutter_localizations', '--sdk=flutter']);
+  runCommand([
+    'flutter',
+    'pub',
+    'add',
+    'flutter_localizations',
+    '--sdk=flutter',
+  ]);
   runCommand(['dart', 'pub', 'add', ...deps]);
   runCommand(['dart', 'pub', 'add', '--dev', ...devDeps]);
 
