@@ -3,12 +3,7 @@ import 'dart:io';
 import '../shared/pascal_case.dart';
 import '../shared/write_file.dart';
 
-void generateRestDataSource(
-  String dataDir,
-  String feature,
-  String repoName,
-  String packageName,
-) {
+void generateRestDataSource(String dataDir, String repoName) {
   final repoClass = pascalCase(repoName);
   final baseClass = '${repoClass}DataSourceBase';
   final implClass = 'Rest${repoClass}DataSource';

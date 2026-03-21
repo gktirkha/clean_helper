@@ -10,7 +10,6 @@ import '../functions/repo/generate_request_model.dart';
 import '../functions/repo/generate_response_model.dart';
 import '../functions/repo/generate_rest_data_source.dart';
 import '../functions/shared/ensure_pubspec.dart';
-import '../functions/shared/read_package_name.dart';
 
 void addRepo(List<String> args) {
   ensurePubspec();
@@ -23,7 +22,6 @@ void addRepo(List<String> args) {
 
   final feature = args[0].toLowerCase();
   final repoName = args[1].toLowerCase();
-  final packageName = readPackageName();
 
   final dataDir = 'lib/features/$feature/data';
   final domainDir = 'lib/features/$feature/domain/repositories';
@@ -47,10 +45,10 @@ void addRepo(List<String> args) {
   generateDomainRepo(domainDir, repoName);
   generateApiPaths(dataDir, feature, repoName);
   generateDataSourceBase(dataDir, repoName);
-  generateRestDataSource(dataDir, feature, repoName, packageName);
+  generateRestDataSource(dataDir, repoName);
   generateRequestModel(dataDir, repoName);
   generateResponseModel(dataDir, repoName);
-  generateDataRepo(dataDir, feature, repoName, packageName);
+  generateDataRepo(dataDir, repoName);
 
   runDartFormat();
 
