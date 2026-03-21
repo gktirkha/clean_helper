@@ -4,6 +4,7 @@ import 'commands/add_entity_command.dart';
 import 'commands/add_feature_command.dart';
 import 'commands/add_network_module_command.dart';
 import 'commands/add_repo_command.dart';
+import 'commands/build_runner_command.dart';
 import 'commands/init_command.dart';
 
 class CleanHelpersRunner extends CompletionCommandRunner<void> {
@@ -17,5 +18,6 @@ class CleanHelpersRunner extends CompletionCommandRunner<void> {
     addCommand(AddRepoCommand());
     addCommand(AddEntityCommand());
     addCommand(AddNetworkModuleCommand());
+    addCommand(BuildRunnerCommand());
   }
 }
