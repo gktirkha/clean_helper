@@ -11,7 +11,6 @@ import 'app_go_router.dart';
 abstract class RouterModule {
   @lazySingleton
   AppGoRouter appGoRouter(HomeRouter homeRouter) => AppGoRouter(
-    // TODO: set priority on each RouterBase subclass — lower number = added first to the list
     routers: [homeRouter]..sort((a, b) => a.priority.compareTo(b.priority)),
   );
 }

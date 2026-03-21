@@ -40,6 +40,7 @@ class ${className}Router implements RouterBase {
   @override
   FutureOr<String?> redirect(BuildContext context, GoRouterState state) => null;
 
+  // TODO: set intended priority — lower number = higher precedence in router list
   @override
   int get priority => 10;
 }
