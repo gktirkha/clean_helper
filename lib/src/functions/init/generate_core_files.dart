@@ -15,7 +15,7 @@ import 'templates/router_refresh_template.dart';
 
 void generateCoreFiles(String packageName) {
   overwriteFile('analysis_options.yaml', analysisOptionsTemplate());
-  writeFile('lib/main.dart', mainDartTemplate());
+  overwriteFile('lib/main.dart', mainDartTemplate());
   writeFile('lib/app/bootstrap.dart', bootstrapDartTemplate(packageName));
   writeFile('lib/app/main_app.dart', mainAppDartTemplate(packageName));
   writeFile(
