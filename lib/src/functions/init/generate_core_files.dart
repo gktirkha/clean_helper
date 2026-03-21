@@ -2,6 +2,7 @@ import 'dart:io';
 
 import '../shared/write_file.dart';
 import 'templates/analysis_options_template.dart';
+import 'templates/app_go_router_redirect_template.dart';
 import 'templates/app_go_router_template.dart';
 import 'templates/bootstrap_dart_template.dart';
 import 'templates/core_module_template.dart';
@@ -22,6 +23,10 @@ void generateCoreFiles(String packageName) {
   writeFile(
     'lib/app/router/app_go_router.dart',
     appGoRouterTemplate(packageName),
+  );
+  writeFile(
+    'lib/app/router/app_go_router_redirect.dart',
+    appGoRouterRedirectTemplate(),
   );
   writeFile(
     'lib/app/router/router_module.dart',

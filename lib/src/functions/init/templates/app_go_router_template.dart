@@ -9,6 +9,8 @@ import '../../core/router/router_base.dart';
 import '../../core/router/router_refresh.dart';
 import '../../features/home/router/home_routes.dart';
 
+part 'app_go_router_redirect.dart';
+
 class AppGoRouter {
   AppGoRouter({required this.routers});
 
@@ -19,21 +21,10 @@ class AppGoRouter {
     debugLogDiagnostics: true,
     initialLocation: HomeRoutes.home,
     routes: [...routers.expand((r) => r.routes)],
-    redirect: _handleRedirect,
+    redirect: (context, state) => _handleRedirect(context, state, routers),
     refreshListenable: GoRouterRefreshStream(
       routers.expand((r) => r.refreshStreams).toList(),
     ),
   );
-
-  FutureOr<String?> _handleRedirect(
-    BuildContext context,
-    GoRouterState state,
-  ) {
-    for (final router in routers) {
-      final result = router.redirect(context, state);
-      if (result != null) return result;
-    }
-    return null;
-  }
 }
 ''';
