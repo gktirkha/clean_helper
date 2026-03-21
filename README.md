@@ -26,6 +26,7 @@ clean-helper install-completion-files
 |---------|-------------|
 | `clean-helper init` | Full project scaffold — run once on a new Flutter project |
 | `clean-helper add_network_module` | Set up the network layer (Dio, Retrofit, Chucker) |
+| `clean-helper add_auth_interceptor` | Scaffold AuthInterceptor with token refresh and wire into NetworkModule |
 | `clean-helper add_feature <name>` | Add a new feature with clean architecture structure |
 | `clean-helper add_repo <feature> <name>` | Generate the full data layer (entity, domain repo, datasources, models, repo impl) |
 | `clean-helper add_entity <scope> <name> [folder]` | Add an entity (domain) + freezed model (data) |
@@ -176,6 +177,31 @@ sealed class InvoiceModel with _$InvoiceModel implements InvoiceEntity {
 ```
 
 After generating, run build_runner:
+
+```bash
+clean-helper build_runner build
+```
+
+---
+
+### `add_auth_interceptor` — Scaffold the auth interceptor
+
+```bash
+clean-helper add_auth_interceptor
+```
+
+Run this **after** `add_network_module`. Idempotent — skips anything already present. Does three things:
+
+1. Creates `lib/core/network/interceptors/auth_interceptor.dart` — a `@lazySingleton` Dio interceptor with:
+   - `onRequest`: attach Bearer token from storage (TODO to implement)
+   - `onError`: on 401, refresh the token and retry the original request
+   - Refresh deduplication — concurrent 401s share a single refresh call
+2. Patches `lib/core/di/di_keys.dart` — adds `DIKeys.noAuthDio` constant
+3. Patches `lib/core/network/di/network_module.dart`:
+   - Wires `AuthInterceptor` as the first interceptor in the main `Dio` provider
+   - Adds a `noAuthDio` provider (Dio **without** `AuthInterceptor`) used by `AuthInterceptor` internally to prevent infinite refresh loops
+
+After generating, fill in the TODOs in `auth_interceptor.dart` and run:
 
 ```bash
 clean-helper build_runner build
