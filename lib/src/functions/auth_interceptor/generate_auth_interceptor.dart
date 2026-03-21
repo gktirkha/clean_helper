@@ -6,6 +6,8 @@ void generateAuthInterceptor() {
   const path = 'lib/core/network/interceptors/auth_interceptor.dart';
 
   writeFile(path, '''
+import 'dart:async';
+
 import 'package:dio/dio.dart';
 import 'package:injectable/injectable.dart';
 
@@ -13,9 +15,8 @@ import '../../di/di_keys.dart';
 
 @lazySingleton
 class AuthInterceptor extends Interceptor {
-  AuthInterceptor({
-    @Named(DIKeys.noAuthDio) required Dio noAuthDio,
-  }) : _dio = noAuthDio;
+  AuthInterceptor({@Named(DIKeys.noAuthDio) required Dio noAuthDio})
+    : _dio = noAuthDio;
 
   final Dio _dio;
   final String _retryKey = 'retry';
@@ -30,12 +31,7 @@ class AuthInterceptor extends Interceptor {
     RequestOptions options,
     RequestInterceptorHandler handler,
   ) async {
-    // TODO: get access token from storage and attach to header
-    // Example:
-    //   final token = await _tokenStorage.getAccessToken();
-    //   if (token != null) {
-    //     options.headers[_authHeaderKey] = '\$_bearerKey \$token';
-    //   }
+    options = await _addAuthHeader(options);
     handler.next(options);
   }
 
@@ -58,8 +54,7 @@ class AuthInterceptor extends Interceptor {
         return;
       }
 
-      final options = err.requestOptions;
-      options.headers[_authHeaderKey] = '\$_bearerKey \$newToken';
+      final options = await _addAuthHeader(err.requestOptions, newToken);
       options.extra[_retryKey] = true;
 
       final response = await _dio.fetch(options);
@@ -91,6 +86,19 @@ class AuthInterceptor extends Interceptor {
       // TODO: clear stored tokens
       return null;
     }
+  }
+
+  FutureOr<RequestOptions> _addAuthHeader(
+    RequestOptions requestOptions, [
+    String? newToken,
+  ]) {
+    // TODO: get access token from storage and attach to header
+    // Example:
+    //   final token = await _tokenStorage.getAccessToken();
+    //   if (token != null) {
+    //   requestOptions.headers[_authHeaderKey] = '\$_bearerKey  \${newToken ?? token}';
+    //   }
+    return requestOptions;
   }
 }
 ''');
