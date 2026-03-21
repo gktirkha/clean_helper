@@ -15,6 +15,7 @@ void generateDataRepo(String dataDir, String repoName) {
   writeFile(path, '''
 import 'package:injectable/injectable.dart';
 
+import '../../domain/entities/${repoName}_entity.dart';
 import '../../domain/repositories/${repoName}_repository.dart';
 import '../datasources/${repoName}_data_source_base.dart';
 
@@ -24,6 +25,9 @@ class $implClass implements $repositoryClass {
       : $dataSourceField = ${camelCase(repoName)}DataSourceBase;
 
   final $dataSourceClass $dataSourceField;
+
+  @override
+  Future<${className}Entity> get$className() => $dataSourceField.get$className();
 }
 ''');
   stdout.writeln('  📄 $path');

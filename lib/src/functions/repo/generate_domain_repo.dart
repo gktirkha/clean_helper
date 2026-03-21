@@ -8,7 +8,11 @@ void generateDomainRepo(String dir, String name) {
   final path = '$dir/${name}_repository.dart';
 
   writeFile(path, '''
-abstract interface class ${className}Repository {}
+import '../entities/${name}_entity.dart';
+
+abstract interface class ${className}Repository {
+  Future<${className}Entity> get$className();
+}
 ''');
   stdout.writeln('  📄 $path');
 }
