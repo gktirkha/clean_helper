@@ -1,5 +1,3 @@
-import 'package:clean_helpers/clean_helpers.dart' as clean_helpers;
+import 'package:clean_helpers/src/init_command.dart';
 
-void main(List<String> arguments) {
-  print('Hello world: ${clean_helpers.calculate()}!');
-}
+void main(List<String> arguments) => runInit();

@@ -4,7 +4,7 @@ import 'dart:io';
 // Entry point
 // ─────────────────────────────────────────────────────────────
 
-void main() {
+void runInit() {
   if (!File('pubspec.yaml').existsSync()) {
     _abort(
       'pubspec.yaml not found. Run this tool from the Flutter project root.',
