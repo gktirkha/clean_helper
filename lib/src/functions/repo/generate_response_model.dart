@@ -10,7 +10,7 @@ void generateResponseModel(String dataDir, String repoName) {
   writeFile(path, '''
 import 'package:freezed_annotation/freezed_annotation.dart';
 
-import '../../domain/entities/${repoName}_entity.dart';
+import '../../../domain/entities/${repoName}_entity.dart';
 
 part '${repoName}_response_model.freezed.dart';
 part '${repoName}_response_model.g.dart';
