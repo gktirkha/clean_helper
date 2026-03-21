@@ -7,7 +7,7 @@ import 'dart:io';
 //   dart run tools/generate_repo.dart home invoice
 //   dart run tools/generate_repo.dart core user
 
-void createRepo(List<String> args) {
+void addRepo(List<String> args) {
   if (!File('pubspec.yaml').existsSync()) {
     stderr.writeln(
       '❌ pubspec.yaml not found. Run this tool from the Flutter project root.',
