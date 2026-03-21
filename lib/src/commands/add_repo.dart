@@ -45,7 +45,7 @@ void addRepo(List<String> args) {
   generateDomainRepo(domainDir, repoName);
   generateApiPaths(dataDir, feature, repoName);
   generateDataSourceBase(dataDir, repoName);
-  generateRestDataSource(dataDir, repoName);
+  generateRestDataSource(dataDir, feature, repoName);
   generateRequestModel(dataDir, repoName);
   generateResponseModel(dataDir, repoName);
   generateDataRepo(dataDir, repoName);

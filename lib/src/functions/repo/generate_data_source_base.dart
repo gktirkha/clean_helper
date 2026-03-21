@@ -8,7 +8,11 @@ void generateDataSourceBase(String dataDir, String repoName) {
   final path = '$dataDir/datasources/${repoName}_data_source_base.dart';
 
   writeFile(path, '''
-abstract interface class ${className}DataSourceBase {}
+import '../models/response/${repoName}_response_model.dart';
+
+abstract interface class ${className}DataSourceBase {
+  Future<${className}ResponseModel> get$className();
+}
 ''');
   stdout.writeln('  📄 $path');
 }
