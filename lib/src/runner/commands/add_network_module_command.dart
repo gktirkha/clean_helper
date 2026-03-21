@@ -4,7 +4,7 @@ import '../../commands/add_network_module.dart';
 
 class AddNetworkModuleCommand extends Command<void> {
   @override
-  String get name => 'add-network-module';
+  String get name => 'add_network_module';
 
   @override
   String get description =>

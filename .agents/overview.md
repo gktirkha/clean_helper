@@ -13,9 +13,10 @@ routing, DI, BLoC state management, and all required dependencies in one command
 | Command | Purpose |
 |---------|---------|
 | `clean-helpers init` | Full project scaffold — run once on a new Flutter project |
-| `clean-helpers add-feature <name>` | Add a new feature with clean architecture structure |
-| `clean-helpers add-repo <scope> <name>` | Add a repository (domain interface + data impl) |
-| `clean-helpers add-entity <scope> <name> [folder]` | Add an entity (domain) + freezed model (data) |
+| `clean-helpers add_network_module` | Set up the network layer (Dio, Retrofit, Chucker) |
+| `clean-helpers add_feature <name>` | Add a new feature with clean architecture structure |
+| `clean-helpers add_repo <scope> <name>` | Add a repository (domain interface + data impl) |
+| `clean-helpers add_entity <scope> <name> [folder]` | Add an entity (domain) + freezed model (data) |
 
 `<scope>` is either `core` or a feature name (e.g. `home`, `auth`).
 
@@ -26,12 +27,13 @@ Activate it once with: `clean-helpers install-completion-files`
 
 ## Public API
 
-`lib/clean_helpers.dart` exports **only the four command files**.
+`lib/clean_helpers.dart` exports **only the command files**.
 Function files are internal — never export them from the library.
 
 ```dart
 export 'src/commands/add_entity.dart';
 export 'src/commands/add_feature.dart';
+export 'src/commands/add_network_module.dart';
 export 'src/commands/add_repo.dart';
 export 'src/commands/init.dart';
 ```
