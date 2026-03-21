@@ -53,15 +53,6 @@ lib/
 
 ---
 
-## Post-generation Manual Step
+## Router Registration
 
-Register the new router in `lib/app/router/router_module.dart`:
-
-```dart
-@lazySingleton
-AppGoRouter appGoRouter(HomeRouter homeRouter, AuthRouter authRouter) =>
-    AppGoRouter(
-      routers: [homeRouter, authRouter]
-        ..sort((a, b) => a.priority.compareTo(b.priority)),
-    );
-```
+The new feature's router is **automatically registered** in `lib/app/router/router_module.dart` by `patchRouterModule(featureName)`. No manual step is required.

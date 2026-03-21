@@ -17,6 +17,8 @@ routing, DI, BLoC state management, and all required dependencies in one command
 | `clean-helpers add_feature <name>` | Add a new feature with clean architecture structure |
 | `clean-helpers add_repo <scope> <name>` | Add a repository (domain interface + data impl) |
 | `clean-helpers add_entity <scope> <name> [folder]` | Add an entity (domain) + freezed model (data) |
+| `clean-helpers build_runner [clean\|build\|watch]` | Run build_runner in the current project (default: build) |
+| `clean-helpers remove_feature <name>` | Remove a feature and deregister its router |
 
 `<scope>` is either `core` or a feature name (e.g. `home`, `auth`).
 
@@ -35,5 +37,7 @@ export 'src/commands/add_entity.dart';
 export 'src/commands/add_feature.dart';
 export 'src/commands/add_network_module.dart';
 export 'src/commands/add_repo.dart';
+export 'src/commands/build_runner.dart';
 export 'src/commands/init.dart';
+export 'src/commands/remove_feature.dart';
 ```
