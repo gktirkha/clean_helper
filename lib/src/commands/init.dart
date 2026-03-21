@@ -38,7 +38,11 @@ void runInit({bool withNetwork = false}) {
   stdout.writeln('✅ Done! Project is ready.');
   stdout.writeln();
   stdout.writeln('Next steps:');
-  stdout.writeln('  • Add a feature:     dart run tools/generate_feature.dart <name>');
-  stdout.writeln('  • Add a route:       /new-route <name>  (Claude Code skill)');
+  stdout.writeln(
+    '  • Add a feature:     dart run tools/generate_feature.dart <name>',
+  );
+  stdout.writeln(
+    '  • Add a route:       /new-route <name>  (Claude Code skill)',
+  );
   stdout.writeln('  • Register routers:  lib/app/router/router_module.dart');
 }

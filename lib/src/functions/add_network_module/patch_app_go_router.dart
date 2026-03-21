@@ -11,7 +11,8 @@ void patchAppGoRouter() {
 
   var content = file.readAsStringSync();
 
-  const chuckerImport = "import 'package:chucker_flutter/chucker_flutter.dart';";
+  const chuckerImport =
+      "import 'package:chucker_flutter/chucker_flutter.dart';";
   if (!content.contains(chuckerImport)) {
     content = content.replaceFirst(
       "import 'package:flutter/material.dart';",
@@ -19,7 +20,8 @@ void patchAppGoRouter() {
     );
   }
 
-  const chuckerObserver = '    observers: [ChuckerFlutter.navigatorObserver],\n';
+  const chuckerObserver =
+      '    observers: [ChuckerFlutter.navigatorObserver],\n';
   if (!content.contains('ChuckerFlutter.navigatorObserver')) {
     content = content.replaceFirst(
       '    refreshListenable: GoRouterRefreshStream(',

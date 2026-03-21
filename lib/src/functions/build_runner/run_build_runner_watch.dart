@@ -1,10 +1,10 @@
 import 'dart:io';
 
-import '../shared/run_command.dart';
+import '../shared/run_command_streamed.dart';
 
 void runBuildRunnerWatch() {
   stdout.writeln('👀 Starting build_runner watch...');
-  runCommand([
+  runCommandStreamed([
     'dart',
     'run',
     'build_runner',
