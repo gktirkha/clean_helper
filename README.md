@@ -20,6 +20,25 @@ clean-helpers install-completion-files
 
 Restart your shell or source your profile, and tab completion will work for all commands and arguments.
 
+### As a dev dependency
+
+If you prefer not to install globally, add it as a dev dependency in your Flutter project:
+
+```yaml
+# pubspec.yaml
+dev_dependencies:
+  clean_helpers:
+    git:
+      url: https://github.com/gktirkha/clean_helpers
+```
+
+Then run commands via `dart run`:
+
+```bash
+dart run clean_helpers:clean_helpers init
+dart run clean_helpers:clean_helpers add-feature auth
+```
+
 ---
 
 ## Commands
