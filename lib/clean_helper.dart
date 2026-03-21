@@ -1,3 +1,4 @@
+export 'src/commands/add_auth_interceptor.dart';
 export 'src/commands/add_entity.dart';
 export 'src/commands/build_runner.dart';
 export 'src/commands/add_feature.dart';

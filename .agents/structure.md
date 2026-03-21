@@ -27,10 +27,12 @@ clean_helper/
 │       │       ├── add_network_module_command.dart  → name: 'add_network_module'
 │       │       ├── build_runner_command.dart        → name: 'build_runner'
 │       │       ├── remove_feature_command.dart      → name: 'remove_feature'
-│       │       ├── regenerate_router_command.dart   → name: 'regenerate_router'
-│       │       └── generate_localizations_command.dart → name: 'generate_localizations'
+│       │       ├── regenerate_router_command.dart        → name: 'regenerate_router'
+│       │       ├── generate_localizations_command.dart   → name: 'generate_localizations'
+│       │       └── add_auth_interceptor_command.dart     → name: 'add_auth_interceptor'
 │       │
 │       ├── commands/           # One file = one public entry-point function
+│       │   ├── add_auth_interceptor.dart    → addAuthInterceptor()
 │       │   ├── init.dart                    → runInit()
 │       │   ├── add_feature.dart             → addFeature(List<String>)
 │       │   ├── add_repo.dart                → addRepo(List<String>)
@@ -112,6 +114,11 @@ clean_helper/
 │           │   ├── generate_rest_data_source.dart     → generateRestDataSource()
 │           │   ├── generate_request_model.dart        → generateRequestModel()
 │           │   └── generate_response_model.dart       → generateResponseModel()
+│           │
+│           ├── auth_interceptor/       # Helpers for addAuthInterceptor()
+│           │   ├── generate_auth_interceptor.dart    → generateAuthInterceptor()
+│           │   ├── patch_di_keys.dart                → patchDiKeys()
+│           │   └── patch_network_module.dart         → patchNetworkModule()
 │           │
 │           ├── generate_localizations/ # Helpers for runGenerateLocalizationsCommand()
 │           │   └── run_generate_localizations.dart

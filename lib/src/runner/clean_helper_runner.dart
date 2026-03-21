@@ -1,5 +1,6 @@
 import 'package:cli_completion/cli_completion.dart';
 
+import 'commands/add_auth_interceptor_command.dart';
 import 'commands/add_entity_command.dart';
 import 'commands/add_feature_command.dart';
 import 'commands/add_network_module_command.dart';
@@ -25,5 +26,6 @@ class CleanHelperRunner extends CompletionCommandRunner<void> {
     addCommand(RemoveFeatureCommand());
     addCommand(RegenerateRouterCommand());
     addCommand(GenerateLocalizationsCommand());
+    addCommand(AddAuthInterceptorCommand());
   }
 }

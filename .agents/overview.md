@@ -14,6 +14,7 @@ routing, DI, BLoC state management, and all required dependencies in one command
 |---------|---------|
 | `clean-helper init` | Full project scaffold — run once on a new Flutter project |
 | `clean-helper add_network_module` | Set up the network layer (Dio, Retrofit, Chucker) |
+| `clean-helper add_auth_interceptor` | Scaffold AuthInterceptor with token refresh and wire into NetworkModule |
 | `clean-helper add_feature <name>` | Add a new feature with clean architecture structure |
 | `clean-helper add_repo <feature> <name>` | Generate the full data layer for a repository (entity, domain repo, datasources, models, repo impl) |
 | `clean-helper add_entity <scope> <name> [folder]` | Add an entity (domain) + freezed model (data) |
