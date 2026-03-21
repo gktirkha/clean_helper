@@ -3,12 +3,17 @@ import 'dart:io';
 import '../shared/log.dart';
 import '../shared/run_command.dart';
 
-void runDepsSort() {
-  runCommand(['dart', 'pub', 'global', 'activate', 'dart_dependency_checker_cli']);
+bool _isDepsSortAvailable() =>
+    Process.runSync('which', ['deps-sort'], runInShell: true).exitCode == 0;
 
-  final check = Process.runSync('which', ['deps-sort'], runInShell: true);
-  if (check.exitCode != 0) {
-    log('⚠️  deps-sort not found on PATH, skipping sort');
+void runDepsSort() {
+  if (!_isDepsSortAvailable()) {
+    log('🔃 deps-sort not found, activating dart_dependency_checker_cli...');
+    runCommand(['dart', 'pub', 'global', 'activate', 'dart_dependency_checker_cli']);
+  }
+
+  if (!_isDepsSortAvailable()) {
+    log('⚠️  deps-sort still not available, skipping sort');
     return;
   }
 
