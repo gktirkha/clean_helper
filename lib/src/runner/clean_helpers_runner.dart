@@ -7,10 +7,10 @@ import 'commands/init_command.dart';
 
 class CleanHelpersRunner extends CompletionCommandRunner<void> {
   CleanHelpersRunner()
-      : super(
-          'clean-helpers',
-          'CLI tool for scaffolding Flutter clean architecture projects.',
-        ) {
+    : super(
+        'clean-helpers',
+        'CLI tool for scaffolding Flutter clean architecture projects.',
+      ) {
     addCommand(InitCommand());
     addCommand(AddFeatureCommand());
     addCommand(AddRepoCommand());

@@ -4,12 +4,21 @@ import '../shared/log.dart';
 import '../shared/run_command.dart';
 
 bool _isDepsSortAvailable() =>
-    Process.runSync('which', ['deps-sort'], runInShell: true).exitCode == 0;
+    Process.runSync('which', [
+      'dart_dependency_checker',
+    ], runInShell: true).exitCode ==
+    0;
 
 void runDepsSort() {
   if (!_isDepsSortAvailable()) {
     log('🔃 deps-sort not found, activating dart_dependency_checker_cli...');
-    runCommand(['dart', 'pub', 'global', 'activate', 'dart_dependency_checker_cli']);
+    runCommand([
+      'dart',
+      'pub',
+      'global',
+      'activate',
+      'dart_dependency_checker_cli',
+    ]);
   }
 
   if (!_isDepsSortAvailable()) {
@@ -18,6 +27,6 @@ void runDepsSort() {
   }
 
   log('🔃 Sorting dependencies...');
-  runCommand(['deps-sort']);
+  runCommand(['dart_dependency_checker', 'deps-sort']);
   log('🔃 Dependencies sorted');
 }
