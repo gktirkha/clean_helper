@@ -3,6 +3,7 @@ import 'dart:io';
 import '../functions/feature/patch_router_module.dart' show buildRouterModule;
 import '../functions/init/run_dart_format.dart';
 import '../functions/shared/ensure_pubspec.dart';
+import '../functions/shared/write_file.dart';
 
 void regenerateRouter() {
   ensurePubspec();
@@ -36,7 +37,7 @@ void regenerateRouter() {
 
   stdout.writeln('🔍 Found routers: ${features.join(', ')}');
 
-  File(routerPath).writeAsStringSync(buildRouterModule(features));
+  overwriteFile(routerPath, buildRouterModule(features));
   runDartFormat();
 
   stdout.writeln('✅ router_module.dart regenerated successfully!');

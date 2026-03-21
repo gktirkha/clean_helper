@@ -212,7 +212,7 @@ Deletes the feature directory and deregisters its router from `lib/app/router/ro
 clean-helpers regenerate_router
 ```
 
-Scans `lib/features/` for any feature that has a `router/<feature>_router.dart` file and regenerates `lib/app/router/router_module.dart` from scratch. Useful when the module has drifted out of sync or after manual edits to the features directory.
+Scans `lib/features/` for any feature that has a `router/<feature>_router.dart` file and regenerates `lib/app/router/router_module.dart` from scratch. `router_module.dart` is fully managed by the tool — do not edit it manually. Useful when the module has drifted out of sync or after manual edits to the features directory.
 
 ---
 

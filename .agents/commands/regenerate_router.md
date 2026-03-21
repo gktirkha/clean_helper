@@ -37,4 +37,5 @@ Features are sorted alphabetically for deterministic output.
 
 - Discovery is **filesystem-based**: a feature is included if and only if `lib/features/<name>/router/<name>_router.dart` exists
 - Uses the shared `buildRouterModule(List<String> features)` function from `patch_router_module.dart` — the single source of truth for router module generation
+- Writes via `overwriteFile` — `router_module.dart` is fully tool-owned and never manually edited
 - Safe to run multiple times (idempotent)

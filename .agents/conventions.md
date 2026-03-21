@@ -34,7 +34,7 @@ Both are exported from `lib/src/functions/shared/write_file.dart`.
 | Function | Behaviour | When to use |
 |----------|-----------|-------------|
 | `writeFile(path, content)` | Skips if file already exists, logs skip | User-editable files — never stomp on their work |
-| `overwriteFile(path, content)` | Always writes, logs the write | Config files that the tool owns (e.g. `analysis_options.yaml`) |
+| `overwriteFile(path, content)` | Always writes, logs the write | Tool-owned generated files (e.g. `analysis_options.yaml`, `router_module.dart`) |
 
 ---
 

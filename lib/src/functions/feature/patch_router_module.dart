@@ -50,6 +50,7 @@ String buildRouterModule(List<String> features) {
   return '''
 // GENERATED CODE — DO NOT EDIT MANUALLY
 // Managed by clean_helpers. Run `clean-helpers add_feature` to register new routers.
+// To resync with the features on disk, run `clean-helpers regenerate_router`.
 
 import 'package:injectable/injectable.dart';
 
