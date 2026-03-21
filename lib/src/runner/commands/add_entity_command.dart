@@ -9,7 +9,7 @@ class AddEntityCommand extends Command<void> {
   @override
   String get description =>
       'Generate a domain entity and a freezed data model.\n'
-      'Usage: clean-helpers add_entity <feature|core> <entity_name> [domain folder name]';
+      'Usage: clean-helper add_entity <feature|core> <entity_name> [domain folder name]';
 
   @override
   String get invocation =>

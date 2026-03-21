@@ -8,7 +8,7 @@
 ## Usage
 
 ```bash
-clean-helpers regenerate_router
+clean-helper regenerate_router
 # or
 dart run bin/regenerate_router.dart
 ```

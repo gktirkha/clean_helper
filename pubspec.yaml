@@ -1,13 +1,13 @@
-name: clean_helpers
+name: clean_helper
 description: A CLI tool for scaffolding Flutter clean architecture projects.
 version: 1.0.0
-repository: https://github.com/my_org/clean_helpers
+repository: https://github.com/my_org/clean_helper
 
 environment:
   sdk: ^3.11.3
 
 executables:
-  clean-helpers: clean_helpers
+  clean-helper: clean_helper
 
 dependencies:
   args: ^2.5.0

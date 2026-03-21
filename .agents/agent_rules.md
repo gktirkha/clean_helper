@@ -8,7 +8,7 @@ These constraints must be respected when modifying or extending this codebase.
 
 - **One function definition per file** — everywhere under `lib/src/`.
 - **Command files have one function** — never add helpers directly in `lib/src/commands/`.
-- **Never export function files** from `lib/clean_helpers.dart` — commands only.
+- **Never export function files** from `lib/clean_helper.dart` — commands only.
 - **New helpers go in `lib/src/functions/<group>/`** — create a new file, never add to an existing one.
 - **New templates go in `lib/src/functions/init/templates/`** — one template function per file.
 
@@ -24,7 +24,7 @@ These constraints must be respected when modifying or extending this codebase.
 
 ## Path Rules
 
-- All generated file paths are **relative to the Flutter project's CWD**, not to `clean_helpers/`.
+- All generated file paths are **relative to the Flutter project's CWD**, not to `clean_helper/`.
 - Do not use `path.join` or absolute paths — keep paths as plain relative strings.
 
 ---

@@ -1,19 +1,19 @@
 # Project Structure
 
 ```
-clean_helpers/
+clean_helper/
 ├── bin/
-│   ├── clean_helpers.dart       → main entry point (CleanHelpersRunner)
+│   ├── clean_helper.dart       → main entry point (CleanHelperRunner)
 │   ├── init.dart                → legacy: calls runInit() directly
 │   ├── add_feature.dart         → legacy: calls addFeature(args) directly
 │   ├── add_repo.dart            → legacy: calls addRepo(args) directly
 │   └── add_entity.dart          → legacy: calls addEntity(args) directly
 │
 ├── lib/
-│   ├── clean_helpers.dart      # Exports commands only
+│   ├── clean_helper.dart      # Exports commands only
 │   └── src/
 │       ├── runner/             # CLI wiring (args + cli_completion)
-│       │   ├── clean_helpers_runner.dart   → CleanHelpersRunner (CompletionCommandRunner)
+│       │   ├── clean_helper_runner.dart   → CleanHelperRunner (CompletionCommandRunner)
 │       │   └── commands/
 │       │       ├── init_command.dart               → name: 'init'
 │       │       ├── add_feature_command.dart         → name: 'add_feature'

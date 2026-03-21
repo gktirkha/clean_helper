@@ -9,7 +9,7 @@ class RemoveFeatureCommand extends Command<void> {
   @override
   String get description =>
       'Remove a feature and deregister its router.\n'
-      'Usage: clean-helpers remove_feature <feature_name>';
+      'Usage: clean-helper remove_feature <feature_name>';
 
   @override
   String get invocation => '${runner?.executableName} $name <feature_name>';

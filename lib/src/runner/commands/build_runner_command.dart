@@ -9,7 +9,7 @@ class BuildRunnerCommand extends Command<void> {
   @override
   String get description =>
       'Run build_runner in the current Flutter project.\n'
-      'Usage: clean-helpers build_runner [clean|build|watch]  (default: build)';
+      'Usage: clean-helper build_runner [clean|build|watch]  (default: build)';
 
   @override
   String get invocation =>

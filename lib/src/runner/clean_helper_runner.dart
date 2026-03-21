@@ -9,10 +9,10 @@ import 'commands/init_command.dart';
 import 'commands/regenerate_router_command.dart';
 import 'commands/remove_feature_command.dart';
 
-class CleanHelpersRunner extends CompletionCommandRunner<void> {
-  CleanHelpersRunner()
+class CleanHelperRunner extends CompletionCommandRunner<void> {
+  CleanHelperRunner()
     : super(
-        'clean-helpers',
+        'clean-helper',
         'CLI tool for scaffolding Flutter clean architecture projects.',
       ) {
     addCommand(InitCommand());

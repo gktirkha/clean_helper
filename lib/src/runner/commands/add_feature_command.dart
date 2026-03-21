@@ -9,7 +9,7 @@ class AddFeatureCommand extends Command<void> {
   @override
   String get description =>
       'Generate a new feature with full clean architecture structure.\n'
-      'Usage: clean-helpers add_feature <feature_name>';
+      'Usage: clean-helper add_feature <feature_name>';
 
   @override
   String get invocation => '${runner?.executableName} $name <feature_name>';

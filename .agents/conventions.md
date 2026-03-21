@@ -60,7 +60,7 @@ It calls `abort(message)` if `pubspec.yaml` is not found in the current director
 
 ## All Paths Are Relative to the Target Flutter Project
 
-This tool is run **from inside a Flutter project root**, not from inside `clean_helpers/`.
+This tool is run **from inside a Flutter project root**, not from inside `clean_helper/`.
 All file paths in `writeFile`, `Directory.createSync`, etc. are relative to the user's project CWD.
 
 ---

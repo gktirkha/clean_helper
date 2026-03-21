@@ -1,4 +1,4 @@
-# clean_helpers
+# clean_helper
 
 A Dart CLI tool that scaffolds Flutter projects following **Clean Architecture**.
 
@@ -9,13 +9,13 @@ Run it from inside a Flutter project root to generate the full directory structu
 ## Installation
 
 ```bash
-dart pub global activate --source git https://github.com/gktirkha/clean_helpers
+dart pub global activate --source git https://github.com/gktirkha/clean_helper
 ```
 
 ### Enable Shell Auto-completion
 
 ```bash
-clean-helpers install-completion-files
+clean-helper install-completion-files
 ```
 
 ---
@@ -24,14 +24,14 @@ clean-helpers install-completion-files
 
 | Command | Description |
 |---------|-------------|
-| `clean-helpers init` | Full project scaffold — run once on a new Flutter project |
-| `clean-helpers add_network_module` | Set up the network layer (Dio, Retrofit, Chucker) |
-| `clean-helpers add_feature <name>` | Add a new feature with clean architecture structure |
-| `clean-helpers add_repo <scope> <name>` | Add a repository (domain interface + data impl) |
-| `clean-helpers add_entity <scope> <name> [folder]` | Add an entity (domain) + freezed model (data) |
-| `clean-helpers build_runner [clean\|build\|watch]` | Run build_runner in the current project (default: build) |
-| `clean-helpers remove_feature <name>` | Remove a feature and deregister its router |
-| `clean-helpers regenerate_router` | Scan all features on disk and regenerate `router_module.dart` |
+| `clean-helper init` | Full project scaffold — run once on a new Flutter project |
+| `clean-helper add_network_module` | Set up the network layer (Dio, Retrofit, Chucker) |
+| `clean-helper add_feature <name>` | Add a new feature with clean architecture structure |
+| `clean-helper add_repo <scope> <name>` | Add a repository (domain interface + data impl) |
+| `clean-helper add_entity <scope> <name> [folder]` | Add an entity (domain) + freezed model (data) |
+| `clean-helper build_runner [clean\|build\|watch]` | Run build_runner in the current project (default: build) |
+| `clean-helper remove_feature <name>` | Remove a feature and deregister its router |
+| `clean-helper regenerate_router` | Scan all features on disk and regenerate `router_module.dart` |
 
 `<scope>` is either `core` or a feature name (e.g. `home`, `auth`).
 
@@ -45,7 +45,7 @@ Run this **once** from the root of a **new** Flutter project:
 
 ```bash
 cd my_flutter_app
-clean-helpers init
+clean-helper init
 ```
 
 What it does (in order):
@@ -76,8 +76,8 @@ What it does (in order):
 ### `add_feature` — Add a new feature
 
 ```bash
-clean-helpers add_feature auth
-clean-helpers add_feature user_profile
+clean-helper add_feature auth
+clean-helper add_feature user_profile
 ```
 
 Feature name must be **snake_case**. Generates:
@@ -120,10 +120,10 @@ The new feature router is **automatically registered** in `lib/app/router/router
 
 ```bash
 # Inside a feature
-clean-helpers add_repo home invoice
+clean-helper add_repo home invoice
 
 # In core
-clean-helpers add_repo core user
+clean-helper add_repo core user
 ```
 
 Generates a domain abstract interface and a data implementation:
@@ -143,13 +143,13 @@ class InvoiceRepositoryImpl implements InvoiceRepository {}
 
 ```bash
 # Basic
-clean-helpers add_entity home invoice
+clean-helper add_entity home invoice
 
 # With subfolder (places model in data/models/requests/)
-clean-helpers add_entity home invoice requests
+clean-helper add_entity home invoice requests
 
 # In core
-clean-helpers add_entity core error
+clean-helper add_entity core error
 ```
 
 Generates a domain entity and a freezed model:
@@ -170,7 +170,7 @@ sealed class InvoiceModel with _$InvoiceModel implements InvoiceEntity {
 After generating, run build_runner:
 
 ```bash
-clean-helpers build_runner build
+clean-helper build_runner build
 ```
 
 ---
@@ -178,7 +178,7 @@ clean-helpers build_runner build
 ### `add_network_module` — Set up the network layer
 
 ```bash
-clean-helpers add_network_module
+clean-helper add_network_module
 ```
 
 Generates Dio + Retrofit network files, installs network dependencies (including `chucker_flutter`), and patches `AppGoRouter`.
@@ -188,10 +188,10 @@ Generates Dio + Retrofit network files, installs network dependencies (including
 ### `build_runner` — Run build_runner
 
 ```bash
-clean-helpers build_runner         # build (default)
-clean-helpers build_runner build   # build
-clean-helpers build_runner watch   # watch mode
-clean-helpers build_runner clean   # clean generated files
+clean-helper build_runner         # build (default)
+clean-helper build_runner build   # build
+clean-helper build_runner watch   # watch mode
+clean-helper build_runner clean   # clean generated files
 ```
 
 ---
@@ -199,7 +199,7 @@ clean-helpers build_runner clean   # clean generated files
 ### `remove_feature` — Remove a feature
 
 ```bash
-clean-helpers remove_feature auth
+clean-helper remove_feature auth
 ```
 
 Deletes the feature directory and deregisters its router from `lib/app/router/router_module.dart`.
@@ -209,7 +209,7 @@ Deletes the feature directory and deregisters its router from `lib/app/router/ro
 ### `regenerate_router` — Rebuild router_module.dart from scratch
 
 ```bash
-clean-helpers regenerate_router
+clean-helper regenerate_router
 ```
 
 Scans `lib/features/` for any feature that has a `router/<feature>_router.dart` file and regenerates `lib/app/router/router_module.dart` from scratch. `router_module.dart` is fully managed by the tool — do not edit it manually. Useful when the module has drifted out of sync or after manual edits to the features directory.

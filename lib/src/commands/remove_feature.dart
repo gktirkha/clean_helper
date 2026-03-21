@@ -9,7 +9,7 @@ void removeFeature(List<String> args) {
 
   if (args.isEmpty) {
     stderr.writeln('❌ Please provide a feature name');
-    stderr.writeln('Usage: clean-helpers remove_feature <feature_name>');
+    stderr.writeln('Usage: clean-helper remove_feature <feature_name>');
     exit(1);
   }
 

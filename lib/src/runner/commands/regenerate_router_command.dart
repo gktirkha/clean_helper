@@ -9,7 +9,7 @@ class RegenerateRouterCommand extends Command<void> {
   @override
   String get description =>
       'Scan all features and regenerate router_module.dart from scratch.\n'
-      'Usage: clean-helpers regenerate_router';
+      'Usage: clean-helper regenerate_router';
 
   @override
   void run() => regenerateRouter();

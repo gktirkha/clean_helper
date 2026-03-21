@@ -1,4 +1,4 @@
-# Extending clean_helpers
+# Extending clean_helper
 
 ## Adding a New Command
 
@@ -35,14 +35,14 @@ void addUseCase(List<String> args) {
 `bin/add_use_case.dart`:
 
 ```dart
-import 'package:clean_helpers/src/commands/add_use_case.dart';
+import 'package:clean_helper/src/commands/add_use_case.dart';
 
 void main(List<String> arguments) => addUseCase(arguments);
 ```
 
 ### 4. Export from the public API
 
-`lib/clean_helpers.dart`:
+`lib/clean_helper.dart`:
 
 ```dart
 export 'src/commands/add_use_case.dart';
@@ -79,4 +79,4 @@ Then import and call it from the relevant generator function.
 
 Place it in `lib/src/functions/shared/` — one function per file.
 Import it wherever needed using a relative `../shared/<file>.dart` path.
-Do **not** export it from `lib/clean_helpers.dart`.
+Do **not** export it from `lib/clean_helper.dart`.

@@ -9,7 +9,7 @@ class AddRepoCommand extends Command<void> {
   @override
   String get description =>
       'Generate a repository interface (domain) and implementation (data).\n'
-      'Usage: clean-helpers add_repo <feature|core> <repo_name>';
+      'Usage: clean-helper add_repo <feature|core> <repo_name>';
 
   @override
   String get invocation =>

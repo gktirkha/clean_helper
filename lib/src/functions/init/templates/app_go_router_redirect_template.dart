@@ -1,6 +1,6 @@
 String appGoRouterRedirectTemplate() => '''
 // GENERATED CODE — DO NOT EDIT MANUALLY
-// Managed by clean_helpers. Changes will be lost on re-generation.
+// Managed by clean_helper. Changes will be lost on re-generation.
 
 part of 'app_go_router.dart';
 

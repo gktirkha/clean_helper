@@ -1,3 +1,3 @@
-import 'package:clean_helpers/src/commands/init.dart';
+import 'package:clean_helper/src/commands/init.dart';
 
 void main(List<String> arguments) => runInit();
