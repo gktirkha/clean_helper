@@ -1,6 +1,5 @@
 import '../shared/log.dart';
 import '../shared/run_command.dart';
-import 'run_deps_sort.dart';
 
 void installDependencies() {
   log('📦 Installing dependencies...');
@@ -40,6 +39,5 @@ void installDependencies() {
   ]);
   runCommand(['dart', 'pub', 'add', ...deps]);
   runCommand(['dart', 'pub', 'add', '--dev', ...devDeps]);
-  runDepsSort();
   log('📦 Dependencies installed');
 }
