@@ -31,6 +31,7 @@ clean-helpers install-completion-files
 | `clean-helpers add_entity <scope> <name> [folder]` | Add an entity (domain) + freezed model (data) |
 | `clean-helpers build_runner [clean\|build\|watch]` | Run build_runner in the current project (default: build) |
 | `clean-helpers remove_feature <name>` | Remove a feature and deregister its router |
+| `clean-helpers regenerate_router` | Scan all features on disk and regenerate `router_module.dart` |
 
 `<scope>` is either `core` or a feature name (e.g. `home`, `auth`).
 
@@ -202,6 +203,16 @@ clean-helpers remove_feature auth
 ```
 
 Deletes the feature directory and deregisters its router from `lib/app/router/router_module.dart`.
+
+---
+
+### `regenerate_router` — Rebuild router_module.dart from scratch
+
+```bash
+clean-helpers regenerate_router
+```
+
+Scans `lib/features/` for any feature that has a `router/<feature>_router.dart` file and regenerates `lib/app/router/router_module.dart` from scratch. Useful when the module has drifted out of sync or after manual edits to the features directory.
 
 ---
 

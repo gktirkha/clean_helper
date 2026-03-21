@@ -2,6 +2,7 @@ import 'dart:io';
 
 import '../feature/patch_router_module.dart' show buildRouterModule;
 import '../shared/pascal_case.dart';
+import '../shared/write_file.dart';
 
 void unpatchRouterModule(String feature) {
   const path = 'lib/app/router/router_module.dart';
@@ -31,6 +32,6 @@ void unpatchRouterModule(String feature) {
       .where((f) => f != feature)
       .toList();
 
-  file.writeAsStringSync(buildRouterModule(remainingFeatures));
+  overwriteFile(path, buildRouterModule(remainingFeatures));
   stdout.writeln('🔗 ${pascalCase(feature)}Router removed from $path');
 }

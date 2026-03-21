@@ -2,6 +2,7 @@ import 'dart:io';
 
 import '../shared/camel_case.dart';
 import '../shared/pascal_case.dart';
+import '../shared/write_file.dart';
 
 void patchRouterModule(String feature) {
   const path = 'lib/app/router/router_module.dart';
@@ -30,7 +31,7 @@ void patchRouterModule(String feature) {
 
   existingFeatures.add(feature);
 
-  file.writeAsStringSync(buildRouterModule(existingFeatures));
+  overwriteFile(path, buildRouterModule(existingFeatures));
   stdout.writeln('🔗 ${pascalCase(feature)}Router registered in $path');
 }
 
