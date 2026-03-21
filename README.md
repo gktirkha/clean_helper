@@ -22,10 +22,9 @@ Restart your shell or source your profile, and tab completion will work for all 
 
 ### As a dev dependency
 
-If you prefer not to install globally, add it as a dev dependency in your Flutter project:
+Add it to your Flutter project's `pubspec.yaml`:
 
 ```yaml
-# pubspec.yaml
 dev_dependencies:
   clean_helpers:
     git:
@@ -54,18 +53,19 @@ clean-helpers init
 ```
 
 Generates:
-- `lib/core/` — DI, routing, error handling
+- `lib/core/` — DI container, routing base, router refresh
+- `lib/app/` — bootstrap, main app, GoRouter setup
 - `lib/features/home/` — example home feature
 - `assets/` — locales and colors
 - Config files: `slang.yaml`, `build.yaml`, `analysis_options.yaml`
-- Installs all dependencies and runs `build_runner` + `dart format`
+- Installs all core dependencies and runs `build_runner` + `dart format`
 
 ---
 
 ### `add_network_module`
 
 Sets up the network layer: Dio, Retrofit, Chucker, and related dependencies.
-Run after `init` if your project needs network/API support.
+Run after `init` when your project needs API/network support.
 
 ```bash
 clean-helpers add_network_module
@@ -76,13 +76,17 @@ Generates under `lib/core/network/`:
 - `interceptors/error_interceptor.dart`
 - `di/network_module.dart`
 
-Also generates `lib/core/data/models/error_model.dart` and `lib/core/domain/entities/error_entity.dart`.
+Also generates:
+- `lib/core/data/models/error_model.dart`
+- `lib/core/domain/entities/error_entity.dart`
+
+Patches `lib/app/router/app_go_router.dart` to add the Chucker navigator observer.
 
 ---
 
 ### `add_feature <name>`
 
-Adds a new feature with the full clean architecture structure.
+Adds a new feature with the full clean architecture structure and auto-registers its router.
 
 ```bash
 clean-helpers add_feature auth
@@ -95,7 +99,20 @@ Generates under `lib/features/<name>/`:
 - `presentation/` — BLoC, pages, widgets
 - `router/` — routes, navigation, router
 
-> After generating, register the new router in `lib/app/router/router_module.dart`.
+Also creates `lib/app/navigations/<name>_navigation_impl.dart` and registers the router in `lib/app/router/router_module.dart` automatically.
+
+---
+
+### `remove_feature <name>`
+
+Removes a feature and deregisters its router. The inverse of `add_feature`.
+
+```bash
+clean-helpers remove_feature auth
+clean-helpers remove_feature user_profile
+```
+
+Deletes `lib/features/<name>/` and `lib/app/navigations/<name>_navigation_impl.dart`, and removes the router registration from `lib/app/router/router_module.dart`.
 
 ---
 
@@ -122,11 +139,22 @@ clean-helpers add_entity home invoice requests   # nested in data/models/request
 clean-helpers add_entity core error
 ```
 
-Run `build_runner` after generating to produce `.freezed.dart` and `.g.dart` files:
+Run `build_runner` after generating to produce `.freezed.dart` and `.g.dart` files.
+
+---
+
+### `build_runner [clean|build|watch]`
+
+Runs `build_runner` inside the current project. Defaults to `build` if no action is specified.
 
 ```bash
-dart run build_runner build --delete-conflicting-outputs
+clean-helpers build_runner          # same as build
+clean-helpers build_runner clean
+clean-helpers build_runner build
+clean-helpers build_runner watch
 ```
+
+`build` and `watch` always run with `--delete-conflicting-outputs`.
 
 ---
 
@@ -139,7 +167,7 @@ flutter create my_app && cd my_app
 # 2. Scaffold clean architecture
 clean-helpers init
 
-# 3. Set up networking
+# 3. Set up networking (optional)
 clean-helpers add_network_module
 
 # 4. Add a feature
@@ -150,4 +178,10 @@ clean-helpers add_repo auth token
 
 # 6. Add an entity
 clean-helpers add_entity auth token response
+
+# 7. Regenerate code
+clean-helpers build_runner build
+
+# 8. Remove a feature you no longer need
+clean-helpers remove_feature auth
 ```
