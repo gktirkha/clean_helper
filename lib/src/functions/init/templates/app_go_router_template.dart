@@ -1,7 +1,6 @@
 String appGoRouterTemplate(String pkg) => '''
 import 'dart:async';
 
-import 'package:chucker_flutter/chucker_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
@@ -24,7 +23,6 @@ class AppGoRouter {
     refreshListenable: GoRouterRefreshStream(
       routers.expand((r) => r.refreshStreams).toList(),
     ),
-    observers: [ChuckerFlutter.navigatorObserver],
   );
 
   FutureOr<String?> _handleRedirect(
