@@ -27,14 +27,14 @@ clean-helper install-completion-files
 | `clean-helper init` | Full project scaffold — run once on a new Flutter project |
 | `clean-helper add_network_module` | Set up the network layer (Dio, Retrofit, Chucker) |
 | `clean-helper add_feature <name>` | Add a new feature with clean architecture structure |
-| `clean-helper add_repo <scope> <name>` | Add a repository (domain interface + data impl) |
+| `clean-helper add_repo <feature> <name>` | Generate the full data layer (entity, domain repo, datasources, models, repo impl) |
 | `clean-helper add_entity <scope> <name> [folder]` | Add an entity (domain) + freezed model (data) |
 | `clean-helper build_runner [clean\|build\|watch]` | Run build_runner in the current project (default: build) |
 | `clean-helper remove_feature <name>` | Remove a feature and deregister its router |
 | `clean-helper regenerate_router` | Scan all features on disk and regenerate `router_module.dart` |
 | `clean-helper generate_localizations` | Generate locales using slang |
 
-`<scope>` is either `core` or a feature name (e.g. `home`, `auth`).
+`<scope>` for `add_entity` is either `core` or a feature name (e.g. `home`, `auth`). `add_repo` only supports feature scope.
 
 ---
 
@@ -117,25 +117,32 @@ The new feature router is **automatically registered** in `lib/app/router/router
 
 ---
 
-### `add_repo` — Add a repository
+### `add_repo` — Add a full data layer
 
 ```bash
-# Inside a feature
 clean-helper add_repo home invoice
-
-# In core
-clean-helper add_repo core user
+clean-helper add_repo auth user
 ```
 
-Generates a domain abstract interface and a data implementation:
+Generates the complete data layer for a repository inside `lib/features/<feature>/`:
 
-```dart
-// Domain
-abstract interface class InvoiceRepository {}
+```
+domain/
+  entities/invoice_entity.dart              (abstract class InvoiceEntity)
+  repositories/invoice_repository.dart      (abstract interface, with get method)
+data/
+  constants/home_api_paths.dart             (sealed class HomeApiPaths)
+  datasources/invoice_data_source_base.dart (abstract interface)
+  datasources/rest_invoice_data_source.dart (@RestApi, @Injectable, Retrofit impl)
+  models/requests/invoice_request_model.dart  (@JsonSerializable)
+  models/response/invoice_response_model.dart (@freezed, implements InvoiceEntity)
+  repositories/invoice_repository_impl.dart   (@Singleton, implements InvoiceRepository)
+```
 
-// Data
-@LazySingleton(as: InvoiceRepository)
-class InvoiceRepositoryImpl implements InvoiceRepository {}
+All internal imports use relative paths. After generating, run build_runner:
+
+```bash
+clean-helper build_runner build
 ```
 
 ---

@@ -3,17 +3,22 @@
 ```
 clean_helper/
 ├── bin/
-│   ├── clean_helper.dart       → main entry point (CleanHelperRunner)
-│   ├── init.dart                → legacy: calls runInit() directly
-│   ├── add_feature.dart         → legacy: calls addFeature(args) directly
-│   ├── add_repo.dart            → legacy: calls addRepo(args) directly
-│   └── add_entity.dart          → legacy: calls addEntity(args) directly
+│   ├── clean_helper.dart            → main entry point (CleanHelperRunner)
+│   ├── init.dart                    → legacy: calls runInit() directly
+│   ├── add_feature.dart             → legacy: calls addFeature(args) directly
+│   ├── add_repo.dart                → legacy: calls addRepo(args) directly
+│   ├── add_entity.dart              → legacy: calls addEntity(args) directly
+│   ├── add_network_module.dart      → legacy: calls addNetworkModule() directly
+│   ├── build_runner.dart            → legacy: calls runBuildRunnerCommand(args) directly
+│   ├── remove_feature.dart          → legacy: calls removeFeature(args) directly
+│   ├── regenerate_router.dart       → legacy: calls regenerateRouter() directly
+│   └── generate_localizations.dart  → legacy: calls runGenerateLocalizationsCommand(args)
 │
 ├── lib/
 │   ├── clean_helper.dart      # Exports commands only
 │   └── src/
 │       ├── runner/             # CLI wiring (args + cli_completion)
-│       │   ├── clean_helper_runner.dart   → CleanHelperRunner (CompletionCommandRunner)
+│       │   ├── clean_helper_runner.dart            → CleanHelperRunner (CompletionCommandRunner)
 │       │   └── commands/
 │       │       ├── init_command.dart               → name: 'init'
 │       │       ├── add_feature_command.dart         → name: 'add_feature'
@@ -21,16 +26,20 @@ clean_helper/
 │       │       ├── add_entity_command.dart          → name: 'add_entity'
 │       │       ├── add_network_module_command.dart  → name: 'add_network_module'
 │       │       ├── build_runner_command.dart        → name: 'build_runner'
-│       │       └── remove_feature_command.dart      → name: 'remove_feature'
+│       │       ├── remove_feature_command.dart      → name: 'remove_feature'
+│       │       ├── regenerate_router_command.dart   → name: 'regenerate_router'
+│       │       └── generate_localizations_command.dart → name: 'generate_localizations'
 │       │
 │       ├── commands/           # One file = one public entry-point function
-│       │   ├── init.dart                → runInit()
-│       │   ├── add_feature.dart         → addFeature(List<String>)
-│       │   ├── add_repo.dart            → addRepo(List<String>)
-│       │   ├── add_entity.dart          → addEntity(List<String>)
-│       │   ├── add_network_module.dart  → addNetworkModule()
-│       │   ├── build_runner.dart        → runBuildRunnerCommand(List<String>)
-│       │   └── remove_feature.dart      → removeFeature(List<String>)
+│       │   ├── init.dart                    → runInit()
+│       │   ├── add_feature.dart             → addFeature(List<String>)
+│       │   ├── add_repo.dart                → addRepo(List<String>)
+│       │   ├── add_entity.dart              → addEntity(List<String>)
+│       │   ├── add_network_module.dart      → addNetworkModule()
+│       │   ├── build_runner.dart            → runBuildRunnerCommand(List<String>)
+│       │   ├── remove_feature.dart          → removeFeature(List<String>)
+│       │   ├── regenerate_router.dart       → regenerateRouter()
+│       │   └── generate_localizations.dart  → runGenerateLocalizationsCommand(List<String>)
 │       │
 │       └── functions/
 │           ├── shared/                 # Cross-cutting utilities
@@ -96,8 +105,16 @@ clean_helper/
 │           │   └── unpatch_router_module.dart
 │           │
 │           ├── repo/                   # Helpers for addRepo()
-│           │   ├── generate_domain_repo.dart
-│           │   └── generate_data_repo.dart
+│           │   ├── generate_domain_repo.dart         → generateDomainRepo()
+│           │   ├── generate_data_repo.dart            → generateDataRepo()
+│           │   ├── generate_api_paths.dart            → generateApiPaths()
+│           │   ├── generate_data_source_base.dart     → generateDataSourceBase()
+│           │   ├── generate_rest_data_source.dart     → generateRestDataSource()
+│           │   ├── generate_request_model.dart        → generateRequestModel()
+│           │   └── generate_response_model.dart       → generateResponseModel()
+│           │
+│           ├── generate_localizations/ # Helpers for runGenerateLocalizationsCommand()
+│           │   └── run_generate_localizations.dart
 │           │
 │           └── entity/                 # Helpers for addEntity()
 │               ├── generate_entity_file.dart

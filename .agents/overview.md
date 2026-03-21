@@ -15,14 +15,15 @@ routing, DI, BLoC state management, and all required dependencies in one command
 | `clean-helper init` | Full project scaffold — run once on a new Flutter project |
 | `clean-helper add_network_module` | Set up the network layer (Dio, Retrofit, Chucker) |
 | `clean-helper add_feature <name>` | Add a new feature with clean architecture structure |
-| `clean-helper add_repo <scope> <name>` | Add a repository (domain interface + data impl) |
+| `clean-helper add_repo <feature> <name>` | Generate the full data layer for a repository (entity, domain repo, datasources, models, repo impl) |
 | `clean-helper add_entity <scope> <name> [folder]` | Add an entity (domain) + freezed model (data) |
 | `clean-helper build_runner [clean\|build\|watch]` | Run build_runner in the current project (default: build) |
 | `clean-helper remove_feature <name>` | Remove a feature and deregister its router |
 | `clean-helper regenerate_router` | Scan all features on disk and regenerate `router_module.dart` |
 | `clean-helper generate_localizations` | Generate locales using slang |
 
-`<scope>` is either `core` or a feature name (e.g. `home`, `auth`).
+`<scope>` for `add_entity` is either `core` or a feature name (e.g. `home`, `auth`).
+`add_repo` only supports feature scope — not `core`.
 
 Shell completion is provided by [`cli_completion`](https://pub.dev/packages/cli_completion).
 Activate it once with: `clean-helper install-completion-files`

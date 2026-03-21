@@ -17,7 +17,7 @@ These constraints must be respected when modifying or extending this codebase.
 ## File Writing Rules
 
 - Use `writeFile(path, content)` for files the user may edit — skips if file exists.
-- Use `overwriteFile(path, content)` only for config files owned by the tool (e.g. `analysis_options.yaml`).
+- Use `overwriteFile(path, content)` only for config files owned by the tool (e.g. `analysis_options.yaml`, `router_module.dart`).
 - Never use `File(...).writeAsStringSync(...)` directly from command files — go through the shared helper.
 
 ---
@@ -34,6 +34,7 @@ These constraints must be respected when modifying or extending this codebase.
 - Shared utilities: import from `../shared/<file>.dart`.
 - Do not create circular imports between function files.
 - `camel_case.dart` may import `pascal_case.dart` (it depends on it); nothing else may form a cycle.
+- Generated Flutter project files must use **relative imports** for internal project files — no `package:` imports between files within the same feature.
 
 ---
 
@@ -47,9 +48,17 @@ These constraints must be respected when modifying or extending this codebase.
 
 ---
 
+## dart format & build_runner Rules
+
+- `runDartFormat()` is called at the end of: `runInit()`, `addFeature()`, `addRepo()`, `addEntity()`.
+- `runBuildRunner()` is called only from `runInit()`.
+- Helper functions (under `lib/src/functions/`) must **never** call `runDartFormat()` or `runBuildRunner()` — only command functions do this.
+
+---
+
 ## What NOT to Do
 
 - Do not add logic to `bin/` files — they must only call the command function.
 - Do not add more than one public function to any `.dart` file under `lib/src/`.
-- Do not run `build_runner` or `dart format` from within helper functions — only `runInit()` does this.
 - Do not modify files that already exist in the target project without using `overwriteFile`.
+- Do not use `package:` imports for cross-file references within a generated Flutter feature — always use relative imports.
