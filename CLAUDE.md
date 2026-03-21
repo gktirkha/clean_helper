@@ -1,0 +1,1 @@
+read all files in .agents folder for rules and context
