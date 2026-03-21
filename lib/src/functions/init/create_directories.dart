@@ -1,7 +1,5 @@
 import 'dart:io';
 
-import '../shared/log.dart';
-
 void createDirectories() {
   final dirs = [
     // core
@@ -39,5 +37,5 @@ void createDirectories() {
   for (final dir in dirs) {
     Directory(dir).createSync(recursive: true);
   }
-  log('📁 Directories created');
+  stdout.writeln('📁 Directories created');
 }

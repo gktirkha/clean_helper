@@ -1,8 +1,9 @@
-import '../shared/log.dart';
+import 'dart:io';
+
 import '../shared/run_command.dart';
 
 void runSlang() {
-  log('🌐 Running slang...');
+  stdout.writeln('🌐 Running slang...');
   runCommand(['dart', 'run', 'slang']);
-  log('🌐 Slang generation complete');
+  stdout.writeln('🌐 Slang generation complete');
 }

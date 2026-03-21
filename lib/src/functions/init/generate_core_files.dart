@@ -1,4 +1,5 @@
-import '../shared/log.dart';
+import 'dart:io';
+
 import '../shared/write_file.dart';
 import 'templates/analysis_options_template.dart';
 import 'templates/app_go_router_template.dart';
@@ -32,5 +33,5 @@ void generateCoreFiles(String packageName) {
   writeFile('lib/core/router/router_base.dart', routerBaseTemplate());
   writeFile('lib/core/router/router_refresh.dart', routerRefreshTemplate());
   writeFile('lib/core/di/di_keys.dart', diKeysTemplate());
-  log('⚙️  Core files generated');
+  stdout.writeln('⚙️  Core files generated');
 }

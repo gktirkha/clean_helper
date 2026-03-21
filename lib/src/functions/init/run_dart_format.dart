@@ -1,8 +1,9 @@
-import '../shared/log.dart';
+import 'dart:io';
+
 import '../shared/run_command.dart';
 
 void runDartFormat() {
-  log('🎨 Formatting code...');
+  stdout.writeln('🎨 Formatting code...');
   runCommand(['dart', 'format', '.']);
-  log('🎨 Formatting complete');
+  stdout.writeln('🎨 Formatting complete');
 }

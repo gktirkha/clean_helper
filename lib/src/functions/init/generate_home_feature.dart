@@ -1,4 +1,5 @@
-import '../shared/log.dart';
+import 'dart:io';
+
 import '../shared/write_file.dart';
 
 void generateHomeFeature(String packageName) {
@@ -127,5 +128,5 @@ abstract class HomeState with _\$HomeState {
 }
 ''');
 
-  log('🏠 Home feature generated');
+  stdout.writeln('🏠 Home feature generated');
 }

@@ -1,4 +1,5 @@
-import '../shared/log.dart';
+import 'dart:io';
+
 import '../shared/write_file.dart';
 
 void generateNetworkFiles() {
@@ -127,5 +128,5 @@ abstract class NetworkModule {
 }
 ''');
 
-  log('🌐 Network module generated');
+  stdout.writeln('🌐 Network module generated');
 }

@@ -1,4 +1,5 @@
-import '../shared/log.dart';
+import 'dart:io';
+
 import '../shared/run_command.dart';
 
 void addChuckerDependency() {
@@ -9,5 +10,5 @@ void addChuckerDependency() {
     'chucker_flutter',
     '--git-url=https://github.com/gktirkha/chucker-flutter.git',
   ]);
-  log('🔍 Chucker dependency added');
+  stdout.writeln('🔍 Chucker dependency added');
 }

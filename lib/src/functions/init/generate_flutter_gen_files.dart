@@ -1,4 +1,5 @@
-import '../shared/log.dart';
+import 'dart:io';
+
 import '../shared/write_file.dart';
 
 void generateFlutterGenFiles() {
@@ -28,5 +29,5 @@ targets:
 </resources>
 ''');
 
-  log('🎨 FlutterGen files generated');
+  stdout.writeln('🎨 FlutterGen files generated');
 }

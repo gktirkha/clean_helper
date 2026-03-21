@@ -1,8 +1,9 @@
-import '../shared/log.dart';
+import 'dart:io';
+
 import '../shared/run_command.dart';
 
 void installDependencies() {
-  log('📦 Installing dependencies...');
+  stdout.writeln('📦 Installing dependencies...');
 
   final deps = [
     'flutter_bloc',
@@ -13,20 +14,14 @@ void installDependencies() {
     'fpdart',
     'slang',
     'slang_flutter',
-    'dio',
-    'retrofit',
-    'json_annotation',
     'package_info_plus',
     'flutter_svg',
-    'pretty_dio_logger',
   ];
 
   final devDeps = [
     'build_runner',
     'injectable_generator',
     'freezed',
-    'retrofit_generator',
-    'json_serializable',
     'flutter_gen_runner',
   ];
 
@@ -39,5 +34,6 @@ void installDependencies() {
   ]);
   runCommand(['dart', 'pub', 'add', ...deps]);
   runCommand(['dart', 'pub', 'add', '--dev', ...devDeps]);
-  log('📦 Dependencies installed');
+
+  stdout.writeln('📦 Dependencies installed');
 }

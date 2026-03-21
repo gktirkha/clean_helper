@@ -1,13 +1,11 @@
 import 'dart:io';
 
-import '../shared/log.dart';
-
 void addFlutterAssetsToPubSpec() {
   final pubspec = File('pubspec.yaml');
   final content = pubspec.readAsStringSync();
 
   if (content.contains('assets/colors') && content.contains('assets/locales')) {
-    log('  ⏭  Skipped (exists): flutter assets in pubspec.yaml');
+    stdout.writeln('  ⏭  Skipped (exists): flutter assets in pubspec.yaml');
     return;
   }
 
@@ -21,5 +19,5 @@ void addFlutterAssetsToPubSpec() {
   );
 
   pubspec.writeAsStringSync(updated);
-  log('📋 Flutter assets added to pubspec.yaml');
+  stdout.writeln('📋 Flutter assets added to pubspec.yaml');
 }

@@ -1,4 +1,5 @@
-import '../shared/log.dart';
+import 'dart:io';
+
 import '../shared/write_file.dart';
 
 void generateLocalizationFiles() {
@@ -20,5 +21,5 @@ translate_var: locales
 }
 ''');
 
-  log('🌐 Localization files generated');
+  stdout.writeln('🌐 Localization files generated');
 }

@@ -1,8 +1,9 @@
-import '../shared/log.dart';
+import 'dart:io';
+
 import '../shared/run_command.dart';
 
 void runBuildRunner() {
-  log('🔨 Running build_runner...');
+  stdout.writeln('🔨 Running build_runner...');
   runCommand([
     'dart',
     'run',
@@ -10,5 +11,5 @@ void runBuildRunner() {
     'build',
     '--delete-conflicting-outputs',
   ]);
-  log('🔨 Code generation complete');
+  stdout.writeln('🔨 Code generation complete');
 }
