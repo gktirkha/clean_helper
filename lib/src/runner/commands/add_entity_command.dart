@@ -9,11 +9,11 @@ class AddEntityCommand extends Command<void> {
   @override
   String get description =>
       'Generate a domain entity and a freezed data model.\n'
-      'Usage: clean-helpers add_entity <feature|core> <entity_name> [folder]';
+      'Usage: clean-helpers add_entity <feature|core> <entity_name> [domain folder name]';
 
   @override
   String get invocation =>
-      '${runner?.executableName} $name <feature|core> <entity_name> [folder]';
+      '${runner?.executableName} $name <feature|core> <entity_name> [domain folder name]';
 
   @override
   void run() => addEntity(argResults!.rest);
