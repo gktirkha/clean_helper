@@ -72,7 +72,7 @@ analysis_options.yaml               (overwritten with project standard)
 **Runtime:**
 `flutter_bloc`, `go_router`, `get_it`, `injectable`, `freezed_annotation`,
 `fpdart`, `slang`, `slang_flutter`, `dio`, `retrofit`, `json_annotation`,
-`package_info_plus`, `flutter_svg`, `pretty_dio_logger`, `chucker_flutter` (git),
+`package_info_plus`, `flutter_svg`, `pretty_dio_logger` (git), `chucker_flutter` (git),
 `flutter_localizations` (SDK)
 
 **Dev:**

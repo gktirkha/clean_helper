@@ -68,7 +68,7 @@ What it does (in order):
 
 | Type | Packages |
 |------|----------|
-| Runtime | `flutter_bloc`, `go_router`, `get_it`, `injectable`, `freezed_annotation`, `fpdart`, `slang`, `slang_flutter`, `dio`, `retrofit`, `json_annotation`, `package_info_plus`, `flutter_svg`, `pretty_dio_logger`, `chucker_flutter`, `flutter_localizations` |
+| Runtime | `flutter_bloc`, `go_router`, `get_it`, `injectable`, `freezed_annotation`, `fpdart`, `slang`, `slang_flutter`, `dio`, `retrofit`, `json_annotation`, `package_info_plus`, `flutter_svg`, `pretty_dio_logger` (git), `chucker_flutter` (git), `flutter_localizations` |
 | Dev | `build_runner`, `injectable_generator`, `freezed`, `retrofit_generator`, `json_serializable`, `flutter_gen_runner` |
 
 ---
