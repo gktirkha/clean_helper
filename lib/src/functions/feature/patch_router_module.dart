@@ -12,9 +12,7 @@ void patchRouterModule(String feature) {
     return;
   }
 
-  var content = file.readAsStringSync();
-  final pascal = pascalCase(feature);
-  final camel = camelCase(feature);
+  final content = file.readAsStringSync();
   final importLine =
       "import '../../features/$feature/router/${feature}_router.dart';";
 
@@ -23,21 +21,46 @@ void patchRouterModule(String feature) {
     return;
   }
 
-  // Add import before app_go_router.dart import
-  content = content.replaceFirst(
-    "import 'app_go_router.dart';",
-    "$importLine\nimport 'app_go_router.dart';",
+  // Parse existing feature routers from imports
+  final importRegex = RegExp(
+    r"import '\.\.\/\.\.\/features\/(\w+)\/router\/\w+_router\.dart';",
   );
+  final existingFeatures =
+      importRegex.allMatches(content).map((m) => m.group(1)!).toList();
 
-  // Add router param before ) => AppGoRouter(
-  content = content.replaceFirst(
-    ') => AppGoRouter(',
-    ', ${pascal}Router ${camel}Router) => AppGoRouter(',
+  existingFeatures.add(feature);
+
+  file.writeAsStringSync(buildRouterModule(existingFeatures));
+  stdout.writeln('🔗 ${pascalCase(feature)}Router registered in $path');
+}
+
+String buildRouterModule(List<String> features) {
+  final imports =
+      features
+          .map((f) => "import '../../features/$f/router/${f}_router.dart';")
+          .join('\n');
+
+  final params = features
+      .map((f) => '${pascalCase(f)}Router ${camelCase(f)}Router')
+      .join(', ');
+
+  final routerList = features.map((f) => '${camelCase(f)}Router').join(', ');
+
+  return '''
+// GENERATED CODE — DO NOT EDIT MANUALLY
+// Managed by clean_helpers. Run `clean-helpers add_feature` to register new routers.
+
+import 'package:injectable/injectable.dart';
+
+$imports
+import 'app_go_router.dart';
+
+@module
+abstract class RouterModule {
+  @lazySingleton
+  AppGoRouter appGoRouter($params) => AppGoRouter(
+    routers: [$routerList]..sort((a, b) => a.priority.compareTo(b.priority)),
   );
-
-  // Add router to list before ]..sort
-  content = content.replaceFirst(']..sort', ', ${camel}Router]..sort');
-
-  file.writeAsStringSync(content);
-  stdout.writeln('🔗 ${pascal}Router registered in $path');
+}
+''';
 }

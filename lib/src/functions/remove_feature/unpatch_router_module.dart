@@ -1,6 +1,6 @@
 import 'dart:io';
 
-import '../shared/camel_case.dart';
+import '../feature/patch_router_module.dart' show buildRouterModule;
 import '../shared/pascal_case.dart';
 
 void unpatchRouterModule(String feature) {
@@ -12,9 +12,7 @@ void unpatchRouterModule(String feature) {
     return;
   }
 
-  var content = file.readAsStringSync();
-  final pascal = pascalCase(feature);
-  final camel = camelCase(feature);
+  final content = file.readAsStringSync();
   final importLine =
       "import '../../features/$feature/router/${feature}_router.dart';";
 
@@ -23,10 +21,16 @@ void unpatchRouterModule(String feature) {
     return;
   }
 
-  content = content.replaceFirst('$importLine\n', '');
-  content = content.replaceFirst(', ${pascal}Router ${camel}Router', '');
-  content = content.replaceFirst(', ${camel}Router', '');
+  // Parse existing feature routers and remove the target
+  final importRegex = RegExp(
+    r"import '\.\.\/\.\.\/features\/(\w+)\/router\/\w+_router\.dart';",
+  );
+  final remainingFeatures = importRegex
+      .allMatches(content)
+      .map((m) => m.group(1)!)
+      .where((f) => f != feature)
+      .toList();
 
-  file.writeAsStringSync(content);
-  stdout.writeln('🔗 ${pascal}Router removed from $path');
+  file.writeAsStringSync(buildRouterModule(remainingFeatures));
+  stdout.writeln('🔗 ${pascalCase(feature)}Router removed from $path');
 }
