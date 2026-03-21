@@ -16,6 +16,7 @@ void installDependencies() {
     'slang_flutter',
     'package_info_plus',
     'flutter_svg',
+    'json_annotation',
   ];
 
   final devDeps = [
@@ -23,6 +24,7 @@ void installDependencies() {
     'injectable_generator',
     'freezed',
     'flutter_gen_runner',
+    'json_serializable',
   ];
 
   runCommand([
