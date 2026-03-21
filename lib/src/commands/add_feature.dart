@@ -1,6 +1,8 @@
 import 'dart:io';
 
 import '../functions/feature/create_feature_structure.dart';
+import '../functions/init/run_build_runner.dart';
+import '../functions/init/run_dart_format.dart';
 import '../functions/shared/ensure_pubspec.dart';
 
 void addFeature(List<String> args) {
@@ -19,5 +21,8 @@ void addFeature(List<String> args) {
 
   stdout.writeln('🚀 Generating feature: $featureName');
   createFeatureStructure(basePath, featureName);
+  runBuildRunner();
+  runDartFormat();
+
   stdout.writeln('✅ Feature "$featureName" generated successfully!');
 }

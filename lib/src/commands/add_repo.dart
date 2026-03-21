@@ -1,5 +1,7 @@
 import 'dart:io';
 
+import '../functions/init/run_build_runner.dart';
+import '../functions/init/run_dart_format.dart';
 import '../functions/repo/generate_data_repo.dart';
 import '../functions/repo/generate_domain_repo.dart';
 import '../functions/shared/ensure_pubspec.dart';
@@ -38,6 +40,8 @@ void addRepo(List<String> args) {
 
   generateDomainRepo(domainDir, repoName);
   generateDataRepo(dataDir, repoName, domainToDataImport);
+  runBuildRunner();
+  runDartFormat();
 
   stdout.writeln('✅ Repository "$repoName" generated in $scope.');
 }
