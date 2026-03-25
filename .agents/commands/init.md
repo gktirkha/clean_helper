@@ -32,6 +32,11 @@ lib/
 ├── app/
 │   ├── bootstrap.dart
 │   ├── main_app.dart
+│   ├── di/
+│   │   ├── di_container.dart        (GetIt instance)
+│   │   ├── di_initializer.dart      (@InjectableInit)
+│   │   ├── di_keys.dart
+│   │   └── app_module.dart          (navigationKey, scaffoldMessengerKey)
 │   ├── navigations/
 │   │   └── home_navigation_impl.dart
 │   └── router/
@@ -39,10 +44,7 @@ lib/
 │       └── router_module.dart
 ├── core/
 │   ├── di/
-│   │   ├── di_container.dart        (GetIt instance)
-│   │   ├── di_initializer.dart      (@InjectableInit)
-│   │   ├── core_module.dart         (nav keys, PackageInfo)
-│   │   └── di_keys.dart
+│   │   └── core_module.dart         (PackageInfo)
 │   ├── router/
 │   │   ├── router_base.dart         (abstract interface RouterBase)
 │   │   └── router_refresh.dart      (GoRouterRefreshStream)
@@ -57,7 +59,7 @@ lib/
 │       └── flutter_gen/             (flutter_gen output)
 └── features/
     └── home/
-        ├── di/
+        ├── di/                      (only with --di flag)
         │   └── home_module.dart     (@module abstract class HomeModule)
         └── ...                      (see add_feature.md for full structure)
 assets/
