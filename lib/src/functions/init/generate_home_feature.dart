@@ -128,5 +128,12 @@ abstract class HomeState with _\$HomeState {
 }
 ''');
 
+  writeFile('$basePath/di/home_module.dart', '''
+import 'package:injectable/injectable.dart';
+
+@module
+abstract class HomeModule {}
+''');
+
   stdout.writeln('🏠 Home feature generated');
 }

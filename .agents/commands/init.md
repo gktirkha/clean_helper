@@ -56,7 +56,10 @@ lib/
 │       ├── locales/                 (slang output)
 │       └── flutter_gen/             (flutter_gen output)
 └── features/
-    └── home/                        (see add_feature.md for structure)
+    └── home/
+        ├── di/
+        │   └── home_module.dart     (@module abstract class HomeModule)
+        └── ...                      (see add_feature.md for full structure)
 assets/
 ├── locales/en.locale.json
 └── colors/colors.xml

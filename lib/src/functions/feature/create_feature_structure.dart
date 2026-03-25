@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'generate_feature_bloc.dart';
+import 'generate_feature_module.dart';
 import 'generate_feature_navigation.dart';
 import 'generate_feature_navigation_impl.dart';
 import 'generate_feature_page.dart';
@@ -14,6 +15,7 @@ void createFeatureStructure(String basePath, String featureName) {
     '$basePath/data/models/requests',
     '$basePath/data/models/response',
     '$basePath/data/repositories',
+    '$basePath/di',
     '$basePath/domain/entities',
     '$basePath/domain/repositories',
     '$basePath/domain/use_cases',
@@ -34,4 +36,5 @@ void createFeatureStructure(String basePath, String featureName) {
   generateFeaturePage(featureName, basePath);
   generateFeatureRouter(featureName, basePath);
   generateFeatureBloc(featureName, basePath);
+  generateFeatureModule(featureName, basePath);
 }

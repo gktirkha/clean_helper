@@ -33,6 +33,8 @@ lib/
     │   │   ├── requests/
     │   │   └── response/
     │   └── repositories/
+    ├── di/
+    │   └── auth_module.dart           (@module abstract class AuthModule)
     ├── domain/
     │   ├── entities/
     │   ├── repositories/
