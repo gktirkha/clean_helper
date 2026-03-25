@@ -83,7 +83,7 @@ Data models:
 
 - Config: `slang.yaml` at project root
 - Source: `assets/locales/en.locale.json`
-- Output: `lib/core/generated/locales/locales.g.dart`
+- Output: `lib/generated/locales/locales.g.dart`
 - Initialized in `bootstrap.dart` via `LocaleSettings.useDeviceLocale()`
 - Wrapped in `TranslationProvider` in `MainApp`
 
@@ -92,6 +92,6 @@ Data models:
 ## Asset Generation — flutter_gen
 
 - Config: `build.yaml` at project root
-- Output: `lib/core/generated/flutter_gen/`
+- Output: `lib/generated/flutter_gen/`
 - Colors sourced from `assets/colors/colors.xml`
 - SVG integration enabled

@@ -22,7 +22,7 @@ No arguments required.
 Runs `dart run slang` in the current Flutter project to regenerate locale files from source JSON.
 
 - Source: `assets/locales/en.locale.json`
-- Output: `lib/core/generated/locales/locales.g.dart`
+- Output: `lib/generated/locales/locales.g.dart`
 - Config: `slang.yaml` at project root
 
 ---

@@ -9,7 +9,7 @@ targets:
     builders:
       flutter_gen_runner:
         options:
-          output: lib/core/generated/flutter_gen
+          output: lib/generated/flutter_gen
           integrations:
             flutter_svg: true
 

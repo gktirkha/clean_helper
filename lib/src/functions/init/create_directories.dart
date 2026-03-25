@@ -8,8 +8,8 @@ void createDirectories() {
     'lib/app/di',
     'lib/core/di',
     'lib/core/router',
-    'lib/core/generated/locales',
-    'lib/core/generated/flutter_gen',
+    'lib/generated/locales',
+    'lib/generated/flutter_gen',
     'assets/locales',
     'assets/colors',
     // network

@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 
 import 'di/di_container.dart';
-import '../core/generated/locales/locales.g.dart';
+import '../generated/locales/locales.g.dart';
 import 'router/app_go_router.dart';
 
 class MainApp extends StatelessWidget {

@@ -254,7 +254,7 @@ Scans `lib/features/` for any feature that has a `router/<feature>_router.dart` 
 clean-helper generate_localizations
 ```
 
-Runs `dart run slang` to regenerate `lib/core/generated/locales/locales.g.dart` from `assets/locales/en.locale.json`.
+Runs `dart run slang` to regenerate `lib/generated/locales/locales.g.dart` from `assets/locales/en.locale.json`.
 
 ---
 
@@ -309,12 +309,12 @@ Every feature BLoC:
 
 - Config: `slang.yaml` at project root
 - Source: `assets/locales/en.locale.json`
-- Output: `lib/core/generated/locales/locales.g.dart`
+- Output: `lib/generated/locales/locales.g.dart`
 
 ### Asset Generation — `flutter_gen`
 
 - Config: `build.yaml` at project root
-- Output: `lib/core/generated/flutter_gen/`
+- Output: `lib/generated/flutter_gen/`
 - Colors sourced from `assets/colors/colors.xml`
 
 ---

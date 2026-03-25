@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 
 import 'di/di_container.dart';
 import 'di/di_initializer.dart';
-import '../core/generated/locales/locales.g.dart';
+import '../generated/locales/locales.g.dart';
 import 'main_app.dart';
 
 Future<void> bootstrap() async {
