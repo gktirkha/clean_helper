@@ -65,9 +65,9 @@ class ErrorInterceptor extends Interceptor {
       return;
     }
 
-    final errorList = ErrorModel.fromJson(data);
+    final errorModel = ErrorModel.fromJson(data);
 
-    if (errorList.errors.isEmpty) {
+    if (errorModel.errors.isEmpty) {
       handler.next(err);
       return;
     }
@@ -76,7 +76,7 @@ class ErrorInterceptor extends Interceptor {
       err.copyWith(
         response: Response(
           requestOptions: response.requestOptions,
-          data: errorList,
+          data: errorModel,
           statusCode: response.statusCode,
           statusMessage: response.statusMessage,
           headers: response.headers,
