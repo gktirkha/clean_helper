@@ -23,7 +23,5 @@ void addAuthInterceptor() {
   stdout.writeln(
     '  1. Fill in the TODOs in lib/core/network/interceptors/auth_interceptor.dart',
   );
-  stdout.writeln(
-    '  2. Run: clean-helper build_runner build',
-  );
+  stdout.writeln('  2. Run: clean-helper build_runner build');
 }

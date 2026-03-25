@@ -10,6 +10,13 @@ class InitCommand extends Command<void> {
       negatable: false,
       help: 'Also set up the network layer (Dio, Retrofit, Chucker).',
     );
+    argParser.addFlag(
+      'di',
+      abbr: 'd',
+      negatable: false,
+      help:
+          'Also generate a di/home_di.dart injectable di for the home feature.',
+    );
   }
 
   @override
@@ -20,5 +27,8 @@ class InitCommand extends Command<void> {
       'Scaffold a Flutter clean architecture project in the current directory.';
 
   @override
-  void run() => runInit(withNetwork: argResults!['network'] as bool);
+  void run() => runInit(
+    withNetwork: argResults!['network'] as bool,
+    withDi: argResults!['di'] as bool,
+  );
 }

@@ -5,7 +5,7 @@ import '../functions/feature/patch_router_module.dart';
 import '../functions/init/run_dart_format.dart';
 import '../functions/shared/ensure_pubspec.dart';
 
-void addFeature(List<String> args) {
+void addFeature(List<String> args, {bool withDi = false}) {
   ensurePubspec();
 
   if (args.isEmpty) {
@@ -20,7 +20,7 @@ void addFeature(List<String> args) {
   final basePath = 'lib/features/$featureName';
 
   stdout.writeln('🚀 Generating feature: $featureName');
-  createFeatureStructure(basePath, featureName);
+  createFeatureStructure(basePath, featureName, withDi: withDi);
   patchRouterModule(featureName);
   runDartFormat();
 

@@ -33,7 +33,6 @@ void createDirectories() {
     'lib/features/home/presentation/pages',
     'lib/features/home/presentation/widgets',
     'lib/features/home/router',
-    'lib/features/home/di',
   ];
 
   for (final dir in dirs) {

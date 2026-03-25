@@ -26,8 +26,10 @@ void patchRouterModule(String feature) {
   final importRegex = RegExp(
     r"import '\.\.\/\.\.\/features\/(\w+)\/router\/\w+_router\.dart';",
   );
-  final existingFeatures =
-      importRegex.allMatches(content).map((m) => m.group(1)!).toList();
+  final existingFeatures = importRegex
+      .allMatches(content)
+      .map((m) => m.group(1)!)
+      .toList();
 
   existingFeatures.add(feature);
 
@@ -36,10 +38,9 @@ void patchRouterModule(String feature) {
 }
 
 String buildRouterModule(List<String> features) {
-  final imports =
-      features
-          .map((f) => "import '../../features/$f/router/${f}_router.dart';")
-          .join('\n');
+  final imports = features
+      .map((f) => "import '../../features/$f/router/${f}_router.dart';")
+      .join('\n');
 
   final params = features
       .map((f) => '${pascalCase(f)}Router ${camelCase(f)}Router')

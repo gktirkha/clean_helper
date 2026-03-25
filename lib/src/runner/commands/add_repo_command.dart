@@ -7,7 +7,8 @@ class AddRepoCommand extends Command<void> {
   String get name => 'add_repo';
 
   @override
-  String get description => 'Generate a repository interface (domain) and implementation (data).';
+  String get description =>
+      'Generate a repository interface (domain) and implementation (data).';
 
   @override
   String get invocation =>

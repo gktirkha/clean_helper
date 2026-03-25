@@ -8,14 +8,18 @@ import 'generate_feature_page.dart';
 import 'generate_feature_router.dart';
 import 'generate_feature_routes.dart';
 
-void createFeatureStructure(String basePath, String featureName) {
+void createFeatureStructure(
+  String basePath,
+  String featureName, {
+  bool withDi = false,
+}) {
   final directories = [
     '$basePath/data/constants',
     '$basePath/data/datasources',
     '$basePath/data/models/requests',
     '$basePath/data/models/response',
     '$basePath/data/repositories',
-    '$basePath/di',
+    if (withDi) '$basePath/di',
     '$basePath/domain/entities',
     '$basePath/domain/repositories',
     '$basePath/domain/use_cases',
@@ -36,5 +40,5 @@ void createFeatureStructure(String basePath, String featureName) {
   generateFeaturePage(featureName, basePath);
   generateFeatureRouter(featureName, basePath);
   generateFeatureBloc(featureName, basePath);
-  generateFeatureModule(featureName, basePath);
+  if (withDi) generateFeatureModule(featureName, basePath);
 }

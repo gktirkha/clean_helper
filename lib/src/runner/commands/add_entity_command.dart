@@ -7,7 +7,8 @@ class AddEntityCommand extends Command<void> {
   String get name => 'add_entity';
 
   @override
-  String get description => 'Generate a domain entity and a freezed data model.';
+  String get description =>
+      'Generate a domain entity and a freezed data model.';
 
   @override
   String get invocation =>

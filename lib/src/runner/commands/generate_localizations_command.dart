@@ -7,7 +7,8 @@ class GenerateLocalizationsCommand extends Command<void> {
   String get name => 'generate_localizations';
 
   @override
-  String get description => 'Generate locales using slang in the current Flutter project.';
+  String get description =>
+      'Generate locales using slang in the current Flutter project.';
 
   @override
   void run() => runGenerateLocalizationsCommand(argResults!.rest);

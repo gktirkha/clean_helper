@@ -2,7 +2,7 @@ import 'dart:io';
 
 import '../shared/write_file.dart';
 
-void generateHomeFeature(String packageName) {
+void generateHomeFeature(String packageName, {bool withDi = false}) {
   const basePath = 'lib/features/home';
 
   writeFile('$basePath/router/home_routes.dart', '''
@@ -128,12 +128,15 @@ abstract class HomeState with _\$HomeState {
 }
 ''');
 
-  writeFile('$basePath/di/home_module.dart', '''
+  if (withDi) {
+    Directory('$basePath/di').createSync(recursive: true);
+    writeFile('$basePath/di/home_module.dart', '''
 import 'package:injectable/injectable.dart';
 
 @module
 abstract class HomeModule {}
 ''');
+  }
 
   stdout.writeln('🏠 Home feature generated');
 }

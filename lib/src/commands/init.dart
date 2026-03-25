@@ -14,7 +14,7 @@ import '../functions/shared/ensure_pubspec.dart';
 import '../functions/shared/read_package_name.dart';
 import 'add_network_module.dart';
 
-void runInit({bool withNetwork = false}) {
+void runInit({bool withNetwork = false, bool withDi = false}) {
   ensurePubspec();
 
   final packageName = readPackageName();
@@ -26,7 +26,7 @@ void runInit({bool withNetwork = false}) {
   generateLocalizationFiles();
   generateFlutterGenFiles();
   generateCoreFiles(packageName);
-  generateHomeFeature(packageName);
+  generateHomeFeature(packageName, withDi: withDi);
   installDependencies();
   addFlutterAssetsToPubSpec();
   if (withNetwork) addNetworkModule();
