@@ -11,7 +11,7 @@ import 'dart:async';
 import 'package:dio/dio.dart';
 import 'package:injectable/injectable.dart';
 
-import '../../../core/di/di_keys.dart';
+import '../../di/di_keys.dart';
 
 @lazySingleton
 class AuthInterceptor extends Interceptor {

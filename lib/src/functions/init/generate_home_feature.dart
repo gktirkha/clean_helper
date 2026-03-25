@@ -43,7 +43,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:injectable/injectable.dart';
 
-import '../../../../core/router/router_base.dart';
+import '../../../core/router/router_base.dart';
 import '../presentation/pages/home_page.dart';
 import 'home_navigation.dart';
 import 'home_routes.dart';

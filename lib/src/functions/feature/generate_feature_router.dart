@@ -14,7 +14,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:injectable/injectable.dart';
 
-import '../../../../core/router/router_base.dart';
+import '../../../core/router/router_base.dart';
 import '../presentation/pages/${feature}_page.dart';
 import '${feature}_navigation.dart';
 import '${feature}_routes.dart';
