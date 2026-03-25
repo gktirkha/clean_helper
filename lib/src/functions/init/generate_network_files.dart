@@ -54,6 +54,7 @@ class ErrorInterceptor extends Interceptor {
 
     final data = response.data;
 
+    // TODO: Add Check if it is your standard error or not and convert to your Error model
     final isValidErrorResponse =
         data is Map<String, dynamic> &&
         data.containsKey('errors') &&
