@@ -32,9 +32,9 @@ void patchNetworkModule() {
       RegExp(r'(@lazySingleton\s+Dio dio\()'),
       '@lazySingleton\n  Dio dio(\n    AuthInterceptor authInterceptor,',
     );
-    content = content.replaceFirst(
-      RegExp(r'(\.\.interceptors\.addAll\(\[)(\s+)(prettyDioLogger,)'),
-      '..interceptors.addAll([\n      authInterceptor,\n      prettyDioLogger,',
+    content = content.replaceFirstMapped(
+      RegExp(r'(\.\.interceptors\.addAll\(\[)(\s*)'),
+      (m) => '${m[1]}${m[2]}authInterceptor,${m[2]}',
     );
     changed = true;
   }
