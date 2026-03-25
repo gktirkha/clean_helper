@@ -4,7 +4,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../core/di/di_container.dart';
+import '../di/di_container.dart';
 import '../../core/router/router_base.dart';
 import '../../core/router/router_refresh.dart';
 import '../../features/home/router/home_routes.dart';

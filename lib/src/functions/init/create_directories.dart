@@ -5,6 +5,7 @@ void createDirectories() {
     // core
     'lib/app/router',
     'lib/app/navigations',
+    'lib/app/di',
     'lib/core/di',
     'lib/core/router',
     'lib/core/generated/locales',

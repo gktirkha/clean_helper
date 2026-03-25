@@ -18,7 +18,7 @@ No arguments. Must be run from the Flutter project root. Idempotent — skips fi
 ## What It Does
 
 1. **Creates** `lib/core/network/interceptors/auth_interceptor.dart`
-2. **Patches** `lib/core/di/di_keys.dart` — adds `noAuthDio` constant
+2. **Patches** `lib/app/di/di_keys.dart` — adds `noAuthDio` constant
 3. **Patches** `lib/core/network/di/network_module.dart`:
    - Adds `AuthInterceptor` and `DIKeys` imports
    - Wires `AuthInterceptor` as the first interceptor in the main `Dio` provider

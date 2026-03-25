@@ -2,7 +2,7 @@ String mainAppDartTemplate(String pkg) => '''
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 
-import '../core/di/di_container.dart';
+import 'di/di_container.dart';
 import '../core/generated/locales/locales.g.dart';
 import 'router/app_go_router.dart';
 

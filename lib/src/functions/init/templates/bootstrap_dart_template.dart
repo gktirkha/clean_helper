@@ -1,8 +1,8 @@
 String bootstrapDartTemplate(String pkg) => '''
 import 'package:flutter/material.dart';
 
-import '../core/di/di_container.dart';
-import '../core/di/di_initializer.dart';
+import 'di/di_container.dart';
+import 'di/di_initializer.dart';
 import '../core/generated/locales/locales.g.dart';
 import 'main_app.dart';
 

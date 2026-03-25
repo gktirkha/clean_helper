@@ -27,7 +27,7 @@ Feature
 | `@module` | Provides third-party or platform instances |
 | `@preResolve` | Awaited before app starts (e.g. PackageInfo) |
 
-`GetIt` instance lives in `lib/core/di/di_container.dart`.
+`GetIt` instance lives in `lib/app/di/di_container.dart`.
 `@InjectableInit` bootstraps everything via `diInitializer(diContainer)` in `bootstrap.dart`.
 
 ---

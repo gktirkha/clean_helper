@@ -32,11 +32,11 @@ void generateCoreFiles(String packageName) {
     'lib/app/router/router_module.dart',
     routerModuleTemplate(packageName),
   );
-  writeFile('lib/core/di/di_container.dart', diContainerTemplate());
+  writeFile('lib/app/di/di_container.dart', diContainerTemplate());
+  writeFile('lib/app/di/di_initializer.dart', diInitializerTemplate());
+  writeFile('lib/app/di/di_keys.dart', diKeysTemplate());
   writeFile('lib/core/di/core_module.dart', coreModuleTemplate());
-  writeFile('lib/core/di/di_initializer.dart', diInitializerTemplate());
   writeFile('lib/core/router/router_base.dart', routerBaseTemplate());
   writeFile('lib/core/router/router_refresh.dart', routerRefreshTemplate());
-  writeFile('lib/core/di/di_keys.dart', diKeysTemplate());
   stdout.writeln('⚙️  Core files generated');
 }

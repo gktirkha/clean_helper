@@ -3,7 +3,7 @@ import 'dart:io';
 import '../shared/write_file.dart';
 
 void patchDiKeys() {
-  const path = 'lib/core/di/di_keys.dart';
+  const path = 'lib/app/di/di_keys.dart';
   final file = File(path);
 
   if (!file.existsSync()) {
