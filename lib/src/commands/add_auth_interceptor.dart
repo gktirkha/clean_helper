@@ -3,6 +3,7 @@ import 'dart:io';
 import '../functions/auth_interceptor/generate_auth_interceptor.dart';
 import '../functions/auth_interceptor/patch_di_keys.dart';
 import '../functions/auth_interceptor/patch_network_module.dart';
+import '../functions/init/run_build_runner.dart';
 import '../functions/init/run_dart_format.dart';
 import '../functions/shared/ensure_pubspec.dart';
 
@@ -15,6 +16,7 @@ void addAuthInterceptor() {
   patchDiKeys();
   patchNetworkModule();
   runDartFormat();
+  runBuildRunner();
 
   stdout.writeln();
   stdout.writeln('✅ Auth interceptor scaffold generated.');
@@ -23,5 +25,4 @@ void addAuthInterceptor() {
   stdout.writeln(
     '  1. Fill in the TODOs in lib/core/network/interceptors/auth_interceptor.dart',
   );
-  stdout.writeln('  2. Run: clean-helper build_runner build');
 }

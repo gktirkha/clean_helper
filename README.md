@@ -114,7 +114,7 @@ lib/
         └── auth_router.dart           (@lazySingleton, implements RouterBase)
 ```
 
-The new feature router is **automatically registered** in `lib/app/router/router_module.dart`.
+The new feature router is **automatically registered** in `lib/app/router/router_module.dart`. `build_runner` runs automatically at the end.
 
 ---
 
@@ -140,11 +140,7 @@ data/
   repositories/invoice_repository_impl.dart   (@Singleton, implements InvoiceRepository)
 ```
 
-All internal imports use relative paths. After generating, run build_runner:
-
-```bash
-clean-helper build_runner build
-```
+All internal imports use relative paths. `build_runner` runs automatically at the end.
 
 ---
 
@@ -176,11 +172,7 @@ sealed class InvoiceModel with _$InvoiceModel implements InvoiceEntity {
 }
 ```
 
-After generating, run build_runner:
-
-```bash
-clean-helper build_runner build
-```
+`build_runner` runs automatically at the end.
 
 ---
 
@@ -201,11 +193,7 @@ Run this **after** `add_network_module`. Idempotent — skips anything already p
    - Wires `AuthInterceptor` as the first interceptor in the main `Dio` provider
    - Adds a `noAuthDio` provider (Dio **without** `AuthInterceptor`) used by `AuthInterceptor` internally to prevent infinite refresh loops
 
-After generating, fill in the TODOs in `auth_interceptor.dart` and run:
-
-```bash
-clean-helper build_runner build
-```
+`build_runner` runs automatically at the end. Fill in the TODOs in `auth_interceptor.dart` afterwards.
 
 ---
 
@@ -215,7 +203,7 @@ clean-helper build_runner build
 clean-helper add_network_module
 ```
 
-Generates Dio + Retrofit network files, installs network dependencies (including `chucker_flutter`), and patches `AppGoRouter`.
+Generates Dio + Retrofit network files, installs network dependencies (including `chucker_flutter`), patches `AppGoRouter`, and runs `build_runner` automatically.
 
 ---
 

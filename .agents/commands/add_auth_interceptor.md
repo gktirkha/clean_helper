@@ -70,7 +70,12 @@ Inserts `static const String noAuthDio = 'noAuthDio';` into the existing `DIKeys
 
 ---
 
+## Post-generation
+
+`build_runner` runs automatically at the end of this command — no manual step needed.
+
+---
+
 ## Next steps after generating
 
 1. Fill in the TODOs in `auth_interceptor.dart` (token storage reads/writes, refresh endpoint call)
-2. Run `clean-helper build_runner build`

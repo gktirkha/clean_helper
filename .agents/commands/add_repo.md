@@ -166,8 +166,14 @@ No `package:` imports are used for internal project files — all cross-file imp
 
 ---
 
+## Post-generation
+
+`build_runner` runs automatically at the end of this command — no manual step needed.
+
+---
+
 ## Next steps after generating
 
 1. Replace the placeholder path in `data/constants/home_api_paths.dart`
-2. Add fields to the request/response models and run `build_runner`
+2. Add fields to the request/response models
 3. Add more methods to datasource base, rest datasource, and repository as needed

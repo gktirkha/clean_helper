@@ -2,6 +2,7 @@ import 'dart:io';
 
 import '../functions/feature/create_feature_structure.dart';
 import '../functions/feature/patch_router_module.dart';
+import '../functions/init/run_build_runner.dart';
 import '../functions/init/run_dart_format.dart';
 import '../functions/shared/ensure_pubspec.dart';
 
@@ -23,6 +24,7 @@ void addFeature(List<String> args, {bool withDi = false}) {
   createFeatureStructure(basePath, featureName, withDi: withDi);
   patchRouterModule(featureName);
   runDartFormat();
+  runBuildRunner();
 
   stdout.writeln('✅ Feature "$featureName" generated successfully!');
 }

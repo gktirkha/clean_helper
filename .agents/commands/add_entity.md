@@ -71,5 +71,4 @@ sealed class InvoiceModel with _$InvoiceModel implements InvoiceEntity {
 }
 ```
 
-Run `dart run build_runner build --delete-conflicting-outputs` after generating to produce
-the `.freezed.dart` and `.g.dart` files.
+`build_runner` runs automatically at the end of this command — no manual step needed.

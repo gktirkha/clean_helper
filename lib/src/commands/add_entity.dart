@@ -2,6 +2,7 @@ import 'dart:io';
 
 import '../functions/entity/generate_entity_file.dart';
 import '../functions/entity/generate_model_file.dart';
+import '../functions/init/run_build_runner.dart';
 import '../functions/init/run_dart_format.dart';
 import '../functions/shared/ensure_pubspec.dart';
 
@@ -41,6 +42,7 @@ void addEntity(List<String> args) {
   generateEntityFile(entityDir, entityName);
   generateModelFile(modelDir, entityName, entityToModelImport);
   runDartFormat();
+  runBuildRunner();
 
   stdout.writeln('✅ Entity "$entityName" generated in $scope.');
 }

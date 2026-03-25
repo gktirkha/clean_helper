@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import '../functions/entity/generate_entity_file.dart';
+import '../functions/init/run_build_runner.dart';
 import '../functions/init/run_dart_format.dart';
 import '../functions/repo/generate_api_paths.dart';
 import '../functions/repo/generate_data_repo.dart';
@@ -51,6 +52,7 @@ void addRepo(List<String> args) {
   generateDataRepo(dataDir, repoName);
 
   runDartFormat();
+  runBuildRunner();
 
   stdout.writeln();
   stdout.writeln(
@@ -70,8 +72,5 @@ void addRepo(List<String> args) {
   stdout.writeln('  4. Add fields to the request/response models.');
   stdout.writeln(
     '  5. Implement repository methods in $dataDir/repositories/${repoName}_repository_impl.dart',
-  );
-  stdout.writeln(
-    '  6. Run: fvm dart run build_runner build --delete-conflicting-outputs',
   );
 }

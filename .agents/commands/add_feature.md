@@ -58,3 +58,9 @@ lib/
 ## Router Registration
 
 The new feature's router is **automatically registered** in `lib/app/router/router_module.dart` by `patchRouterModule(featureName)`. No manual step is required.
+
+---
+
+## Post-generation
+
+`build_runner` runs automatically at the end of this command — no manual step needed.
