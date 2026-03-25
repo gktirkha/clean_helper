@@ -196,7 +196,7 @@ Run this **after** `add_network_module`. Idempotent — skips anything already p
    - `onRequest`: attach Bearer token from storage (TODO to implement)
    - `onError`: on 401, refresh the token and retry the original request
    - Refresh deduplication — concurrent 401s share a single refresh call
-2. Patches `lib/app/di/di_keys.dart` — adds `DIKeys.noAuthDio` constant
+2. Patches `lib/core/di/di_keys.dart` — adds `DIKeys.noAuthDio` constant
 3. Patches `lib/core/network/di/network_module.dart`:
    - Wires `AuthInterceptor` as the first interceptor in the main `Dio` provider
    - Adds a `noAuthDio` provider (Dio **without** `AuthInterceptor`) used by `AuthInterceptor` internally to prevent infinite refresh loops

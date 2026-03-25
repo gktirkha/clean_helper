@@ -15,7 +15,7 @@ void patchNetworkModule() {
   var changed = false;
 
   const authImport = "import '../interceptors/auth_interceptor.dart';";
-  const diKeysImport = "import '../../../app/di/di_keys.dart';";
+  const diKeysImport = "import '../../../core/di/di_keys.dart';";
 
   if (!content.contains('auth_interceptor.dart')) {
     content = insertAfterLastImport(content, authImport);
