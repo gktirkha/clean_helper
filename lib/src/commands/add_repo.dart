@@ -28,8 +28,12 @@ void addRepo(List<String> args) {
   final domainDir = 'lib/features/$feature/domain/repositories';
   final entitiesDir = 'lib/features/$feature/domain/entities';
 
+  final hasNetworkModule = File(
+    'lib/core/network/di/network_module.dart',
+  ).existsSync();
+
   for (final dir in [
-    '$dataDir/constants',
+    if (hasNetworkModule) '$dataDir/constants',
     '$dataDir/datasources',
     '$dataDir/models/requests',
     '$dataDir/models/response',
@@ -44,12 +48,19 @@ void addRepo(List<String> args) {
 
   generateEntityFile(entitiesDir, repoName);
   generateDomainRepo(domainDir, repoName);
-  generateApiPaths(dataDir, feature, repoName);
   generateDataSourceBase(dataDir, repoName);
-  generateRestDataSource(dataDir, feature, repoName);
   generateRequestModel(dataDir, repoName);
   generateResponseModel(dataDir, repoName);
   generateDataRepo(dataDir, repoName);
+
+  if (hasNetworkModule) {
+    generateApiPaths(dataDir, feature, repoName);
+    generateRestDataSource(dataDir, feature, repoName);
+  } else {
+    stdout.writeln(
+      '  ⚠️  Network module not found — skipping REST datasource and API paths.',
+    );
+  }
 
   runDartFormat();
   runBuildRunner();
@@ -61,16 +72,23 @@ void addRepo(List<String> args) {
   stdout.writeln();
   stdout.writeln('Next steps:');
   stdout.writeln(
-    '  1. Add your endpoint paths to $dataDir/constants/${feature}_api_paths.dart',
+    '  1. Add method signatures to $dataDir/datasources/${repoName}_data_source_base.dart',
   );
-  stdout.writeln(
-    '  2. Add method signatures to $dataDir/datasources/${repoName}_data_source_base.dart',
-  );
-  stdout.writeln(
-    '  3. Add @GET/@POST methods to $dataDir/datasources/rest_${repoName}_data_source.dart',
-  );
-  stdout.writeln('  4. Add fields to the request/response models.');
-  stdout.writeln(
-    '  5. Implement repository methods in $dataDir/repositories/${repoName}_repository_impl.dart',
-  );
+  if (hasNetworkModule) {
+    stdout.writeln(
+      '  2. Add your endpoint paths to $dataDir/constants/${feature}_api_paths.dart',
+    );
+    stdout.writeln(
+      '  3. Add @GET/@POST methods to $dataDir/datasources/rest_${repoName}_data_source.dart',
+    );
+    stdout.writeln('  4. Add fields to the request/response models.');
+    stdout.writeln(
+      '  5. Implement repository methods in $dataDir/repositories/${repoName}_repository_impl.dart',
+    );
+  } else {
+    stdout.writeln('  2. Add fields to the request/response models.');
+    stdout.writeln(
+      '  3. Implement repository methods in $dataDir/repositories/${repoName}_repository_impl.dart',
+    );
+  }
 }
