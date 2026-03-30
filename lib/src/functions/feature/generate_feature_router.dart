@@ -1,36 +1,34 @@
 import 'dart:io';
 
-import '../shared/camel_case.dart';
 import '../shared/pascal_case.dart';
 
 void generateFeatureRouter(String feature, String basePath) {
   final className = pascalCase(feature);
-  final camel = camelCase(feature);
   final content =
       '''
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:injectable/injectable.dart';
 
+import '../../../app/di/di_container.dart';
 import '../../../core/router/router_base.dart';
+import '../presentation/bloc/$feature/${feature}_bloc.dart';
 import '../presentation/pages/${feature}_page.dart';
-import '${feature}_navigation.dart';
 import '${feature}_routes.dart';
 
 @lazySingleton
 class ${className}Router implements RouterBase {
-  ${className}Router({required ${className}Navigation ${camel}Navigation})
-    : _${camel}Navigation = ${camel}Navigation;
-
-  final ${className}Navigation _${camel}Navigation;
-
   @override
   List<RouteBase> get routes => [
     GoRoute(
       path: ${className}Routes.$feature,
-      builder: (context, state) => ${className}Page(navigation: _${camel}Navigation),
+      builder: (context, state) => BlocProvider<${className}Bloc>(
+        create: (context) => diContainer(),
+        child: ${className}Page(navigation: diContainer()),
+      ),
     ),
   ];
 
