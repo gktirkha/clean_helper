@@ -16,7 +16,7 @@ routing, DI, BLoC state management, and all required dependencies in one command
 | `clean-helper add_network_module` | Set up the network layer (Dio, Retrofit, Chucker) |
 | `clean-helper add_auth_interceptor` | Scaffold AuthInterceptor with token refresh and wire into NetworkModule |
 | `clean-helper add_feature <name>` | Add a new feature with clean architecture structure |
-| `clean-helper add_repo <feature> <name>` | Generate the full data layer for a repository (entity, domain repo, datasources, models, repo impl) |
+| `clean-helper add_repo <feature> <name>` | Generate the full data layer for a repository |
 | `clean-helper add_entity <scope> <name> [folder]` | Add an entity (domain) + freezed model (data) |
 | `clean-helper build_runner [clean\|build\|watch]` | Run build_runner in the current project (default: build) |
 | `clean-helper remove_feature <name>` | Remove a feature and deregister its router |
@@ -34,16 +34,17 @@ Activate it once with: `clean-helper install-completion-files`
 ## Public API
 
 `lib/clean_helper.dart` exports **only the command files**.
-Function files are internal — never export them from the library.
+Function and template files are internal — never export them from the library.
 
 ```dart
+export 'src/commands/add_auth_interceptor.dart';
 export 'src/commands/add_entity.dart';
 export 'src/commands/add_feature.dart';
 export 'src/commands/add_network_module.dart';
 export 'src/commands/add_repo.dart';
 export 'src/commands/build_runner.dart';
-export 'src/commands/init.dart';
-export 'src/commands/remove_feature.dart';
-export 'src/commands/regenerate_router.dart';
 export 'src/commands/generate_localizations.dart';
+export 'src/commands/init.dart';
+export 'src/commands/regenerate_router.dart';
+export 'src/commands/remove_feature.dart';
 ```

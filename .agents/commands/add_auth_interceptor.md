@@ -11,71 +11,61 @@
 clean-helper add_auth_interceptor
 ```
 
-No arguments. Must be run from the Flutter project root. Idempotent — skips files/patches that already exist.
+No arguments. Must be run from the Flutter project root after `add_network_module`.
+Idempotent — skips files/patches that already exist.
 
 ---
 
-## What It Does
+## What It Does (in order)
 
-1. **Creates** `lib/core/network/interceptors/auth_interceptor.dart`
-2. **Patches** `lib/core/di/di_keys.dart` — adds `noAuthDio` constant
-3. **Patches** `lib/core/network/di/network_module.dart`:
-   - Adds `AuthInterceptor` and `DIKeys` imports
-   - Wires `AuthInterceptor` as the first interceptor in the main `Dio` provider
-   - Adds a `noAuthDio` provider (Dio without `AuthInterceptor`, used internally by `AuthInterceptor` for token refresh to prevent infinite loops)
+1. `generateAuthInterceptor()` — creates `lib/core/network/interceptors/auth_interceptor.dart`
+2. `patchDiKeys()` — adds `noAuthDio` constant to `lib/core/di/di_keys.dart` (creates file if missing)
+3. `patchNetworkModule()` — wires `AuthInterceptor` + `noAuthDio` into `lib/core/network/di/network_module.dart`
 
 ---
 
 ## Generated: auth_interceptor.dart
 
-```dart
-@lazySingleton
-class AuthInterceptor extends Interceptor {
-  AuthInterceptor({@Named(DIKeys.noAuthDio) required Dio noAuthDio})
-      : _dio = noAuthDio;
-  ...
-}
-```
+Template: `lib/src/templates/auth_interceptor_template.dart`
 
 Key behaviour:
-- `onRequest` — attach Bearer token from storage (TODO to implement)
-- `onError` — on 401, call `_refreshToken()`, retry the original request with the new token
+- `onRequest` — attaches Bearer token (TODO to implement storage read)
+- `onError` — on 401, calls `_refreshToken()`, retries the original request with new token
 - `_refreshToken()` — deduplicates concurrent refresh calls using `_isRefreshing` + `_refreshFuture`
-- Uses `_dio` (the `noAuthDio` instance) for the refresh call to avoid triggering itself
+- Uses `_dio` (the `noAuthDio` instance) for the refresh call to avoid infinite loops
 
 ---
 
 ## Patched: di_keys.dart
 
-Inserts `static const String noAuthDio = 'noAuthDio';` into the existing `DIKeys` sealed class, or creates the file if it doesn't exist.
+Template (when creating new): `lib/src/templates/di_keys_no_auth_template.dart`
+
+Inserts `static const String noAuthDio = 'noAuthDio';` into the existing `DIKeys` sealed class,
+or creates the file with the constant if it doesn't exist.
 
 ---
 
 ## Patched: network_module.dart
 
-- Adds `AuthInterceptor authInterceptor` as a parameter to `dio()`
-- Inserts `authInterceptor` as the first entry in `dio()`'s interceptors list
-- Adds a new `noAuthDio()` provider annotated `@Named(DIKeys.noAuthDio)` with all interceptors except `AuthInterceptor`
+Template for new method: `lib/src/templates/no_auth_dio_method_template.dart`
 
----
-
-## Helper files
-
-| File | Function |
-|------|----------|
-| `functions/auth_interceptor/generate_auth_interceptor.dart` | `generateAuthInterceptor()` |
-| `functions/auth_interceptor/patch_di_keys.dart` | `patchDiKeys()` |
-| `functions/auth_interceptor/patch_network_module.dart` | `patchNetworkModule()` |
-| `functions/shared/insert_after_last_import.dart` | `insertAfterLastImport()` |
+- Adds `auth_interceptor.dart` and `di_keys.dart` imports
+- Adds `AuthInterceptor authInterceptor` parameter to `dio()`
+- Inserts `authInterceptor` as first entry in `dio()`'s interceptors list
+- Adds `noAuthDio()` provider annotated `@Named(DIKeys.noAuthDio)` — Dio without AuthInterceptor
 
 ---
 
 ## Post-generation
 
-`build_runner` runs automatically at the end of this command — no manual step needed.
+`build_runner` runs automatically — no manual step needed.
 
 ---
 
-## Next steps after generating
+## Next steps
 
-1. Fill in the TODOs in `auth_interceptor.dart` (token storage reads/writes, refresh endpoint call)
+1. Fill in the TODOs in `auth_interceptor.dart`:
+   - Read access token from storage in `_addAuthHeader()`
+   - POST to token refresh endpoint in `_performRefresh()`
+   - Save new tokens to storage
+   - Clear tokens on refresh failure

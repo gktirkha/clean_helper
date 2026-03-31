@@ -10,6 +10,7 @@
 ```bash
 clean-helper add_feature auth
 clean-helper add_feature user_profile
+clean-helper add_feature auth --di    # also generate DI module
 ```
 
 Feature name must be **snake_case**. It is used as-is for file/directory names and converted to
@@ -33,7 +34,7 @@ lib/
     │   │   ├── requests/
     │   │   └── response/
     │   └── repositories/
-    ├── di/
+    ├── di/                            (only with --di flag)
     │   └── auth_module.dart           (@module abstract class AuthModule)
     ├── domain/
     │   ├── entities/
@@ -57,10 +58,13 @@ lib/
 
 ## Router Registration
 
-The new feature's router is **automatically registered** in `lib/app/router/router_module.dart` by `patchRouterModule(featureName)`. No manual step is required.
+The new feature's router is **automatically registered** in `lib/app/router/router_module.dart`
+by `patchRouterModule(featureName)`. No manual step is required.
+
+`router_module.dart` is fully regenerated (not patched line-by-line) using `buildRouterModule(List<String> features)` from `lib/src/functions/feature/build_router_module.dart`.
 
 ---
 
 ## Post-generation
 
-`build_runner` runs automatically at the end of this command — no manual step needed.
+`dart format` and `build_runner` run automatically — no manual step needed.

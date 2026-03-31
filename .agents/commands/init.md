@@ -14,15 +14,15 @@
 5. `generateFlutterGenFiles()` — `build.yaml` + `assets/colors/colors.xml`
 6. `generateCleanRouterPackage()` — scaffolds `packages/clean_router` with `CleanRouterBase` + `CleanRouterRefresh`
 7. `addCleanRouterWorkspace()` — patches root `pubspec.yaml` with `workspace: - packages/clean_router`
-8. `generateCoreFiles(packageName)` — all core Dart files (main, bootstrap, DI, routing)
-9. `generateNetworkFiles()` — Dio, error interceptor, network module
+8. `generateCoreFiles(packageName)` — all core Dart files (main, bootstrap, DI, routing, string extension)
+9. `generateUtilsFiles()` — `Failure`, `getCurrentFunctionName`, `safeCast`, `safeExecute`
 10. `generateHomeFeature(packageName)` — complete home feature scaffold
-11. `installDependencies()` — `dart pub add` / `flutter pub add` (includes `clean_router --path=packages/clean_router`)
-10. `addChuckerDependency()` — git-hosted chucker_flutter
-11. `addFlutterAssetsToPubSpec()` — patches `pubspec.yaml` flutter.assets
-12. `runSlang()` — `dart run slang`
-13. `runBuildRunner()` — `dart run build_runner build --delete-conflicting-outputs`
-14. `runDartFormat()` — `dart format .`
+11. `installDependencies()` — `dart pub add` / `flutter pub add`
+12. `addFlutterAssetsToPubSpec()` — patches `pubspec.yaml` flutter.assets
+13. `addNetworkModule()` — optional, only if `--network` flag passed
+14. `runSlang()` — `dart run slang`
+15. `runBuildRunner()` — `dart run build_runner build --delete-conflicting-outputs`
+16. `runDartFormat()` — `dart format .`
 
 ---
 
@@ -43,30 +43,43 @@ lib/
 │   │   └── home_navigation_impl.dart
 │   └── router/
 │       ├── app_go_router.dart
+│       ├── app_go_router_redirect.dart
 │       └── router_module.dart
 ├── core/
 │   ├── di/
 │   │   └── core_module.dart         (PackageInfo)
+│   ├── domain/
+│   │   ├── entities/
+│   │   │   └── error_entity.dart
+│   │   └── failures/
+│   │       └── failure.dart         (Failure + leftFromError)
+│   ├── data/models/
+│   │   └── error_model.dart
 │   ├── network/
 │   │   ├── constants/api_paths.dart
-│   │   ├── di/network_module.dart   (Dio + interceptors)
+│   │   ├── di/network_module.dart
 │   │   └── interceptors/error_interceptor.dart
-│   ├── data/models/error_model.dart
-│   ├── domain/entities/error_entity.dart
+│   ├── utils/
+│   │   ├── extensions/
+│   │   │   └── string_extension.dart   (String.tr)
+│   │   └── functions/
+│   │       ├── get_current_function_name.dart
+│   │       ├── safe_cast.dart
+│   │       └── safe_execute.dart
 │   └── generated/
 │       ├── locales/                 (slang output)
 │       └── flutter_gen/             (flutter_gen output)
 └── features/
     └── home/
-        ├── di/                      (only with --di flag)
-        │   └── home_module.dart     (@module abstract class HomeModule)
         └── ...                      (see add_feature.md for full structure)
 assets/
 ├── locales/en.locale.json
 └── colors/colors.xml
 build.yaml
 slang.yaml
-analysis_options.yaml               (overwritten with project standard)
+analysis_options.yaml
+packages/
+└── clean_router/                    (local workspace package)
 ```
 
 ---
@@ -76,10 +89,11 @@ analysis_options.yaml               (overwritten with project standard)
 **Runtime:**
 `clean_router` (local path: `packages/clean_router`),
 `flutter_bloc`, `go_router`, `get_it`, `injectable`, `freezed_annotation`,
-`fpdart`, `slang`, `slang_flutter`, `dio`, `retrofit`, `json_annotation`,
-`package_info_plus`, `flutter_svg`, `pretty_dio_logger` (git), `chucker_flutter` (git),
-`flutter_localizations` (SDK)
+`fpdart`, `slang`, `slang_flutter`, `package_info_plus`, `flutter_svg`,
+`json_annotation`, `flutter_localizations` (SDK)
 
 **Dev:**
-`build_runner`, `injectable_generator`, `freezed`, `retrofit_generator`,
-`json_serializable`, `flutter_gen_runner`
+`build_runner`, `injectable_generator`, `freezed`, `flutter_gen_runner`, `json_serializable`
+
+**Git-hosted (added separately):**
+`pretty_dio_logger`, `chucker_flutter`

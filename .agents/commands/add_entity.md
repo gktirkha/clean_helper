@@ -8,18 +8,18 @@
 ## Usage
 
 ```bash
-# Basic
+# Feature scope
 clean-helper add_entity home invoice
 
 # With subfolder (places model in data/models/requests/)
 clean-helper add_entity home invoice requests
 
-# In core
+# Core scope
 clean-helper add_entity core error
 ```
 
-`<scope>` is either `core` or a feature name.
-`[folder]` is optional — it nests the model inside `data/models/<folder>/`.
+`<scope>` is either `core` or a feature name (e.g. `home`, `auth`).
+`[folder]` is optional — nests the model inside `data/models/<folder>/`.
 
 ---
 
@@ -43,6 +43,16 @@ lib/features/home/
 │   └── invoice_entity.dart
 └── data/models/requests/
     └── invoice_model.dart
+```
+
+**Core scope** (`clean-helper add_entity core error`):
+
+```
+lib/core/
+├── domain/entities/
+│   └── error_entity.dart
+└── data/models/
+    └── error_model.dart
 ```
 
 ---
@@ -71,4 +81,8 @@ sealed class InvoiceModel with _$InvoiceModel implements InvoiceEntity {
 }
 ```
 
-`build_runner` runs automatically at the end of this command — no manual step needed.
+---
+
+## Post-generation
+
+`dart format` and `build_runner` run automatically — no manual step needed.
