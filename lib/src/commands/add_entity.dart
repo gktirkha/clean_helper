@@ -6,7 +6,7 @@ import '../functions/init/run_build_runner.dart';
 import '../functions/init/run_dart_format.dart';
 import '../functions/shared/ensure_pubspec.dart';
 
-void addEntity(List<String> args) {
+void addEntity(List<String> args, {bool runBuildRunnerAfter = true}) {
   ensurePubspec();
 
   if (args.length < 2) {
@@ -42,7 +42,7 @@ void addEntity(List<String> args) {
   generateEntityFile(entityDir, entityName);
   generateModelFile(modelDir, entityName, entityToModelImport);
   runDartFormat();
-  runBuildRunner();
+  if (runBuildRunnerAfter) runBuildRunner();
 
   stdout.writeln('✅ Entity "$entityName" generated in $scope.');
 }

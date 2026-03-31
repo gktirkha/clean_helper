@@ -12,7 +12,7 @@ import '../functions/repo/generate_response_model.dart';
 import '../functions/repo/generate_rest_data_source.dart';
 import '../functions/shared/ensure_pubspec.dart';
 
-void addRepo(List<String> args) {
+void addRepo(List<String> args, {bool runBuildRunnerAfter = true}) {
   ensurePubspec();
 
   if (args.length < 2) {
@@ -63,7 +63,7 @@ void addRepo(List<String> args) {
   }
 
   runDartFormat();
-  runBuildRunner();
+  if (runBuildRunnerAfter) runBuildRunner();
 
   stdout.writeln();
   stdout.writeln(

@@ -8,7 +8,7 @@ import '../functions/init/run_build_runner.dart';
 import '../functions/init/run_dart_format.dart';
 import '../functions/shared/ensure_pubspec.dart';
 
-void addNetworkModule() {
+void addNetworkModule({bool runBuildRunnerAfter = true}) {
   ensurePubspec();
 
   stdout.writeln('🌐 Setting up network layer...');
@@ -19,7 +19,7 @@ void addNetworkModule() {
   addChuckerDependency();
   patchAppGoRouter();
   runDartFormat();
-  runBuildRunner();
+  if (runBuildRunnerAfter) runBuildRunner();
 
   stdout.writeln();
   stdout.writeln('✅ Network layer ready.');

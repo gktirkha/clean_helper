@@ -7,7 +7,7 @@ import '../functions/init/run_build_runner.dart';
 import '../functions/init/run_dart_format.dart';
 import '../functions/shared/ensure_pubspec.dart';
 
-void addAuthInterceptor() {
+void addAuthInterceptor({bool runBuildRunnerAfter = true}) {
   ensurePubspec();
 
   stdout.writeln('🔐 Scaffolding auth interceptor...');
@@ -16,7 +16,7 @@ void addAuthInterceptor() {
   patchDiKeys();
   patchNetworkModule();
   runDartFormat();
-  runBuildRunner();
+  if (runBuildRunnerAfter) runBuildRunner();
 
   stdout.writeln();
   stdout.writeln('✅ Auth interceptor scaffold generated.');

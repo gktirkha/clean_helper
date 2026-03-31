@@ -33,7 +33,7 @@ void runInit({bool withNetwork = false, bool withDi = false}) {
   generateHomeFeature(packageName, withDi: withDi);
   installDependencies();
   addFlutterAssetsToPubSpec();
-  if (withNetwork) addNetworkModule();
+  if (withNetwork) addNetworkModule(runBuildRunnerAfter: false);
   runSlang();
   runBuildRunner();
   runDartFormat();
