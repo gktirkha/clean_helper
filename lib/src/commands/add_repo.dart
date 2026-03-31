@@ -12,11 +12,15 @@ import '../functions/repo/generate_response_model.dart';
 import '../functions/repo/generate_rest_data_source.dart';
 import '../functions/shared/ensure_pubspec.dart';
 
-void addRepo(List<String> args, {bool runBuildRunnerAfter = true}) {
+void addRepo(
+  List<String> args, {
+  bool runBuildRunnerAfter = true,
+  bool noRest = false,
+}) {
   ensurePubspec();
 
   if (args.length < 2) {
-    stderr.writeln('❌ Usage: dart run bin/add_repo.dart <feature> <repo_name>');
+    stderr.writeln('❌ Usage: dart run bin/add_repo.dart <feature> <repo_name> [--no_rest]');
     stderr.writeln('   Example: dart run bin/add_repo.dart home invoice');
     exit(1);
   }
@@ -32,6 +36,8 @@ void addRepo(List<String> args, {bool runBuildRunnerAfter = true}) {
     'lib/core/network/di/network_module.dart',
   ).existsSync();
 
+  final generateRest = !noRest && hasNetworkModule;
+
   stdout.writeln('🚀 Generating data layer: feature=$feature, repo=$repoName');
 
   generateEntityFile(entitiesDir, repoName);
@@ -41,9 +47,11 @@ void addRepo(List<String> args, {bool runBuildRunnerAfter = true}) {
   generateResponseModel(dataDir, repoName);
   generateDataRepo(dataDir, repoName);
 
-  if (hasNetworkModule) {
+  if (generateRest) {
     generateApiPaths(dataDir, feature, repoName);
     generateRestDataSource(dataDir, feature, repoName);
+  } else if (noRest) {
+    stdout.writeln('  ⏭  Skipping REST datasource and API paths (--no_rest).');
   } else {
     stdout.writeln(
       '  ⚠️  Network module not found — skipping REST datasource and API paths.',
@@ -62,7 +70,7 @@ void addRepo(List<String> args, {bool runBuildRunnerAfter = true}) {
   stdout.writeln(
     '  1. Add method signatures to $dataDir/datasources/${repoName}_data_source_base.dart',
   );
-  if (hasNetworkModule) {
+  if (generateRest) {
     stdout.writeln(
       '  2. Add your endpoint paths to $dataDir/constants/${feature}_api_paths.dart',
     );

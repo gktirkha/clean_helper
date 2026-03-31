@@ -3,6 +3,14 @@ import 'package:args/command_runner.dart';
 import '../../commands/add_repo.dart';
 
 class AddRepoCommand extends Command<void> {
+  AddRepoCommand() {
+    argParser.addFlag(
+      'no_rest',
+      negatable: false,
+      help: 'Skip generating the REST datasource and API paths.',
+    );
+  }
+
   @override
   String get name => 'add_repo';
 
@@ -12,12 +20,15 @@ class AddRepoCommand extends Command<void> {
 
   @override
   String get invocation =>
-      '${runner?.executableName} $name <feature|core> <repo_name>';
+      '${runner?.executableName} $name <feature> <repo_name> [--no_rest]';
 
   @override
   String get usage =>
-      'Generate a repository interface (domain) and implementation (data).\n\nUsage: ${runner?.executableName} $name <feature|core> <repo_name>';
+      'Generate a repository interface (domain) and implementation (data).\n\nUsage: ${runner?.executableName} $name <feature> <repo_name> [--no_rest]';
 
   @override
-  void run() => addRepo(argResults!.rest);
+  void run() => addRepo(
+        argResults!.rest,
+        noRest: argResults!['no_rest'] as bool,
+      );
 }

@@ -10,10 +10,13 @@
 ```bash
 clean-helper add_repo home invoice
 clean-helper add_repo auth user
+clean-helper add_repo home invoice --no_rest   # skip REST datasource and API paths
 ```
 
 `<feature>` is the feature name (snake_case). Core scope is **not supported** — use `add_entity` for core models.
 `<repo_name>` is snake_case.
+
+`--no_rest` (optional flag) — skips generating the REST datasource (`rest_<repo>_data_source.dart`) and API paths (`<feature>_api_paths.dart`), even if a network module is present.
 
 ---
 
@@ -48,8 +51,9 @@ lib/features/home/
 ## Notes
 
 - Every repo generates both `get` and `post` methods as a starting point. Remove or extend as needed.
-- The `postInvoice()` impl in `invoice_repository_impl.dart` includes a `//TODO: Pass Params` comment — the request model is instantiated as `const InvoiceRequestModel()`.
-- If `lib/core/network/di/network_module.dart` is not found, REST datasource and API paths are skipped.
+- The `postInvoice()` impl in `invoice_repository_impl.dart` includes a `//TODO: Pass Params in InvoiceRepository` comment — the request model is instantiated as `const InvoiceRequestModel()`.
+- REST datasource and API paths are skipped if `lib/core/network/di/network_module.dart` is not found, **or** if `--no_rest` is passed.
+- When `--no_rest` is used, the skip is logged as `⏭  Skipping REST datasource and API paths (--no_rest).`
 - All imports are relative — no `package:` imports for internal project files.
 
 ---
