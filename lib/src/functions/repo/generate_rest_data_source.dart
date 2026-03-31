@@ -17,6 +17,7 @@ import 'package:retrofit/error_logger.dart';
 import 'package:retrofit/http.dart';
 
 import '../constants/${feature}_api_paths.dart';
+import '../models/requests/${repoName}_request_model.dart';
 import '../models/response/${repoName}_response_model.dart';
 import '${repoName}_data_source_base.dart';
 
@@ -31,6 +32,10 @@ abstract class $implClass implements $baseClass {
   @override
   @GET(${featureClass}ApiPaths.$repoName)
   Future<${repoClass}ResponseModel> get$repoClass();
+
+  @override
+  @GET(${featureClass}ApiPaths.$repoName)
+  Future<${repoClass}ResponseModel> post$repoClass(@Body() ${repoClass}RequestModel? requestModel);
 }
 ''');
   stdout.writeln('  📄 $path');
