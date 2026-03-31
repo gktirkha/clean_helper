@@ -9,13 +9,13 @@
 
 ```bash
 # Basic
-dart run bin/add_entity.dart home invoice
+clean-helper add_entity home invoice
 
 # With subfolder (places model in data/models/requests/)
-dart run bin/add_entity.dart home invoice requests
+clean-helper add_entity home invoice requests
 
 # In core
-dart run bin/add_entity.dart core error
+clean-helper add_entity core error
 ```
 
 `<scope>` is either `core` or a feature name.
@@ -25,7 +25,7 @@ dart run bin/add_entity.dart core error
 
 ## What It Generates
 
-**Without folder** (`dart run bin/add_entity.dart home invoice`):
+**Without folder** (`clean-helper add_entity home invoice`):
 
 ```
 lib/features/home/
@@ -35,7 +35,7 @@ lib/features/home/
     └── invoice_model.dart             (@freezed, implements InvoiceEntity)
 ```
 
-**With folder** (`dart run bin/add_entity.dart home invoice requests`):
+**With folder** (`clean-helper add_entity home invoice requests`):
 
 ```
 lib/features/home/

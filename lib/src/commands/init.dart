@@ -1,7 +1,9 @@
 import 'dart:io';
 
+import '../functions/init/add_clean_router_workspace.dart';
 import '../functions/init/add_flutter_assets_to_pubspec.dart';
 import '../functions/init/create_directories.dart';
+import '../functions/init/generate_clean_router_package.dart';
 import '../functions/init/generate_core_files.dart';
 import '../functions/init/generate_flutter_gen_files.dart';
 import '../functions/init/generate_home_feature.dart';
@@ -25,6 +27,8 @@ void runInit({bool withNetwork = false, bool withDi = false}) {
   createDirectories();
   generateLocalizationFiles();
   generateFlutterGenFiles();
+  generateCleanRouterPackage();
+  addCleanRouterWorkspace();
   generateCoreFiles(packageName);
   generateHomeFeature(packageName, withDi: withDi);
   installDependencies();
@@ -39,7 +43,7 @@ void runInit({bool withNetwork = false, bool withDi = false}) {
   stdout.writeln();
   stdout.writeln('Next steps:');
   stdout.writeln(
-    '  • Add a feature:     dart run tools/generate_feature.dart <name>',
+    '  • Add a feature:     clean-helper add_feature <name>',
   );
   stdout.writeln('  • Register routers:  lib/app/router/router_module.dart');
 }

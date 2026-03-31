@@ -36,6 +36,13 @@ void installDependencies() {
   ]);
   runCommand(['dart', 'pub', 'add', ...deps]);
   runCommand(['dart', 'pub', 'add', '--dev', ...devDeps]);
+  runCommand([
+    'flutter',
+    'pub',
+    'add',
+    'clean_router',
+    '--path=packages/clean_router',
+  ]);
 
   stdout.writeln('📦 Dependencies installed');
 }

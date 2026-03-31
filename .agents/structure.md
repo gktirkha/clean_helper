@@ -61,6 +61,8 @@ clean_helper/
 │           │   ├── add_flutter_assets_to_pubspec.dart
 │           │   ├── add_chucker_dependency.dart
 │           │   ├── generate_localization_files.dart
+│           │   ├── generate_clean_router_package.dart
+│           │   ├── add_clean_router_workspace.dart
 │           │   ├── generate_core_files.dart
 │           │   ├── generate_network_files.dart
 │           │   ├── generate_home_feature.dart
@@ -79,9 +81,7 @@ clean_helper/
 │           │       ├── di_container_template.dart
 │           │       ├── core_module_template.dart
 │           │       ├── di_initializer_template.dart
-│           │       ├── router_base_template.dart
-│           │       ├── di_keys_template.dart
-│           │       └── router_refresh_template.dart
+│           │       └── di_keys_template.dart
 │           │
 │           ├── add_network_module/     # Helpers for addNetworkModule()
 │           │   ├── install_network_dependencies.dart

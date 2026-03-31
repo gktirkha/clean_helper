@@ -32,12 +32,13 @@ Feature
 
 ---
 
-## Routing — go_router + RouterBase
+## Routing — go_router + CleanRouterBase
 
-Each feature provides a `RouterBase` implementation:
+Router base classes live in the local `packages/clean_router` package (workspace member).
+Each feature provides a `CleanRouterBase` implementation:
 
 ```dart
-abstract interface class RouterBase {
+abstract interface class CleanRouterBase {
   List<RouteBase> get routes;
   List<Stream<dynamic>> get refreshStreams;
   FutureOr<String?> redirect(BuildContext context, GoRouterState state);
@@ -45,7 +46,10 @@ abstract interface class RouterBase {
 }
 ```
 
-`RouterModule` collects all `RouterBase` implementations, sorts by `priority`, and builds `AppGoRouter`.
+`CleanRouterRefresh` (also from `clean_router`) is a `ChangeNotifier` that listens to all feature
+refresh streams and notifies `GoRouter` to re-evaluate redirects.
+
+`RouterModule` collects all `CleanRouterBase` implementations, sorts by `priority`, and builds `AppGoRouter`.
 To add a new feature's routes, inject its router into `RouterModule`.
 
 ---

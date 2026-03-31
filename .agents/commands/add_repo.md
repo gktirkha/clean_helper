@@ -8,8 +8,8 @@
 ## Usage
 
 ```bash
-dart run bin/add_repo.dart home invoice
-dart run bin/add_repo.dart auth user
+clean-helper add_repo home invoice
+clean-helper add_repo auth user
 ```
 
 `<feature>` is the feature name (snake_case). Core scope is **not supported** — use `add_entity` for core models.
@@ -19,7 +19,7 @@ dart run bin/add_repo.dart auth user
 
 ## What It Generates
 
-`dart run bin/add_repo.dart home invoice` produces:
+`clean-helper add_repo home invoice` produces:
 
 ```
 lib/features/home/

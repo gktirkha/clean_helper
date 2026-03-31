@@ -12,7 +12,7 @@ void addFeature(List<String> args, {bool withDi = false}) {
   if (args.isEmpty) {
     stdout.writeln('❌ Please provide a feature name');
     stdout.writeln(
-      'Usage: dart run tools/generate_feature.dart <feature_name>',
+      'Usage: clean-helper add_feature <feature_name>',
     );
     return;
   }

@@ -8,8 +8,8 @@
 ## Usage
 
 ```bash
-dart run bin/add_feature.dart auth
-dart run bin/add_feature.dart user_profile
+clean-helper add_feature auth
+clean-helper add_feature user_profile
 ```
 
 Feature name must be **snake_case**. It is used as-is for file/directory names and converted to
@@ -19,7 +19,7 @@ Feature name must be **snake_case**. It is used as-is for file/directory names a
 
 ## What It Generates
 
-Given `dart run bin/add_feature.dart auth`:
+Given `clean-helper add_feature auth`:
 
 ```
 lib/
@@ -50,7 +50,7 @@ lib/
     └── router/
         ├── auth_routes.dart           (sealed class AuthRoutes)
         ├── auth_navigation.dart       (abstract class AuthNavigation)
-        └── auth_router.dart           (@lazySingleton, implements RouterBase)
+        └── auth_router.dart           (@lazySingleton, implements CleanRouterBase)
 ```
 
 ---

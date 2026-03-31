@@ -7,7 +7,6 @@ void createDirectories() {
     'lib/app/navigations',
     'lib/app/di',
     'lib/core/di',
-    'lib/core/router',
     'lib/generated/locales',
     'lib/generated/flutter_gen',
     'assets/locales',

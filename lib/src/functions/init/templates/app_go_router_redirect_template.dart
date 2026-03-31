@@ -7,7 +7,7 @@ part of 'app_go_router.dart';
 FutureOr<String?> _handleRedirect(
   BuildContext context,
   GoRouterState state,
-  List<RouterBase> routers,
+  List<CleanRouterBase> routers,
 ) {
   for (final router in routers) {
     final result = router.redirect(context, state);

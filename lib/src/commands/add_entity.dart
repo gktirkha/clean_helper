@@ -11,7 +11,7 @@ void addEntity(List<String> args) {
 
   if (args.length < 2) {
     stderr.writeln(
-      '❌ Usage: dart run tools/generate_entity.dart <feature|core> <entity_name> [folder]',
+      '❌ Usage: clean-helper add_entity <feature|core> <entity_name> [folder]',
     );
     exit(1);
   }
