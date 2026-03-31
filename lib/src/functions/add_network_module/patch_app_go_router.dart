@@ -24,8 +24,8 @@ void patchAppGoRouter() {
       '    observers: [ChuckerFlutter.navigatorObserver],\n';
   if (!content.contains('ChuckerFlutter.navigatorObserver')) {
     content = content.replaceFirst(
-      '    refreshListenable: GoRouterRefreshStream(',
-      '$chuckerObserver    refreshListenable: GoRouterRefreshStream(',
+      '    refreshListenable: CleanRouterRefresh(',
+      '$chuckerObserver    refreshListenable: CleanRouterRefresh(',
     );
   }
 

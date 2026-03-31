@@ -13,14 +13,15 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:injectable/injectable.dart';
 
+import 'package:clean_router/clean_router.dart';
+
 import '../../../app/di/di_container.dart';
-import '../../../core/router/router_base.dart';
 import '../presentation/bloc/$feature/${feature}_bloc.dart';
 import '../presentation/pages/${feature}_page.dart';
 import '${feature}_routes.dart';
 
 @lazySingleton
-class ${className}Router implements RouterBase {
+class ${className}Router implements CleanRouterBase {
   @override
   List<RouteBase> get routes => [
     GoRoute(

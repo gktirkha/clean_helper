@@ -12,10 +12,12 @@
 3. `createDirectories()` — creates the full folder scaffold
 4. `generateLocalizationFiles()` — `slang.yaml` + `assets/locales/en.locale.json`
 5. `generateFlutterGenFiles()` — `build.yaml` + `assets/colors/colors.xml`
-6. `generateCoreFiles(packageName)` — all core Dart files (main, bootstrap, DI, routing)
-7. `generateNetworkFiles()` — Dio, error interceptor, network module
-8. `generateHomeFeature(packageName)` — complete home feature scaffold
-9. `installDependencies()` — `dart pub add` / `flutter pub add`
+6. `generateCleanRouterPackage()` — scaffolds `packages/clean_router` with `CleanRouterBase` + `CleanRouterRefresh`
+7. `addCleanRouterWorkspace()` — patches root `pubspec.yaml` with `workspace: - packages/clean_router`
+8. `generateCoreFiles(packageName)` — all core Dart files (main, bootstrap, DI, routing)
+9. `generateNetworkFiles()` — Dio, error interceptor, network module
+10. `generateHomeFeature(packageName)` — complete home feature scaffold
+11. `installDependencies()` — `dart pub add` / `flutter pub add` (includes `clean_router --path=packages/clean_router`)
 10. `addChuckerDependency()` — git-hosted chucker_flutter
 11. `addFlutterAssetsToPubSpec()` — patches `pubspec.yaml` flutter.assets
 12. `runSlang()` — `dart run slang`
@@ -45,9 +47,6 @@ lib/
 ├── core/
 │   ├── di/
 │   │   └── core_module.dart         (PackageInfo)
-│   ├── router/
-│   │   ├── router_base.dart         (abstract interface RouterBase)
-│   │   └── router_refresh.dart      (GoRouterRefreshStream)
 │   ├── network/
 │   │   ├── constants/api_paths.dart
 │   │   ├── di/network_module.dart   (Dio + interceptors)
@@ -75,6 +74,7 @@ analysis_options.yaml               (overwritten with project standard)
 ## Dependencies Installed
 
 **Runtime:**
+`clean_router` (local path: `packages/clean_router`),
 `flutter_bloc`, `go_router`, `get_it`, `injectable`, `freezed_annotation`,
 `fpdart`, `slang`, `slang_flutter`, `dio`, `retrofit`, `json_annotation`,
 `package_info_plus`, `flutter_svg`, `pretty_dio_logger` (git), `chucker_flutter` (git),
