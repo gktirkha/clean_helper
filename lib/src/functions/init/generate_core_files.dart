@@ -1,19 +1,19 @@
 import 'dart:io';
 
 import '../shared/write_file.dart';
-import 'templates/analysis_options_template.dart';
-import 'templates/app_go_router_redirect_template.dart';
-import 'templates/app_go_router_template.dart';
-import 'templates/app_module_template.dart';
-import 'templates/bootstrap_dart_template.dart';
-import 'templates/core_module_template.dart';
-import 'templates/di_container_template.dart';
-import 'templates/di_initializer_template.dart';
-import 'templates/di_keys_template.dart';
-import 'templates/main_app_dart_template.dart';
-import 'templates/main_dart_template.dart';
-import 'templates/router_module_template.dart';
-import 'templates/string_extension_template.dart';
+import '../../templates/analysis_options_template.dart';
+import '../../templates/app_go_router_redirect_template.dart';
+import '../../templates/app_go_router_template.dart';
+import '../../templates/app_module_template.dart';
+import '../../templates/bootstrap_dart_template.dart';
+import '../../templates/core_module_template.dart';
+import '../../templates/di_container_template.dart';
+import '../../templates/di_initializer_template.dart';
+import '../../templates/di_keys_template.dart';
+import '../../templates/main_app_dart_template.dart';
+import '../../templates/main_dart_template.dart';
+import '../../templates/router_module_template.dart';
+import '../../templates/string_extension_template.dart';
 
 void generateCoreFiles(String packageName) {
   overwriteFile('analysis_options.yaml', analysisOptionsTemplate());

@@ -2,6 +2,7 @@ import 'dart:io';
 
 import '../shared/insert_after_last_import.dart';
 import '../shared/write_file.dart';
+import '../../templates/no_auth_dio_method_template.dart';
 
 void patchNetworkModule() {
   const path = 'lib/core/network/di/network_module.dart';
@@ -41,22 +42,7 @@ void patchNetworkModule() {
   }
 
   if (!content.contains('noAuthDio')) {
-    const noAuthDioMethod = '''
-
-  @lazySingleton
-  @Named(DIKeys.noAuthDio)
-  Dio noAuthDio(
-    BaseOptions baseOptions,
-    PrettyDioLogger prettyDioLogger,
-    ChuckerDioInterceptor chuckerDioInterceptor,
-    ErrorInterceptor errorInterceptor,
-  ) => Dio(baseOptions)
-    ..interceptors.addAll([
-      prettyDioLogger,
-      chuckerDioInterceptor,
-      errorInterceptor,
-    ]);''';
-
+    final noAuthDioMethod = noAuthDioMethodTemplate();
     final lastBrace = content.lastIndexOf('}');
     content =
         '${content.substring(0, lastBrace)}$noAuthDioMethod\n${content.substring(lastBrace)}';

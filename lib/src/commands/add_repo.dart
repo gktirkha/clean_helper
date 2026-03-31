@@ -32,18 +32,6 @@ void addRepo(List<String> args, {bool runBuildRunnerAfter = true}) {
     'lib/core/network/di/network_module.dart',
   ).existsSync();
 
-  for (final dir in [
-    if (hasNetworkModule) '$dataDir/constants',
-    '$dataDir/datasources',
-    '$dataDir/models/requests',
-    '$dataDir/models/response',
-    '$dataDir/repositories',
-    domainDir,
-    entitiesDir,
-  ]) {
-    Directory(dir).createSync(recursive: true);
-  }
-
   stdout.writeln('🚀 Generating data layer: feature=$feature, repo=$repoName');
 
   generateEntityFile(entitiesDir, repoName);

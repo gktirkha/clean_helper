@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'generate_feature_bloc.dart';
 import 'generate_feature_module.dart';
 import 'generate_feature_navigation.dart';
@@ -13,27 +11,6 @@ void createFeatureStructure(
   String featureName, {
   bool withDi = false,
 }) {
-  final directories = [
-    '$basePath/data/constants',
-    '$basePath/data/datasources',
-    '$basePath/data/models/requests',
-    '$basePath/data/models/response',
-    '$basePath/data/repositories',
-    if (withDi) '$basePath/di',
-    '$basePath/domain/entities',
-    '$basePath/domain/repositories',
-    '$basePath/domain/use_cases',
-    '$basePath/presentation/bloc/$featureName',
-    '$basePath/presentation/pages',
-    '$basePath/presentation/widgets',
-    '$basePath/router',
-    'lib/app/navigations',
-  ];
-
-  for (final dir in directories) {
-    Directory(dir).createSync(recursive: true);
-  }
-
   generateFeatureRoutes(featureName, basePath);
   generateFeatureNavigation(featureName, basePath);
   generateFeatureNavigationImpl(featureName);

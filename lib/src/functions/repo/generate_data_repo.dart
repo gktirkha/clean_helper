@@ -3,6 +3,7 @@ import 'dart:io';
 import '../shared/camel_case.dart';
 import '../shared/pascal_case.dart';
 import '../shared/write_file.dart';
+import '../../templates/data_repo_template.dart';
 
 void generateDataRepo(String dataDir, String repoName) {
   final className = pascalCase(repoName);
@@ -12,28 +13,16 @@ void generateDataRepo(String dataDir, String repoName) {
   final dataSourceField = '_${camelCase(repoName)}DataSourceBase';
   final path = '$dataDir/repositories/${repoName}_repository_impl.dart';
 
-  writeFile(path, '''
-import 'package:injectable/injectable.dart';
-
-import '../../domain/entities/${repoName}_entity.dart';
-import '../../domain/repositories/${repoName}_repository.dart';
-import '../datasources/${repoName}_data_source_base.dart';
-import '../models/requests/${repoName}_request_model.dart';
-
-@Singleton(as: $repositoryClass)
-class $implClass implements $repositoryClass {
-  $implClass({required $dataSourceClass ${camelCase(repoName)}DataSourceBase})
-    : $dataSourceField = ${camelCase(repoName)}DataSourceBase;
-
-  final $dataSourceClass $dataSourceField;
-
-  @override
-  Future<${className}Entity> get$className() => $dataSourceField.get$className();
-
-  //TODO: Pass Params in $repositoryClass
-  @override
-  Future<${className}Entity> post$className() => $dataSourceField.post$className(const ${className}RequestModel.new());
-}
-''');
+  writeFile(
+    path,
+    dataRepoTemplate(
+      className,
+      repositoryClass,
+      implClass,
+      dataSourceClass,
+      dataSourceField,
+      repoName,
+    ),
+  );
   stdout.writeln('  📄 $path');
 }

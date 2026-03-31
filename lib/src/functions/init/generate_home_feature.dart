@@ -20,7 +20,6 @@ void generateHomeFeature(String packageName, {bool withDi = false}) {
   generateFeatureBloc(feature, basePath);
 
   if (withDi) {
-    Directory('$basePath/di').createSync(recursive: true);
     generateFeatureModule(feature, basePath);
   }
 
