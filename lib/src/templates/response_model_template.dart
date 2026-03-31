@@ -1,4 +1,5 @@
-String responseModelTemplate(String className, String repoName) => '''
+String responseModelTemplate(String className, String repoName) =>
+    '''
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 import '../../../domain/entities/${repoName}_entity.dart';

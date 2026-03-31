@@ -50,7 +50,7 @@ lib/
 │   │   └── core_module.dart         (PackageInfo)
 │   ├── domain/
 │   │   ├── entities/
-│   │   │   └── error_entity.dart
+│   │   │   └── error_entity.dart    (always generated — not network-only)
 │   │   └── failures/
 │   │       └── failure.dart         (Failure + leftFromError)
 │   ├── data/models/

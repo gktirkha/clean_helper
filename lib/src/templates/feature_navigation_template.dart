@@ -1,4 +1,5 @@
-String featureNavigationTemplate(String className) => '''
+String featureNavigationTemplate(String className) =>
+    '''
 import 'package:flutter/material.dart';
 
 abstract class ${className}Navigation {

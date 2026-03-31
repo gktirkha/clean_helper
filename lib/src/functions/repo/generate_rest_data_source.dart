@@ -13,7 +13,14 @@ void generateRestDataSource(String dataDir, String feature, String repoName) {
 
   writeFile(
     path,
-    restDataSourceTemplate(featureClass, repoClass, baseClass, implClass, feature, repoName),
+    restDataSourceTemplate(
+      featureClass,
+      repoClass,
+      baseClass,
+      implClass,
+      feature,
+      repoName,
+    ),
   );
   stdout.writeln('  📄 $path');
 }

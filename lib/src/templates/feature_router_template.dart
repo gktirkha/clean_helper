@@ -1,4 +1,5 @@
-String featureRouterTemplate(String feature, String className) => '''
+String featureRouterTemplate(String feature, String className) =>
+    '''
 import 'dart:async';
 
 import 'package:flutter/material.dart';

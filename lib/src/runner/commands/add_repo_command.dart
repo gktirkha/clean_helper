@@ -27,8 +27,6 @@ class AddRepoCommand extends Command<void> {
       'Generate a repository interface (domain) and implementation (data).\n\nUsage: ${runner?.executableName} $name <feature> <repo_name> [--no_rest]';
 
   @override
-  void run() => addRepo(
-        argResults!.rest,
-        noRest: argResults!['no_rest'] as bool,
-      );
+  void run() =>
+      addRepo(argResults!.rest, noRest: argResults!['no_rest'] as bool);
 }

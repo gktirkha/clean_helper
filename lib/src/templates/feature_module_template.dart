@@ -1,4 +1,5 @@
-String featureModuleTemplate(String className, String feature) => '''
+String featureModuleTemplate(String className, String feature) =>
+    '''
 import 'package:injectable/injectable.dart';
 
 @module

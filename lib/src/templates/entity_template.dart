@@ -1,3 +1,4 @@
-String entityTemplate(String className) => '''
+String entityTemplate(String className) =>
+    '''
 abstract class ${className}Entity {}
 ''';

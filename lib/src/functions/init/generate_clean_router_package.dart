@@ -1,17 +1,23 @@
 import 'dart:io';
 
+import '../../templates/analysis_options_template.dart';
+import '../../templates/clean_router_base_template.dart';
+import '../../templates/clean_router_lib_export_template.dart';
+import '../../templates/clean_router_pubspec_tail_template.dart';
+import '../../templates/clean_router_refresh_template.dart';
 import '../shared/run_command.dart';
 import '../shared/write_file.dart';
-import '../../templates/analysis_options_template.dart';
-import '../../templates/clean_router_lib_export_template.dart';
-import '../../templates/clean_router_base_template.dart';
-import '../../templates/clean_router_refresh_template.dart';
-import '../../templates/clean_router_pubspec_tail_template.dart';
 
 void generateCleanRouterPackage() {
   stdout.writeln('📦 Creating clean_router package...');
 
-  runCommand(['flutter', 'create', 'packages/clean_router', '--template', 'package']);
+  runCommand([
+    'flutter',
+    'create',
+    'packages/clean_router',
+    '--template',
+    'package',
+  ]);
 
   // Remove unwanted generated files
   final filesToDelete = [
@@ -65,7 +71,9 @@ void _patchCleanRouterPubspec() {
   var envEnd = envStart + 1;
   while (envEnd < noComments.length) {
     final line = noComments[envEnd];
-    if (line.isNotEmpty && !line.startsWith(' ') && !line.startsWith('\t')) break;
+    if (line.isNotEmpty && !line.startsWith(' ') && !line.startsWith('\t')) {
+      break;
+    }
     envEnd++;
   }
 

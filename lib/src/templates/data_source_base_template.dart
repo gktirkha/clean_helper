@@ -1,4 +1,5 @@
-String dataSourceBaseTemplate(String className, String repoName) => '''
+String dataSourceBaseTemplate(String className, String repoName) =>
+    '''
 import '../models/requests/${repoName}_request_model.dart';
 import '../models/response/${repoName}_response_model.dart';
 

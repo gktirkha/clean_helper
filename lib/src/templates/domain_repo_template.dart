@@ -1,4 +1,5 @@
-String domainRepoTemplate(String className, String name) => '''
+String domainRepoTemplate(String className, String name) =>
+    '''
 import '../entities/${name}_entity.dart';
 
 abstract interface class ${className}Repository {

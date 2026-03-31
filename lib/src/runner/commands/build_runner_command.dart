@@ -10,8 +10,7 @@ class BuildRunnerCommand extends Command<void> {
   String get description => 'Run build_runner in the current Flutter project.';
 
   @override
-  String get invocation =>
-      '${runner?.executableName} $name [clean|build]';
+  String get invocation => '${runner?.executableName} $name [clean|build]';
 
   @override
   String get usage =>

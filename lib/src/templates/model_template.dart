@@ -1,4 +1,5 @@
-String modelTemplate(String className, String name, String entityImport) => '''
+String modelTemplate(String className, String name, String entityImport) =>
+    '''
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 import '$entityImport';

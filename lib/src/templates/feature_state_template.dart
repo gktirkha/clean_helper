@@ -1,4 +1,5 @@
-String featureStateTemplate(String feature, String className) => '''
+String featureStateTemplate(String feature, String className) =>
+    '''
 part of '${feature}_bloc.dart';
 
 @freezed

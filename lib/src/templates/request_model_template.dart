@@ -1,4 +1,5 @@
-String requestModelTemplate(String className, String repoName) => '''
+String requestModelTemplate(String className, String repoName) =>
+    '''
 import 'package:json_annotation/json_annotation.dart';
 
 part '${repoName}_request_model.g.dart';

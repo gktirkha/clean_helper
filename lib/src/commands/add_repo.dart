@@ -20,7 +20,9 @@ void addRepo(
   ensurePubspec();
 
   if (args.length < 2) {
-    stderr.writeln('❌ Usage: dart run bin/add_repo.dart <feature> <repo_name> [--no_rest]');
+    stderr.writeln(
+      '❌ Usage: dart run bin/add_repo.dart <feature> <repo_name> [--no_rest]',
+    );
     stderr.writeln('   Example: dart run bin/add_repo.dart home invoice');
     exit(1);
   }

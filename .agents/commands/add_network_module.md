@@ -31,7 +31,6 @@ No arguments. Must be run from the Flutter project root. Idempotent — `writeFi
 | File | Template |
 |------|----------|
 | `lib/core/network/constants/api_paths.dart` | `core_api_paths_template.dart` |
-| `lib/core/domain/entities/error_entity.dart` | `error_entity_template.dart` |
 | `lib/core/data/models/error_model.dart` | `error_model_template.dart` |
 | `lib/core/network/interceptors/error_interceptor.dart` | `error_interceptor_template.dart` |
 | `lib/core/network/di/network_module.dart` | `network_module_template.dart` |

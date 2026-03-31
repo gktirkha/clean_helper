@@ -6,14 +6,16 @@ import '../functions/init/run_build_runner.dart';
 import '../functions/init/run_dart_format.dart';
 import '../functions/shared/ensure_pubspec.dart';
 
-void addFeature(List<String> args, {bool withDi = false, bool runBuildRunnerAfter = true}) {
+void addFeature(
+  List<String> args, {
+  bool withDi = false,
+  bool runBuildRunnerAfter = true,
+}) {
   ensurePubspec();
 
   if (args.isEmpty) {
     stdout.writeln('❌ Please provide a feature name');
-    stdout.writeln(
-      'Usage: clean-helper add_feature <feature_name>',
-    );
+    stdout.writeln('Usage: clean-helper add_feature <feature_name>');
     return;
   }
 

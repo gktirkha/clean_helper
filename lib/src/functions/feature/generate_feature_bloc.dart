@@ -8,7 +8,16 @@ void generateFeatureBloc(String feature, String basePath) {
   final className = pascalCase(feature);
   final blocPath = '$basePath/presentation/bloc/$feature';
 
-  writeFile('$blocPath/${feature}_bloc.dart', featureBlocTemplate(feature, className));
-  writeFile('$blocPath/${feature}_event.dart', featureEventTemplate(feature, className));
-  writeFile('$blocPath/${feature}_state.dart', featureStateTemplate(feature, className));
+  writeFile(
+    '$blocPath/${feature}_bloc.dart',
+    featureBlocTemplate(feature, className),
+  );
+  writeFile(
+    '$blocPath/${feature}_event.dart',
+    featureEventTemplate(feature, className),
+  );
+  writeFile(
+    '$blocPath/${feature}_state.dart',
+    featureStateTemplate(feature, className),
+  );
 }
