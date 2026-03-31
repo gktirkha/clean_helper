@@ -13,6 +13,7 @@ import 'templates/di_keys_template.dart';
 import 'templates/main_app_dart_template.dart';
 import 'templates/main_dart_template.dart';
 import 'templates/router_module_template.dart';
+import 'templates/string_extension_template.dart';
 
 void generateCoreFiles(String packageName) {
   overwriteFile('analysis_options.yaml', analysisOptionsTemplate());
@@ -36,5 +37,9 @@ void generateCoreFiles(String packageName) {
   writeFile('lib/core/di/di_keys.dart', diKeysTemplate());
   writeFile('lib/app/di/app_module.dart', appModuleTemplate());
   writeFile('lib/core/di/core_module.dart', coreModuleTemplate());
+  writeFile(
+    'lib/core/extensions/string_extension.dart',
+    stringExtensionTemplate(),
+  );
   stdout.writeln('⚙️  Core files generated');
 }
