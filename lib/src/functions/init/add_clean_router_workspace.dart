@@ -1,8 +1,9 @@
 import 'dart:io';
 
+import '../shared/write_file.dart';
+
 void addCleanRouterWorkspace() {
-  final pubspec = File('pubspec.yaml');
-  final content = pubspec.readAsStringSync();
+  final content = File('pubspec.yaml').readAsStringSync();
 
   if (content.contains('packages/clean_router')) {
     stdout.writeln('  ⏭  Skipped (exists): clean_router workspace entry');
@@ -15,6 +16,6 @@ void addCleanRouterWorkspace() {
     'workspace:\n  - packages/clean_router\n\ndependencies:',
   );
 
-  pubspec.writeAsStringSync(updated);
+  overwriteFile('pubspec.yaml', updated);
   stdout.writeln('📋 clean_router workspace added to pubspec.yaml');
 }

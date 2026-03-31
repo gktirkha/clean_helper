@@ -10,7 +10,8 @@ These constraints must be respected when modifying or extending this codebase.
 - **Command files have one function** — never add helpers directly in `lib/src/commands/`.
 - **Never export function files** from `lib/clean_helper.dart` — commands only.
 - **New helpers go in `lib/src/functions/<group>/`** — create a new file, never add to an existing one.
-- **New templates go in `lib/src/functions/init/templates/`** — one template function per file.
+- **New templates go in `lib/src/templates/`** — one template function per file, returning `String`.
+- **No inline template strings in generator functions** — all generated file content must live in `lib/src/templates/`.
 
 ---
 
@@ -18,7 +19,16 @@ These constraints must be respected when modifying or extending this codebase.
 
 - Use `writeFile(path, content)` for files the user may edit — skips if file exists.
 - Use `overwriteFile(path, content)` only for config files owned by the tool (e.g. `analysis_options.yaml`, `router_module.dart`).
-- Never use `File(...).writeAsStringSync(...)` directly from command files — go through the shared helper.
+- Never use `File(...).writeAsStringSync(...)` directly — always go through the shared helpers.
+- `writeFile` and `overwriteFile` both call `file.parent.createSync(recursive: true)` — **never** manually create directories before writing.
+
+---
+
+## Directory Creation Rules
+
+- Never call `Directory(...).createSync(...)` outside of `lib/src/functions/init/create_directories.dart`.
+- Directory creation for generated files is handled automatically by `writeFile`/`overwriteFile`.
+- New directory paths needed during `init` must be added to the list in `create_directories.dart`.
 
 ---
 
@@ -32,6 +42,7 @@ These constraints must be respected when modifying or extending this codebase.
 ## Import Rules
 
 - Shared utilities: import from `../shared/<file>.dart`.
+- Templates: import from `../../templates/<file>.dart` (from within `lib/src/functions/*/`).
 - Do not create circular imports between function files.
 - `camel_case.dart` may import `pascal_case.dart` (it depends on it); nothing else may form a cycle.
 - Generated Flutter project files must use **relative imports** for internal project files — no `package:` imports between files within the same feature.
@@ -62,3 +73,4 @@ These constraints must be respected when modifying or extending this codebase.
 - Do not add more than one public function to any `.dart` file under `lib/src/`.
 - Do not modify files that already exist in the target project without using `overwriteFile`.
 - Do not use `package:` imports for cross-file references within a generated Flutter feature — always use relative imports.
+- Do not embed template strings inline inside generator functions — extract to `lib/src/templates/`.

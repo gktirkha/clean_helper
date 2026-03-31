@@ -10,10 +10,13 @@
 ```bash
 clean-helper add_repo home invoice
 clean-helper add_repo auth user
+clean-helper add_repo home invoice --no_rest   # skip REST datasource and API paths
 ```
 
 `<feature>` is the feature name (snake_case). Core scope is **not supported** — use `add_entity` for core models.
 `<repo_name>` is snake_case.
+
+`--no_rest` (optional flag) — skips generating the REST datasource (`rest_<repo>_data_source.dart`) and API paths (`<feature>_api_paths.dart`), even if a network module is present.
 
 ---
 
@@ -27,12 +30,12 @@ lib/features/home/
 │   ├── entities/
 │   │   └── invoice_entity.dart                   (abstract class InvoiceEntity)
 │   └── repositories/
-│       └── invoice_repository.dart               (abstract interface InvoiceRepository)
+│       └── invoice_repository.dart               (abstract interface InvoiceRepository { getInvoice, postInvoice })
 └── data/
     ├── constants/
     │   └── home_api_paths.dart                   (sealed class HomeApiPaths)
     ├── datasources/
-    │   ├── invoice_data_source_base.dart          (abstract interface InvoiceDataSourceBase)
+    │   ├── invoice_data_source_base.dart          (abstract interface with get + post methods)
     │   └── rest_invoice_data_source.dart          (@RestApi, @Injectable, Retrofit impl)
     ├── models/
     │   ├── requests/
@@ -45,130 +48,19 @@ lib/features/home/
 
 ---
 
-## Generated File Contents
+## Notes
 
-**Entity:**
-```dart
-abstract class InvoiceEntity {}
-```
-
-**Domain repository:**
-```dart
-import '../entities/invoice_entity.dart';
-
-abstract interface class InvoiceRepository {
-  Future<InvoiceEntity> getInvoice();
-}
-```
-
-**API paths:**
-```dart
-sealed class HomeApiPaths {
-  static const String invoice = '/api/home/';
-}
-```
-
-**Datasource base:**
-```dart
-import '../models/response/invoice_response_model.dart';
-
-abstract interface class InvoiceDataSourceBase {
-  Future<InvoiceResponseModel> getInvoice();
-}
-```
-
-**REST datasource (Retrofit):**
-```dart
-import 'package:dio/dio.dart';
-import 'package:injectable/injectable.dart';
-import 'package:retrofit/error_logger.dart';
-import 'package:retrofit/http.dart';
-
-import '../constants/home_api_paths.dart';
-import '../models/response/invoice_response_model.dart';
-import 'invoice_data_source_base.dart';
-
-part 'rest_invoice_data_source.g.dart';
-
-@RestApi()
-@Injectable(as: InvoiceDataSourceBase)
-abstract class RestInvoiceDataSource implements InvoiceDataSourceBase {
-  @factoryMethod
-  factory RestInvoiceDataSource(Dio dio, {ParseErrorLogger? errorLogger}) =
-      _RestInvoiceDataSource;
-
-  @override
-  @GET(HomeApiPaths.invoice)
-  Future<InvoiceResponseModel> getInvoice();
-}
-```
-
-**Request model:**
-```dart
-import 'package:json_annotation/json_annotation.dart';
-
-part 'invoice_request_model.g.dart';
-
-@JsonSerializable()
-class InvoiceRequestModel {
-  const InvoiceRequestModel();
-
-  factory InvoiceRequestModel.fromJson(Map<String, dynamic> json) =>
-      _$InvoiceRequestModelFromJson(json);
-
-  Map<String, dynamic> toJson() => _$InvoiceRequestModelToJson(this);
-}
-```
-
-**Response model:**
-```dart
-import 'package:freezed_annotation/freezed_annotation.dart';
-
-import '../../../domain/entities/invoice_entity.dart';
-
-part 'invoice_response_model.freezed.dart';
-part 'invoice_response_model.g.dart';
-
-@freezed
-sealed class InvoiceResponseModel with _$InvoiceResponseModel implements InvoiceEntity {
-  const factory InvoiceResponseModel() = _InvoiceResponseModel;
-
-  factory InvoiceResponseModel.fromJson(Map<String, dynamic> json) =>
-      _$InvoiceResponseModelFromJson(json);
-}
-```
-
-**Repository impl:**
-```dart
-import 'package:injectable/injectable.dart';
-
-import '../../domain/entities/invoice_entity.dart';
-import '../../domain/repositories/invoice_repository.dart';
-import '../datasources/invoice_data_source_base.dart';
-
-@Singleton(as: InvoiceRepository)
-class InvoiceRepositoryImpl implements InvoiceRepository {
-  InvoiceRepositoryImpl({required InvoiceDataSourceBase invoiceDataSourceBase})
-      : _invoiceDataSourceBase = invoiceDataSourceBase;
-
-  final InvoiceDataSourceBase _invoiceDataSourceBase;
-
-  @override
-  Future<InvoiceEntity> getInvoice() => _invoiceDataSourceBase.getInvoice();
-}
-```
-
----
-
-## All imports are relative
-
-No `package:` imports are used for internal project files — all cross-file imports within the feature use relative paths.
+- Every repo generates both `get` and `post` methods as a starting point. Remove or extend as needed.
+- The `postInvoice()` impl in `invoice_repository_impl.dart` includes a `//TODO: Pass Params in InvoiceRepository` comment — the request model is instantiated as `const InvoiceRequestModel()`.
+- REST datasource and API paths are skipped if `lib/core/network/di/network_module.dart` is not found, **or** if `--no_rest` is passed.
+- When `--no_rest` is used, the skip is logged as `⏭  Skipping REST datasource and API paths (--no_rest).`
+- All imports are relative — no `package:` imports for internal project files.
 
 ---
 
 ## Post-generation
 
-`build_runner` runs automatically at the end of this command — no manual step needed.
+`dart format` and `build_runner` run automatically — no manual step needed.
 
 ---
 
@@ -176,4 +68,5 @@ No `package:` imports are used for internal project files — all cross-file imp
 
 1. Replace the placeholder path in `data/constants/home_api_paths.dart`
 2. Add fields to the request/response models
-3. Add more methods to datasource base, rest datasource, and repository as needed
+3. Change `@GET` to `@POST` (or other verbs) in the REST datasource as appropriate
+4. Add use cases in `domain/use_cases/`

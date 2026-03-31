@@ -1,17 +1,14 @@
 import 'dart:io';
 
 import '../shared/write_file.dart';
+import '../../templates/di_keys_no_auth_template.dart';
 
 void patchDiKeys() {
   const path = 'lib/core/di/di_keys.dart';
   final file = File(path);
 
   if (!file.existsSync()) {
-    writeFile(path, '''
-sealed class DIKeys {
-  static const String noAuthDio = 'noAuthDio';
-}
-''');
+    writeFile(path, diKeysNoAuthTemplate());
     return;
   }
 

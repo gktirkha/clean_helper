@@ -9,8 +9,6 @@
 
 ```bash
 clean-helper regenerate_router
-# or
-dart run bin/regenerate_router.dart
 ```
 
 No arguments required.
@@ -19,7 +17,9 @@ No arguments required.
 
 ## What It Does
 
-Scans `lib/features/` for any feature that has a `router/<feature>_router.dart` file, then **completely regenerates** `lib/app/router/router_module.dart` from scratch with all discovered routers registered. Runs `dart format` at the end.
+Scans `lib/features/` for any feature that has a `router/<feature>_router.dart` file, then
+**completely regenerates** `lib/app/router/router_module.dart` from scratch with all discovered
+routers registered. Runs `dart format` at the end.
 
 Features are sorted alphabetically for deterministic output.
 
@@ -36,6 +36,7 @@ Features are sorted alphabetically for deterministic output.
 ## Implementation Notes
 
 - Discovery is **filesystem-based**: a feature is included if and only if `lib/features/<name>/router/<name>_router.dart` exists
-- Uses the shared `buildRouterModule(List<String> features)` function from `patch_router_module.dart` — the single source of truth for router module generation
+- Uses `buildRouterModule(List<String> features)` from `lib/src/functions/feature/build_router_module.dart`, which delegates to `routerModuleBuildTemplate()` in `lib/src/templates/router_module_build_template.dart`
+- `buildRouterModule` is the single source of truth for router module content — also used by `patchRouterModule` and `unpatchRouterModule`
 - Writes via `overwriteFile` — `router_module.dart` is fully tool-owned and never manually edited
 - Safe to run multiple times (idempotent)

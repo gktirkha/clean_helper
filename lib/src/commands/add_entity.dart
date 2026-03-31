@@ -36,9 +36,6 @@ void addEntity(List<String> args, {bool runBuildRunnerAfter = true}) {
       ? '../../../domain/entities/${entityName}_entity.dart'
       : '../../domain/entities/${entityName}_entity.dart';
 
-  Directory(entityDir).createSync(recursive: true);
-  Directory(modelDir).createSync(recursive: true);
-
   generateEntityFile(entityDir, entityName);
   generateModelFile(modelDir, entityName, entityToModelImport);
   runDartFormat();

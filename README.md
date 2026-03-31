@@ -27,10 +27,10 @@ clean-helper install-completion-files
 | `clean-helper init` | Full project scaffold — run once on a new Flutter project |
 | `clean-helper add_network_module` | Set up the network layer (Dio, Retrofit, Chucker) |
 | `clean-helper add_auth_interceptor` | Scaffold AuthInterceptor with token refresh and wire into NetworkModule |
-| `clean-helper add_feature <name>` | Add a new feature with clean architecture structure |
-| `clean-helper add_repo <feature> <name>` | Generate the full data layer (entity, domain repo, datasources, models, repo impl) |
+| `clean-helper add_feature <name> [--di]` | Add a new feature with clean architecture structure |
+| `clean-helper add_repo <feature> <name> [--no_rest]` | Generate the full data layer (entity, domain repo, datasources, models, repo impl) |
 | `clean-helper add_entity <scope> <name> [folder]` | Add an entity (domain) + freezed model (data) |
-| `clean-helper build_runner [clean\|build\|watch]` | Run build_runner in the current project (default: build) |
+| `clean-helper build_runner [clean\|build]` | Run build_runner in the current project (default: build) |
 | `clean-helper remove_feature <name>` | Remove a feature and deregister its router |
 | `clean-helper regenerate_router` | Scan all features on disk and regenerate `router_module.dart` |
 | `clean-helper generate_localizations` | Generate locales using slang |
@@ -57,21 +57,23 @@ What it does (in order):
 3. Creates the full folder scaffold
 4. Generates localization files (`slang.yaml`, `assets/locales/en.locale.json`)
 5. Generates asset pipeline files (`build.yaml`, `assets/colors/colors.xml`)
-6. Generates core Dart files (main, bootstrap, DI, routing)
-7. Generates network layer (Dio, error interceptor, network module)
-8. Generates home feature scaffold
-9. Installs all runtime and dev dependencies
-10. Patches `pubspec.yaml` flutter assets
-11. Runs `dart run slang`
-12. Runs `dart run build_runner build --delete-conflicting-outputs`
-13. Runs `dart format .`
+6. Scaffolds `packages/clean_router` local workspace package (`CleanRouterBase` + `CleanRouterRefresh`)
+7. Patches root `pubspec.yaml` with `workspace: - packages/clean_router`
+8. Generates core Dart files (main, bootstrap, DI, routing, string extension)
+9. Generates utils (`Failure`, `getCurrentFunctionName`, `safeCast`, `safeExecute`)
+10. Generates home feature scaffold
+11. Installs all runtime and dev dependencies
+12. Patches `pubspec.yaml` flutter assets
+13. Runs `dart run slang`
+14. Runs `dart run build_runner build --delete-conflicting-outputs`
+15. Runs `dart format .`
 
 **Dependencies installed:**
 
 | Type | Packages |
 |------|----------|
-| Runtime | `flutter_bloc`, `go_router`, `get_it`, `injectable`, `freezed_annotation`, `fpdart`, `slang`, `slang_flutter`, `dio`, `retrofit`, `json_annotation`, `package_info_plus`, `flutter_svg`, `pretty_dio_logger` (git), `chucker_flutter` (git), `flutter_localizations` |
-| Dev | `build_runner`, `injectable_generator`, `freezed`, `retrofit_generator`, `json_serializable`, `flutter_gen_runner` |
+| Runtime | `flutter_bloc`, `go_router`, `get_it`, `injectable`, `freezed_annotation`, `fpdart`, `slang`, `slang_flutter`, `json_annotation`, `package_info_plus`, `flutter_svg`, `flutter_localizations` (SDK), `pretty_dio_logger` (git), `chucker_flutter` (git) |
+| Dev | `build_runner`, `injectable_generator`, `freezed`, `flutter_gen_runner`, `json_serializable` |
 
 ---
 
@@ -80,6 +82,7 @@ What it does (in order):
 ```bash
 clean-helper add_feature auth
 clean-helper add_feature user_profile
+clean-helper add_feature auth --di    # also generate a DI module
 ```
 
 Feature name must be **snake_case**. Generates:
@@ -96,6 +99,8 @@ lib/
     │   │   ├── requests/
     │   │   └── response/
     │   └── repositories/
+    ├── di/                            (only with --di flag)
+    │   └── auth_module.dart           (@module abstract class AuthModule)
     ├── domain/
     │   ├── entities/
     │   ├── repositories/
@@ -111,10 +116,10 @@ lib/
     └── router/
         ├── auth_routes.dart           (sealed class AuthRoutes)
         ├── auth_navigation.dart       (abstract class AuthNavigation)
-        └── auth_router.dart           (@lazySingleton, implements RouterBase)
+        └── auth_router.dart           (@lazySingleton, implements CleanRouterBase)
 ```
 
-The new feature router is **automatically registered** in `lib/app/router/router_module.dart`. `build_runner` runs automatically at the end.
+The new feature router is **automatically registered** in `lib/app/router/router_module.dart`. `dart format` and `build_runner` run automatically at the end.
 
 ---
 
@@ -123,37 +128,40 @@ The new feature router is **automatically registered** in `lib/app/router/router
 ```bash
 clean-helper add_repo home invoice
 clean-helper add_repo auth user
+clean-helper add_repo home invoice --no_rest   # skip REST datasource and API paths
 ```
 
 Generates the complete data layer for a repository inside `lib/features/<feature>/`:
 
 ```
 domain/
-  entities/invoice_entity.dart              (abstract class InvoiceEntity)
-  repositories/invoice_repository.dart      (abstract interface, with get method)
+  entities/invoice_entity.dart                  (abstract class InvoiceEntity)
+  repositories/invoice_repository.dart          (abstract interface, get + post methods)
 data/
-  constants/home_api_paths.dart             (sealed class HomeApiPaths)
-  datasources/invoice_data_source_base.dart (abstract interface)
-  datasources/rest_invoice_data_source.dart (@RestApi, @Injectable, Retrofit impl)
-  models/requests/invoice_request_model.dart  (@JsonSerializable)
-  models/response/invoice_response_model.dart (@freezed, implements InvoiceEntity)
-  repositories/invoice_repository_impl.dart   (@Singleton, implements InvoiceRepository)
+  constants/home_api_paths.dart                 (sealed class HomeApiPaths)
+  datasources/invoice_data_source_base.dart     (abstract interface)
+  datasources/rest_invoice_data_source.dart     (@RestApi, @Injectable, Retrofit impl)
+  models/requests/invoice_request_model.dart    (@JsonSerializable)
+  models/response/invoice_response_model.dart   (@freezed, implements InvoiceEntity)
+  repositories/invoice_repository_impl.dart     (@Singleton, implements InvoiceRepository)
 ```
 
-All internal imports use relative paths. `build_runner` runs automatically at the end.
+`--no_rest` skips `rest_invoice_data_source.dart` and `home_api_paths.dart`, even if a network module is present. REST files are also skipped automatically if `lib/core/network/di/network_module.dart` does not exist.
+
+All internal imports use relative paths. `dart format` and `build_runner` run automatically at the end.
 
 ---
 
 ### `add_entity` — Add an entity + model
 
 ```bash
-# Basic
+# Feature scope
 clean-helper add_entity home invoice
 
 # With subfolder (places model in data/models/requests/)
 clean-helper add_entity home invoice requests
 
-# In core
+# Core scope
 clean-helper add_entity core error
 ```
 
@@ -172,7 +180,7 @@ sealed class InvoiceModel with _$InvoiceModel implements InvoiceEntity {
 }
 ```
 
-`build_runner` runs automatically at the end.
+`dart format` and `build_runner` run automatically at the end.
 
 ---
 
@@ -212,7 +220,6 @@ Generates Dio + Retrofit network files, installs network dependencies (including
 ```bash
 clean-helper build_runner         # build (default)
 clean-helper build_runner build   # build
-clean-helper build_runner watch   # watch mode
 clean-helper build_runner clean   # clean generated files
 ```
 
@@ -234,7 +241,9 @@ Deletes the feature directory and deregisters its router from `lib/app/router/ro
 clean-helper regenerate_router
 ```
 
-Scans `lib/features/` for any feature that has a `router/<feature>_router.dart` file and regenerates `lib/app/router/router_module.dart` from scratch. `router_module.dart` is fully managed by the tool — do not edit it manually. Useful when the module has drifted out of sync or after manual edits to the features directory.
+Scans `lib/features/` for any feature that has a `router/<feature>_router.dart` file and regenerates `lib/app/router/router_module.dart` from scratch. Features are sorted alphabetically for deterministic output. `router_module.dart` is fully managed by the tool — do not edit it manually. Useful when the module has drifted out of sync or after manual edits to the features directory.
+
+---
 
 ### `generate_localizations` — Generate locales
 
@@ -252,14 +261,14 @@ Runs `dart run slang` to regenerate `lib/generated/locales/locales.g.dart` from 
 
 ```
 Feature
-├── domain/          Pure Dart — no Flutter, no packages
-│   ├── entities/    Abstract classes (no JSON, no annotations)
+├── domain/           Pure Dart — no Flutter, no packages
+│   ├── entities/     Abstract classes (no JSON, no annotations)
 │   ├── repositories/ Abstract interfaces
-│   └── use_cases/   Business logic
+│   └── use_cases/    Business logic
 │
-└── data/            Implements domain contracts
-    ├── models/      @freezed classes implementing entities
-    ├── datasources/ API calls via Retrofit
+└── data/             Implements domain contracts
+    ├── models/       @freezed classes implementing entities
+    ├── datasources/  API calls via Retrofit
     └── repositories/ @LazySingleton implementations
 ```
 
@@ -273,18 +282,22 @@ Feature
 | `@module` | Provides third-party or platform instances |
 | `@preResolve` | Awaited before app starts |
 
-### Routing — `go_router` + `RouterBase`
+`GetIt` instance lives in `lib/app/di/di_container.dart`. `@InjectableInit` bootstraps everything via `diInitializer(diContainer)` in `bootstrap.dart`.
 
-Each feature provides a `RouterBase` implementation:
+### Routing — `go_router` + `CleanRouterBase`
+
+Router base classes live in the local `packages/clean_router` workspace package. Each feature provides a `CleanRouterBase` implementation:
 
 ```dart
-abstract interface class RouterBase {
+abstract interface class CleanRouterBase {
   List<RouteBase> get routes;
   List<Stream<dynamic>> get refreshStreams;
   FutureOr<String?> redirect(BuildContext context, GoRouterState state);
   int get priority; // lower = higher priority
 }
 ```
+
+`RouterModule` collects all `CleanRouterBase` implementations, sorts by `priority`, and builds `AppGoRouter`. `router_module.dart` is tool-owned and regenerated automatically by `add_feature`, `remove_feature`, and `regenerate_router`.
 
 ### State Management — `flutter_bloc` + `freezed`
 
@@ -293,11 +306,19 @@ Every feature BLoC:
 - Is annotated `@lazySingleton` for DI
 - Events and states are `@freezed` union types
 
+### Error Handling — `fpdart` + `Failure`
+
+- `Failure` implements `Exception` with an optional `message`
+- `Failure.leftFromError(e)` wraps any caught object as `Left<Failure>`
+- `safeCast<T>(data, decoder)` — safely casts dynamic API responses to `Either<Failure, T>`
+- `safeExecute<T>(exec)` — wraps any async call in `Either<Failure, T>`
+
 ### Localization — `slang`
 
 - Config: `slang.yaml` at project root
 - Source: `assets/locales/en.locale.json`
 - Output: `lib/generated/locales/locales.g.dart`
+- `String.tr` extension provides shorthand access to translations
 
 ### Asset Generation — `flutter_gen`
 

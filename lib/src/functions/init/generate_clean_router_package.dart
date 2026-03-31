@@ -1,13 +1,23 @@
 import 'dart:io';
 
+import '../../templates/analysis_options_template.dart';
+import '../../templates/clean_router_base_template.dart';
+import '../../templates/clean_router_lib_export_template.dart';
+import '../../templates/clean_router_pubspec_tail_template.dart';
+import '../../templates/clean_router_refresh_template.dart';
 import '../shared/run_command.dart';
 import '../shared/write_file.dart';
-import 'templates/analysis_options_template.dart';
 
 void generateCleanRouterPackage() {
   stdout.writeln('📦 Creating clean_router package...');
 
-  runCommand(['flutter', 'create', 'packages/clean_router', '--template', 'package']);
+  runCommand([
+    'flutter',
+    'create',
+    'packages/clean_router',
+    '--template',
+    'package',
+  ]);
 
   // Remove unwanted generated files
   final filesToDelete = [
@@ -35,16 +45,15 @@ void generateCleanRouterPackage() {
   // Write lib files
   overwriteFile(
     'packages/clean_router/lib/clean_router.dart',
-    _libExportContent,
+    cleanRouterLibExportTemplate(),
   );
-  Directory('packages/clean_router/lib/src').createSync(recursive: true);
   overwriteFile(
     'packages/clean_router/lib/src/clean_router_base.dart',
-    _routerBaseContent,
+    cleanRouterBaseTemplate(),
   );
   overwriteFile(
     'packages/clean_router/lib/src/clean_router_refresh.dart',
-    _routerRefreshContent,
+    cleanRouterRefreshTemplate(),
   );
 
   stdout.writeln('📦 clean_router package created');
@@ -62,69 +71,17 @@ void _patchCleanRouterPubspec() {
   var envEnd = envStart + 1;
   while (envEnd < noComments.length) {
     final line = noComments[envEnd];
-    if (line.isNotEmpty && !line.startsWith(' ') && !line.startsWith('\t')) break;
+    if (line.isNotEmpty && !line.startsWith(' ') && !line.startsWith('\t')) {
+      break;
+    }
     envEnd++;
   }
 
   // Keep only the header up to and including the environment section
   final header = noComments.sublist(0, envEnd).join('\n').trimRight();
 
-  overwriteFile('packages/clean_router/pubspec.yaml', '$header\n\n$_pubspecTail');
+  overwriteFile(
+    'packages/clean_router/pubspec.yaml',
+    '$header\n\n${cleanRouterPubspecTailTemplate()}',
+  );
 }
-
-const _pubspecTail = '''
-resolution: workspace
-
-dependencies:
-  flutter:
-    sdk: flutter
-  go_router:
-
-dev_dependencies:
-  flutter_lints:
-
-flutter: null
-''';
-
-const _libExportContent = '''
-export './src/clean_router_base.dart';
-export './src/clean_router_refresh.dart';
-''';
-
-const _routerBaseContent = '''
-import 'dart:async';
-
-import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
-
-abstract interface class CleanRouterBase {
-  List<RouteBase> get routes;
-  List<Stream<dynamic>> get refreshStreams;
-  FutureOr<String?> redirect(BuildContext context, GoRouterState state);
-  int get priority;
-}
-''';
-
-const _routerRefreshContent = '''
-import 'dart:async';
-
-import 'package:flutter/foundation.dart';
-
-class CleanRouterRefresh extends ChangeNotifier {
-  CleanRouterRefresh(List<Stream<dynamic>> streams) {
-    _subscription = streams
-        .map((stream) => stream.listen((_) => notifyListeners()))
-        .toList();
-  }
-
-  late final List<StreamSubscription<dynamic>> _subscription;
-
-  @override
-  void dispose() {
-    for (final sub in _subscription) {
-      sub.cancel();
-    }
-    super.dispose();
-  }
-}
-''';

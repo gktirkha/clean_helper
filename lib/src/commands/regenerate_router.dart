@@ -1,6 +1,6 @@
 import 'dart:io';
 
-import '../functions/feature/patch_router_module.dart' show buildRouterModule;
+import '../functions/feature/build_router_module.dart';
 import '../functions/init/run_dart_format.dart';
 import '../functions/shared/ensure_pubspec.dart';
 import '../functions/shared/write_file.dart';

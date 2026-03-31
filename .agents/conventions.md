@@ -8,9 +8,9 @@ A file may import and call other functions freely, but must never define additio
 ```
 ✅ correct — imports and calls other functions
 void generateCoreFiles(String packageName) {
-  writeFile(...);          // imported from shared/write_file.dart
-  overwriteFile(...);      // imported from shared/write_file.dart
-  analysisOptionsTemplate(); // imported from templates/
+  writeFile(...);              // imported from shared/write_file.dart
+  overwriteFile(...);          // imported from shared/write_file.dart
+  analysisOptionsTemplate();   // imported from templates/
 }
 
 ❌ wrong — two definitions in one file
@@ -27,9 +27,35 @@ All logic lives in `lib/src/functions/`.
 
 ---
 
+## Templates
+
+All generated file content lives in `lib/src/templates/` — one function per file, returning `String`.
+Generator functions must **never** contain inline template strings.
+
+```
+✅ correct
+void generateFeaturePage(String feature, String basePath) {
+  final className = pascalCase(feature);
+  writeFile('$basePath/...', featurePageTemplate(feature, className));
+}
+
+❌ wrong — inline string in generator
+void generateFeaturePage(...) {
+  writeFile('$basePath/...', '''
+  import 'package:flutter/material.dart';
+  ...
+  ''');
+}
+```
+
+Template functions are imported using `../../templates/<file>.dart` from within `lib/src/functions/*/`.
+
+---
+
 ## writeFile vs overwriteFile
 
 Both are exported from `lib/src/functions/shared/write_file.dart`.
+Both automatically create parent directories — never call `Directory.createSync` before them.
 
 | Function | Behaviour | When to use |
 |----------|-----------|-------------|
@@ -61,13 +87,13 @@ It calls `abort(message)` if `pubspec.yaml` is not found in the current director
 ## All Paths Are Relative to the Target Flutter Project
 
 This tool is run **from inside a Flutter project root**, not from inside `clean_helper/`.
-All file paths in `writeFile`, `Directory.createSync`, etc. are relative to the user's project CWD.
+All file paths in `writeFile`, `overwriteFile`, `Directory.createSync`, etc. are relative to the user's project CWD.
 
 ---
 
 ## Import Paths
 
 - Shared utilities: `../shared/<file>.dart`
+- Templates: `../../templates/<file>.dart` (from within `lib/src/functions/*/`)
 - Init helpers: relative sibling imports within `init/`
-- Templates: `templates/<file>.dart` (relative from within `init/`)
 - Feature/repo/entity helpers: relative sibling imports within their folder

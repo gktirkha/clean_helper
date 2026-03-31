@@ -4,7 +4,22 @@
 
 Follow these steps to add a new command (e.g. `add_use_case`):
 
-### 1. Create helper function files
+### 1. Create template file(s)
+
+One template per file in `lib/src/templates/`:
+
+```dart
+// lib/src/templates/use_case_template.dart
+String useCaseTemplate(String className) => '''
+import '../repositories/${className.toLowerCase()}_repository.dart';
+
+class Get${className}UseCase {
+  // TODO: implement
+}
+''';
+```
+
+### 2. Create helper function file(s)
 
 One function per file under `lib/src/functions/<group>/`:
 
@@ -13,7 +28,21 @@ lib/src/functions/use_case/
 └── generate_use_case_file.dart    → generateUseCaseFile(dir, name)
 ```
 
-### 2. Create the command file
+```dart
+import 'dart:io';
+import '../shared/pascal_case.dart';
+import '../shared/write_file.dart';
+import '../../templates/use_case_template.dart';
+
+void generateUseCaseFile(String dir, String name) {
+  final className = pascalCase(name);
+  final path = '$dir/${name}_use_case.dart';
+  writeFile(path, useCaseTemplate(className));
+  stdout.writeln('  📄 $path');
+}
+```
+
+### 3. Create the command file
 
 `lib/src/commands/add_use_case.dart` — exactly one function:
 
@@ -30,7 +59,7 @@ void addUseCase(List<String> args) {
 }
 ```
 
-### 3. Create the binary entry point
+### 4. Create the binary entry point
 
 `bin/add_use_case.dart`:
 
@@ -40,7 +69,7 @@ import 'package:clean_helper/src/commands/add_use_case.dart';
 void main(List<String> arguments) => addUseCase(arguments);
 ```
 
-### 4. Export from the public API
+### 5. Export from the public API
 
 `lib/clean_helper.dart`:
 
@@ -48,30 +77,36 @@ void main(List<String> arguments) => addUseCase(arguments);
 export 'src/commands/add_use_case.dart';
 ```
 
-### 5. Register the executable (optional)
+### 6. Register the runner command
 
-`pubspec.yaml`:
+Create `lib/src/runner/commands/add_use_case_command.dart` and register in `lib/src/runner/clean_helper_runner.dart`:
 
-```yaml
-executables:
-  add-use-case: add_use_case
+```dart
+addCommand(AddUseCaseCommand());
 ```
 
 ---
 
 ## Adding a New Template
 
-Templates live in `lib/src/functions/init/templates/` and return `String`.
+Templates live in `lib/src/templates/` and return `String`.
 Each template is one file with one function:
 
 ```dart
-// lib/src/functions/init/templates/my_new_template.dart
+// lib/src/templates/my_new_template.dart
 String myNewTemplate(String packageName) => '''
 // generated content here
 ''';
 ```
 
-Then import and call it from the relevant generator function.
+Then import and call it from the relevant generator function:
+
+```dart
+import '../../templates/my_new_template.dart';
+
+// inside generator function:
+writeFile(path, myNewTemplate(packageName));
+```
 
 ---
 
@@ -80,3 +115,14 @@ Then import and call it from the relevant generator function.
 Place it in `lib/src/functions/shared/` — one function per file.
 Import it wherever needed using a relative `../shared/<file>.dart` path.
 Do **not** export it from `lib/clean_helper.dart`.
+
+---
+
+## Adding a New Init Step
+
+If you need `init` to generate new files:
+
+1. Create a template in `lib/src/templates/`.
+2. Create a generator function in `lib/src/functions/init/`.
+3. If the new files go into a directory that doesn't already exist, add the directory to the list in `lib/src/functions/init/create_directories.dart`.
+4. Call the generator from `runInit()` in `lib/src/commands/init.dart` at the appropriate step.

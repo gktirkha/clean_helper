@@ -1,6 +1,6 @@
 import 'dart:io';
 
-import '../feature/patch_router_module.dart' show buildRouterModule;
+import '../feature/build_router_module.dart';
 import '../shared/pascal_case.dart';
 import '../shared/write_file.dart';
 
