@@ -16,7 +16,8 @@ translate_var: locales
   writeFile('assets/locales/en.locale.json', '''
 {
   "general": {
-    "languageName": "English"
+    "languageName": "English",
+    "somethingWentWrong": "Something went wrong"
   }
 }
 ''');

@@ -38,7 +38,7 @@ void generateCoreFiles(String packageName) {
   writeFile('lib/app/di/app_module.dart', appModuleTemplate());
   writeFile('lib/core/di/core_module.dart', coreModuleTemplate());
   writeFile(
-    'lib/core/extensions/string_extension.dart',
+    'lib/core/utils/extensions/string_extension.dart',
     stringExtensionTemplate(),
   );
   stdout.writeln('⚙️  Core files generated');
