@@ -45,5 +45,4 @@ void runInit({bool withNetwork = false, bool withDi = false}) {
   stdout.writeln(
     '  • Add a feature:     clean-helper add_feature <name>',
   );
-  stdout.writeln('  • Register routers:  lib/app/router/router_module.dart');
 }
