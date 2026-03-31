@@ -1,6 +1,5 @@
-import 'dart:io';
-
 import '../shared/pascal_case.dart';
+import '../shared/write_file.dart';
 
 void generateFeatureNavigationImpl(String feature) {
   final className = pascalCase(feature);
@@ -21,7 +20,5 @@ class ${className}NavigationImpl implements ${className}Navigation {
   }
 }
 ''';
-  File(
-    'lib/app/navigations/${feature}_navigation_impl.dart',
-  ).writeAsStringSync(content);
+  writeFile('lib/app/navigations/${feature}_navigation_impl.dart', content);
 }

@@ -1,5 +1,7 @@
 import 'dart:io';
 
+import '../shared/write_file.dart';
+
 void patchAppGoRouter() {
   const path = 'lib/app/router/app_go_router.dart';
   final file = File(path);
@@ -29,6 +31,6 @@ void patchAppGoRouter() {
     );
   }
 
-  file.writeAsStringSync(content);
+  overwriteFile(path, content);
   stdout.writeln('🔍 Chucker observer added to $path');
 }

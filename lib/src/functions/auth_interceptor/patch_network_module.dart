@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import '../shared/insert_after_last_import.dart';
+import '../shared/write_file.dart';
 
 void patchNetworkModule() {
   const path = 'lib/core/network/di/network_module.dart';
@@ -63,7 +64,7 @@ void patchNetworkModule() {
   }
 
   if (changed) {
-    file.writeAsStringSync(content);
+    overwriteFile(path, content);
     stdout.writeln('  ✏️  Patched: $path');
   } else {
     stdout.writeln('  ⏭  Network module already configured — skipped.');

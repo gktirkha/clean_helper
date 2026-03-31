@@ -69,7 +69,7 @@ void _patchCleanRouterPubspec() {
   // Keep only the header up to and including the environment section
   final header = noComments.sublist(0, envEnd).join('\n').trimRight();
 
-  file.writeAsStringSync('$header\n\n$_pubspecTail');
+  overwriteFile('packages/clean_router/pubspec.yaml', '$header\n\n$_pubspecTail');
 }
 
 const _pubspecTail = '''

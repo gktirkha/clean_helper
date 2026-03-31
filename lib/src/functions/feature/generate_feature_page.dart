@@ -1,6 +1,5 @@
-import 'dart:io';
-
 import '../shared/pascal_case.dart';
+import '../shared/write_file.dart';
 
 void generateFeaturePage(String feature, String basePath) {
   final className = pascalCase(feature);
@@ -24,7 +23,5 @@ class ${className}Page extends StatelessWidget {
   }
 }
 ''';
-  File(
-    '$basePath/presentation/pages/${feature}_page.dart',
-  ).writeAsStringSync(content);
+  writeFile('$basePath/presentation/pages/${feature}_page.dart', content);
 }

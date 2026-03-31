@@ -1,6 +1,5 @@
-import 'dart:io';
-
 import '../shared/pascal_case.dart';
+import '../shared/write_file.dart';
 
 void generateFeatureNavigation(String feature, String basePath) {
   final className = pascalCase(feature);
@@ -12,7 +11,5 @@ abstract class ${className}Navigation {
   void goTo$className(BuildContext context);
 }
 ''';
-  File(
-    '$basePath/router/${feature}_navigation.dart',
-  ).writeAsStringSync(content);
+  writeFile('$basePath/router/${feature}_navigation.dart', content);
 }

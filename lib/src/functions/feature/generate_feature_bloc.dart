@@ -1,12 +1,11 @@
-import 'dart:io';
-
 import '../shared/pascal_case.dart';
+import '../shared/write_file.dart';
 
 void generateFeatureBloc(String feature, String basePath) {
   final className = pascalCase(feature);
   final blocPath = '$basePath/presentation/bloc/$feature';
 
-  File('$blocPath/${feature}_bloc.dart').writeAsStringSync('''
+  writeFile('$blocPath/${feature}_bloc.dart', '''
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:injectable/injectable.dart';
@@ -23,7 +22,7 @@ class ${className}Bloc extends Bloc<${className}Event, ${className}State> {
 }
 ''');
 
-  File('$blocPath/${feature}_event.dart').writeAsStringSync('''
+  writeFile('$blocPath/${feature}_event.dart', '''
 part of '${feature}_bloc.dart';
 
 @freezed
@@ -32,7 +31,7 @@ abstract class ${className}Event with _\$${className}Event {
 }
 ''');
 
-  File('$blocPath/${feature}_state.dart').writeAsStringSync('''
+  writeFile('$blocPath/${feature}_state.dart', '''
 part of '${feature}_bloc.dart';
 
 @freezed

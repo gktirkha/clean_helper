@@ -1,6 +1,5 @@
-import 'dart:io';
-
 import '../shared/pascal_case.dart';
+import '../shared/write_file.dart';
 
 void generateFeatureRouter(String feature, String basePath) {
   final className = pascalCase(feature);
@@ -44,5 +43,5 @@ class ${className}Router implements CleanRouterBase {
   int get priority => 10;
 }
 ''';
-  File('$basePath/router/${feature}_router.dart').writeAsStringSync(content);
+  writeFile('$basePath/router/${feature}_router.dart', content);
 }

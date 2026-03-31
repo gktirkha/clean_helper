@@ -1,7 +1,6 @@
-import 'dart:io';
-
 import '../shared/kebab_case.dart';
 import '../shared/pascal_case.dart';
+import '../shared/write_file.dart';
 
 void generateFeatureRoutes(String feature, String basePath) {
   final className = pascalCase(feature);
@@ -11,5 +10,5 @@ sealed class ${className}Routes {
   static const String $feature = '/${kebabCase(feature)}';
 }
 ''';
-  File('$basePath/router/${feature}_routes.dart').writeAsStringSync(content);
+  writeFile('$basePath/router/${feature}_routes.dart', content);
 }

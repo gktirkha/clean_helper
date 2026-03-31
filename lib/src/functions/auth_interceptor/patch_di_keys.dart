@@ -28,6 +28,6 @@ sealed class DIKeys {
         '${m[1]}${m[2]}  static const String noAuthDio = \'noAuthDio\';\n${m[3]}',
   );
 
-  file.writeAsStringSync(patched);
+  overwriteFile(path, patched);
   stdout.writeln('  ✏️  Patched: $path');
 }
