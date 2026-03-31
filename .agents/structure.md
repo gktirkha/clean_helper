@@ -83,6 +83,7 @@ clean_helper/
 │       │   ├── feature_routes_template.dart
 │       │   ├── feature_state_template.dart
 │       │   ├── get_current_function_name_template.dart
+│       │   ├── list_to_model_list_template.dart
 │       │   ├── main_app_dart_template.dart
 │       │   ├── main_dart_template.dart
 │       │   ├── model_template.dart
@@ -168,8 +169,7 @@ clean_helper/
 │           │
 │           ├── build_runner/           # Helpers for runBuildRunnerCommand()
 │           │   ├── run_build_runner_build.dart
-│           │   ├── run_build_runner_clean.dart
-│           │   └── run_build_runner_watch.dart
+│           │   └── run_build_runner_clean.dart
 │           │
 │           └── generate_localizations/
 │               └── run_generate_localizations.dart

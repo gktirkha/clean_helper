@@ -8,8 +8,7 @@ import '../../../generated/locales/locales.g.dart';
 import '../../domain/entities/error_entity.dart';
 import '../../domain/failures/failure.dart';
 import 'get_current_function_name.dart';
-
-typedef JsonDecodeFactory<T> = T Function(Map<String, dynamic> data);
+import 'type_definitions.dart';
 
 Either<Failure, T> safeCast<T>(dynamic data, JsonDecodeFactory<T> decoder) {
   try {

@@ -40,8 +40,10 @@ lib/core/
     │   └── string_extension.dart   (String.tr — shorthand for slang translation)
     └── functions/
         ├── get_current_function_name.dart
-        ├── safe_cast.dart           (Either<Failure, T> from dynamic)
-        └── safe_execute.dart        (FutureOr<Either<Failure, T>> from async call)
+        ├── type_definitions.dart        (JsonDecodeFactory typedef)
+        ├── safe_cast.dart               (Either<Failure, T> from dynamic)
+        ├── safe_execute.dart            (FutureOr<Either<Failure, T>> from async call)
+        └── list_to_model_list.dart      (List<T> from List using decoder)
 ```
 
 ---
@@ -110,6 +112,8 @@ Every feature BLoC:
 - `safeCast<T>(data, decoder)` — safely casts dynamic API responses to `Either<Failure, T>`
 - `safeExecute<T>(exec)` — wraps any async call in `Either<Failure, T>`
 - Both live in `lib/core/utils/functions/`
+- `JsonDecodeFactory<T>` typedef defined in `lib/core/utils/functions/type_definitions.dart`
+- `listToModelList<T>(list, decoder)` — converts a list of dynamic values to `List<T>` using a decoder
 
 ---
 

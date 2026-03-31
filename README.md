@@ -60,7 +60,7 @@ What it does (in order):
 6. Scaffolds `packages/clean_router` local workspace package (`CleanRouterBase` + `CleanRouterRefresh`)
 7. Patches root `pubspec.yaml` with `workspace: - packages/clean_router`
 8. Generates core Dart files (main, bootstrap, DI, routing, string extension)
-9. Generates utils (`Failure`, `getCurrentFunctionName`, `safeCast`, `safeExecute`)
+9. Generates utils (`Failure`, `getCurrentFunctionName`, `safeCast`, `safeExecute`, `listToModelList`, type definitions)
 10. Generates home feature scaffold
 11. Installs all runtime and dev dependencies
 12. Patches `pubspec.yaml` flutter assets

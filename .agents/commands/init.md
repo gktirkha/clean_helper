@@ -15,7 +15,7 @@
 6. `generateCleanRouterPackage()` — scaffolds `packages/clean_router` with `CleanRouterBase` + `CleanRouterRefresh`
 7. `addCleanRouterWorkspace()` — patches root `pubspec.yaml` with `workspace: - packages/clean_router`
 8. `generateCoreFiles(packageName)` — all core Dart files (main, bootstrap, DI, routing, string extension)
-9. `generateUtilsFiles()` — `Failure`, `getCurrentFunctionName`, `safeCast`, `safeExecute`
+9. `generateUtilsFiles()` — `Failure`, `getCurrentFunctionName`, `safeCast`, `safeExecute`, `listToModelList`, type definitions
 10. `generateHomeFeature(packageName)` — complete home feature scaffold
 11. `installDependencies()` — `dart pub add` / `flutter pub add`
 12. `addFlutterAssetsToPubSpec()` — patches `pubspec.yaml` flutter.assets
@@ -64,8 +64,10 @@ lib/
 │   │   │   └── string_extension.dart   (String.tr)
 │   │   └── functions/
 │   │       ├── get_current_function_name.dart
+│   │       ├── type_definitions.dart           (JsonDecodeFactory typedef)
 │   │       ├── safe_cast.dart
-│   │       └── safe_execute.dart
+│   │       ├── safe_execute.dart
+│   │       └── list_to_model_list.dart
 │   └── generated/
 │       ├── locales/                 (slang output)
 │       └── flutter_gen/             (flutter_gen output)
