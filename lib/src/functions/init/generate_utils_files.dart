@@ -59,7 +59,7 @@ Either<Failure, T> safeCast<T>(dynamic data, JsonDecodeFactory<T> decoder) {
       return Right(data);
     }
     if (data is String) {
-      return Right(decoder(jsonDecode(data)));
+      return safeCast(jsonDecode(data), decoder);
     }
     if (data is Map<String, dynamic>) {
       return Right(decoder(data));
