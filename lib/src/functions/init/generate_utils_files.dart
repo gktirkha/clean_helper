@@ -35,10 +35,7 @@ void generateUtilsFiles() {
     listToModelListTemplate(),
   );
   writeFile('lib/core/utils/functions/debouncer.dart', debounceTemplate());
-  writeFile(
-    'lib/core/utils/functions/app_logger.dart',
-    appLoggerTemplate(),
-  );
+  writeFile('lib/core/utils/functions/app_logger.dart', appLoggerTemplate());
 
   stdout.writeln('🛠️  Utils files generated');
 }

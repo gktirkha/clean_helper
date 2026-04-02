@@ -88,9 +88,9 @@ class AuthInterceptor extends Interceptor {
     // TODO: get access token from storage and attach to header
     // Example:
     //   final token = await _tokenStorage.getAccessToken();
-    //   if (token != null) {
-    //   requestOptions.headers[_authHeaderKey] = '\$_bearerKey  \${newToken ?? token}';
-    //   }
+    if (newToken != null) {
+      requestOptions.headers[_authHeaderKey] = '\$_bearerKey \$newToken';
+    }
     return requestOptions;
   }
 }
