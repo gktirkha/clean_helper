@@ -1,7 +1,7 @@
 String debounceTemplate() => '''
 import 'dart:async';
 
-import 'pretty_logger.dart';
+import 'app_logger.dart';
 
 /// A generic debounce utility that delays invoking a listener until after
 /// [_duration] has elapsed since the last time [value] was set.
@@ -113,7 +113,7 @@ class Debouncer<T> {
 
   void _log(String message) {
     if (!showLogs) return;
-    PrettyLogger.warning(message);
+    AppLogger.warning(message);
   }
 }
 ''';

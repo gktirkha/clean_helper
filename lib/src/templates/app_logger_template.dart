@@ -1,9 +1,9 @@
-String prettyLoggerTemplate() => '''
+String appLoggerTemplate() => '''
 import 'package:logger/logger.dart';
 
 import '../../../app/di/di_container.dart';
 
-class PrettyLogger {
+class AppLogger {
   static Logger get _logger => diContainer();
   static final trace = _logger.t;
   static final debug = _logger.t;

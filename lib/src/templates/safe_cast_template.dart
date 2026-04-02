@@ -7,7 +7,7 @@ import '../../../generated/locales/locales.g.dart';
 import '../../domain/entities/error_entity.dart';
 import '../../domain/failures/failure.dart';
 import 'get_current_function_name.dart';
-import 'pretty_logger.dart';
+import 'app_logger.dart';
 import 'type_definitions.dart';
 
 Either<Failure, T> safeCast<T>(dynamic data, JsonDecodeFactory<T> decoder) {
@@ -32,7 +32,7 @@ Either<Failure, T> safeCast<T>(dynamic data, JsonDecodeFactory<T> decoder) {
     }
     throw Failure(message: 'Unable To Cast');
   } catch (e, s) {
-    PrettyLogger.error(
+    AppLogger.error(
       getCurrentFunctionName(),
       stackTrace: s,
       error: e,

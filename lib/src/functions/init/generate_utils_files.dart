@@ -2,7 +2,7 @@ import 'dart:io';
 
 import '../../templates/debounce_template.dart';
 import '../../templates/error_entity_template.dart';
-import '../../templates/pretty_logger_template.dart';
+import '../../templates/app_logger_template.dart';
 import '../../templates/failure_template.dart';
 import '../../templates/get_current_function_name_template.dart';
 import '../../templates/list_to_model_list_template.dart';
@@ -36,8 +36,8 @@ void generateUtilsFiles() {
   );
   writeFile('lib/core/utils/functions/debouncer.dart', debounceTemplate());
   writeFile(
-    'lib/core/utils/functions/pretty_logger.dart',
-    prettyLoggerTemplate(),
+    'lib/core/utils/functions/app_logger.dart',
+    appLoggerTemplate(),
   );
 
   stdout.writeln('🛠️  Utils files generated');
