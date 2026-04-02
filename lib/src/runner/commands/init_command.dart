@@ -17,6 +17,13 @@ class InitCommand extends Command<void> {
       help:
           'Also generate a di/home_di.dart injectable di for the home feature.',
     );
+    argParser.addFlag(
+      'auth-interceptor',
+      abbr: 'a',
+      negatable: false,
+      help:
+          'Also scaffold the auth interceptor (implies --network).',
+    );
   }
 
   @override
@@ -30,5 +37,6 @@ class InitCommand extends Command<void> {
   void run() => runInit(
     withNetwork: argResults!['network'] as bool,
     withDi: argResults!['di'] as bool,
+    withAuthInterceptor: argResults!['auth-interceptor'] as bool,
   );
 }
