@@ -13,6 +13,7 @@ class Debounce<T> {
 
   set value(T newValue) {
     _value = newValue;
+    if (_listener == null) return;
     _timer?.cancel();
     _timer = Timer(_duration, () => _listener?.call(_value));
   }
