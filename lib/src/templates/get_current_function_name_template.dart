@@ -1,5 +1,5 @@
 String getCurrentFunctionNameTemplate() => '''
-import 'dart:developer';
+import 'pretty_logger.dart';
 
 String getCurrentFunctionName({int frameIndex = 1, bool printPath = false}) {
   final nameNotFound = 'Name Not Found';
@@ -16,8 +16,13 @@ String getCurrentFunctionName({int frameIndex = 1, bool printPath = false}) {
         return parenIndex != -1 ? full.substring(0, parenIndex) : full;
       }
     }
-  } catch (e) {
-    log(e.toString(), name: nameNotFound);
+  } catch (e, s) {
+    PrettyLogger.error(
+      getCurrentFunctionName(),
+      stackTrace: s,
+      error: e,
+      time: DateTime.now(),
+    );
     return nameNotFound;
   }
   return nameNotFound;

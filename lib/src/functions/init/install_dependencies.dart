@@ -17,6 +17,7 @@ void installDependencies() {
     'package_info_plus',
     'flutter_svg',
     'json_annotation',
+    'logger',
   ];
 
   final devDeps = [
