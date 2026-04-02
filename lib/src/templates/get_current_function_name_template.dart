@@ -5,7 +5,7 @@ String getCurrentFunctionName({int frameIndex = 2, bool includePath = false}) {
   final nameNotFound = 'Name Not Found';
   try {
     final stackTrace = StackTrace.current;
-    final frames = stackTrace.toString().split('\n');
+    final frames = stackTrace.toString().split('\\n');
     if (frames.length >= frameIndex) {
       final raw = frames[frameIndex].trim();
       final frameContent = raw.replaceFirst(RegExp(r'^#\\d+\\s+'), '').trim();
