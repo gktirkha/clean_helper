@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import '../../templates/debounce_template.dart';
 import '../../templates/error_entity_template.dart';
 import '../../templates/failure_template.dart';
 import '../../templates/get_current_function_name_template.dart';
@@ -31,6 +32,10 @@ void generateUtilsFiles() {
   writeFile(
     'lib/core/utils/functions/list_to_model_list.dart',
     listToModelListTemplate(),
+  );
+  writeFile(
+    'lib/core/utils/functions/debounce.dart',
+    debounceTemplate(),
   );
 
   stdout.writeln('🛠️  Utils files generated');
