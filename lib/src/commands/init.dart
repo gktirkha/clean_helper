@@ -6,9 +6,9 @@ import '../functions/init/create_directories.dart';
 import '../functions/init/generate_clean_router_package.dart';
 import '../functions/init/generate_core_files.dart';
 import '../functions/init/generate_flutter_gen_files.dart';
-import '../functions/init/generate_utils_files.dart';
 import '../functions/init/generate_home_feature.dart';
 import '../functions/init/generate_localization_files.dart';
+import '../functions/init/generate_utils_files.dart';
 import '../functions/init/install_dependencies.dart';
 import '../functions/init/run_build_runner.dart';
 import '../functions/init/run_dart_format.dart';
@@ -40,8 +40,9 @@ void runInit({
   generateHomeFeature(packageName, withDi: withDi);
   installDependencies();
   addFlutterAssetsToPubSpec();
-  if (withNetwork || withAuthInterceptor)
+  if (withNetwork || withAuthInterceptor) {
     addNetworkModule(runBuildRunnerAfter: false);
+  }
   if (withAuthInterceptor) addAuthInterceptor(runBuildRunnerAfter: false);
   runSlang();
   runBuildRunner();

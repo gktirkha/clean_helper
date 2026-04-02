@@ -25,6 +25,15 @@ class Debouncer<T> {
     this.logLabel = 'Debounce',
   }) : _value = value;
 
+  /// Whether to show log warnings. Set to `true` to enable logging.
+  ///
+  /// Disabled by default. Enable during development to surface listener warnings.
+  ///
+  /// ```dart
+  /// Debouncer.showLogs = true;
+  /// ```
+  static bool showLogs = false;
+
   /// The debounce duration. The listener is called only after this duration
   /// has passed without another [value] update.
   final Duration _duration;
@@ -79,17 +88,13 @@ class Debouncer<T> {
     if (allowMultipleListeners) {
       if (_listeners.length >= maxListeners) {
         _listeners.removeAt(0);
-        log(
-          'maxListeners (\$maxListeners) reached. Oldest listener removed.',
-          name: logLabel,
-        );
+        _log('maxListeners (\$maxListeners) reached. Oldest listener removed.');
       }
       _listeners.add(listener);
     } else {
       if (_listener != null) {
-        log(
+        _log(
           'A listener is already registered and will be overwritten. Set allowMultipleListeners: true to support multiple listeners.',
-          name: logLabel,
         );
       }
       _listener = listener;
@@ -103,6 +108,11 @@ class Debouncer<T> {
     _timer?.cancel();
     _listener = null;
     _listeners.clear();
+  }
+
+  void _log(String message) {
+    if (!showLogs) return;
+    log(message, name: logLabel);
   }
 }
 ''';
