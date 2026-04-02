@@ -11,13 +11,13 @@ import 'dart:developer';
 /// debounce.listen((value) => print(value));
 /// debounce.value = 'hello'; // listener fires after 300ms
 /// ```
-class Debounce<T> {
-  /// Creates a [Debounce] with an initial [value] and a debounce [_duration].
+class Debouncer<T> {
+  /// Creates a [Debouncer] with an initial [value] and a debounce [_duration].
   ///
   /// Set [allowMultipleListeners] to `true` to allow multiple listeners to be
   /// registered. When `false` (default), each [listen] call overwrites the
   /// previous listener.
-  Debounce(
+  Debouncer(
     T value,
     this._duration, {
     this.allowMultipleListeners = false,

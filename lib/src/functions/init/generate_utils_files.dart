@@ -33,7 +33,7 @@ void generateUtilsFiles() {
     'lib/core/utils/functions/list_to_model_list.dart',
     listToModelListTemplate(),
   );
-  writeFile('lib/core/utils/functions/debounce.dart', debounceTemplate());
+  writeFile('lib/core/utils/functions/debouncer.dart', debounceTemplate());
 
   stdout.writeln('🛠️  Utils files generated');
 }
