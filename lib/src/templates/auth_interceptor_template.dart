@@ -69,14 +69,16 @@ class AuthInterceptor extends Interceptor {
 
   Future<String?> _performRefresh() async {
     try {
-      // TODO: get refresh token from storage
-      // TODO: POST to token refresh endpoint using _dio
-      // TODO: parse new access token from response
-      // TODO: save new tokens to storage
-      // TODO: return new access token
+      // TODO: Handle full token refresh flow
+      // - Read refresh token from storage
+      // - Call refresh API using _dio
+      // - Extract new access + refresh tokens
+      // - Persist tokens in storage
+      // - Return new access token
+
       return null;
     } catch (e) {
-      // TODO: clear stored tokens
+      // TODO: On refresh failure, clear tokens & handle logout if needed
       return null;
     }
   }
@@ -84,13 +86,20 @@ class AuthInterceptor extends Interceptor {
   FutureOr<RequestOptions> _addAuthHeader(
     RequestOptions requestOptions, [
     String? newToken,
-  ]) {
-    // TODO: get access token from storage and attach to header
-    // Example:
-    //   final token = await _tokenStorage.getAccessToken();
+  ]) async {
+    // TODO: Attach access token from storage (or use provided newToken)
+
     if (newToken != null) {
       requestOptions.headers[_authHeaderKey] = '\$_bearerKey \$newToken';
+      return requestOptions;
     }
+
+    // Example:
+    // final token = await _tokenStorage.getAccessToken();
+    // if (token != null) {
+    //   requestOptions.headers[_authHeaderKey] = '\$_bearerKey \$token';
+    // }
+
     return requestOptions;
   }
 }
