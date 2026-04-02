@@ -17,8 +17,13 @@ class Debounce<T> {
   /// Set [allowMultipleListeners] to `true` to allow multiple listeners to be
   /// registered. When `false` (default), each [listen] call overwrites the
   /// previous listener.
-  Debounce(T value, this._duration, {this.allowMultipleListeners = false})
-    : _value = value;
+  Debounce(
+    T value,
+    this._duration, {
+    this.allowMultipleListeners = false,
+    this.maxListeners = 30,
+    this.logLabel = 'Debounce',
+  }) : _value = value;
 
   /// The debounce duration. The listener is called only after this duration
   /// has passed without another [value] update.
@@ -29,6 +34,15 @@ class Debounce<T> {
   /// - `false` (default): calling [listen] overwrites the previous listener.
   /// - `true`: each [listen] call adds a new listener; all are notified.
   final bool allowMultipleListeners;
+
+  /// The label used as the `name` in log messages. Defaults to `'Debounce'`.
+  final String logLabel;
+
+  /// Maximum number of listeners allowed when [allowMultipleListeners] is `true`.
+  ///
+  /// When the limit is exceeded, the oldest listener (index 0) is removed to
+  /// make room for the new one. Defaults to `30`.
+  final int maxListeners;
 
   T _value;
   Timer? _timer;
@@ -63,12 +77,19 @@ class Debounce<T> {
   /// If `true`, the listener is appended to the list.
   void listen(void Function(T value) listener) {
     if (allowMultipleListeners) {
+      if (_listeners.length >= maxListeners) {
+        _listeners.removeAt(0);
+        log(
+          'maxListeners (\$maxListeners) reached. Oldest listener removed.',
+          name: logLabel,
+        );
+      }
       _listeners.add(listener);
     } else {
       if (_listener != null) {
         log(
           'A listener is already registered and will be overwritten. Set allowMultipleListeners: true to support multiple listeners.',
-          name: 'Debounce',
+          name: logLabel,
         );
       }
       _listener = listener;
