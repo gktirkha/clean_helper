@@ -22,7 +22,7 @@ String getCurrentFunctionName({int frameIndex = 2, bool includePath = false}) {
     }
   } catch (e, s) {
     AppLogger.error(
-      getCurrentFunctionName(),
+      'getCurrentFunctionName',
       stackTrace: s,
       error: e,
       time: DateTime.now(),
