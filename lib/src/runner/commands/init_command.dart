@@ -21,8 +21,7 @@ class InitCommand extends Command<void> {
       'auth-interceptor',
       abbr: 'a',
       negatable: false,
-      help:
-          'Also scaffold the auth interceptor (implies --network).',
+      help: 'Also scaffold the auth interceptor (implies --network).',
     );
   }
 

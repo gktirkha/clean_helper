@@ -40,7 +40,8 @@ void runInit({
   generateHomeFeature(packageName, withDi: withDi);
   installDependencies();
   addFlutterAssetsToPubSpec();
-  if (withNetwork || withAuthInterceptor) addNetworkModule(runBuildRunnerAfter: false);
+  if (withNetwork || withAuthInterceptor)
+    addNetworkModule(runBuildRunnerAfter: false);
   if (withAuthInterceptor) addAuthInterceptor(runBuildRunnerAfter: false);
   runSlang();
   runBuildRunner();
