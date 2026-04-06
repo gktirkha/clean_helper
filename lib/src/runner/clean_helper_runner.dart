@@ -10,6 +10,7 @@ import 'commands/init_command.dart';
 import 'commands/regenerate_router_command.dart';
 import 'commands/remove_feature_command.dart';
 import 'commands/generate_localizations_command.dart';
+import 'commands/add_vscode_config_command.dart';
 
 class CleanHelperRunner extends CompletionCommandRunner<void> {
   CleanHelperRunner()
@@ -27,5 +28,6 @@ class CleanHelperRunner extends CompletionCommandRunner<void> {
     addCommand(RegenerateRouterCommand());
     addCommand(GenerateLocalizationsCommand());
     addCommand(AddAuthInterceptorCommand());
+    addCommand(AddVscodeConfigCommand());
   }
 }
