@@ -33,6 +33,7 @@ clean-helper install-completion-files
 | `clean-helper build_runner [clean\|build]` | Run build_runner in the current project (default: build) |
 | `clean-helper remove_feature <name>` | Remove a feature and deregister its router |
 | `clean-helper regenerate_router` | Scan all features on disk and regenerate `router_module.dart` |
+| `clean-helper add_vscode_config` | Generate `.vscode/extensions.json`, `launch.json`, and `tasks.json` |
 | `clean-helper generate_localizations` | Generate locales using slang |
 
 `<scope>` for `add_entity` is either `core` or a feature name (e.g. `home`, `auth`). `add_repo` only supports feature scope.
@@ -63,10 +64,11 @@ What it does (in order):
 9. Generates utils (`Failure`, `getCurrentFunctionName`, `safeCast`, `safeExecute`, `listToModelList`, type definitions)
 10. Generates home feature scaffold
 11. Installs all runtime and dev dependencies
-12. Patches `pubspec.yaml` flutter assets
-13. Runs `dart run slang`
-14. Runs `dart run build_runner build --delete-conflicting-outputs`
-15. Runs `dart format .`
+12. Generates VSCode config (`.vscode/extensions.json`, `launch.json`, `tasks.json`)
+13. Patches `pubspec.yaml` flutter assets
+14. Runs `dart run slang`
+15. Runs `dart run build_runner build --delete-conflicting-outputs`
+16. Runs `dart format .`
 
 **Dependencies installed:**
 
@@ -242,6 +244,24 @@ clean-helper regenerate_router
 ```
 
 Scans `lib/features/` for any feature that has a `router/<feature>_router.dart` file and regenerates `lib/app/router/router_module.dart` from scratch. Features are sorted alphabetically for deterministic output. `router_module.dart` is fully managed by the tool — do not edit it manually. Useful when the module has drifted out of sync or after manual edits to the features directory.
+
+---
+
+### `add_vscode_config` — Generate VSCode configuration
+
+```bash
+clean-helper add_vscode_config
+```
+
+Generates three files under `.vscode/`:
+
+| File | Purpose |
+|------|---------|
+| `extensions.json` | Recommended extensions for the project |
+| `launch.json` | Debug launch configurations |
+| `tasks.json` | Common project tasks |
+
+All files are written with `writeFile` — skipped if they already exist. Also runs automatically as part of `init`.
 
 ---
 

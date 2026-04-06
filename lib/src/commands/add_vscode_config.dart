@@ -8,9 +8,15 @@ import '../functions/vscode_config/generate_vscode_tasks.dart';
 
 void addVscodeConfig() {
   ensurePubspec();
+
+  stdout.writeln('🖥️  Generating VSCode config...');
+  stdout.writeln();
+
   final appName = readPackageName();
   generateVscodeExtensions();
   generateVscodeLaunch(appName);
   generateVscodeTasks();
+
+  stdout.writeln();
   stdout.writeln('✅ VSCode config generated.');
 }
