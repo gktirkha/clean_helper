@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import '../../clean_helper.dart';
 import '../functions/init/add_clean_router_workspace.dart';
 import '../functions/init/add_flutter_assets_to_pubspec.dart';
 import '../functions/init/create_directories.dart';
@@ -15,8 +16,6 @@ import '../functions/init/run_dart_format.dart';
 import '../functions/init/run_slang.dart';
 import '../functions/shared/ensure_pubspec.dart';
 import '../functions/shared/read_package_name.dart';
-import 'add_auth_interceptor.dart';
-import 'add_network_module.dart';
 
 void runInit({
   bool withNetwork = false,
@@ -44,6 +43,7 @@ void runInit({
     addNetworkModule(runBuildRunnerAfter: false);
   }
   if (withAuthInterceptor) addAuthInterceptor(runBuildRunnerAfter: false);
+  addVscodeConfig();
   runSlang();
   runBuildRunner();
   runDartFormat();
