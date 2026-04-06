@@ -38,12 +38,12 @@ void runInit({
   generateUtilsFiles();
   generateHomeFeature(packageName, withDi: withDi);
   installDependencies();
+  addVscodeConfig();
   addFlutterAssetsToPubSpec();
   if (withNetwork || withAuthInterceptor) {
     addNetworkModule(runBuildRunnerAfter: false);
   }
   if (withAuthInterceptor) addAuthInterceptor(runBuildRunnerAfter: false);
-  addVscodeConfig();
   runSlang();
   runBuildRunner();
   runDartFormat();
