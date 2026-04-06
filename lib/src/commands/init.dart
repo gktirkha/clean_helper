@@ -12,6 +12,7 @@ import '../functions/init/generate_localization_files.dart';
 import '../functions/init/generate_utils_files.dart';
 import '../functions/init/install_dependencies.dart';
 import '../functions/init/run_build_runner.dart';
+import '../functions/init/update_gitignore.dart';
 import '../functions/init/run_dart_format.dart';
 import '../functions/init/run_slang.dart';
 import '../functions/shared/ensure_pubspec.dart';
@@ -38,6 +39,7 @@ void runInit({
   generateUtilsFiles();
   generateHomeFeature(packageName, withDi: withDi);
   installDependencies();
+  updateGitignore();
   addVscodeConfig();
   addFlutterAssetsToPubSpec();
   if (withNetwork || withAuthInterceptor) {
