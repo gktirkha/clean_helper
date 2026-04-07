@@ -7,7 +7,10 @@ import '../functions/init/run_build_runner.dart';
 import '../functions/init/run_dart_format.dart';
 import '../functions/shared/ensure_pubspec.dart';
 
-void addAuthInterceptor({bool runBuildRunnerAfter = true}) {
+void addAuthInterceptor({
+  bool runBuildRunnerAfter = true,
+  bool showNextSteps = true,
+}) {
   ensurePubspec();
 
   stdout.writeln('🔐 Scaffolding auth interceptor...');
@@ -19,9 +22,11 @@ void addAuthInterceptor({bool runBuildRunnerAfter = true}) {
   if (runBuildRunnerAfter) runBuildRunner();
 
   stdout.writeln('✅ Auth interceptor scaffold generated.');
-  stdout.writeln('Next steps:');
-  stdout.writeln(
-    '  1. Fill in the TODOs in lib/core/network/interceptors/auth_interceptor.dart',
-  );
-  stdout.writeln();
+  if (showNextSteps) {
+    stdout.writeln('Next steps:');
+    stdout.writeln(
+      '  1. Fill in the TODOs in lib/core/network/interceptors/auth_interceptor.dart',
+    );
+    stdout.writeln();
+  }
 }
