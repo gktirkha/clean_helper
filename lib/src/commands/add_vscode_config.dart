@@ -10,9 +10,8 @@ void addVscodeConfig() {
   ensurePubspec();
 
   stdout.writeln('🖥️  Generating VSCode config...');
-  stdout.writeln();
-
   final appName = readPackageName();
+
   generateVscodeExtensions();
   generateVscodeLaunch(appName);
   generateVscodeTasks();
