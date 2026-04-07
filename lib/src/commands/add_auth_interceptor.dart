@@ -22,6 +22,7 @@ void addAuthInterceptor({
   if (runBuildRunnerAfter) runBuildRunner();
 
   stdout.writeln('✅ Auth interceptor scaffold generated.');
+  stdout.writeln();
   if (showNextSteps) {
     stdout.writeln('Next steps:');
     stdout.writeln(
