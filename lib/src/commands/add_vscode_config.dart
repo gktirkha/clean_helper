@@ -16,6 +16,6 @@ void addVscodeConfig() {
   generateVscodeLaunch(appName);
   generateVscodeTasks();
 
-  stdout.writeln();
   stdout.writeln('✅ VSCode config generated.');
+  stdout.writeln();
 }

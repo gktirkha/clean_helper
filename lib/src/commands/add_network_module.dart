@@ -12,7 +12,6 @@ void addNetworkModule({bool runBuildRunnerAfter = true}) {
   ensurePubspec();
 
   stdout.writeln('🌐 Setting up network layer...');
-  stdout.writeln();
 
   generateNetworkFiles();
   installNetworkDependencies();
@@ -21,6 +20,5 @@ void addNetworkModule({bool runBuildRunnerAfter = true}) {
   runDartFormat();
   if (runBuildRunnerAfter) runBuildRunner();
 
-  stdout.writeln();
   stdout.writeln('✅ Network layer ready.');
 }

@@ -17,5 +17,6 @@ void addCleanRouterWorkspace() {
   );
 
   overwriteFile('pubspec.yaml', updated);
+  stdout.writeln('  📦 clean_router package created');
   stdout.writeln('📋 clean_router workspace added to pubspec.yaml');
 }

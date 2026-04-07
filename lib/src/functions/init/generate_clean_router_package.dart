@@ -56,7 +56,6 @@ void generateCleanRouterPackage() {
     cleanRouterRefreshTemplate(),
   );
 
-  stdout.writeln('📦 clean_router package created');
 }
 
 void _patchCleanRouterPubspec() {

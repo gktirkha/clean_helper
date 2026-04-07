@@ -41,5 +41,7 @@ void generateCoreFiles(String packageName) {
     'lib/core/utils/extensions/string_extension.dart',
     stringExtensionTemplate(),
   );
+  stdout.writeln();
   stdout.writeln('⚙️  Core files generated');
+  stdout.writeln();
 }

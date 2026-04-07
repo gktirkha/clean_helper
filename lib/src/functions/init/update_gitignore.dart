@@ -18,4 +18,5 @@ void updateGitignore() {
   }
 
   stdout.writeln('📋 .gitignore updated with Clean-Helper entries');
+  stdout.writeln();
 }

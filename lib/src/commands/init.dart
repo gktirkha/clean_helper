@@ -47,6 +47,7 @@ void runInit({
   }
   if (withAuthInterceptor) addAuthInterceptor(runBuildRunnerAfter: false);
   runSlang();
+  stdout.writeln();
   runBuildRunner();
   runDartFormat();
 

@@ -38,4 +38,5 @@ void generateUtilsFiles() {
   writeFile('lib/core/utils/functions/app_logger.dart', appLoggerTemplate());
 
   stdout.writeln('🛠️  Utils files generated');
+  stdout.writeln();
 }

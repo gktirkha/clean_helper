@@ -18,11 +18,10 @@ void addAuthInterceptor({bool runBuildRunnerAfter = true}) {
   runDartFormat();
   if (runBuildRunnerAfter) runBuildRunner();
 
-  stdout.writeln();
   stdout.writeln('✅ Auth interceptor scaffold generated.');
-  stdout.writeln();
   stdout.writeln('Next steps:');
   stdout.writeln(
     '  1. Fill in the TODOs in lib/core/network/interceptors/auth_interceptor.dart',
   );
+  stdout.writeln();
 }

@@ -21,4 +21,5 @@ void addFlutterAssetsToPubSpec() {
 
   overwriteFile('pubspec.yaml', updated);
   stdout.writeln('📋 Flutter assets added to pubspec.yaml');
+  stdout.writeln();
 }

@@ -46,4 +46,5 @@ void installDependencies() {
   ]);
 
   stdout.writeln('📦 Dependencies installed');
+  stdout.writeln();
 }

@@ -24,4 +24,5 @@ void generateHomeFeature(String packageName, {bool withDi = false}) {
   }
 
   stdout.writeln('🏠 Home feature generated');
+  stdout.writeln();
 }
