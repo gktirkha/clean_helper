@@ -1,15 +1,8 @@
 String toolsBuildAndroidTemplate() => '''
+import 'dart:convert';
 import 'dart:io';
 
 import 'command_runner.dart';
-
-// TODO: Set your keystore path (e.g. '~/keys/upload.jks' or '/home/user/keys/upload.jks')
-const _jksPath = '';
-
-// TODO: Set your keystore password
-const _password = '';
-
-const _keyAlias = 'upload';
 
 Future<void> main(List<String> args) async {
   final mode = args.isEmpty ? 'aab' : args.first;
@@ -32,12 +25,37 @@ Future<void> main(List<String> args) async {
   }
 }
 
+Map<String, String> _loadConfig() {
+  final config = <String, String>{
+    'jksPath': '',
+    'storePassword': '',
+    'keyPassword': '',
+    'keyAlias': 'upload',
+  };
+
+  final configFile = File('tools/build_config.json');
+  if (configFile.existsSync()) {
+    final map =
+        jsonDecode(configFile.readAsStringSync()) as Map<String, dynamic>;
+    config.addAll(map.map((k, v) => MapEntry(k, v.toString())));
+  }
+
+  final env = Platform.environment;
+  if (env['JKS_PATH'] != null) config['jksPath'] = env['JKS_PATH']!;
+  if (env['STORE_PASSWORD'] != null) config['storePassword'] = env['STORE_PASSWORD']!;
+  if (env['KEY_PASSWORD'] != null) config['keyPassword'] = env['KEY_PASSWORD']!;
+  if (env['KEY_ALIAS'] != null) config['keyAlias'] = env['KEY_ALIAS']!;
+
+  return config;
+}
+
 void _writeKeyProperties() {
-  final resolvedPath = _resolvePath(_jksPath);
+  final config = _loadConfig();
+  final resolvedPath = _resolvePath(config['jksPath'] ?? '');
   final content =
-      'storePassword=\$_password\\n'
-      'keyPassword=\$_password\\n'
-      'keyAlias=\$_keyAlias\\n'
+      'storePassword=\${config['storePassword']}\\n'
+      'keyPassword=\${config['keyPassword']}\\n'
+      'keyAlias=\${config['keyAlias']}\\n'
       'storeFile=\$resolvedPath\\n';
   File('android/key.properties').writeAsStringSync(content);
   stdout.writeln('🔑 android/key.properties written');
