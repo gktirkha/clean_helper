@@ -5,6 +5,7 @@ import '../../templates/tools_build_android_template.dart';
 import '../../templates/tools_build_config_template.dart';
 import '../../templates/tools_clean_template.dart';
 import '../../templates/tools_command_runner_template.dart';
+import '../../templates/tools_write_key_properties_template.dart';
 import '../shared/write_file.dart';
 
 void generateToolsFiles({bool overwrite = false}) {
@@ -12,6 +13,7 @@ void generateToolsFiles({bool overwrite = false}) {
   write('tools/command_runner.dart', toolsCommandRunnerTemplate());
   write('tools/clean.dart', toolsCleanTemplate());
   write('tools/bootstrap.dart', toolsBootstrapTemplate());
+  write('tools/write_key_properties.dart', toolsWriteKeyPropertiesTemplate());
   write('tools/build_android.dart', toolsBuildAndroidTemplate());
   write('tools/config/android_build_config.json', toolsBuildConfigTemplate());
   stdout.writeln('🔧 Tools generated');
