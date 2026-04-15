@@ -27,4 +27,11 @@ Future<bool> fvmExists() async {
   final result = await Process.run('fvm', ['--version'], runInShell: true);
   return result.exitCode == 0;
 }
+
+void ensureProjectRoot() {
+  if (!File('pubspec.yaml').existsSync()) {
+    stderr.writeln('[ERROR] pubspec.yaml not found. Run this from the project root.');
+    exit(1);
+  }
+}
 ''';

@@ -3,6 +3,7 @@ import 'clean.dart';
 import 'command_runner.dart';
 
 Future<void> main(List<String> args) async {
+  ensureProjectRoot();
   await bootstrap(args);
 }
 

@@ -8,6 +8,7 @@ const _defaultPreserveFiles = <String>[
 ];
 
 void main() async {
+  ensureProjectRoot();
   await clean();
 }
 
