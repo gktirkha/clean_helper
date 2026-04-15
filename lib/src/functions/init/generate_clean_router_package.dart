@@ -55,7 +55,6 @@ void generateCleanRouterPackage() {
     'packages/clean_router/lib/src/clean_router_refresh.dart',
     cleanRouterRefreshTemplate(),
   );
-
 }
 
 void _patchCleanRouterPubspec() {

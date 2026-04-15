@@ -49,7 +49,9 @@ Future<void> runInit({
   if (withNetwork || withAuthInterceptor) {
     addNetworkModule(runBuildRunnerAfter: false);
   }
-  if (withAuthInterceptor) addAuthInterceptor(runBuildRunnerAfter: false, showNextSteps: false);
+  if (withAuthInterceptor) {
+    addAuthInterceptor(runBuildRunnerAfter: false, showNextSteps: false);
+  }
   runSlang();
   stdout.writeln();
   runBuildRunner();

@@ -9,7 +9,9 @@ void updateGitignore() {
   if (file.existsSync()) {
     final content = file.readAsStringSync();
     if (content.contains(gitignoreMarker)) {
-      stdout.writeln('  ⏭  Skipped (exists): Clean-Helper entries in .gitignore');
+      stdout.writeln(
+        '  ⏭  Skipped (exists): Clean-Helper entries in .gitignore',
+      );
       return;
     }
     file.writeAsStringSync('${content.trimRight()}\n\n$block');

@@ -1,4 +1,5 @@
-String vscodeLaunchTemplate(String appName) => '''
+String vscodeLaunchTemplate(String appName) =>
+    '''
 {
     "version": "0.2.0",
     "configurations": [
