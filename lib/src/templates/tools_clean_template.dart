@@ -16,5 +16,24 @@ Future<void> clean() async {
   if (Directory('.git').existsSync()) {
     await commandRunner('git clean -fdX');
   }
+  _deleteEmptyFolders(Directory('.'));
+}
+
+void _deleteEmptyFolders(Directory dir) {
+  if (!dir.existsSync()) return;
+
+  for (final entity in dir.listSync()) {
+    if (entity is Directory) {
+      _deleteEmptyFolders(entity);
+    }
+  }
+
+  final name = dir.path.split(Platform.pathSeparator).last;
+  if (name.startsWith('.')) return;
+
+  if (dir.listSync().isEmpty) {
+    dir.deleteSync();
+    stdout.writeln('🗑  Deleted empty folder: \${dir.path}');
+  }
 }
 ''';
