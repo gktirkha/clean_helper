@@ -18,4 +18,9 @@ Future<void> commandRunner(String command) async {
     exit(result.exitCode);
   }
 }
+
+Future<bool> fvmExists() async {
+  final result = await Process.run('fvm', ['--version'], runInShell: true);
+  return result.exitCode == 0;
+}
 ''';

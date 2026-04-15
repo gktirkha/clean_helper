@@ -7,9 +7,11 @@ void main() async {
 }
 
 Future<void> clean() async {
-  await commandRunner('fvm use --skip-pub-get');
-  await commandRunner('fvm dart run build_runner clean');
-  await commandRunner('fvm flutter clean');
+  final hasFvm = await fvmExists();
+  final prefix = hasFvm ? 'fvm ' : '';
+  if (hasFvm) await commandRunner('fvm use --skip-pub-get');
+  await commandRunner('${prefix}dart run build_runner clean');
+  await commandRunner('${prefix}flutter clean');
   if (Directory('.git').existsSync()) {
     await commandRunner('git clean -fdX');
   }
