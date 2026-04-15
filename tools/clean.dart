@@ -1,4 +1,3 @@
-String toolsCleanTemplate() => '''
 import 'dart:io';
 
 import 'command_runner.dart';
@@ -15,4 +14,3 @@ Future<void> clean() async {
     await commandRunner('git clean -fdX');
   }
 }
-''';
