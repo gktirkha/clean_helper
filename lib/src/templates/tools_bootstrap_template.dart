@@ -12,12 +12,11 @@ Future<void> bootstrap(
   List<String> preserveFiles = const [],
 }) async {
   if (args.contains('--clean')) await clean(preserveFiles: preserveFiles);
-  final prefix = await fvmPrefix();
-  if (prefix.isNotEmpty) await commandRunner('fvm use --skip-pub-get');
-  await commandRunner('\${prefix}flutter pub get');
-  await commandRunner('\${prefix}dart run slang');
-  await commandRunner(
-    '\${prefix}dart run build_runner build --delete-conflicting-outputs',
+  await fvmUse();
+  await fvmRunner('flutter pub get');
+  await fvmRunner('dart run slang');
+  await fvmRunner(
+    'dart run build_runner build --delete-conflicting-outputs',
   );
 }
 ''';

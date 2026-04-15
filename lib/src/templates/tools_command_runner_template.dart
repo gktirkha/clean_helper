@@ -23,9 +23,22 @@ Future<void> commandRunner(String command) async {
   }
 }
 
-Future<String> fvmPrefix() async {
+bool? _hasFvm;
+
+Future<bool> _checkFvm() async {
+  if (_hasFvm != null) return _hasFvm!;
   final result = await Process.run('fvm', ['--version'], runInShell: true);
-  return result.exitCode == 0 ? 'fvm ' : '';
+  _hasFvm = result.exitCode == 0;
+  return _hasFvm!;
+}
+
+Future<void> fvmRunner(String command) async {
+  final prefix = await _checkFvm() ? 'fvm ' : '';
+  await commandRunner('\$prefix\$command');
+}
+
+Future<void> fvmUse() async {
+  if (await _checkFvm()) await commandRunner('fvm use --skip-pub-get');
 }
 
 void ensureProjectRoot() {
