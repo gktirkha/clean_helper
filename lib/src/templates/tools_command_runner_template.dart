@@ -23,9 +23,9 @@ Future<void> commandRunner(String command) async {
   }
 }
 
-Future<bool> fvmExists() async {
+Future<String> fvmPrefix() async {
   final result = await Process.run('fvm', ['--version'], runInShell: true);
-  return result.exitCode == 0;
+  return result.exitCode == 0 ? 'fvm ' : '';
 }
 
 void ensureProjectRoot() {

@@ -16,9 +16,8 @@ Future<void> clean({List<String> preserveFiles = const []}) async {
   final allPreserve = {..._defaultPreserveFiles, ...preserveFiles}.toList();
   final backups = _backupFiles(allPreserve);
 
-  final hasFvm = await fvmExists();
-  final prefix = hasFvm ? 'fvm ' : '';
-  if (hasFvm) await commandRunner('fvm use --skip-pub-get');
+  final prefix = await fvmPrefix();
+  if (prefix.isNotEmpty) await commandRunner('fvm use --skip-pub-get');
   await commandRunner('\${prefix}dart run build_runner clean');
   await commandRunner('\${prefix}flutter clean');
   if (Directory('.git').existsSync()) {

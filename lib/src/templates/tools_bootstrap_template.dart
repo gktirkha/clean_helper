@@ -12,9 +12,8 @@ Future<void> bootstrap(
   List<String> preserveFiles = const [],
 }) async {
   if (args.contains('--clean')) await clean(preserveFiles: preserveFiles);
-  final hasFvm = await fvmExists();
-  final prefix = hasFvm ? 'fvm ' : '';
-  if (hasFvm) await commandRunner('fvm use --skip-pub-get');
+  final prefix = await fvmPrefix();
+  if (prefix.isNotEmpty) await commandRunner('fvm use --skip-pub-get');
   await commandRunner('\${prefix}flutter pub get');
   await commandRunner('\${prefix}dart run slang');
   await commandRunner(
