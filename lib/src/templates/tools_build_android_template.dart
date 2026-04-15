@@ -12,9 +12,5 @@ Future<void> main(List<String> args) async {
 }
 
 // TODO: Implement the actual Android build logic.
-// Example: run `flutter build appbundle --release` or `flutter build apk --release`.
-void buildAndroid(List<String> args) {
-  // TODO: implement buildAndroid
-  throw UnimplementedError('buildAndroid() is not yet implemented');
-}
+void buildAndroid(List<String> args) {}
 ''';
