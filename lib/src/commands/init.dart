@@ -17,6 +17,7 @@ import '../functions/init/update_gitignore.dart';
 import '../functions/init/run_dart_format.dart';
 import '../functions/init/run_slang.dart';
 import '../functions/shared/ensure_pubspec.dart';
+import '../functions/shared/fvm_use.dart';
 import '../functions/shared/read_package_name.dart';
 
 void runInit({
@@ -31,6 +32,7 @@ void runInit({
   stdout.writeln('Initializing architecture for: $packageName');
   stdout.writeln();
 
+  fvmUse();
   createDirectories();
   generateLocalizationFiles();
   generateFlutterGenFiles();

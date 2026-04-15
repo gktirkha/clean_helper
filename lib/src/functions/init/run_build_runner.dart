@@ -1,11 +1,12 @@
 import 'dart:io';
 
+import '../shared/fvm_exec.dart';
 import '../shared/run_command.dart';
 
 void runBuildRunner() {
   stdout.writeln('🔨 Running build_runner...');
   runCommand([
-    'dart',
+    ...fvmExec('dart'),
     'run',
     'build_runner',
     'build',

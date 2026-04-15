@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import '../shared/fvm_exec.dart';
 import '../shared/run_command.dart';
 
 void installNetworkDependencies() {
@@ -9,10 +10,10 @@ void installNetworkDependencies() {
 
   final devDeps = ['retrofit_generator', 'json_serializable'];
 
-  runCommand(['dart', 'pub', 'add', ...deps]);
-  runCommand(['dart', 'pub', 'add', '--dev', ...devDeps]);
+  runCommand([...fvmExec('flutter'), 'pub', 'add', ...deps]);
+  runCommand([...fvmExec('flutter'), 'pub', 'add', '--dev', ...devDeps]);
   runCommand([
-    'dart',
+    ...fvmExec('flutter'),
     'pub',
     'add',
     'pretty_dio_logger',

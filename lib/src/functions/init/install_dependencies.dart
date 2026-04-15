@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import '../shared/fvm_exec.dart';
 import '../shared/run_command.dart';
 
 void installDependencies() {
@@ -29,16 +30,16 @@ void installDependencies() {
   ];
 
   runCommand([
-    'flutter',
+    ...fvmExec('flutter'),
     'pub',
     'add',
     'flutter_localizations',
     '--sdk=flutter',
   ]);
-  runCommand(['dart', 'pub', 'add', ...deps]);
-  runCommand(['dart', 'pub', 'add', '--dev', ...devDeps]);
+  runCommand([...fvmExec('flutter'), 'pub', 'add', ...deps]);
+  runCommand([...fvmExec('flutter'), 'pub', 'add', '--dev', ...devDeps]);
   runCommand([
-    'flutter',
+    ...fvmExec('flutter'),
     'pub',
     'add',
     'clean_router',

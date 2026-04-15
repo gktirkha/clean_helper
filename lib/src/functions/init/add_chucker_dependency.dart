@@ -1,10 +1,11 @@
 import 'dart:io';
 
+import '../shared/fvm_exec.dart';
 import '../shared/run_command.dart';
 
 void addChuckerDependency() {
   runCommand([
-    'flutter',
+    ...fvmExec('flutter'),
     'pub',
     'add',
     'chucker_flutter',
