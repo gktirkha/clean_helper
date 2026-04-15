@@ -1,7 +1,7 @@
 import '../functions/shared/camel_case.dart';
 import '../functions/shared/pascal_case.dart';
 
-String routerModuleBuildTemplate(List<String> features) {
+String appRouterModuleBuildTemplate(List<String> features) {
   final imports = features
       .map((f) => "import '../../features/$f/router/${f}_router.dart';")
       .join('\n');
@@ -23,7 +23,7 @@ $imports
 import 'app_go_router.dart';
 
 @module
-abstract class RouterModule {
+abstract class AppRouterModule {
   @lazySingleton
   AppGoRouter appGoRouter($params) => AppGoRouter(
     routers: [$routerList]..sort((a, b) => a.priority.compareTo(b.priority)),

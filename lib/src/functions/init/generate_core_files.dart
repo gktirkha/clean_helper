@@ -12,7 +12,7 @@ import '../../templates/di_initializer_template.dart';
 import '../../templates/di_keys_template.dart';
 import '../../templates/main_app_dart_template.dart';
 import '../../templates/main_dart_template.dart';
-import '../../templates/router_module_template.dart';
+import '../../templates/app_router_module_template.dart';
 import '../../templates/string_extension_template.dart';
 
 void generateCoreFiles(String packageName) {
@@ -29,8 +29,8 @@ void generateCoreFiles(String packageName) {
     appGoRouterRedirectTemplate(),
   );
   writeFile(
-    'lib/app/router/router_module.dart',
-    routerModuleTemplate(packageName),
+    'lib/app/router/app_router_module.dart',
+    appRouterModuleTemplate(packageName),
   );
   writeFile('lib/app/di/di_container.dart', diContainerTemplate());
   writeFile('lib/app/di/di_initializer.dart', diInitializerTemplate());

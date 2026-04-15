@@ -8,11 +8,11 @@ class RegenerateRouterCommand extends Command<void> {
 
   @override
   String get description =>
-      'Scan all features and regenerate router_module.dart from scratch.';
+      'Scan all features and regenerate app_router_module.dart from scratch.';
 
   @override
   String get usage =>
-      'Scan all features and regenerate router_module.dart from scratch.\n\nUsage: ${runner?.executableName} $name';
+      'Scan all features and regenerate app_router_module.dart from scratch.\n\nUsage: ${runner?.executableName} $name';
 
   @override
   void run() => regenerateRouter();

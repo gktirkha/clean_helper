@@ -5,7 +5,7 @@ import '../shared/pascal_case.dart';
 import '../shared/write_file.dart';
 
 void unpatchRouterModule(String feature) {
-  const path = 'lib/app/router/router_module.dart';
+  const path = 'lib/app/router/app_router_module.dart';
   final file = File(path);
 
   if (!file.existsSync()) {

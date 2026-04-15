@@ -5,7 +5,7 @@ import '../shared/write_file.dart';
 import 'build_router_module.dart';
 
 void patchRouterModule(String feature) {
-  const path = 'lib/app/router/router_module.dart';
+  const path = 'lib/app/router/app_router_module.dart';
   final file = File(path);
 
   if (!file.existsSync()) {

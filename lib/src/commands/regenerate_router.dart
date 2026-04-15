@@ -8,7 +8,7 @@ import '../functions/shared/write_file.dart';
 void regenerateRouter() {
   ensurePubspec();
 
-  const routerPath = 'lib/app/router/router_module.dart';
+  const routerPath = 'lib/app/router/app_router_module.dart';
   const featuresDir = 'lib/features';
 
   final dir = Directory(featuresDir);
@@ -40,5 +40,5 @@ void regenerateRouter() {
   overwriteFile(routerPath, buildRouterModule(features));
   runDartFormat();
 
-  stdout.writeln('✅ router_module.dart regenerated successfully!');
+  stdout.writeln('✅ app_router_module.dart regenerated successfully!');
 }
