@@ -33,7 +33,7 @@ Map<String, String> _loadConfig() {
     'keyAlias': 'upload',
   };
 
-  final configFile = File('tools/build_config.json');
+  final configFile = File('tools/config/android_build_config.json');
   if (configFile.existsSync()) {
     final map =
         jsonDecode(configFile.readAsStringSync()) as Map<String, dynamic>;

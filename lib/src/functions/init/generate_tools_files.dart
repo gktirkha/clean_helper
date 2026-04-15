@@ -13,7 +13,7 @@ void generateToolsFiles({bool overwrite = false}) {
   write('tools/clean.dart', toolsCleanTemplate());
   write('tools/bootstrap.dart', toolsBootstrapTemplate());
   write('tools/build_android.dart', toolsBuildAndroidTemplate());
-  write('tools/build_config.json', toolsBuildConfigTemplate());
+  write('tools/config/android_build_config.json', toolsBuildConfigTemplate());
   stdout.writeln('🔧 Tools generated');
   stdout.writeln();
 }

@@ -13,7 +13,8 @@ clean_helper/
 │   ├── build_runner.dart            → legacy: calls runBuildRunnerCommand(args) directly
 │   ├── remove_feature.dart          → legacy: calls removeFeature(args) directly
 │   ├── regenerate_router.dart       → legacy: calls regenerateRouter() directly
-│   └── generate_localizations.dart  → legacy: calls runGenerateLocalizationsCommand(args)
+│   ├── generate_localizations.dart  → legacy: calls runGenerateLocalizationsCommand(args)
+│   └── generate_tools.dart          → legacy: calls generateTools(args) directly
 │
 ├── lib/
 │   ├── clean_helper.dart      # Exports commands only
@@ -30,10 +31,11 @@ clean_helper/
 │       │       ├── build_runner_command.dart             → name: 'build_runner'
 │       │       ├── remove_feature_command.dart           → name: 'remove_feature'
 │       │       ├── regenerate_router_command.dart        → name: 'regenerate_router'
-│       │       └── generate_localizations_command.dart   → name: 'generate_localizations'
+│       │       ├── generate_localizations_command.dart   → name: 'generate_localizations'
+│       │       └── generate_tools_command.dart           → name: 'generate_tools'
 │       │
 │       ├── commands/           # One file = one public entry-point function
-│       │   ├── init.dart                    → runInit()
+│       │   ├── init.dart                    → runInit() [async]
 │       │   ├── add_feature.dart             → addFeature(List<String>)
 │       │   ├── add_repo.dart                → addRepo(List<String>)
 │       │   ├── add_entity.dart              → addEntity(List<String>)
@@ -42,7 +44,8 @@ clean_helper/
 │       │   ├── build_runner.dart            → runBuildRunnerCommand(List<String>)
 │       │   ├── remove_feature.dart          → removeFeature(List<String>)
 │       │   ├── regenerate_router.dart       → regenerateRouter()
-│       │   └── generate_localizations.dart  → runGenerateLocalizationsCommand(List<String>)
+│       │   ├── generate_localizations.dart  → runGenerateLocalizationsCommand(List<String>)
+│       │   └── generate_tools.dart          → generateTools({bool overwrite})
 │       │
 │       ├── templates/          # Generated file content — one template function per file
 │       │   ├── analysis_options_template.dart
@@ -81,6 +84,7 @@ clean_helper/
 │       │   ├── feature_page_template.dart
 │       │   ├── feature_router_template.dart
 │       │   ├── feature_routes_template.dart
+│       │   ├── feature_screen_template.dart
 │       │   ├── feature_state_template.dart
 │       │   ├── get_current_function_name_template.dart
 │       │   ├── list_to_model_list_template.dart
@@ -97,13 +101,20 @@ clean_helper/
 │       │   ├── safe_cast_template.dart
 │       │   ├── safe_execute_template.dart
 │       │   ├── slang_yaml_template.dart
-│       │   └── string_extension_template.dart
+│       │   ├── string_extension_template.dart
+│       │   ├── tools_bootstrap_template.dart
+│       │   ├── tools_build_config_template.dart
+│       │   ├── tools_build_template.dart
+│       │   ├── tools_clean_template.dart
+│       │   └── tools_command_runner_template.dart
 │       │
 │       └── functions/
 │           ├── shared/                 # Cross-cutting utilities
 │           │   ├── abort.dart                    → abort(String) — Never
 │           │   ├── camel_case.dart               → camelCase(String)
 │           │   ├── ensure_pubspec.dart            → ensurePubspec()
+│           │   ├── fvm_exec.dart                 → fvmExec(String exe) — returns ['fvm', exe] or [exe]
+│           │   ├── fvm_use.dart                  → fvmUse() [async] — runs 'fvm use' interactively if fvm exists
 │           │   ├── insert_after_last_import.dart  → insertAfterLastImport()
 │           │   ├── kebab_case.dart               → kebabCase(String)
 │           │   ├── pascal_case.dart              → pascalCase(String)
@@ -123,6 +134,7 @@ clean_helper/
 │           │   ├── generate_home_feature.dart
 │           │   ├── generate_localization_files.dart
 │           │   ├── generate_network_files.dart
+│           │   ├── generate_tools_files.dart
 │           │   ├── generate_utils_files.dart
 │           │   ├── install_dependencies.dart
 │           │   ├── run_build_runner.dart
@@ -139,6 +151,7 @@ clean_helper/
 │           │   ├── generate_feature_page.dart
 │           │   ├── generate_feature_router.dart
 │           │   ├── generate_feature_routes.dart
+│           │   ├── generate_feature_screen.dart
 │           │   └── patch_router_module.dart
 │           │
 │           ├── repo/                   # Helpers for addRepo()

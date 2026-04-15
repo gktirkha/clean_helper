@@ -1,7 +1,7 @@
 # Command: add_feature
 
 **Entry point:** `lib/src/commands/add_feature.dart` → `addFeature(List<String> args)`
-**Binary:** `dart run bin/add_feature.dart <feature_name>`
+**Binary:** `dart bin/add_feature.dart <feature_name>`
 
 ---
 
@@ -46,13 +46,28 @@ lib/
     │   │   ├── auth_event.dart        (part of, @freezed)
     │   │   └── auth_state.dart        (part of, @freezed)
     │   ├── pages/
-    │   │   └── auth_page.dart
+    │   │   └── auth_page.dart         (pure UI widget, receives AuthNavigation as constructor param)
+    │   ├── screens/
+    │   │   └── auth_screen.dart       (BlocProvider wrapper — used by router)
     │   └── widgets/
     └── router/
         ├── auth_routes.dart           (sealed class AuthRoutes)
         ├── auth_navigation.dart       (abstract class AuthNavigation)
         └── auth_router.dart           (@lazySingleton, implements CleanRouterBase)
 ```
+
+---
+
+## Screen vs Page Pattern
+
+Every feature has two presentation entry points:
+
+| File | Role |
+|------|------|
+| `screens/<feature>_screen.dart` | Thin wrapper — provides `BlocProvider` and injects `navigation` via `diContainer()`. Used by the router. |
+| `pages/<feature>_page.dart` | Pure UI widget — receives `navigation` as a constructor parameter. No DI knowledge. |
+
+The router builds `const AuthScreen()`. The screen wires up the bloc and navigation, then builds `AuthPage(navigation: diContainer())`.
 
 ---
 

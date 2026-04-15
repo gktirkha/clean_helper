@@ -1,7 +1,7 @@
 # Command: init
 
-**Entry point:** `lib/src/commands/init.dart` → `runInit()`
-**Binary:** `dart run bin/init.dart`
+**Entry point:** `lib/src/commands/init.dart` → `runInit()` [async]
+**Binary:** `dart bin/init.dart`
 
 ---
 
@@ -9,20 +9,37 @@
 
 1. `ensurePubspec()` — aborts if not run from a Flutter project root
 2. `readPackageName()` — reads `name:` from `pubspec.yaml`
-3. `createDirectories()` — creates the full folder scaffold
-4. `generateLocalizationFiles()` — `slang.yaml` + `assets/locales/en.locale.json`
-5. `generateFlutterGenFiles()` — `build.yaml` + `assets/colors/colors.xml`
-6. `generateCleanRouterPackage()` — scaffolds `packages/clean_router` with `CleanRouterBase` + `CleanRouterRefresh`
-7. `addCleanRouterWorkspace()` — patches root `pubspec.yaml` with `workspace: - packages/clean_router`
-8. `generateCoreFiles(packageName)` — all core Dart files (main, bootstrap, DI, routing, string extension)
-9. `generateUtilsFiles()` — `Failure`, `getCurrentFunctionName`, `safeCast`, `safeExecute`, `listToModelList`, type definitions
-10. `generateHomeFeature(packageName)` — complete home feature scaffold
-11. `installDependencies()` — `dart pub add` / `flutter pub add`
-12. `addFlutterAssetsToPubSpec()` — patches `pubspec.yaml` flutter.assets
-13. `addNetworkModule()` — optional, only if `--network` flag passed
-14. `runSlang()` — `dart run slang`
-15. `runBuildRunner()` — `dart run build_runner build --delete-conflicting-outputs`
-16. `runDartFormat()` — `dart format .`
+3. `fvmUse()` — if fvm is installed, runs `fvm use` interactively so the user can select a Flutter version
+4. `createDirectories()` — creates the full folder scaffold
+5. `generateLocalizationFiles()` — `slang.yaml` + `assets/locales/en.locale.json`
+6. `generateFlutterGenFiles()` — `build.yaml` + `assets/colors/colors.xml`
+7. `generateCleanRouterPackage()` — scaffolds `packages/clean_router` with `CleanRouterBase` + `CleanRouterRefresh`
+8. `addCleanRouterWorkspace()` — patches root `pubspec.yaml` with `workspace: - packages/clean_router`
+9. `generateCoreFiles(packageName)` — all core Dart files (main, bootstrap, DI, routing, string extension)
+10. `generateUtilsFiles()` — `Failure`, `getCurrentFunctionName`, `safeCast`, `safeExecute`, `listToModelList`, type definitions
+11. `generateHomeFeature(packageName)` — complete home feature scaffold
+12. `generateToolsFiles()` — `tools/` scripts (command_runner, clean, bootstrap, build_android, build_config.json)
+13. `installDependencies()` — `flutter pub add` for all runtime + dev deps
+14. `updateGitignore()` — appends clean-helper entries to `.gitignore`
+15. `addVscodeConfig()` — VS Code settings
+16. `addFlutterAssetsToPubSpec()` — patches `pubspec.yaml` flutter.assets
+17. `addNetworkModule()` — optional, only if `--network` or `--auth-interceptor` flag passed
+18. `addAuthInterceptor()` — optional, only if `--auth-interceptor` flag passed
+19. `runSlang()` — `[fvm] dart run slang`
+20. `runBuildRunner()` — `[fvm] dart run build_runner build --delete-conflicting-outputs`
+21. `runDartFormat()` — `[fvm] dart format .`
+
+`[fvm]` means the command is prefixed with `fvm` automatically if fvm is detected.
+
+---
+
+## Flags
+
+| Flag | Short | Description |
+|------|-------|-------------|
+| `--network` | `-n` | Also set up the network layer (Dio, Retrofit, Chucker) |
+| `--di` | `-d` | Also generate DI module for the home feature |
+| `--auth-interceptor` | `-a` | Also scaffold auth interceptor (implies `--network`) |
 
 ---
 
@@ -50,7 +67,7 @@ lib/
 │   │   └── core_module.dart         (PackageInfo)
 │   ├── domain/
 │   │   ├── entities/
-│   │   │   └── error_entity.dart    (always generated — not network-only)
+│   │   │   └── error_entity.dart
 │   │   └── failures/
 │   │       └── failure.dart         (Failure + leftFromError)
 │   ├── data/models/
@@ -64,7 +81,7 @@ lib/
 │   │   │   └── string_extension.dart   (String.tr)
 │   │   └── functions/
 │   │       ├── get_current_function_name.dart
-│   │       ├── type_definitions.dart           (JsonDecodeFactory typedef)
+│   │       ├── type_definitions.dart
 │   │       ├── safe_cast.dart
 │   │       ├── safe_execute.dart
 │   │       └── list_to_model_list.dart
@@ -80,6 +97,12 @@ assets/
 build.yaml
 slang.yaml
 analysis_options.yaml
+tools/
+├── command_runner.dart
+├── clean.dart
+├── bootstrap.dart
+├── build_android.dart
+└── build_config.json              ← gitignored
 packages/
 └── clean_router/                    (local workspace package)
 ```
@@ -88,11 +111,13 @@ packages/
 
 ## Dependencies Installed
 
+All installed via `flutter pub add`.
+
 **Runtime:**
 `clean_router` (local path: `packages/clean_router`),
 `flutter_bloc`, `go_router`, `get_it`, `injectable`, `freezed_annotation`,
 `fpdart`, `slang`, `slang_flutter`, `package_info_plus`, `flutter_svg`,
-`json_annotation`, `flutter_localizations` (SDK)
+`json_annotation`, `flutter_localizations` (SDK), `logger`
 
 **Dev:**
 `build_runner`, `injectable_generator`, `freezed`, `flutter_gen_runner`, `json_serializable`

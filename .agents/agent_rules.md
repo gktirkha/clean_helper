@@ -21,6 +21,7 @@ These constraints must be respected when modifying or extending this codebase.
 - Use `overwriteFile(path, content)` only for config files owned by the tool (e.g. `analysis_options.yaml`, `router_module.dart`).
 - Never use `File(...).writeAsStringSync(...)` directly — always go through the shared helpers.
 - `writeFile` and `overwriteFile` both call `file.parent.createSync(recursive: true)` — **never** manually create directories before writing.
+- When a command supports optional overwrite (e.g. `generate_tools --overwrite`), select the write function via `final write = overwrite ? overwriteFile : writeFile` and use that variable throughout.
 
 ---
 
@@ -59,6 +60,16 @@ These constraints must be respected when modifying or extending this codebase.
 
 ---
 
+## FVM Rules
+
+- All `dart` and `flutter` commands in init helpers must go through `fvmExec(exe)` from `lib/src/functions/shared/fvm_exec.dart`.
+- `fvmExec(exe)` checks once (cached) whether fvm is available and returns `['fvm', exe]` or `[exe]`.
+- Use `flutter pub add` (not `dart pub add`) for adding dependencies.
+- `fvmUse()` (async) is called once at the start of `runInit()` to let the user select a Flutter version interactively. It is a no-op if fvm is not installed.
+- `runInit()` is `async` because of `fvmUse()`. Its `bin/` entry point and runner command must also be `async`/`Future<void>`.
+
+---
+
 ## dart format & build_runner Rules
 
 - `runDartFormat()` is called at the end of: `runInit()`, `addFeature()`, `addRepo()`, `addEntity()`.
@@ -74,3 +85,5 @@ These constraints must be respected when modifying or extending this codebase.
 - Do not modify files that already exist in the target project without using `overwriteFile`.
 - Do not use `package:` imports for cross-file references within a generated Flutter feature — always use relative imports.
 - Do not embed template strings inline inside generator functions — extract to `lib/src/templates/`.
+- Do not use `dart pub add` — always use `flutter pub add`.
+- Do not call `dart` or `flutter` directly in init helpers — always use `fvmExec('dart')` or `fvmExec('flutter')`.
