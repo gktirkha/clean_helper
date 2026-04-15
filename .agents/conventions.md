@@ -60,7 +60,7 @@ Both automatically create parent directories — never call `Directory.createSyn
 | Function | Behaviour | When to use |
 |----------|-----------|-------------|
 | `writeFile(path, content)` | Skips if file already exists, logs skip | User-editable files — never stomp on their work |
-| `overwriteFile(path, content)` | Always writes, logs the write | Tool-owned generated files (e.g. `analysis_options.yaml`, `router_module.dart`) |
+| `overwriteFile(path, content)` | Always writes, logs the write | Tool-owned generated files (e.g. `analysis_options.yaml`, `app_router_module.dart`) |
 
 ---
 

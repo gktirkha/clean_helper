@@ -61,7 +61,7 @@ lib/
 │   └── router/
 │       ├── app_go_router.dart
 │       ├── app_go_router_redirect.dart
-│       └── router_module.dart
+│       └── app_router_module.dart
 ├── core/
 │   ├── di/
 │   │   └── core_module.dart         (PackageInfo)

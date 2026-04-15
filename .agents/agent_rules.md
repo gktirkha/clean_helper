@@ -18,7 +18,7 @@ These constraints must be respected when modifying or extending this codebase.
 ## File Writing Rules
 
 - Use `writeFile(path, content)` for files the user may edit — skips if file exists.
-- Use `overwriteFile(path, content)` only for config files owned by the tool (e.g. `analysis_options.yaml`, `router_module.dart`).
+- Use `overwriteFile(path, content)` only for config files owned by the tool (e.g. `analysis_options.yaml`, `app_router_module.dart`).
 - Never use `File(...).writeAsStringSync(...)` directly — always go through the shared helpers.
 - `writeFile` and `overwriteFile` both call `file.parent.createSync(recursive: true)` — **never** manually create directories before writing.
 - When a command supports optional overwrite (e.g. `generate_tools --overwrite`), select the write function via `final write = overwrite ? overwriteFile : writeFile` and use that variable throughout.

@@ -20,19 +20,20 @@ clean_helper/
 │   ├── clean_helper.dart      # Exports commands only
 │   └── src/
 │       ├── runner/             # CLI wiring (args + cli_completion)
-│       │   ├── clean_helper_runner.dart            → CleanHelperRunner (CompletionCommandRunner)
+│       │   ├── clean_helper_runner.dart              → CleanHelperRunner (CompletionCommandRunner)
 │       │   └── commands/
-│       │       ├── init_command.dart                    → name: 'init'
-│       │       ├── add_feature_command.dart              → name: 'add_feature'
-│       │       ├── add_repo_command.dart                 → name: 'add_repo'
-│       │       ├── add_entity_command.dart               → name: 'add_entity'
-│       │       ├── add_network_module_command.dart       → name: 'add_network_module'
-│       │       ├── add_auth_interceptor_command.dart     → name: 'add_auth_interceptor'
-│       │       ├── build_runner_command.dart             → name: 'build_runner'
-│       │       ├── remove_feature_command.dart           → name: 'remove_feature'
-│       │       ├── regenerate_router_command.dart        → name: 'regenerate_router'
-│       │       ├── generate_localizations_command.dart   → name: 'generate_localizations'
-│       │       └── generate_tools_command.dart           → name: 'generate_tools'
+│       │       ├── init_command.dart                      → name: 'init'
+│       │       ├── add_feature_command.dart               → name: 'add_feature'
+│       │       ├── add_repo_command.dart                  → name: 'add_repo'
+│       │       ├── add_entity_command.dart                → name: 'add_entity'
+│       │       ├── add_network_module_command.dart        → name: 'add_network_module'
+│       │       ├── add_auth_interceptor_command.dart      → name: 'add_auth_interceptor'
+│       │       ├── add_vscode_config_command.dart         → name: 'add_vscode_config'
+│       │       ├── build_runner_command.dart              → name: 'build_runner'
+│       │       ├── remove_feature_command.dart            → name: 'remove_feature'
+│       │       ├── regenerate_router_command.dart         → name: 'regenerate_router'
+│       │       ├── generate_localizations_command.dart    → name: 'generate_localizations'
+│       │       └── generate_tools_command.dart            → name: 'generate_tools'
 │       │
 │       ├── commands/           # One file = one public entry-point function
 │       │   ├── init.dart                    → runInit() [async]
@@ -41,6 +42,8 @@ clean_helper/
 │       │   ├── add_entity.dart              → addEntity(List<String>)
 │       │   ├── add_network_module.dart      → addNetworkModule()
 │       │   ├── add_auth_interceptor.dart    → addAuthInterceptor()
+│       │   ├── add_vscode_config.dart       → addVscodeConfig()
+│       │   ├── bootstrap.dart               → runBootstrapCommand() [async]
 │       │   ├── build_runner.dart            → runBuildRunnerCommand(List<String>)
 │       │   ├── remove_feature.dart          → removeFeature(List<String>)
 │       │   ├── regenerate_router.dart       → regenerateRouter()
@@ -52,6 +55,9 @@ clean_helper/
 │       │   ├── app_go_router_template.dart
 │       │   ├── app_go_router_redirect_template.dart
 │       │   ├── app_module_template.dart
+│       │   ├── app_router_module_template.dart         ← appRouterModuleTemplate()
+│       │   ├── app_router_module_build_template.dart   ← appRouterModuleBuildTemplate()
+│       │   ├── app_logger_template.dart
 │       │   ├── auth_interceptor_template.dart
 │       │   ├── bootstrap_dart_template.dart
 │       │   ├── build_yaml_template.dart
@@ -64,6 +70,7 @@ clean_helper/
 │       │   ├── core_module_template.dart
 │       │   ├── data_repo_template.dart
 │       │   ├── data_source_base_template.dart
+│       │   ├── debounce_template.dart
 │       │   ├── di_container_template.dart
 │       │   ├── di_initializer_template.dart
 │       │   ├── di_keys_no_auth_template.dart
@@ -96,8 +103,6 @@ clean_helper/
 │       │   ├── request_model_template.dart
 │       │   ├── response_model_template.dart
 │       │   ├── rest_data_source_template.dart
-│       │   ├── router_module_build_template.dart
-│       │   ├── router_module_template.dart
 │       │   ├── safe_cast_template.dart
 │       │   ├── safe_execute_template.dart
 │       │   ├── slang_yaml_template.dart
@@ -139,6 +144,7 @@ clean_helper/
 │           │   ├── install_dependencies.dart
 │           │   ├── run_build_runner.dart
 │           │   ├── run_dart_format.dart
+│           │   ├── run_flutter_pub_get.dart
 │           │   └── run_slang.dart
 │           │
 │           ├── feature/                # Helpers for addFeature()
@@ -184,8 +190,13 @@ clean_helper/
 │           │   ├── run_build_runner_build.dart
 │           │   └── run_build_runner_clean.dart
 │           │
-│           └── generate_localizations/
-│               └── run_generate_localizations.dart
+│           ├── generate_localizations/
+│           │   └── run_generate_localizations.dart
+│           │
+│           └── vscode_config/          # Helpers for addVscodeConfig()
+│               ├── generate_vscode_extensions.dart
+│               ├── generate_vscode_launch.dart
+│               └── generate_vscode_tasks.dart
 │
 └── pubspec.yaml
 ```
