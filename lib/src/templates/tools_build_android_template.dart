@@ -2,13 +2,18 @@ String toolsBuildAndroidTemplate() => '''
 import 'dart:convert';
 import 'dart:io';
 
+import 'clean.dart';
 import 'command_runner.dart';
 
 Future<void> main(List<String> args) async {
-  final mode = args.isEmpty ? 'aab' : args.first;
+  final noClean = args.contains('--no-clean');
+  final positional = args.where((a) => !a.startsWith('--')).toList();
+  final mode = positional.isEmpty ? 'aab' : positional.first;
+
+  if (!noClean) await clean();
 
   if (!['aab', 'apk', 'both'].contains(mode)) {
-    stderr.writeln('[ERROR] Invalid argument: \$mode. Use aab, apk, or both.');
+    stderr.writeln('[ERROR] Invalid build mode: \$mode. Use aab, apk, or both.');
     exit(1);
   }
 
@@ -41,10 +46,18 @@ Map<String, String> _loadConfig() {
   }
 
   final env = Platform.environment;
-  if (env['JKS_PATH'] != null) config['jksPath'] = env['JKS_PATH']!;
-  if (env['STORE_PASSWORD'] != null) config['storePassword'] = env['STORE_PASSWORD']!;
-  if (env['KEY_PASSWORD'] != null) config['keyPassword'] = env['KEY_PASSWORD']!;
-  if (env['KEY_ALIAS'] != null) config['keyAlias'] = env['KEY_ALIAS']!;
+  if (env['JKS_PATH'] != null) {
+    config['jksPath'] = env['JKS_PATH']!;
+  }
+  if (env['STORE_PASSWORD'] != null) {
+    config['storePassword'] = env['STORE_PASSWORD']!;
+  }
+  if (env['KEY_PASSWORD'] != null) {
+    config['keyPassword'] = env['KEY_PASSWORD']!;
+  }
+  if (env['KEY_ALIAS'] != null) {
+    config['keyAlias'] = env['KEY_ALIAS']!;
+  }
 
   return config;
 }

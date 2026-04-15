@@ -47,7 +47,8 @@ tools/
 - Runs `[fvm] dart run slang`
 - Runs `[fvm] dart run build_runner build --delete-conflicting-outputs`
 
-### `dart tools/build_android.dart [aab|apk|both]`
+### `dart tools/build_android.dart [aab|apk|both] [--no-clean]`
+- Always runs `clean()` first unless `--no-clean` is passed
 - Default mode: `aab`
 - Reads config from `tools/config/android_build_config.json`, env vars override JSON values
 - Env vars: `JKS_PATH`, `STORE_PASSWORD`, `KEY_PASSWORD`, `KEY_ALIAS`

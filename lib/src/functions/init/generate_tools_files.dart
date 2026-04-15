@@ -1,11 +1,11 @@
 import 'dart:io';
 
-import '../shared/write_file.dart';
 import '../../templates/tools_bootstrap_template.dart';
+import '../../templates/tools_build_android_template.dart';
 import '../../templates/tools_build_config_template.dart';
-import '../../templates/tools_build_template.dart';
 import '../../templates/tools_clean_template.dart';
 import '../../templates/tools_command_runner_template.dart';
+import '../shared/write_file.dart';
 
 void generateToolsFiles({bool overwrite = false}) {
   final write = overwrite ? overwriteFile : writeFile;
