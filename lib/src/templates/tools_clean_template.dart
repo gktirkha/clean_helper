@@ -3,11 +3,18 @@ import 'dart:io';
 
 import 'command_runner.dart';
 
+const _defaultPreserveFiles = <String>[
+  'tools/config/android_build_config.json',
+];
+
 void main() async {
   await clean();
 }
 
-Future<void> clean() async {
+Future<void> clean({List<String> preserveFiles = const []}) async {
+  final allPreserve = {..._defaultPreserveFiles, ...preserveFiles}.toList();
+  final backups = _backupFiles(allPreserve);
+
   final hasFvm = await fvmExists();
   final prefix = hasFvm ? 'fvm ' : '';
   if (hasFvm) await commandRunner('fvm use --skip-pub-get');
@@ -17,6 +24,26 @@ Future<void> clean() async {
     await commandRunner('git clean -fdX');
   }
   _deleteEmptyFolders(Directory('.'));
+
+  _restoreFiles(backups);
+}
+
+Map<String, String> _backupFiles(List<String> paths) {
+  final backups = <String, String>{};
+  for (final path in paths) {
+    final file = File(path);
+    if (file.existsSync()) backups[path] = file.readAsStringSync();
+  }
+  return backups;
+}
+
+void _restoreFiles(Map<String, String> backups) {
+  for (final entry in backups.entries) {
+    final file = File(entry.key);
+    file.parent.createSync(recursive: true);
+    file.writeAsStringSync(entry.value);
+    stdout.writeln('♻️  Restored \${entry.key}');
+  }
 }
 
 void _deleteEmptyFolders(Directory dir) {
