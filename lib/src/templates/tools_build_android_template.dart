@@ -8,7 +8,6 @@ Future<void> main(List<String> args) async {
   if (args.contains('--clean')) {
     await bootstrap(args);
   }
-
   writeKeyProperties();
   buildAndroid(args);
 }
