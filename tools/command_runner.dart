@@ -7,14 +7,18 @@ Future<void> commandRunner(String command) async {
   final executable = parts.first;
   final args = parts.skip(1).toList();
 
-  final result = await Process.run(executable, args, runInShell: true);
+  final process = await Process.start(
+    executable,
+    args,
+    runInShell: true,
+    mode: ProcessStartMode.inheritStdio,
+  );
 
-  stdout.write(result.stdout);
-  stderr.write(result.stderr);
+  final exitCode = await process.exitCode;
 
-  if (result.exitCode != 0) {
-    stdout.write('\n[ERROR] "$command" exited with code ${result.exitCode}');
-    exit(result.exitCode);
+  if (exitCode != 0) {
+    stdout.write('\n[ERROR] "$command" exited with code $exitCode');
+    exit(exitCode);
   }
 }
 
