@@ -20,11 +20,11 @@ import '../functions/shared/ensure_pubspec.dart';
 import '../functions/shared/fvm_use.dart';
 import '../functions/shared/read_package_name.dart';
 
-void runInit({
+Future<void> runInit({
   bool withNetwork = false,
   bool withDi = false,
   bool withAuthInterceptor = false,
-}) {
+}) async {
   ensurePubspec();
 
   final packageName = readPackageName();
@@ -32,7 +32,7 @@ void runInit({
   stdout.writeln('Initializing architecture for: $packageName');
   stdout.writeln();
 
-  fvmUse();
+  await fvmUse();
   createDirectories();
   generateLocalizationFiles();
   generateFlutterGenFiles();

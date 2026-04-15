@@ -1,11 +1,16 @@
 import 'dart:io';
 
-import 'run_command_streamed.dart';
-
-void fvmUse() {
+Future<void> fvmUse() async {
   final check = Process.runSync('fvm', ['--version'], runInShell: true);
   if (check.exitCode != 0) return;
+
   stdout.writeln('📱 Setting Flutter version via fvm...');
-  runCommandStreamed(['fvm', 'use']);
+  final process = await Process.start(
+    'fvm',
+    ['use'],
+    runInShell: true,
+    mode: ProcessStartMode.inheritStdio,
+  );
+  await process.exitCode;
   stdout.writeln();
 }

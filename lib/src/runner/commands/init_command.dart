@@ -33,7 +33,7 @@ class InitCommand extends Command<void> {
       'Scaffold a Flutter clean architecture project in the current directory.';
 
   @override
-  void run() => runInit(
+  Future<void> run() => runInit(
     withNetwork: argResults!['network'] as bool,
     withDi: argResults!['di'] as bool,
     withAuthInterceptor: argResults!['auth-interceptor'] as bool,
