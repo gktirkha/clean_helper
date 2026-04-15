@@ -9,7 +9,7 @@ Future<void> fvmUse() async {
     'fvm',
     ['use'],
     runInShell: true,
-    mode: ProcessStartMode.inheritStdio,
+    mode: .inheritStdio,
   );
   await process.exitCode;
   stdout.writeln();

@@ -12,7 +12,7 @@ Future<void> commandRunner(String command) async {
     executable,
     args,
     runInShell: true,
-    mode: ProcessStartMode.inheritStdio,
+    mode: .inheritStdio,
   );
 
   final exitCode = await process.exitCode;
