@@ -8,4 +8,5 @@ export 'src/commands/add_repo.dart';
 export 'src/commands/remove_feature.dart';
 export 'src/commands/regenerate_router.dart';
 export 'src/commands/generate_localizations.dart';
+export 'src/commands/generate_tools.dart';
 export 'src/commands/init.dart';
