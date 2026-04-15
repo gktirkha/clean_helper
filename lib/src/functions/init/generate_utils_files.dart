@@ -2,6 +2,7 @@ import 'dart:io';
 
 import '../../templates/debounce_template.dart';
 import '../../templates/error_entity_template.dart';
+import '../../templates/use_case_base_template.dart';
 import '../../templates/app_logger_template.dart';
 import '../../templates/failure_template.dart';
 import '../../templates/get_current_function_name_template.dart';
@@ -17,6 +18,10 @@ void generateUtilsFiles() {
     errorEntityTemplate(),
   );
   writeFile('lib/core/domain/failures/failure.dart', failureTemplate());
+  writeFile(
+    'lib/core/domain/use_cases/use_case_base.dart',
+    useCaseBaseTemplate(),
+  );
   writeFile(
     'lib/core/utils/functions/get_current_function_name.dart',
     getCurrentFunctionNameTemplate(),
