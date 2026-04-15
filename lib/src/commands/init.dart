@@ -9,6 +9,7 @@ import '../functions/init/generate_core_files.dart';
 import '../functions/init/generate_flutter_gen_files.dart';
 import '../functions/init/generate_home_feature.dart';
 import '../functions/init/generate_localization_files.dart';
+import '../functions/init/generate_tools_files.dart';
 import '../functions/init/generate_utils_files.dart';
 import '../functions/init/install_dependencies.dart';
 import '../functions/init/run_build_runner.dart';
@@ -38,6 +39,7 @@ void runInit({
   generateCoreFiles(packageName);
   generateUtilsFiles();
   generateHomeFeature(packageName, withDi: withDi);
+  generateToolsFiles();
   installDependencies();
   updateGitignore();
   addVscodeConfig();
