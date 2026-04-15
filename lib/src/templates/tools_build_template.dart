@@ -44,13 +44,14 @@ void _writeKeyProperties() {
 }
 
 String _resolvePath(String path) {
-  if (path.startsWith('~/')) {
+  final trimmed = path.trim();
+  if (trimmed.startsWith('~/')) {
     final home =
         Platform.environment['HOME'] ??
         Platform.environment['USERPROFILE'] ??
         '';
-    return '\$home/\${path.substring(2)}';
+    return '\$home/\${trimmed.substring(2)}';
   }
-  return path;
+  return trimmed;
 }
 ''';
