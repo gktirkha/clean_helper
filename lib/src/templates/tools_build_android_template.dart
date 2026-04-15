@@ -2,32 +2,9 @@ String toolsBuildAndroidTemplate() => '''
 import 'dart:convert';
 import 'dart:io';
 
-import 'clean.dart';
-import 'command_runner.dart';
-
-Future<void> main(List<String> args) async {
-  final noClean = args.contains('--no-clean');
-  final positional = args.where((a) => !a.startsWith('--')).toList();
-  final mode = positional.isEmpty ? 'aab' : positional.first;
-
-  if (!noClean) await clean();
-
-  if (!['aab', 'apk', 'both'].contains(mode)) {
-    stderr.writeln('[ERROR] Invalid build mode: \$mode. Use aab, apk, or both.');
-    exit(1);
-  }
-
+void main(List<String> args) {
   _writeKeyProperties();
-
-  final hasFvm = await fvmExists();
-  final prefix = hasFvm ? 'fvm ' : '';
-
-  if (mode == 'aab' || mode == 'both') {
-    await commandRunner('\${prefix}flutter build appbundle --release');
-  }
-  if (mode == 'apk' || mode == 'both') {
-    await commandRunner('\${prefix}flutter build apk --release');
-  }
+  buildAndroid(args);
 }
 
 Map<String, String> _loadConfig() {
@@ -84,5 +61,11 @@ String _resolvePath(String path) {
     return '\$home/\${trimmed.substring(2)}';
   }
   return trimmed;
+}
+
+// TODO: Implement the actual Android build logic.
+// Example: run `flutter build appbundle --release` or `flutter build apk --release`.
+void buildAndroid(List<String> args) {
+  // TODO: implement buildAndroid
 }
 ''';
