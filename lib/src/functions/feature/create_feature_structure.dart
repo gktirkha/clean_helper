@@ -5,6 +5,7 @@ import 'generate_feature_navigation_impl.dart';
 import 'generate_feature_page.dart';
 import 'generate_feature_router.dart';
 import 'generate_feature_routes.dart';
+import 'generate_feature_screen.dart';
 
 void createFeatureStructure(
   String basePath,
@@ -15,6 +16,7 @@ void createFeatureStructure(
   generateFeatureNavigation(featureName, basePath);
   generateFeatureNavigationImpl(featureName);
   generateFeaturePage(featureName, basePath);
+  generateFeatureScreen(featureName, basePath);
   generateFeatureRouter(featureName, basePath);
   generateFeatureBloc(featureName, basePath);
   if (withDi) generateFeatureModule(featureName, basePath);

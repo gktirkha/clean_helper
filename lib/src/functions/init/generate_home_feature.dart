@@ -7,6 +7,7 @@ import '../feature/generate_feature_navigation_impl.dart';
 import '../feature/generate_feature_page.dart';
 import '../feature/generate_feature_routes.dart';
 import '../feature/generate_feature_router.dart';
+import '../feature/generate_feature_screen.dart';
 
 void generateHomeFeature(String packageName, {bool withDi = false}) {
   const feature = 'home';
@@ -17,6 +18,7 @@ void generateHomeFeature(String packageName, {bool withDi = false}) {
   generateFeatureNavigationImpl(feature);
   generateFeatureRouter(feature, basePath);
   generateFeaturePage(feature, basePath);
+  generateFeatureScreen(feature, basePath);
   generateFeatureBloc(feature, basePath);
 
   if (withDi) {
