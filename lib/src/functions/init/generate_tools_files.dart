@@ -10,7 +10,7 @@ void generateToolsFiles() {
   writeFile('tools/command_runner.dart', toolsCommandRunnerTemplate());
   writeFile('tools/clean.dart', toolsCleanTemplate());
   writeFile('tools/bootstrap.dart', toolsBootstrapTemplate());
-  writeFile('tools/build.dart', toolsBuildTemplate());
+  writeFile('tools/build_android.dart', toolsBuildAndroidTemplate());
   stdout.writeln('🔧 Tools generated');
   stdout.writeln();
 }

@@ -1,4 +1,4 @@
-String toolsBuildTemplate() => '''
+String toolsBuildAndroidTemplate() => '''
 import 'dart:io';
 
 import 'command_runner.dart';
