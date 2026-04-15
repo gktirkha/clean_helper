@@ -47,8 +47,8 @@ String _resolvePath(String path) {
         Platform.environment['HOME'] ??
         Platform.environment['USERPROFILE'] ??
         '';
-    return '\$home/\${trimmed.substring(2)}';
+    return '\$home/\${trimmed.substring(2)}'.replaceAll('\\\\', '/');
   }
-  return trimmed;
+  return trimmed.replaceAll('\\\\', '/');
 }
 ''';
