@@ -32,10 +32,18 @@ Map<String, String> _loadConfig() {
   }
 
   final env = Platform.environment;
-  if (env['JKS_PATH'] != null) config['jksPath'] = env['JKS_PATH']!;
-  if (env['STORE_PASSWORD'] != null) config['storePassword'] = env['STORE_PASSWORD']!;
-  if (env['KEY_PASSWORD'] != null) config['keyPassword'] = env['KEY_PASSWORD']!;
-  if (env['KEY_ALIAS'] != null) config['keyAlias'] = env['KEY_ALIAS']!;
+  if (env['JKS_PATH'] != null) {
+    config['jksPath'] = env['JKS_PATH']!;
+  }
+  if (env['STORE_PASSWORD'] != null) {
+    config['storePassword'] = env['STORE_PASSWORD']!;
+  }
+  if (env['KEY_PASSWORD'] != null) {
+    config['keyPassword'] = env['KEY_PASSWORD']!;
+  }
+  if (env['KEY_ALIAS'] != null) {
+    config['keyAlias'] = env['KEY_ALIAS']!;
+  }
 
   return config;
 }
