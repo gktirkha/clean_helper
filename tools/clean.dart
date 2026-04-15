@@ -21,14 +21,14 @@ Future<void> clean() async {
 void _deleteEmptyFolders(Directory dir) {
   if (!dir.existsSync()) return;
 
+  final name = dir.path.split(Platform.pathSeparator).last;
+  if (name.startsWith('.')) return;
+
   for (final entity in dir.listSync()) {
     if (entity is Directory) {
       _deleteEmptyFolders(entity);
     }
   }
-
-  final name = dir.path.split(Platform.pathSeparator).last;
-  if (name.startsWith('.')) return;
 
   if (dir.listSync().isEmpty) {
     dir.deleteSync();
