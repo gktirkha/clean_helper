@@ -14,5 +14,7 @@ Future<void> main(List<String> args) async {
 }
 
 // TODO: Implement the actual Android build logic.
-void buildAndroid(List<String> args) {}
+void buildAndroid(List<String> args) {
+  fvmRunner('flutter build apk --release');
+}
 ''';
