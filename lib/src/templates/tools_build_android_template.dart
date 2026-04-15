@@ -1,8 +1,7 @@
 String toolsBuildAndroidTemplate() => '''
 import 'dart:io';
 
-import 'clean.dart';
-import 'command_runner.dart';
+import 'bootstrap.dart';
 import 'write_key_properties.dart';
 
 const _configPath = 'tools/config/android_build_config.json';
@@ -10,7 +9,7 @@ const _configPath = 'tools/config/android_build_config.json';
 Future<void> main(List<String> args) async {
   if (args.contains('--clean')) {
     final configBackup = _backupConfig();
-    await clean();
+    await bootstrap(args);
     _restoreConfig(configBackup);
   }
 

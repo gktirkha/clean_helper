@@ -3,6 +3,10 @@ import 'clean.dart';
 import 'command_runner.dart';
 
 Future<void> main(List<String> args) async {
+  await bootstrap(args);
+}
+
+Future<void> bootstrap(List<String> args) async {
   if (args.contains('--clean')) await clean();
   final hasFvm = await fvmExists();
   final prefix = hasFvm ? 'fvm ' : '';
