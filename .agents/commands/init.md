@@ -20,7 +20,7 @@
 11. `generateHomeFeature(packageName)` — complete home feature scaffold
 12. `generateToolsFiles()` — `tools/` scripts (command_runner, clean, bootstrap, build_android, build_config.json)
 13. `installDependencies()` — `flutter pub add` for all runtime + dev deps
-14. `updateGitignore()` — appends clean-helper entries to `.gitignore`
+14. `updateGitignore()` — appends generated-file patterns to `.gitignore`
 15. `addVscodeConfig()` — VS Code settings
 16. `addFlutterAssetsToPubSpec()` — patches `pubspec.yaml` flutter.assets
 17. `addNetworkModule()` — optional, only if `--network` or `--auth-interceptor` flag passed
@@ -101,8 +101,10 @@ tools/
 ├── command_runner.dart
 ├── clean.dart
 ├── bootstrap.dart
+├── write_key_properties.dart
 ├── build_android.dart
-└── build_config.json              ← gitignored
+└── config/
+    └── android_build_config.json  ← gitignored
 packages/
 └── clean_router/                    (local workspace package)
 ```

@@ -1,7 +1,7 @@
 # Command: build_runner
 
 **Entry point:** `lib/src/commands/build_runner.dart` → `runBuildRunnerCommand(List<String> args)`
-**Binary:** `dart run bin/build_runner.dart [clean|build|watch]`
+**Binary:** `dart run bin/build_runner.dart [clean|build]`
 
 ---
 

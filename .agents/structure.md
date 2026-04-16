@@ -93,6 +93,7 @@ clean_helper/
 │       │   ├── feature_routes_template.dart
 │       │   ├── feature_screen_template.dart
 │       │   ├── feature_state_template.dart
+│       │   ├── gitignore_template.dart
 │       │   ├── get_current_function_name_template.dart
 │       │   ├── list_to_model_list_template.dart
 │       │   ├── main_app_dart_template.dart
@@ -108,10 +109,16 @@ clean_helper/
 │       │   ├── slang_yaml_template.dart
 │       │   ├── string_extension_template.dart
 │       │   ├── tools_bootstrap_template.dart
+│       │   ├── tools_build_android_template.dart
 │       │   ├── tools_build_config_template.dart
-│       │   ├── tools_build_template.dart
 │       │   ├── tools_clean_template.dart
-│       │   └── tools_command_runner_template.dart
+│       │   ├── tools_command_runner_template.dart
+│       │   ├── tools_write_key_properties_template.dart
+│       │   ├── type_definitions_template.dart
+│       │   ├── use_case_base_template.dart
+│       │   ├── vscode_extensions_template.dart
+│       │   ├── vscode_launch_template.dart
+│       │   └── vscode_tasks_template.dart
 │       │
 │       └── functions/
 │           ├── shared/                 # Cross-cutting utilities
@@ -145,7 +152,8 @@ clean_helper/
 │           │   ├── run_build_runner.dart
 │           │   ├── run_dart_format.dart
 │           │   ├── run_flutter_pub_get.dart
-│           │   └── run_slang.dart
+│           │   ├── run_slang.dart
+│           │   └── update_gitignore.dart
 │           │
 │           ├── feature/                # Helpers for addFeature()
 │           │   ├── build_router_module.dart          → buildRouterModule(List<String>)

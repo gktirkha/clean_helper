@@ -76,7 +76,7 @@ The router builds `const AuthScreen()`. The screen wires up the bloc and navigat
 The new feature's router is **automatically registered** in `lib/app/router/app_router_module.dart`
 by `patchRouterModule(featureName)`. No manual step is required.
 
-`app_router_module.dart` is fully regenerated (not patched line-by-line) using `buildRouterModule(List<String> features)` from `lib/src/functions/feature/build_app_router_module.dart`.
+`app_router_module.dart` is fully regenerated (not patched line-by-line) using `buildRouterModule(List<String> features)` from `lib/src/functions/feature/build_router_module.dart`.
 
 ---
 

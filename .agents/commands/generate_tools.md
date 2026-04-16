@@ -21,10 +21,11 @@ Must be run from a Flutter project root. Idempotent by default — existing file
 
 ```
 tools/
-├── command_runner.dart        # shared Process.start helper + fvmExists()
-├── clean.dart                 # cleans build artifacts, git-ignored files, empty folders
-├── bootstrap.dart             # clean (optional) → pub get → slang → build_runner
-├── build_android.dart         # writes key.properties + builds AAB/APK
+├── command_runner.dart            # shared Process.start helper + fvmExists()
+├── clean.dart                     # cleans build artifacts, git-ignored files, empty folders
+├── bootstrap.dart                 # clean (optional) → pub get → slang → build_runner
+├── write_key_properties.dart      # writes android/key.properties from config/env vars
+├── build_android.dart             # runs write_key_properties then builds AAB/APK
 └── config/
     └── android_build_config.json  # keystore config (gitignored)
 ```
@@ -47,13 +48,16 @@ tools/
 - Runs `[fvm] dart run slang`
 - Runs `[fvm] dart run build_runner build --delete-conflicting-outputs`
 
+### `dart tools/write_key_properties.dart`
+- Reads config from `tools/config/android_build_config.json`, env vars override JSON values
+- Env vars: `JKS_PATH`, `STORE_PASSWORD`, `KEY_PASSWORD`, `KEY_ALIAS`
+- Expands `~/` paths to full home directory path
+- Writes `android/key.properties` from resolved config
+
 ### `dart tools/build_android.dart [aab|apk|both] [--no-clean]`
 - Always runs `clean()` first unless `--no-clean` is passed
 - Default mode: `aab`
-- Reads config from `tools/config/android_build_config.json`, env vars override JSON values
-- Env vars: `JKS_PATH`, `STORE_PASSWORD`, `KEY_PASSWORD`, `KEY_ALIAS`
-- Writes `android/key.properties` from resolved config
-- Expands `~/` paths to full home directory path
+- Calls `write_key_properties.dart` to set up signing config
 - Runs `[fvm] flutter build appbundle --release` and/or `[fvm] flutter build apk --release`
 
 ### `tools/config/android_build_config.json`
