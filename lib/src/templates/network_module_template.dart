@@ -25,14 +25,22 @@ abstract class NetworkModule {
   );
 
   @lazySingleton
+  ChuckerDioInterceptor get chuckerDioInterceptor => ChuckerDioInterceptor();
+
+  @lazySingleton
+  PrettyDioLogger get prettyDioLogger => PrettyDioLogger();
+
+  @lazySingleton
   Dio dio(
     BaseOptions baseOptions,
     ErrorInterceptor errorInterceptor,
+    ChuckerDioInterceptor chuckerDioInterceptor,
+    PrettyDioLogger prettyDioLogger,
   ) => Dio(baseOptions)
     ..interceptors.addAll([
       errorInterceptor,
-      ChuckerDioInterceptor(),
-      PrettyDioLogger(),
+      chuckerDioInterceptor,
+      prettyDioLogger,
     ]);
 }
 ''';

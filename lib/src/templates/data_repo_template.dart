@@ -9,12 +9,14 @@ String dataRepoTemplate(
   String repoName,
 ) =>
     '''
+import 'package:fpdart/fpdart.dart';
 import 'package:injectable/injectable.dart';
 
+import '../../../../core/domain/failures/failure.dart';
+import '../../../../core/utils/functions/safe_execute.dart';
 import '../../domain/entities/${repoName}_entity.dart';
 import '../../domain/repositories/${repoName}_repository.dart';
 import '../datasources/${repoName}_data_source_base.dart';
-import '../models/requests/${repoName}_request_model.dart';
 
 @Singleton(as: $repositoryClass)
 class $implClass implements $repositoryClass {
@@ -24,10 +26,13 @@ class $implClass implements $repositoryClass {
   final $dataSourceClass $dataSourceField;
 
   @override
-  Future<${className}Entity> get$className() => $dataSourceField.get$className();
+  Future<Either<Failure, ${className}Entity>> get$className() async {
+    return safeExecute($dataSourceField.get$className());
+  }
 
-  //TODO: Pass Params in $repositoryClass
   @override
-  Future<${className}Entity> post$className() => $dataSourceField.post$className(const ${className}RequestModel());
+  Future<Either<Failure, ${className}Entity>> post$className() async {
+    return safeExecute($dataSourceField.post$className(const .new()));
+  }
 }
 ''';
