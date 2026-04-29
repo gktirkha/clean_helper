@@ -6,6 +6,7 @@ void createDirectories() {
     'lib/app/router',
     'lib/app/navigations',
     'lib/app/di',
+    'lib/app/utils',
     'lib/core/di',
     'lib/core/domain/failures',
     'lib/core/utils/extensions',

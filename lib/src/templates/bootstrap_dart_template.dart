@@ -1,6 +1,7 @@
 String bootstrapDartTemplate(String pkg) => '''
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../core/utils/functions/debouncer.dart';
 import '../generated/locales/locales.g.dart';
@@ -13,6 +14,7 @@ Future<void> bootstrap() async {
   LocaleSettings.useDeviceLocale();
   Debouncer.showLogs = kDebugMode;
   await diInitializer(diContainer);
+  Bloc.observer = diContainer();
   runApp(const MainApp());
 }
 ''';

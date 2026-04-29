@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import '../shared/write_file.dart';
+import '../../templates/app_bloc_observer_template.dart';
 import '../../templates/analysis_options_template.dart';
 import '../../templates/app_go_router_redirect_template.dart';
 import '../../templates/app_go_router_template.dart';
@@ -35,6 +36,7 @@ void generateCoreFiles(String packageName) {
   writeFile('lib/app/di/di_container.dart', diContainerTemplate());
   writeFile('lib/app/di/di_initializer.dart', diInitializerTemplate());
   writeFile('lib/core/di/di_keys.dart', diKeysTemplate());
+  writeFile('lib/app/utils/app_bloc_observer.dart', appBlocObserverTemplate());
   writeFile('lib/app/di/app_module.dart', appModuleTemplate());
   writeFile('lib/core/di/core_module.dart', coreModuleTemplate());
   writeFile(
