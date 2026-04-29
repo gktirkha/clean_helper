@@ -1,4 +1,5 @@
 String toolsBootstrapTemplate() => '''
+import 'clean.dart';
 import 'command_runner.dart';
 
 Future<void> main(List<String> args) async {
@@ -7,6 +8,9 @@ Future<void> main(List<String> args) async {
 }
 
 Future<void> bootstrap(List<String> args) async {
+  if (args.contains('--clean')) {
+    await clean();
+  }
   await fvmUse();
   await fvmRunner('flutter pub get');
   await fvmRunner('dart run slang');
