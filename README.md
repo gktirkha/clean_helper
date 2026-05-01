@@ -35,6 +35,7 @@ clean-helper install-completion-files
 | `clean-helper regenerate_router` | Scan all features on disk and regenerate `router_module.dart` |
 | `clean-helper add_vscode_config` | Generate `.vscode/extensions.json`, `launch.json`, and `tasks.json` |
 | `clean-helper generate_localizations` | Generate locales using slang |
+| `clean-helper list_mono_repo_apps` | List all apps declared in `pubspec.yaml` under `clean-helper.mono_repo_apps` |
 
 `<scope>` for `add_entity` is either `core` or a feature name (e.g. `home`, `auth`). `add_repo` only supports feature scope.
 
@@ -262,6 +263,24 @@ Generates three files under `.vscode/`:
 | `tasks.json` | Common project tasks |
 
 All files are written with `writeFile` — skipped if they already exist. Also runs automatically as part of `init`.
+
+---
+
+### `list_mono_repo_apps` — List declared mono-repo apps
+
+```bash
+clean-helper list_mono_repo_apps
+```
+
+Reads `clean-helper.mono_repo_apps` from `pubspec.yaml` and prints every declared app. Useful for verifying monorepo configuration or debugging project detection.
+
+```
+Detected mono-repo apps (2):
+  1. app1  (apps/app1)
+  2. app2  (apps/app2)
+```
+
+If no apps are declared, prints setup instructions instead.
 
 ---
 

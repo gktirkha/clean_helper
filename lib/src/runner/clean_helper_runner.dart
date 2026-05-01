@@ -8,6 +8,7 @@ import 'commands/add_network_module_command.dart';
 import 'commands/add_repo_command.dart';
 import 'commands/build_runner_command.dart';
 import 'commands/init_command.dart';
+import 'commands/list_mono_repo_apps_command.dart';
 import 'commands/regenerate_router_command.dart';
 import 'commands/remove_feature_command.dart';
 import 'commands/generate_localizations_command.dart';
@@ -33,5 +34,6 @@ class CleanHelperRunner extends CompletionCommandRunner<void> {
     addCommand(AddAuthInterceptorCommand());
     addCommand(AddVscodeConfigCommand());
     addCommand(GenerateToolsCommand());
+    addCommand(ListMonoRepoAppsCommand());
   }
 }

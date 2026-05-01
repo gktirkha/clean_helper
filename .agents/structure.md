@@ -30,6 +30,7 @@ clean_helper/
 │       │       ├── add_auth_interceptor_command.dart      → name: 'add_auth_interceptor'
 │       │       ├── add_vscode_config_command.dart         → name: 'add_vscode_config'
 │       │       ├── build_runner_command.dart              → name: 'build_runner'
+│       │       ├── list_mono_repo_apps_command.dart       → name: 'list_mono_repo_apps'
 │       │       ├── remove_feature_command.dart            → name: 'remove_feature'
 │       │       ├── regenerate_router_command.dart         → name: 'regenerate_router'
 │       │       ├── generate_localizations_command.dart    → name: 'generate_localizations'
@@ -45,6 +46,7 @@ clean_helper/
 │       │   ├── add_vscode_config.dart       → addVscodeConfig()
 │       │   ├── bootstrap.dart               → runBootstrapCommand() [async]
 │       │   ├── build_runner.dart            → runBuildRunnerCommand(List<String>)
+│       │   ├── list_mono_repo_apps.dart     → listMonoRepoApps() — does NOT call ensurePubspec()
 │       │   ├── remove_feature.dart          → removeFeature(List<String>)
 │       │   ├── regenerate_router.dart       → regenerateRouter()
 │       │   ├── generate_localizations.dart  → runGenerateLocalizationsCommand(List<String>)

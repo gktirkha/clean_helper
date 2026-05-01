@@ -25,6 +25,7 @@ routing, DI, BLoC state management, and all required dependencies in one command
 | `clean-helper generate_localizations` | Generate locales using slang |
 | `clean-helper generate_tools [--overwrite]` | Generate `tools/` scripts in the current project |
 | `clean-helper add_vscode_config` | Generate `.vscode/` extensions, launch, and tasks config |
+| `clean-helper list_mono_repo_apps` | List all apps declared under `clean-helper.mono_repo_apps` in pubspec.yaml |
 
 `<scope>` for `add_entity` is either `core` or a feature name (e.g. `home`, `auth`).
 `add_repo` only supports feature scope — not `core`.
