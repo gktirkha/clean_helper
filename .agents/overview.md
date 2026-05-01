@@ -54,6 +54,14 @@ clean-helper:
 
 Run any command from the monorepo root — the tool handles the rest.
 
+**`--scope` flag (global, all commands):**
+```bash
+clean-helper --scope=app1 add_feature login
+```
+Skips the interactive prompt by filtering to apps whose folder name matches `app1`.
+If two apps share the same name (different paths), a narrowed prompt is shown for just those matches.
+If no app matches, the command aborts and lists available names.
+
 ---
 
 ## Public API

@@ -132,10 +132,11 @@ clean_helper/
 │           │   ├── insert_after_last_import.dart      → insertAfterLastImport()
 │           │   ├── kebab_case.dart                   → kebabCase(String)
 │           │   ├── pascal_case.dart                  → pascalCase(String)
-│           │   ├── prompt_project_selection.dart      → promptProjectSelection(List<String>) — interactive app picker
+│           │   ├── prompt_project_selection.dart      → promptProjectSelection(List<String>, {String? title}) — interactive app picker
 │           │   ├── read_mono_repo_apps.dart           → readMonoRepoApps() — parses clean-helper.mono_repo_apps from pubspec
 │           │   ├── read_package_name.dart             → readPackageName()
 │           │   ├── resolve_mono_repo_project.dart     → resolveMonoRepoProject() — detects monorepo + sets Directory.current
+│           │   ├── scope_option.dart                  → resolveScope (String?) — global set by runner, read by resolveMonoRepoProject
 │           │   ├── run_command.dart                  → runCommand(List<String>)
 │           │   ├── run_command_streamed.dart          → runCommandStreamed(List<String>)
 │           │   └── write_file.dart                   → writeFile / overwriteFile

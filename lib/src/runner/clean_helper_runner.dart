@@ -1,5 +1,7 @@
+import 'package:args/args.dart';
 import 'package:cli_completion/cli_completion.dart';
 
+import '../functions/shared/scope_option.dart';
 import 'commands/add_auth_interceptor_command.dart';
 import 'commands/bootstrap_command.dart';
 import 'commands/add_entity_command.dart';
@@ -21,6 +23,14 @@ class CleanHelperRunner extends CompletionCommandRunner<void> {
         'clean-helper',
         'CLI tool for scaffolding Flutter clean architecture projects.',
       ) {
+    argParser.addOption(
+      'scope',
+      help:
+          'Target a specific mono-repo app by name (e.g. --scope=app1). '
+          'Skips the interactive project-selection prompt.',
+      valueHelp: 'app_name',
+    );
+
     addCommand(InitCommand());
     addCommand(BootstrapCommand());
     addCommand(AddFeatureCommand());
@@ -35,5 +45,11 @@ class CleanHelperRunner extends CompletionCommandRunner<void> {
     addCommand(AddVscodeConfigCommand());
     addCommand(GenerateToolsCommand());
     addCommand(ListMonoRepoAppsCommand());
+  }
+
+  @override
+  Future<void> runCommand(ArgResults topLevelResults) async {
+    resolveScope = topLevelResults['scope'] as String?;
+    await super.runCommand(topLevelResults);
   }
 }

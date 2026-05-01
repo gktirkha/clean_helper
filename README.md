@@ -394,6 +394,27 @@ clean-helper:
    ```
 3. After selection the command runs as if it were invoked from inside that app's directory — all generated files land in the correct location.
 
+### `--scope` flag
+
+Skip the interactive prompt by passing `--scope=<app_name>` **before** the subcommand:
+
+```bash
+clean-helper --scope=app1 init
+clean-helper --scope=app1 add_feature login
+clean-helper --scope=app2 add_repo home invoice
+```
+
+The flag matches on the **folder name** (last segment of the declared path). If two apps share the same name but have different paths, a narrowed prompt is shown for only those matches:
+
+```
+⚠️  Multiple apps named "app1" found. Please select one:
+  1. app1  (apps/app1)
+  2. app1  (packages/app1)
+Enter number (1–2):
+```
+
+If no app matches, the command aborts and lists all available app names.
+
 ### No config, no `lib/`?
 
 If the tool is run from a directory with no `lib/` and no `clean-helper.mono_repo_apps` declaration, it exits with instructions to add the configuration.

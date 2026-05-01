@@ -107,6 +107,12 @@ Parsed by `readMonoRepoApps()` in `lib/src/functions/shared/read_mono_repo_apps.
 
 ---
 
+## `--scope` global flag
+
+`--scope=<app_name>` is a global option declared on `CleanHelperRunner.argParser`. It is extracted in `CleanHelperRunner.runCommand()` and stored in the `resolveScope` variable (`lib/src/functions/shared/scope_option.dart`) before any subcommand runs. `resolveMonoRepoProject()` reads it to skip or narrow the interactive prompt. No command or helper file needs to handle it directly.
+
+---
+
 ## All Paths Are Relative to the Target Flutter Project
 
 This tool is run **from inside a Flutter project root**, not from inside `clean_helper/`.
