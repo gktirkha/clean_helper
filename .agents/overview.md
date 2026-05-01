@@ -34,6 +34,27 @@ Activate it once with: `clean-helper install-completion-files`
 
 ---
 
+## Monorepo Support
+
+All commands support monorepo Flutter workspaces transparently.
+
+**Detection (handled automatically by `ensurePubspec()`):**
+1. `lib/` folder present → standard single-project mode (no change in behavior).
+2. `lib/` absent + root `pubspec.yaml` declares `clean-helper.mono_repo_apps` → user is prompted to select an app; `Directory.current` is updated before the command runs.
+3. `lib/` absent + no declaration → command aborts with instructions.
+
+**Configuration** (in the monorepo root `pubspec.yaml`):
+```yaml
+clean-helper:
+  mono_repo_apps:
+    - apps/app1
+    - apps/app2
+```
+
+Run any command from the monorepo root — the tool handles the rest.
+
+---
+
 ## Public API
 
 `lib/clean_helper.dart` exports **only the command files**.

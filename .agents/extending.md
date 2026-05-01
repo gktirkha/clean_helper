@@ -52,12 +52,14 @@ import '../functions/shared/ensure_pubspec.dart';
 import '../functions/use_case/generate_use_case_file.dart';
 
 void addUseCase(List<String> args) {
-  ensurePubspec();
+  ensurePubspec();   // ← always first; this also handles monorepo selection automatically
   // validate args ...
   generateUseCaseFile(dir, name);
   stdout.writeln('✅ Use case "$name" generated.');
 }
 ```
+
+> **Monorepo note:** Calling `ensurePubspec()` as the first statement is all that is required — monorepo detection and project selection happen inside it. No extra code is needed in the command.
 
 ### 4. Create the binary entry point
 

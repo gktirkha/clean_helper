@@ -78,6 +78,18 @@ These constraints must be respected when modifying or extending this codebase.
 
 ---
 
+## Monorepo Rules
+
+- **Every command already gets monorepo support for free** — `ensurePubspec()` calls `resolveMonoRepoProject()`, which detects monorepos and changes `Directory.current` before any command logic runs.
+- **Never add monorepo detection inside individual command files** — it lives exclusively in `lib/src/functions/shared/resolve_mono_repo_project.dart`.
+- **New commands must call `ensurePubspec()` as their first statement** — this is what makes them monorepo-aware automatically.
+- Detection logic (in order):
+  1. `lib/` folder present → normal single-project flow, no selection prompt.
+  2. `lib/` absent + `clean-helper.mono_repo_apps` in root pubspec → prompt user to select an app, then `Directory.current` is updated.
+  3. `lib/` absent + no declaration → `abort()` with instructions to declare apps in pubspec.
+
+---
+
 ## What NOT to Do
 
 - Do not add logic to `bin/` files — they must only call the command function.
@@ -87,3 +99,4 @@ These constraints must be respected when modifying or extending this codebase.
 - Do not embed template strings inline inside generator functions — extract to `lib/src/templates/`.
 - Do not use `dart pub add` — always use `flutter pub add`.
 - Do not call `dart` or `flutter` directly in init helpers — always use `fvmExec('dart')` or `fvmExec('flutter')`.
+- Do not duplicate monorepo detection — it is handled once in `resolveMonoRepoProject()`; never replicate it in commands or helpers.

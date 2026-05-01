@@ -122,18 +122,21 @@ clean_helper/
 │       │
 │       └── functions/
 │           ├── shared/                 # Cross-cutting utilities
-│           │   ├── abort.dart                    → abort(String) — Never
-│           │   ├── camel_case.dart               → camelCase(String)
-│           │   ├── ensure_pubspec.dart            → ensurePubspec()
-│           │   ├── fvm_exec.dart                 → fvmExec(String exe) — returns ['fvm', exe] or [exe]
-│           │   ├── fvm_use.dart                  → fvmUse() [async] — runs 'fvm use' interactively if fvm exists
-│           │   ├── insert_after_last_import.dart  → insertAfterLastImport()
-│           │   ├── kebab_case.dart               → kebabCase(String)
-│           │   ├── pascal_case.dart              → pascalCase(String)
-│           │   ├── read_package_name.dart         → readPackageName()
-│           │   ├── run_command.dart              → runCommand(List<String>)
-│           │   ├── run_command_streamed.dart      → runCommandStreamed(List<String>)
-│           │   └── write_file.dart               → writeFile / overwriteFile
+│           │   ├── abort.dart                        → abort(String) — Never
+│           │   ├── camel_case.dart                   → camelCase(String)
+│           │   ├── ensure_pubspec.dart                → ensurePubspec() — checks pubspec + calls resolveMonoRepoProject()
+│           │   ├── fvm_exec.dart                     → fvmExec(String exe) — returns ['fvm', exe] or [exe]
+│           │   ├── fvm_use.dart                      → fvmUse() [async] — runs 'fvm use' interactively if fvm exists
+│           │   ├── insert_after_last_import.dart      → insertAfterLastImport()
+│           │   ├── kebab_case.dart                   → kebabCase(String)
+│           │   ├── pascal_case.dart                  → pascalCase(String)
+│           │   ├── prompt_project_selection.dart      → promptProjectSelection(List<String>) — interactive app picker
+│           │   ├── read_mono_repo_apps.dart           → readMonoRepoApps() — parses clean-helper.mono_repo_apps from pubspec
+│           │   ├── read_package_name.dart             → readPackageName()
+│           │   ├── resolve_mono_repo_project.dart     → resolveMonoRepoProject() — detects monorepo + sets Directory.current
+│           │   ├── run_command.dart                  → runCommand(List<String>)
+│           │   ├── run_command_streamed.dart          → runCommandStreamed(List<String>)
+│           │   └── write_file.dart                   → writeFile / overwriteFile
 │           │
 │           ├── init/                   # Helpers for runInit()
 │           │   ├── add_chucker_dependency.dart

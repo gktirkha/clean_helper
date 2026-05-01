@@ -348,7 +348,40 @@ Every feature BLoC:
 
 ---
 
+## Monorepo Support
+
+`clean-helper` works with monorepo Flutter workspaces. Run commands from the **monorepo root** — the tool detects the setup automatically.
+
+### Setup
+
+Add a `clean-helper` section to the root `pubspec.yaml`:
+
+```yaml
+clean-helper:
+  mono_repo_apps:
+    - apps/app1
+    - apps/app2
+```
+
+### How it works
+
+1. Tool is run from the monorepo root (which has a `pubspec.yaml` but no `lib/` folder).
+2. The configured apps are listed and you are prompted to choose one:
+   ```
+   📦 Multiple mono-repo projects detected. Please select a project:
+     1. app1  (apps/app1)
+     2. app2  (apps/app2)
+   Enter number (1–2):
+   ```
+3. After selection the command runs as if it were invoked from inside that app's directory — all generated files land in the correct location.
+
+### No config, no `lib/`?
+
+If the tool is run from a directory with no `lib/` and no `clean-helper.mono_repo_apps` declaration, it exits with instructions to add the configuration.
+
+---
+
 ## Requirements
 
 - Dart SDK `^3.11.3`
-- Must be run from the root of a Flutter project (directory containing `pubspec.yaml`)
+- Must be run from the root of a Flutter project (directory containing `pubspec.yaml`), or from a monorepo root with `clean-helper.mono_repo_apps` declared

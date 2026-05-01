@@ -82,6 +82,29 @@ Every command starts with `ensurePubspec()`.
 It calls `abort(message)` if `pubspec.yaml` is not found in the current directory.
 `abort()` has return type `Never` — it prints to stderr and calls `exit(1)`.
 
+After the pubspec check, `ensurePubspec()` calls `resolveMonoRepoProject()` (from `shared/resolve_mono_repo_project.dart`). This function:
+- Returns immediately if `lib/` exists (normal single-project).
+- Reads `clean-helper.mono_repo_apps` from pubspec if `lib/` is absent.
+  - If found: prompts the user to select a project, then sets `Directory.current` to the chosen app path.
+  - If not found: calls `abort()` with instructions to declare the apps.
+
+All subsequent file operations use relative paths and therefore automatically target the selected project directory. **No command needs any monorepo-specific logic.**
+
+---
+
+## Monorepo pubspec declaration
+
+Users declare a monorepo by adding this section to the root `pubspec.yaml`:
+
+```yaml
+clean-helper:
+  mono_repo_apps:
+    - apps/app1
+    - apps/app2
+```
+
+Parsed by `readMonoRepoApps()` in `lib/src/functions/shared/read_mono_repo_apps.dart`.
+
 ---
 
 ## All Paths Are Relative to the Target Flutter Project
