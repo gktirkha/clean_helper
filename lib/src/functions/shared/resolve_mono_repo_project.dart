@@ -34,7 +34,8 @@ void resolveMonoRepoProject() {
     );
   }
 
-  final selected = promptProjectSelection(apps);
+  final selected =
+      apps.length == 1 ? apps.first : promptProjectSelection(apps);
   final appDir = Directory(selected);
 
   if (!appDir.existsSync()) {
