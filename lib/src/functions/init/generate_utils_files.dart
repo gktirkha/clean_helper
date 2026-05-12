@@ -26,10 +26,7 @@ void generateUtilsFiles() {
     'lib/core/utils/functions/get_current_function_name.dart',
     getCurrentFunctionNameTemplate(),
   );
-  writeFile(
-    'lib/core/utils/type_definitions.dart',
-    typeDefinitionsTemplate(),
-  );
+  writeFile('lib/core/utils/type_definitions.dart', typeDefinitionsTemplate());
   writeFile('lib/core/utils/functions/safe_cast.dart', safeCastTemplate());
   writeFile(
     'lib/core/utils/functions/safe_execute.dart',

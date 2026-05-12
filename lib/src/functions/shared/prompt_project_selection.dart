@@ -6,7 +6,8 @@ import 'dart:io';
 /// subset of apps (e.g. multiple apps sharing the same name).
 String promptProjectSelection(List<String> apps, {String? title}) {
   stdout.writeln(
-    title ?? '📦 Multiple mono-repo projects detected. Please select a project:',
+    title ??
+        '📦 Multiple mono-repo projects detected. Please select a project:',
   );
   for (var i = 0; i < apps.length; i++) {
     final label = apps[i].split('/').last;

@@ -44,21 +44,21 @@ void resolveMonoRepoProject() {
   final scope = resolveScope;
 
   if (scope != null) {
-    final matches =
-        apps.where((app) => app.split('/').last == scope).toList();
+    final matches = apps.where((app) => app.split('/').last == scope).toList();
 
     if (matches.isEmpty) {
       final available = apps
           .map((a) => '  • ${a.split('/').last}  ($a)')
           .join('\n');
-      abort('No mono-repo app named "$scope" found.\nAvailable apps:\n$available');
+      abort(
+        'No mono-repo app named "$scope" found.\nAvailable apps:\n$available',
+      );
     } else if (matches.length == 1) {
       selected = matches.first;
     } else {
       selected = promptProjectSelection(
         matches,
-        title:
-            '⚠️  Multiple apps named "$scope" found. Please select one:',
+        title: '⚠️  Multiple apps named "$scope" found. Please select one:',
       );
     }
   } else if (apps.length == 1) {
