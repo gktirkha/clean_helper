@@ -25,6 +25,7 @@ clean-helper install-completion-files
 | Command | Description |
 |---------|-------------|
 | `clean-helper init` | Full project scaffold — run once on a new Flutter project |
+| `clean-helper bootstrap` | `pub get` → slang → build_runner (re-bootstrap after git pull) |
 | `clean-helper add_network_module` | Set up the network layer (Dio, Retrofit, Chucker) |
 | `clean-helper add_auth_interceptor` | Scaffold AuthInterceptor with token refresh and wire into NetworkModule |
 | `clean-helper add_feature <name> [--di]` | Add a new feature with clean architecture structure |
@@ -32,9 +33,10 @@ clean-helper install-completion-files
 | `clean-helper add_entity <scope> <name> [folder]` | Add an entity (domain) + freezed model (data) |
 | `clean-helper build_runner [clean\|build]` | Run build_runner in the current project (default: build) |
 | `clean-helper remove_feature <name>` | Remove a feature and deregister its router |
-| `clean-helper regenerate_router` | Scan all features on disk and regenerate `router_module.dart` |
+| `clean-helper regenerate_router` | Scan all features on disk and regenerate `app_router_module.dart` |
 | `clean-helper add_vscode_config` | Generate `.vscode/extensions.json`, `launch.json`, and `tasks.json` |
 | `clean-helper generate_localizations` | Generate locales using slang |
+| `clean-helper generate_tools [--overwrite]` | Generate `tools/` scripts in the current project |
 | `clean-helper list_mono_repo_apps` | List all apps declared in `pubspec.yaml` under `clean-helper.mono_repo_apps` |
 
 `<scope>` for `add_entity` is either `core` or a feature name (e.g. `home`, `auth`). `add_repo` only supports feature scope.
@@ -50,6 +52,12 @@ Run this **once** from the root of a **new** Flutter project:
 ```bash
 cd my_flutter_app
 clean-helper init
+
+# Optional flags (can be combined)
+clean-helper init --network           # -n  also set up the network layer
+clean-helper init --di                # -d  generate a DI module for the home feature
+clean-helper init --auth-interceptor  # -a  scaffold auth interceptor (implies --network)
+clean-helper init --tools             # -t  generate tools/ scripts
 ```
 
 What it does (in order):
@@ -62,14 +70,18 @@ What it does (in order):
 6. Scaffolds `packages/clean_router` local workspace package (`CleanRouterBase` + `CleanRouterRefresh`)
 7. Patches root `pubspec.yaml` with `workspace: - packages/clean_router`
 8. Generates core Dart files (main, bootstrap, DI, routing, string extension)
-9. Generates utils (`Failure`, `getCurrentFunctionName`, `safeCast`, `safeExecute`, `listToModelList`, type definitions)
+9. Generates utils (`Failure`, `AppLogger`, `Debouncer`, `getCurrentFunctionName`, `safeCast`, `safeExecute`, `listToModelList`, type definitions)
 10. Generates home feature scaffold
-11. Installs all runtime and dev dependencies
-12. Generates VSCode config (`.vscode/extensions.json`, `launch.json`, `tasks.json`)
-13. Patches `pubspec.yaml` flutter assets
-14. Runs `dart run slang`
-15. Runs `dart run build_runner build --delete-conflicting-outputs`
-16. Runs `dart format .`
+11. Generates `tools/` scripts (only with `--tools`)
+12. Installs all runtime and dev dependencies
+13. Updates `.gitignore`
+14. Generates VSCode config (`.vscode/extensions.json`, `launch.json`, `tasks.json`)
+15. Patches `pubspec.yaml` flutter assets
+16. Sets up network layer (only with `--network` or `--auth-interceptor`)
+17. Scaffolds auth interceptor (only with `--auth-interceptor`)
+18. Runs `dart run slang`
+19. Runs `dart run build_runner build --delete-conflicting-outputs`
+20. Runs `dart format .`
 
 **Dependencies installed:**
 
@@ -77,6 +89,16 @@ What it does (in order):
 |------|----------|
 | Runtime | `flutter_bloc`, `go_router`, `get_it`, `injectable`, `freezed_annotation`, `fpdart`, `slang`, `slang_flutter`, `json_annotation`, `package_info_plus`, `flutter_svg`, `flutter_localizations` (SDK), `pretty_dio_logger` (git), `chucker_flutter` (git) |
 | Dev | `build_runner`, `injectable_generator`, `freezed`, `flutter_gen_runner`, `json_serializable` |
+
+---
+
+### `bootstrap` — Re-bootstrap after git pull
+
+```bash
+clean-helper bootstrap
+```
+
+Runs `flutter pub get` → `dart run slang` → `dart run build_runner build` in sequence. Use this after pulling changes that added new dependencies or modified generated files.
 
 ---
 
@@ -92,7 +114,7 @@ Feature name must be **snake_case**. Generates:
 
 ```
 lib/
-├── app/navigations/
+├── app/navigation/
 │   └── auth_navigation_impl.dart      (@LazySingleton, implements AuthNavigation)
 └── features/auth/
     ├── data/
@@ -114,7 +136,9 @@ lib/
     │   │   ├── auth_event.dart        (part of, @freezed)
     │   │   └── auth_state.dart        (part of, @freezed)
     │   ├── pages/
-    │   │   └── auth_page.dart
+    │   │   └── auth_page.dart         (pure UI widget)
+    │   ├── screens/
+    │   │   └── auth_screen.dart       (BlocProvider wiring)
     │   └── widgets/
     └── router/
         ├── auth_routes.dart           (sealed class AuthRoutes)
@@ -122,7 +146,7 @@ lib/
         └── auth_router.dart           (@lazySingleton, implements CleanRouterBase)
 ```
 
-The new feature router is **automatically registered** in `lib/app/router/router_module.dart`. `dart format` and `build_runner` run automatically at the end.
+The new feature router is **automatically registered** in `lib/app/router/app_router_module.dart`. `dart format` and `build_runner` run automatically at the end.
 
 ---
 
@@ -234,17 +258,17 @@ clean-helper build_runner clean   # clean generated files
 clean-helper remove_feature auth
 ```
 
-Deletes the feature directory and deregisters its router from `lib/app/router/router_module.dart`.
+Deletes the feature directory and deregisters its router from `lib/app/router/app_router_module.dart`.
 
 ---
 
-### `regenerate_router` — Rebuild router_module.dart from scratch
+### `regenerate_router` — Rebuild app_router_module.dart from scratch
 
 ```bash
 clean-helper regenerate_router
 ```
 
-Scans `lib/features/` for any feature that has a `router/<feature>_router.dart` file and regenerates `lib/app/router/router_module.dart` from scratch. Features are sorted alphabetically for deterministic output. `router_module.dart` is fully managed by the tool — do not edit it manually. Useful when the module has drifted out of sync or after manual edits to the features directory.
+Scans `lib/features/` for any feature that has a `router/<feature>_router.dart` file and regenerates `lib/app/router/app_router_module.dart` from scratch. Features are sorted alphabetically for deterministic output. `app_router_module.dart` is fully managed by the tool — do not edit it manually. Useful when the module has drifted out of sync or after manual edits to the features directory.
 
 ---
 
@@ -266,6 +290,27 @@ All files are written with `writeFile` — skipped if they already exist. Also r
 
 ---
 
+### `generate_tools` — Generate tools/ scripts
+
+```bash
+clean-helper generate_tools             # skip existing files
+clean-helper generate_tools --overwrite # -o  overwrite existing files
+```
+
+Generates helper shell scripts under `tools/` in the current project. Use `--overwrite` to force-update scripts that already exist. Also available as part of `init` via the `--tools` flag.
+
+---
+
+### `generate_localizations` — Generate locales
+
+```bash
+clean-helper generate_localizations
+```
+
+Runs `dart run slang` to regenerate `lib/generated/locales/locales.g.dart` from `assets/locales/en.locale.json`.
+
+---
+
 ### `list_mono_repo_apps` — List declared mono-repo apps
 
 ```bash
@@ -281,16 +326,6 @@ Detected mono-repo apps (2):
 ```
 
 If no apps are declared, prints setup instructions instead.
-
----
-
-### `generate_localizations` — Generate locales
-
-```bash
-clean-helper generate_localizations
-```
-
-Runs `dart run slang` to regenerate `lib/generated/locales/locales.g.dart` from `assets/locales/en.locale.json`.
 
 ---
 
@@ -310,6 +345,18 @@ Feature
     ├── datasources/  API calls via Retrofit
     └── repositories/ @LazySingleton implementations
 ```
+
+### Core Utils
+
+| File | Location |
+|------|----------|
+| `AppLogger` | `lib/core/utils/app_logger.dart` |
+| `Debouncer<T>` | `lib/core/utils/debouncer.dart` |
+| `JsonDecodeFactory` typedef | `lib/core/utils/type_definitions.dart` |
+| `safeCast` | `lib/core/utils/functions/safe_cast.dart` |
+| `safeExecute` | `lib/core/utils/functions/safe_execute.dart` |
+| `listToModelList` | `lib/core/utils/functions/list_to_model_list.dart` |
+| `getCurrentFunctionName` | `lib/core/utils/functions/get_current_function_name.dart` |
 
 ### Dependency Injection — `get_it` + `injectable`
 
@@ -336,7 +383,7 @@ abstract interface class CleanRouterBase {
 }
 ```
 
-`RouterModule` collects all `CleanRouterBase` implementations, sorts by `priority`, and builds `AppGoRouter`. `router_module.dart` is tool-owned and regenerated automatically by `add_feature`, `remove_feature`, and `regenerate_router`.
+`AppRouterModule` collects all `CleanRouterBase` implementations, sorts by `priority`, and builds `AppGoRouter`. `app_router_module.dart` is tool-owned and regenerated automatically by `add_feature`, `remove_feature`, and `regenerate_router`.
 
 ### State Management — `flutter_bloc` + `freezed`
 
@@ -351,6 +398,13 @@ Every feature BLoC:
 - `Failure.leftFromError(e)` wraps any caught object as `Left<Failure>`
 - `safeCast<T>(data, decoder)` — safely casts dynamic API responses to `Either<Failure, T>`
 - `safeExecute<T>(exec)` — wraps any async call in `Either<Failure, T>`
+
+### Network — `dio` + `retrofit`
+
+- `Dio` instance provided by `NetworkModule` (`@module`)
+- `RetrofitLogger` (`@LazySingleton(as: ParseErrorLogger)`) logs Retrofit parse errors via `AppLogger`
+- `ErrorInterceptor` parses `{"errors": [...]}` API responses into `ErrorModel`
+- `ChuckerDioInterceptor` + `PrettyDioLogger` added in all builds
 
 ### Localization — `slang`
 
