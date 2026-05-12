@@ -16,7 +16,7 @@ FutureOr<Either<Failure, T>> safeExecute<T>(FutureOr<T> exec) async {
       getCurrentFunctionName(),
       stackTrace: s,
       error: e,
-      time: DateTime.now(),
+      time: .now(),
     );
     return Failure.leftFromError(e);
   }

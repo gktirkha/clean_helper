@@ -18,7 +18,7 @@ class RetrofitLogger implements ParseErrorLogger {
       'Error While Parsing Response with data \${response?.data ?? "N/A"}',
       stackTrace: stackTrace,
       error: error,
-      time: DateTime.now(),
+      time: .now(),
     );
   }
 }

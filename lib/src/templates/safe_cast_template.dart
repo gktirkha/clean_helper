@@ -36,7 +36,7 @@ Either<Failure, T> safeCast<T>(dynamic data, JsonDecodeFactory<T> decoder) {
       getCurrentFunctionName(),
       stackTrace: s,
       error: e,
-      time: DateTime.now(),
+      time: .now(),
     );
     if (e is Failure) return Left(e);
     return Left(Failure(message: e.toString()));
