@@ -1,5 +1,5 @@
 String getCurrentFunctionNameTemplate() => '''
-import 'app_logger.dart';
+import '../app_logger.dart';
 
 String getCurrentFunctionName({int frameIndex = 2, bool includePath = false}) {
   final nameNotFound = 'Name Not Found';

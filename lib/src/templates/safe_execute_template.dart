@@ -5,7 +5,7 @@ import 'package:fpdart/fpdart.dart';
 
 import '../../domain/failures/failure.dart';
 import 'get_current_function_name.dart';
-import 'app_logger.dart';
+import '../app_logger.dart';
 
 FutureOr<Either<Failure, T>> safeExecute<T>(FutureOr<T> exec) async {
   try {

@@ -3,7 +3,7 @@ import 'package:dio/dio.dart';
 import 'package:injectable/injectable.dart';
 import 'package:retrofit/error_logger.dart';
 
-import '../utils/functions/app_logger.dart';
+import '../utils/app_logger.dart';
 
 @LazySingleton(as: ParseErrorLogger)
 class RetrofitLogger implements ParseErrorLogger {

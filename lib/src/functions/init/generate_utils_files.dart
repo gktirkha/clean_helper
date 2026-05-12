@@ -27,7 +27,7 @@ void generateUtilsFiles() {
     getCurrentFunctionNameTemplate(),
   );
   writeFile(
-    'lib/core/utils/functions/type_definitions.dart',
+    'lib/core/utils/type_definitions.dart',
     typeDefinitionsTemplate(),
   );
   writeFile('lib/core/utils/functions/safe_cast.dart', safeCastTemplate());
@@ -39,8 +39,8 @@ void generateUtilsFiles() {
     'lib/core/utils/functions/list_to_model_list.dart',
     listToModelListTemplate(),
   );
-  writeFile('lib/core/utils/functions/debouncer.dart', debounceTemplate());
-  writeFile('lib/core/utils/functions/app_logger.dart', appLoggerTemplate());
+  writeFile('lib/core/utils/debouncer.dart', debounceTemplate());
+  writeFile('lib/core/utils/app_logger.dart', appLoggerTemplate());
 
   stdout.writeln('🛠️  Utils files generated');
   stdout.writeln();

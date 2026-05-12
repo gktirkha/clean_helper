@@ -4,7 +4,7 @@ void createDirectories() {
   final dirs = [
     // core
     'lib/app/router',
-    'lib/app/navigations',
+    'lib/app/navigation',
     'lib/app/di',
     'lib/app/utils',
     'lib/core/di',

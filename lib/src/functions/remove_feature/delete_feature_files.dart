@@ -13,7 +13,7 @@ void deleteFeatureFiles(String feature) {
     stderr.writeln('⚠️  lib/features/$feature/ not found');
   }
 
-  final navImpl = File('lib/app/navigations/${feature}_navigation_impl.dart');
+  final navImpl = File('lib/app/navigation/${feature}_navigation_impl.dart');
   if (navImpl.existsSync()) {
     navImpl.deleteSync();
     stdout.writeln('🗑️  Deleted ${feature}_navigation_impl.dart');
