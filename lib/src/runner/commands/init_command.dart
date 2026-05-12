@@ -23,6 +23,12 @@ class InitCommand extends Command<void> {
       negatable: false,
       help: 'Also scaffold the auth interceptor (implies --network).',
     );
+    argParser.addFlag(
+      'tools',
+      abbr: 't',
+      negatable: false,
+      help: 'Also generate the tools/ scripts.',
+    );
   }
 
   @override
@@ -37,5 +43,6 @@ class InitCommand extends Command<void> {
     withNetwork: argResults!['network'] as bool,
     withDi: argResults!['di'] as bool,
     withAuthInterceptor: argResults!['auth-interceptor'] as bool,
+    withTools: argResults!['tools'] as bool,
   );
 }

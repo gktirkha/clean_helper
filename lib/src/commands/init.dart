@@ -24,6 +24,7 @@ Future<void> runInit({
   bool withNetwork = false,
   bool withDi = false,
   bool withAuthInterceptor = false,
+  bool withTools = false,
 }) async {
   ensurePubspec();
 
@@ -41,7 +42,7 @@ Future<void> runInit({
   generateCoreFiles(packageName);
   generateUtilsFiles();
   generateHomeFeature(packageName, withDi: withDi);
-  generateToolsFiles();
+  if (withTools) generateToolsFiles();
   installDependencies();
   updateGitignore();
   addVscodeConfig();

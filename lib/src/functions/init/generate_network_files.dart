@@ -5,6 +5,7 @@ import '../../templates/core_api_paths_template.dart';
 import '../../templates/error_model_template.dart';
 import '../../templates/error_interceptor_template.dart';
 import '../../templates/network_module_template.dart';
+import 'generate_retrofit_logger.dart';
 
 void generateNetworkFiles() {
   writeFile(
@@ -17,5 +18,6 @@ void generateNetworkFiles() {
     errorInterceptorTemplate(),
   );
   writeFile('lib/core/network/di/network_module.dart', networkModuleTemplate());
+  generateRetrofitLogger();
   stdout.writeln('🌐 Network module generated');
 }
