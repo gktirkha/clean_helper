@@ -6,7 +6,6 @@ import 'package:fpdart/fpdart.dart';
 import '../../../generated/locales/locales.g.dart';
 import '../../domain/entities/error_entity.dart';
 import '../../domain/failures/failure.dart';
-import 'get_current_function_name.dart';
 import '../app_logger.dart';
 import '../type_definitions.dart';
 
@@ -33,9 +32,9 @@ Either<Failure, T> safeCast<T>(dynamic data, JsonDecodeFactory<T> decoder) {
     throw Failure(message: 'Unable To Cast');
   } catch (e, s) {
     AppLogger.error(
-      getCurrentFunctionName(),
-      stackTrace: s,
+      'Error in safe cast',
       error: e,
+      stackTrace: s,
       time: .now(),
     );
     if (e is Failure) return Left(e);
