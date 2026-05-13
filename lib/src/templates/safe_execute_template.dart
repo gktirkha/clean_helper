@@ -4,7 +4,6 @@ import 'dart:async';
 import 'package:fpdart/fpdart.dart';
 
 import '../../domain/failures/failure.dart';
-import 'get_current_function_name.dart';
 import '../app_logger.dart';
 
 FutureOr<Either<Failure, T>> safeExecute<T>(FutureOr<T> exec) async {
@@ -13,7 +12,7 @@ FutureOr<Either<Failure, T>> safeExecute<T>(FutureOr<T> exec) async {
     return Right(res);
   } catch (e, s) {
     AppLogger.error(
-      getCurrentFunctionName(),
+      'Error in Safe Execute',
       stackTrace: s,
       error: e,
       time: .now(),
