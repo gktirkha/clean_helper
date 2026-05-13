@@ -1,9 +1,7 @@
 String appModuleTemplate() => '''
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
-
-import '../utils/app_bloc_observer.dart';
+import 'package:logger/logger.dart';
 
 @module
 abstract class AppModule {
@@ -14,7 +12,7 @@ abstract class AppModule {
   GlobalKey<ScaffoldMessengerState> get scaffoldMessengerKey =>
       GlobalKey<ScaffoldMessengerState>();
 
-  @LazySingleton(as: BlocObserver)
-  AppBlocObserver get blocObserver => AppBlocObserver();
+  @lazySingleton
+  Logger get logger => Logger();
 }
 ''';
