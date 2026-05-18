@@ -1,3 +1,9 @@
+## 1.1.5
+
+- Add `--add-sample` flag to `add_repo` command
+- When `--add-sample` is passed, generate `get`/`post` sample methods in the domain repo, data source base, repository impl, and REST data source, and create request/response model files
+- Without `--add-sample` (default), all files are generated as empty scaffolds and request/response model files are skipped
+
 ## 1.1.4
 
 - Move `retrofit_logger.dart` to `lib/core/network/utils/` and update its `app_logger` import path
