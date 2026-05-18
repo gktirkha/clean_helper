@@ -9,6 +9,12 @@ class AddRepoCommand extends Command<void> {
       negatable: false,
       help: 'Skip generating the REST datasource and API paths.',
     );
+    argParser.addFlag(
+      'add-sample',
+      negatable: false,
+      help:
+          'Generate sample get/post methods and request/response model files.',
+    );
   }
 
   @override
@@ -20,13 +26,16 @@ class AddRepoCommand extends Command<void> {
 
   @override
   String get invocation =>
-      '${runner?.executableName} $name <feature> <repo_name> [--no_rest]';
+      '${runner?.executableName} $name <feature> <repo_name> [--no_rest] [--add-sample]';
 
   @override
   String get usage =>
-      'Generate a repository interface (domain) and implementation (data).\n\nUsage: ${runner?.executableName} $name <feature> <repo_name> [--no_rest]';
+      'Generate a repository interface (domain) and implementation (data).\n\nUsage: ${runner?.executableName} $name <feature> <repo_name> [--no_rest] [--add-sample]';
 
   @override
-  void run() =>
-      addRepo(argResults!.rest, noRest: argResults!['no_rest'] as bool);
+  void run() => addRepo(
+    argResults!.rest,
+    noRest: argResults!['no_rest'] as bool,
+    addSample: argResults!['add-sample'] as bool,
+  );
 }

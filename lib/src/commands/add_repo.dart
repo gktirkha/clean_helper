@@ -16,12 +16,13 @@ void addRepo(
   List<String> args, {
   bool runBuildRunnerAfter = true,
   bool noRest = false,
+  bool addSample = false,
 }) {
   ensurePubspec();
 
   if (args.length < 2) {
     stderr.writeln(
-      '❌ Usage: dart run bin/add_repo.dart <feature> <repo_name> [--no_rest]',
+      '❌ Usage: dart run bin/add_repo.dart <feature> <repo_name> [--no_rest] [--add-sample]',
     );
     stderr.writeln('   Example: dart run bin/add_repo.dart home invoice');
     exit(1);
@@ -43,15 +44,23 @@ void addRepo(
   stdout.writeln('🚀 Generating data layer: feature=$feature, repo=$repoName');
 
   generateEntityFile(entitiesDir, repoName);
-  generateDomainRepo(domainDir, repoName);
-  generateDataSourceBase(dataDir, repoName);
-  generateRequestModel(dataDir, repoName);
-  generateResponseModel(dataDir, repoName);
-  generateDataRepo(dataDir, repoName);
+  generateDomainRepo(domainDir, repoName, addSample: addSample);
+  generateDataSourceBase(dataDir, repoName, addSample: addSample);
+
+  if (addSample) {
+    generateRequestModel(dataDir, repoName);
+    generateResponseModel(dataDir, repoName);
+  } else {
+    stdout.writeln(
+      '  ⏭  Skipping request/response models (--add-sample not set).',
+    );
+  }
+
+  generateDataRepo(dataDir, repoName, addSample: addSample);
 
   if (generateRest) {
     generateApiPaths(dataDir, feature, repoName);
-    generateRestDataSource(dataDir, feature, repoName);
+    generateRestDataSource(dataDir, feature, repoName, addSample: addSample);
   } else if (noRest) {
     stdout.writeln('  ⏭  Skipping REST datasource and API paths (--no_rest).');
   } else {
@@ -72,21 +81,39 @@ void addRepo(
   stdout.writeln(
     '  1. Add method signatures to $dataDir/datasources/${repoName}_data_source_base.dart',
   );
-  if (generateRest) {
-    stdout.writeln(
-      '  2. Add your endpoint paths to $dataDir/constants/${feature}_api_paths.dart',
-    );
-    stdout.writeln(
-      '  3. Add @GET/@POST methods to $dataDir/datasources/rest_${repoName}_data_source.dart',
-    );
-    stdout.writeln('  4. Add fields to the request/response models.');
-    stdout.writeln(
-      '  5. Implement repository methods in $dataDir/repositories/${repoName}_repository_impl.dart',
-    );
+  if (addSample) {
+    if (generateRest) {
+      stdout.writeln(
+        '  2. Add your endpoint paths to $dataDir/constants/${feature}_api_paths.dart',
+      );
+      stdout.writeln(
+        '  3. Add @GET/@POST methods to $dataDir/datasources/rest_${repoName}_data_source.dart',
+      );
+      stdout.writeln('  4. Add fields to the request/response models.');
+      stdout.writeln(
+        '  5. Implement repository methods in $dataDir/repositories/${repoName}_repository_impl.dart',
+      );
+    } else {
+      stdout.writeln('  2. Add fields to the request/response models.');
+      stdout.writeln(
+        '  3. Implement repository methods in $dataDir/repositories/${repoName}_repository_impl.dart',
+      );
+    }
   } else {
-    stdout.writeln('  2. Add fields to the request/response models.');
-    stdout.writeln(
-      '  3. Implement repository methods in $dataDir/repositories/${repoName}_repository_impl.dart',
-    );
+    if (generateRest) {
+      stdout.writeln(
+        '  2. Add your endpoint paths to $dataDir/constants/${feature}_api_paths.dart',
+      );
+      stdout.writeln(
+        '  3. Add @GET/@POST methods and request/response models to $dataDir/datasources/rest_${repoName}_data_source.dart',
+      );
+      stdout.writeln(
+        '  4. Implement repository methods in $dataDir/repositories/${repoName}_repository_impl.dart',
+      );
+    } else {
+      stdout.writeln(
+        '  2. Implement repository methods in $dataDir/repositories/${repoName}_repository_impl.dart',
+      );
+    }
   }
 }

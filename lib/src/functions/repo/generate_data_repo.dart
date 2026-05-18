@@ -5,7 +5,11 @@ import '../shared/pascal_case.dart';
 import '../shared/write_file.dart';
 import '../../templates/data_repo_template.dart';
 
-void generateDataRepo(String dataDir, String repoName) {
+void generateDataRepo(
+  String dataDir,
+  String repoName, {
+  bool addSample = false,
+}) {
   final className = pascalCase(repoName);
   final repositoryClass = '${className}Repository';
   final implClass = '${className}RepositoryImpl';
@@ -22,6 +26,7 @@ void generateDataRepo(String dataDir, String repoName) {
       dataSourceClass,
       dataSourceField,
       repoName,
+      addSample: addSample,
     ),
   );
   stdout.writeln('  📄 $path');

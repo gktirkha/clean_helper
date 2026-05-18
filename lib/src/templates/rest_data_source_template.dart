@@ -4,9 +4,11 @@ String restDataSourceTemplate(
   String baseClass,
   String implClass,
   String feature,
-  String repoName,
-) =>
-    '''
+  String repoName, {
+  bool addSample = false,
+}) =>
+    addSample
+        ? '''
 import 'package:dio/dio.dart';
 import 'package:fpdart/fpdart.dart';
 import 'package:injectable/injectable.dart';
@@ -35,5 +37,23 @@ abstract class $implClass implements $baseClass {
   @override
   @POST(${featureClass}ApiPaths.$repoName)
   Future<Either<Failure, ${repoClass}ResponseModel>> post$repoClass(@Body() ${repoClass}RequestModel? requestModel);
+}
+'''
+        : '''
+import 'package:dio/dio.dart';
+import 'package:injectable/injectable.dart';
+import 'package:retrofit/error_logger.dart';
+import 'package:retrofit/http.dart';
+
+import '../../../../core/network/utils/clean_call_adapter.dart';
+import '${repoName}_data_source_base.dart';
+
+part 'rest_${repoName}_data_source.g.dart';
+
+@RestApi(callAdapter: CleanCallAdapter)
+@Injectable(as: $baseClass)
+abstract class $implClass implements $baseClass {
+  @factoryMethod
+  factory $implClass(Dio dio, {ParseErrorLogger? errorLogger}) = _$implClass;
 }
 ''';

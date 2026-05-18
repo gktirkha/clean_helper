@@ -4,7 +4,12 @@ import '../shared/pascal_case.dart';
 import '../shared/write_file.dart';
 import '../../templates/rest_data_source_template.dart';
 
-void generateRestDataSource(String dataDir, String feature, String repoName) {
+void generateRestDataSource(
+  String dataDir,
+  String feature,
+  String repoName, {
+  bool addSample = false,
+}) {
   final featureClass = pascalCase(feature);
   final repoClass = pascalCase(repoName);
   final baseClass = '${repoClass}DataSourceBase';
@@ -20,6 +25,7 @@ void generateRestDataSource(String dataDir, String feature, String repoName) {
       implClass,
       feature,
       repoName,
+      addSample: addSample,
     ),
   );
   stdout.writeln('  📄 $path');

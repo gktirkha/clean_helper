@@ -6,9 +6,11 @@ String dataRepoTemplate(
   String implClass,
   String dataSourceClass,
   String dataSourceField,
-  String repoName,
-) =>
-    '''
+  String repoName, {
+  bool addSample = false,
+}) =>
+    addSample
+        ? '''
 import 'package:fpdart/fpdart.dart';
 import 'package:injectable/injectable.dart';
 
@@ -33,5 +35,19 @@ class $implClass implements $repositoryClass {
   Future<Either<Failure, ${className}Entity>> post$className() async {
     return $dataSourceField.post$className(const .new());
   }
+}
+'''
+        : '''
+import 'package:injectable/injectable.dart';
+
+import '../../domain/repositories/${repoName}_repository.dart';
+import '../datasources/${repoName}_data_source_base.dart';
+
+@Singleton(as: $repositoryClass)
+class $implClass implements $repositoryClass {
+  $implClass({required $dataSourceClass ${camelCase(repoName)}DataSourceBase})
+    : $dataSourceField = ${camelCase(repoName)}DataSourceBase;
+
+  final $dataSourceClass $dataSourceField;
 }
 ''';

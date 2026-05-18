@@ -10,13 +10,17 @@
 ```bash
 clean-helper add_repo home invoice
 clean-helper add_repo auth user
-clean-helper add_repo home invoice --no_rest   # skip REST datasource and API paths
+clean-helper add_repo home invoice --no_rest          # skip REST datasource and API paths
+clean-helper add_repo home invoice --add-sample       # generate get/post methods + request/response models
+clean-helper add_repo home invoice --no_rest --add-sample
 ```
 
 `<feature>` is the feature name (snake_case). Core scope is **not supported** — use `add_entity` for core models.
 `<repo_name>` is snake_case.
 
 `--no_rest` (optional flag) — skips generating the REST datasource (`rest_<repo>_data_source.dart`) and API paths (`<feature>_api_paths.dart`), even if a network module is present.
+
+`--add-sample` (optional flag) — generates sample `get{Name}()` and `post{Name}()` methods in the domain repo, data source base, repository impl, and REST datasource, and also creates the request/response model files. Without this flag, those files are generated as empty scaffolds and the model files are skipped.
 
 ---
 
@@ -50,10 +54,11 @@ lib/features/home/
 
 ## Notes
 
-- Every repo generates both `get` and `post` methods as a starting point. Remove or extend as needed.
-- The `postInvoice()` impl in `invoice_repository_impl.dart` includes a `//TODO: Pass Params in InvoiceRepository` comment — the request model is instantiated as `const InvoiceRequestModel()`.
+- Without `--add-sample`, domain repo, data source base, and repo impl are generated as empty scaffolds (no methods), and request/response model files are skipped.
+- With `--add-sample`, both `get` and `post` methods are added as a starting point. Remove or extend as needed. The `postInvoice()` impl instantiates the request model as `const InvoiceRequestModel()`.
 - REST datasource and API paths are skipped if `lib/core/network/di/network_module.dart` is not found, **or** if `--no_rest` is passed.
 - When `--no_rest` is used, the skip is logged as `⏭  Skipping REST datasource and API paths (--no_rest).`
+- When `--add-sample` is not set, model files are skipped and logged as `⏭  Skipping request/response models (--add-sample not set).`
 - All imports are relative — no `package:` imports for internal project files.
 
 ---
