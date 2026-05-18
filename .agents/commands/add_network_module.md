@@ -22,7 +22,7 @@ No arguments. Must be run from the Flutter project root. Idempotent — `writeFi
 3. `addChuckerDependency()` — installs `chucker_flutter` from git
 4. `patchAppGoRouter()` — adds `ChuckerFlutter.navigatorObserver` to `lib/app/router/app_go_router.dart`
 5. `runDartFormat()` — formats the project
-6. `runBuildRunner()` — runs `build_runner build --delete-conflicting-outputs`
+6. `runBuildRunner()` — runs `build_runner build`
 
 ---
 

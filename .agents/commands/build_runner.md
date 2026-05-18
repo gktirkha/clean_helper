@@ -9,7 +9,7 @@
 
 ```bash
 clean-helper build_runner           # defaults to build
-clean-helper build_runner build     # build (--delete-conflicting-outputs)
+clean-helper build_runner build     # build
 clean-helper build_runner clean     # clean generated files
 ```
 
@@ -19,7 +19,7 @@ clean-helper build_runner clean     # clean generated files
 
 | Action | Helper | Underlying command |
 |--------|--------|--------------------|
-| `build` (default) | `runBuildRunnerBuild()` | `dart run build_runner build --delete-conflicting-outputs` |
+| `build` (default) | `runBuildRunnerBuild()` | `dart run build_runner build` |
 | `clean` | `runBuildRunnerClean()` | `dart run build_runner clean` |
 
 An unknown action prints an error and exits with code 1.

@@ -8,8 +8,7 @@ String vscodeTasksTemplate() => r'''
 			"args": [
 				"run",
 				"build_runner",
-				"build",
-				"--delete-conflicting-outputs"
+				"build"
 			],
 			"problemMatcher": [
 				"$dart-build_runner"
@@ -24,8 +23,7 @@ String vscodeTasksTemplate() => r'''
 			"args": [
 				"run",
 				"build_runner",
-				"watch",
-				"--delete-conflicting-outputs"
+				"watch"
 			],
 			"problemMatcher": [
 				"$dart-build_runner"

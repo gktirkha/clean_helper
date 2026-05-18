@@ -26,7 +26,7 @@
 17. `addNetworkModule()` — optional, only if `--network` or `--auth-interceptor` flag passed
 18. `addAuthInterceptor()` — optional, only if `--auth-interceptor` flag passed
 19. `runSlang()` — `[fvm] dart run slang`
-20. `runBuildRunner()` — `[fvm] dart run build_runner build --delete-conflicting-outputs`
+20. `runBuildRunner()` — `[fvm] dart run build_runner build`
 21. `runDartFormat()` — `[fvm] dart format .`
 
 `[fvm]` means the command is prefixed with `fvm` automatically if fvm is detected.

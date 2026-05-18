@@ -14,6 +14,6 @@ Future<void> bootstrap(List<String> args) async {
   await fvmUse();
   await fvmRunner('flutter pub get');
   await fvmRunner('dart run slang');
-  await fvmRunner('dart run build_runner build --delete-conflicting-outputs');
+  await fvmRunner('dart run build_runner build');
 }
 ''';

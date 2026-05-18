@@ -10,7 +10,6 @@ void runBuildRunner() {
     'run',
     'build_runner',
     'build',
-    '--delete-conflicting-outputs',
   ]);
   stdout.writeln('🔨 Code generation complete');
 }

@@ -46,7 +46,7 @@ tools/
 - Detects fvm; if present runs `fvm use --skip-pub-get`
 - Runs `[fvm] flutter pub get`
 - Runs `[fvm] dart run slang`
-- Runs `[fvm] dart run build_runner build --delete-conflicting-outputs`
+- Runs `[fvm] dart run build_runner build`
 
 ### `dart tools/write_key_properties.dart`
 - Reads config from `tools/config/android_build_config.json`, env vars override JSON values

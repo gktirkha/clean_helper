@@ -19,7 +19,7 @@ No arguments. Must be run from a Flutter project root.
 1. `fvmUse()` — if fvm is installed, runs `fvm use` interactively so the user can select a Flutter version
 2. `runFlutterPubGet()` — `[fvm] flutter pub get`
 3. `runSlang()` — `[fvm] dart run slang`
-4. `runBuildRunner()` — `[fvm] dart run build_runner build --delete-conflicting-outputs`
+4. `runBuildRunner()` — `[fvm] dart run build_runner build`
 
 `[fvm]` means the command is prefixed with `fvm` automatically if fvm is detected.
 

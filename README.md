@@ -80,7 +80,7 @@ What it does (in order):
 16. Sets up network layer (only with `--network` or `--auth-interceptor`)
 17. Scaffolds auth interceptor (only with `--auth-interceptor`)
 18. Runs `dart run slang`
-19. Runs `dart run build_runner build --delete-conflicting-outputs`
+19. Runs `dart run build_runner build`
 20. Runs `dart format .`
 
 **Dependencies installed:**
