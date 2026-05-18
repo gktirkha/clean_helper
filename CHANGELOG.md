@@ -1,3 +1,12 @@
+## 1.1.4
+
+- Move `retrofit_logger.dart` to `lib/core/network/utils/` and update its `app_logger` import path
+- Add `CleanCallAdapter` — a Retrofit `CallAdapter` that wraps responses in `Either<Failure, T>` via `safeExecute`
+- Generate `CleanCallAdapter` during `init` network setup
+- Update `rest_data_source_template` to use `@RestApi(callAdapter: CleanCallAdapter)` and return `Either<Failure, T>`
+- Update `data_source_base_template` to return `Either<Failure, T>` on all methods
+- Remove `safeExecute` from `data_repo_template` — repository now delegates directly to the data source
+
 ## 1.1.3
 
 - Fix `AppBlocObserver` import path for `app_logger.dart` to `../../core/utils/app_logger.dart`
