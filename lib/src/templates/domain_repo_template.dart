@@ -2,9 +2,8 @@ String domainRepoTemplate(
   String className,
   String name, {
   bool addSample = false,
-}) =>
-    addSample
-        ? '''
+}) => addSample
+    ? '''
 import 'package:fpdart/fpdart.dart';
 
 import '../../../../core/domain/failures/failure.dart';
@@ -15,7 +14,7 @@ abstract interface class ${className}Repository {
   Future<Either<Failure, ${className}Entity>> post$className();
 }
 '''
-        : '''
+    : '''
 abstract interface class ${className}Repository {
 }
 ''';

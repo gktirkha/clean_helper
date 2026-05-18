@@ -6,9 +6,8 @@ String restDataSourceTemplate(
   String feature,
   String repoName, {
   bool addSample = false,
-}) =>
-    addSample
-        ? '''
+}) => addSample
+    ? '''
 import 'package:dio/dio.dart';
 import 'package:fpdart/fpdart.dart';
 import 'package:injectable/injectable.dart';
@@ -39,7 +38,7 @@ abstract class $implClass implements $baseClass {
   Future<Either<Failure, ${repoClass}ResponseModel>> post$repoClass(@Body() ${repoClass}RequestModel? requestModel);
 }
 '''
-        : '''
+    : '''
 import 'package:dio/dio.dart';
 import 'package:injectable/injectable.dart';
 import 'package:retrofit/error_logger.dart';

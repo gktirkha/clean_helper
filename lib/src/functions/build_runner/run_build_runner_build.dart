@@ -5,11 +5,6 @@ import '../shared/run_command_streamed.dart';
 
 void runBuildRunnerBuild() {
   stdout.writeln('🔨 Running build_runner build...');
-  runCommandStreamed([
-    ...fvmExec('dart'),
-    'run',
-    'build_runner',
-    'build',
-  ]);
+  runCommandStreamed([...fvmExec('dart'), 'run', 'build_runner', 'build']);
   stdout.writeln('🔨 Build complete');
 }

@@ -8,9 +8,8 @@ String dataRepoTemplate(
   String dataSourceField,
   String repoName, {
   bool addSample = false,
-}) =>
-    addSample
-        ? '''
+}) => addSample
+    ? '''
 import 'package:fpdart/fpdart.dart';
 import 'package:injectable/injectable.dart';
 
@@ -37,7 +36,7 @@ class $implClass implements $repositoryClass {
   }
 }
 '''
-        : '''
+    : '''
 import 'package:injectable/injectable.dart';
 
 import '../../domain/repositories/${repoName}_repository.dart';
