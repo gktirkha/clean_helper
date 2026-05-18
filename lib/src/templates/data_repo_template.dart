@@ -13,7 +13,6 @@ import 'package:fpdart/fpdart.dart';
 import 'package:injectable/injectable.dart';
 
 import '../../../../core/domain/failures/failure.dart';
-import '../../../../core/utils/functions/safe_execute.dart';
 import '../../domain/entities/${repoName}_entity.dart';
 import '../../domain/repositories/${repoName}_repository.dart';
 import '../datasources/${repoName}_data_source_base.dart';
@@ -27,12 +26,12 @@ class $implClass implements $repositoryClass {
 
   @override
   Future<Either<Failure, ${className}Entity>> get$className() async {
-    return safeExecute($dataSourceField.get$className());
+    return $dataSourceField.get$className();
   }
 
   @override
   Future<Either<Failure, ${className}Entity>> post$className() async {
-    return safeExecute($dataSourceField.post$className(const .new()));
+    return $dataSourceField.post$className(const .new());
   }
 }
 ''';
