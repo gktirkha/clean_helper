@@ -1,3 +1,7 @@
+## 1.1.3
+
+- Fix `AppBlocObserver` import path for `app_logger.dart` to `../../core/utils/app_logger.dart`
+
 ## 1.1.2
 
 - Remove duplicate `Logger` registration from `AppModule` template (kept in `CoreModule`)
