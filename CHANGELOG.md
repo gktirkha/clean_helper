@@ -1,3 +1,8 @@
+## 1.1.6
+
+- Rename all CLI command names from `snake_case` to `kebab-case` (e.g. `add_feature` → `add-feature`, `build_runner` → `build-runner`, etc.)
+- Rename `--no_rest` flag to `--no-rest` on `add-repo` command for consistency
+
 ## 1.1.5
 
 - Add `--add-sample` flag to `add_repo` command

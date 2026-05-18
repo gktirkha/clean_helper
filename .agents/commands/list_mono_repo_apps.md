@@ -1,4 +1,4 @@
-# Command: list_mono_repo_apps
+# Command: list-mono-repo-apps
 
 **Entry point:** `lib/src/commands/list_mono_repo_apps.dart` → `listMonoRepoApps()`
 **Binary:** `dart bin/list_mono_repo_apps.dart`
@@ -8,7 +8,7 @@
 ## Usage
 
 ```bash
-clean-helper list_mono_repo_apps
+clean-helper list-mono-repo-apps
 ```
 
 No arguments. Run from the monorepo root (or any directory containing `pubspec.yaml`).

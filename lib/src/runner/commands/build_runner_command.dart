@@ -4,7 +4,7 @@ import '../../commands/build_runner.dart';
 
 class BuildRunnerCommand extends Command<void> {
   @override
-  String get name => 'build_runner';
+  String get name => 'build-runner';
 
   @override
   String get description => 'Run build_runner in the current Flutter project.';

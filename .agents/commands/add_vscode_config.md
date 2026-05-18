@@ -1,4 +1,4 @@
-# Command: add_vscode_config
+# Command: add-vscode-config
 
 **Entry point:** `lib/src/commands/add_vscode_config.dart` → `addVscodeConfig()`
 **Runner Command:** `AddVscodeConfigCommand`
@@ -8,7 +8,7 @@
 ## Usage
 
 ```bash
-clean-helper add_vscode_config
+clean-helper add-vscode-config
 ```
 
 No arguments. Must be run from a Flutter project root.

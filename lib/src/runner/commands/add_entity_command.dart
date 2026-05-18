@@ -4,7 +4,7 @@ import '../../commands/add_entity.dart';
 
 class AddEntityCommand extends Command<void> {
   @override
-  String get name => 'add_entity';
+  String get name => 'add-entity';
 
   @override
   String get description =>

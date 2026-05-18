@@ -1,4 +1,4 @@
-# Command: build_runner
+# Command: build-runner
 
 **Entry point:** `lib/src/commands/build_runner.dart` → `runBuildRunnerCommand(List<String> args)`
 **Binary:** `dart run bin/build_runner.dart [clean|build]`
@@ -8,9 +8,9 @@
 ## Usage
 
 ```bash
-clean-helper build_runner           # defaults to build
-clean-helper build_runner build     # build
-clean-helper build_runner clean     # clean generated files
+clean-helper build-runner           # defaults to build
+clean-helper build-runner build     # build
+clean-helper build-runner clean     # clean generated files
 ```
 
 ---
@@ -38,5 +38,5 @@ An unknown action prints an error and exits with code 1.
 
 ## Notes
 
-- `build_runner` is also run automatically at the end of `init`, `add_feature`, `add_repo`, `add_entity`, `add_auth_interceptor`, and `add_network_module` — this command is for manual invocation.
+- `build-runner` is also run automatically at the end of `init`, `add-feature`, `add-repo`, `add-entity`, `add-auth-interceptor`, and `add-network-module` — this command is for manual invocation.
 - Use `clean` if generated files are out of sync or causing build errors, then re-run `build`.

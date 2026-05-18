@@ -4,7 +4,7 @@ import '../../commands/remove_feature.dart';
 
 class RemoveFeatureCommand extends Command<void> {
   @override
-  String get name => 'remove_feature';
+  String get name => 'remove-feature';
 
   @override
   String get description => 'Remove a feature and deregister its router.';

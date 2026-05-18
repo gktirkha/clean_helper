@@ -4,7 +4,7 @@ import '../../commands/add_auth_interceptor.dart';
 
 class AddAuthInterceptorCommand extends Command<void> {
   @override
-  String get name => 'add_auth_interceptor';
+  String get name => 'add-auth-interceptor';
 
   @override
   String get description =>

@@ -22,7 +22,7 @@ void addRepo(
 
   if (args.length < 2) {
     stderr.writeln(
-      '❌ Usage: dart run bin/add_repo.dart <feature> <repo_name> [--no_rest] [--add-sample]',
+      '❌ Usage: dart run bin/add_repo.dart <feature> <repo_name> [--no-rest] [--add-sample]',
     );
     stderr.writeln('   Example: dart run bin/add_repo.dart home invoice');
     exit(1);
@@ -62,7 +62,7 @@ void addRepo(
     generateApiPaths(dataDir, feature, repoName);
     generateRestDataSource(dataDir, feature, repoName, addSample: addSample);
   } else if (noRest) {
-    stdout.writeln('  ⏭  Skipping REST datasource and API paths (--no_rest).');
+    stdout.writeln('  ⏭  Skipping REST datasource and API paths (--no-rest).');
   } else {
     stdout.writeln(
       '  ⚠️  Network module not found — skipping REST datasource and API paths.',

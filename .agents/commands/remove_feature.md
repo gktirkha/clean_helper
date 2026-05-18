@@ -1,4 +1,4 @@
-# Command: remove_feature
+# Command: remove-feature
 
 **Entry point:** `lib/src/commands/remove_feature.dart` → `removeFeature(List<String> args)`
 **Binary:** `dart run bin/remove_feature.dart <feature_name>`
@@ -8,8 +8,8 @@
 ## Usage
 
 ```bash
-clean-helper remove_feature auth
-clean-helper remove_feature user_profile
+clean-helper remove-feature auth
+clean-helper remove-feature user_profile
 ```
 
 Feature name is lowercased automatically. Aborts with an error if no name is provided.

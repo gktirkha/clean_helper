@@ -1,4 +1,4 @@
-# Command: add_network_module
+# Command: add-network-module
 
 **Entry point:** `lib/src/commands/add_network_module.dart` → `addNetworkModule()`
 **Binary:** `dart run bin/add_network_module.dart`
@@ -8,7 +8,7 @@
 ## Usage
 
 ```bash
-clean-helper add_network_module
+clean-helper add-network-module
 ```
 
 No arguments. Must be run from the Flutter project root. Idempotent — `writeFile` skips files that already exist.
@@ -62,4 +62,4 @@ All written with `writeFile` — skipped if they already exist.
 ## Notes
 
 - `addNetworkModule()` is also called from `runInit()` when the `--network` flag is passed — the `runBuildRunnerAfter` parameter lets `init` skip the redundant `build_runner` call (it runs its own at the end).
-- After running this command, use `add_auth_interceptor` to wire token-based auth into the network layer.
+- After running this command, use `add-auth-interceptor` to wire token-based auth into the network layer.

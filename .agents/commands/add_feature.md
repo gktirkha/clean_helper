@@ -1,4 +1,4 @@
-# Command: add_feature
+# Command: add-feature
 
 **Entry point:** `lib/src/commands/add_feature.dart` → `addFeature(List<String> args)`
 **Binary:** `dart bin/add_feature.dart <feature_name>`
@@ -8,9 +8,9 @@
 ## Usage
 
 ```bash
-clean-helper add_feature auth
-clean-helper add_feature user_profile
-clean-helper add_feature auth --di    # also generate DI module
+clean-helper add-feature auth
+clean-helper add-feature user_profile
+clean-helper add-feature auth --di    # also generate DI module
 ```
 
 Feature name must be **snake_case**. It is used as-is for file/directory names and converted to
@@ -20,7 +20,7 @@ Feature name must be **snake_case**. It is used as-is for file/directory names a
 
 ## What It Generates
 
-Given `clean-helper add_feature auth`:
+Given `clean-helper add-feature auth`:
 
 ```
 lib/

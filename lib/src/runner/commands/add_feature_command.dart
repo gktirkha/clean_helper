@@ -13,7 +13,7 @@ class AddFeatureCommand extends Command<void> {
   }
 
   @override
-  String get name => 'add_feature';
+  String get name => 'add-feature';
 
   @override
   String get description =>

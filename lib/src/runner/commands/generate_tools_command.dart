@@ -13,7 +13,7 @@ class GenerateToolsCommand extends Command<void> {
   }
 
   @override
-  String get name => 'generate_tools';
+  String get name => 'generate-tools';
 
   @override
   String get description => 'Generate tools/ scripts in the current project.';

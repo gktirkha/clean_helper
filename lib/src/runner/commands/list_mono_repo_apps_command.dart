@@ -4,7 +4,7 @@ import '../../commands/list_mono_repo_apps.dart';
 
 class ListMonoRepoAppsCommand extends Command<void> {
   @override
-  String get name => 'list_mono_repo_apps';
+  String get name => 'list-mono-repo-apps';
 
   @override
   String get description =>

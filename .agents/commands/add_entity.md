@@ -1,4 +1,4 @@
-# Command: add_entity
+# Command: add-entity
 
 **Entry point:** `lib/src/commands/add_entity.dart` → `addEntity(List<String> args)`
 **Binary:** `dart run bin/add_entity.dart <scope> <entity_name> [folder]`
@@ -9,13 +9,13 @@
 
 ```bash
 # Feature scope
-clean-helper add_entity home invoice
+clean-helper add-entity home invoice
 
 # With subfolder (places model in data/models/requests/)
-clean-helper add_entity home invoice requests
+clean-helper add-entity home invoice requests
 
 # Core scope
-clean-helper add_entity core error
+clean-helper add-entity core error
 ```
 
 `<scope>` is either `core` or a feature name (e.g. `home`, `auth`).
@@ -25,7 +25,7 @@ clean-helper add_entity core error
 
 ## What It Generates
 
-**Without folder** (`clean-helper add_entity home invoice`):
+**Without folder** (`clean-helper add-entity home invoice`):
 
 ```
 lib/features/home/
@@ -35,7 +35,7 @@ lib/features/home/
     └── invoice_model.dart             (@freezed, implements InvoiceEntity)
 ```
 
-**With folder** (`clean-helper add_entity home invoice requests`):
+**With folder** (`clean-helper add-entity home invoice requests`):
 
 ```
 lib/features/home/
@@ -45,7 +45,7 @@ lib/features/home/
     └── invoice_model.dart
 ```
 
-**Core scope** (`clean-helper add_entity core error`):
+**Core scope** (`clean-helper add-entity core error`):
 
 ```
 lib/core/

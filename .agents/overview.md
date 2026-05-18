@@ -13,22 +13,22 @@ routing, DI, BLoC state management, and all required dependencies in one command
 | Command | Purpose |
 |---------|---------|
 | `clean-helper init` | Full project scaffold — run once on a new Flutter project |
-| `clean-helper add_network_module` | Set up the network layer (Dio, Retrofit, Chucker) |
-| `clean-helper add_auth_interceptor` | Scaffold AuthInterceptor with token refresh and wire into NetworkModule |
-| `clean-helper add_feature <name>` | Add a new feature with clean architecture structure |
-| `clean-helper add_repo <feature> <name>` | Generate the full data layer for a repository |
-| `clean-helper add_entity <scope> <name> [folder]` | Add an entity (domain) + freezed model (data) |
-| `clean-helper build_runner [clean\|build]` | Run build_runner in the current project (default: build) |
+| `clean-helper add-network-module` | Set up the network layer (Dio, Retrofit, Chucker) |
+| `clean-helper add-auth-interceptor` | Scaffold AuthInterceptor with token refresh and wire into NetworkModule |
+| `clean-helper add-feature <name>` | Add a new feature with clean architecture structure |
+| `clean-helper add-repo <feature> <name>` | Generate the full data layer for a repository |
+| `clean-helper add-entity <scope> <name> [folder]` | Add an entity (domain) + freezed model (data) |
+| `clean-helper build-runner [clean\|build]` | Run build_runner in the current project (default: build) |
 | `clean-helper bootstrap` | pub get → slang → build_runner (re-bootstrap after git pull) |
-| `clean-helper remove_feature <name>` | Remove a feature and deregister its router |
-| `clean-helper regenerate_router` | Scan all features on disk and regenerate `app_router_module.dart` |
-| `clean-helper generate_localizations` | Generate locales using slang |
-| `clean-helper generate_tools [--overwrite]` | Generate `tools/` scripts in the current project |
-| `clean-helper add_vscode_config` | Generate `.vscode/` extensions, launch, and tasks config |
-| `clean-helper list_mono_repo_apps` | List all apps declared under `clean-helper.mono_repo_apps` in pubspec.yaml |
+| `clean-helper remove-feature <name>` | Remove a feature and deregister its router |
+| `clean-helper regenerate-router` | Scan all features on disk and regenerate `app_router_module.dart` |
+| `clean-helper generate-localizations` | Generate locales using slang |
+| `clean-helper generate-tools [--overwrite]` | Generate `tools/` scripts in the current project |
+| `clean-helper add-vscode-config` | Generate `.vscode/` extensions, launch, and tasks config |
+| `clean-helper list-mono-repo-apps` | List all apps declared under `clean-helper.mono_repo_apps` in pubspec.yaml |
 
-`<scope>` for `add_entity` is either `core` or a feature name (e.g. `home`, `auth`).
-`add_repo` only supports feature scope — not `core`.
+`<scope>` for `add-entity` is either `core` or a feature name (e.g. `home`, `auth`).
+`add-repo` only supports feature scope — not `core`.
 
 Shell completion is provided by [`cli_completion`](https://pub.dev/packages/cli_completion).
 Activate it once with: `clean-helper install-completion-files`
@@ -56,7 +56,7 @@ Run any command from the monorepo root — the tool handles the rest.
 
 **`--scope` flag (global, all commands):**
 ```bash
-clean-helper --scope=app1 add_feature login
+clean-helper --scope=app1 add-feature login
 ```
 Skips the interactive prompt by filtering to apps whose folder name matches `app1`.
 If two apps share the same name (different paths), a narrowed prompt is shown for just those matches.

@@ -1,4 +1,4 @@
-# Command: add_auth_interceptor
+# Command: add-auth-interceptor
 
 **Entry point:** `lib/src/commands/add_auth_interceptor.dart` → `addAuthInterceptor()`
 **Binary:** `dart run bin/add_auth_interceptor.dart`
@@ -8,10 +8,10 @@
 ## Usage
 
 ```bash
-clean-helper add_auth_interceptor
+clean-helper add-auth-interceptor
 ```
 
-No arguments. Must be run from the Flutter project root after `add_network_module`.
+No arguments. Must be run from the Flutter project root after `add-network-module`.
 Idempotent — skips files/patches that already exist.
 
 ---

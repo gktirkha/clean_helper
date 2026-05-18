@@ -1,4 +1,4 @@
-# Command: regenerate_router
+# Command: regenerate-router
 
 **Entry point:** `lib/src/commands/regenerate_router.dart` → `regenerateRouter()`
 **Binary:** `dart run bin/regenerate_router.dart`
@@ -8,7 +8,7 @@
 ## Usage
 
 ```bash
-clean-helper regenerate_router
+clean-helper regenerate-router
 ```
 
 No arguments required.
@@ -29,7 +29,7 @@ Features are sorted alphabetically for deterministic output.
 
 - `app_router_module.dart` has drifted out of sync with the actual features on disk
 - After manually adding or deleting a feature folder without using the CLI
-- As a recovery step if `add_feature` or `remove_feature` left the module in a broken state
+- As a recovery step if `add-feature` or `remove-feature` left the module in a broken state
 
 ---
 

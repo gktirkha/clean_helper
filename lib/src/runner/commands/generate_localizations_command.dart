@@ -4,7 +4,7 @@ import '../../commands/generate_localizations.dart';
 
 class GenerateLocalizationsCommand extends Command<void> {
   @override
-  String get name => 'generate_localizations';
+  String get name => 'generate-localizations';
 
   @override
   String get description =>

@@ -1,4 +1,4 @@
-# Command: generate_tools
+# Command: generate-tools
 
 **Entry point:** `lib/src/commands/generate_tools.dart` → `generateTools({bool overwrite})`
 **Binary:** `dart bin/generate_tools.dart [--overwrite]`
@@ -8,9 +8,9 @@
 ## Usage
 
 ```bash
-clean-helper generate_tools             # skip existing files
-clean-helper generate_tools --overwrite # overwrite all files
-clean-helper generate_tools -o          # shorthand
+clean-helper generate-tools             # skip existing files
+clean-helper generate-tools --overwrite # overwrite all files
+clean-helper generate-tools -o          # shorthand
 ```
 
 Must be run from a Flutter project root. Idempotent by default — existing files are skipped.

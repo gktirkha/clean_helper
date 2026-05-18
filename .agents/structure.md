@@ -23,18 +23,18 @@ clean_helper/
 │       │   ├── clean_helper_runner.dart              → CleanHelperRunner (CompletionCommandRunner)
 │       │   └── commands/
 │       │       ├── init_command.dart                      → name: 'init'
-│       │       ├── add_feature_command.dart               → name: 'add_feature'
-│       │       ├── add_repo_command.dart                  → name: 'add_repo'
-│       │       ├── add_entity_command.dart                → name: 'add_entity'
-│       │       ├── add_network_module_command.dart        → name: 'add_network_module'
-│       │       ├── add_auth_interceptor_command.dart      → name: 'add_auth_interceptor'
-│       │       ├── add_vscode_config_command.dart         → name: 'add_vscode_config'
-│       │       ├── build_runner_command.dart              → name: 'build_runner'
-│       │       ├── list_mono_repo_apps_command.dart       → name: 'list_mono_repo_apps'
-│       │       ├── remove_feature_command.dart            → name: 'remove_feature'
-│       │       ├── regenerate_router_command.dart         → name: 'regenerate_router'
-│       │       ├── generate_localizations_command.dart    → name: 'generate_localizations'
-│       │       └── generate_tools_command.dart            → name: 'generate_tools'
+│       │       ├── add_feature_command.dart               → name: 'add-feature'
+│       │       ├── add_repo_command.dart                  → name: 'add-repo'
+│       │       ├── add_entity_command.dart                → name: 'add-entity'
+│       │       ├── add_network_module_command.dart        → name: 'add-network-module'
+│       │       ├── add_auth_interceptor_command.dart      → name: 'add-auth-interceptor'
+│       │       ├── add_vscode_config_command.dart         → name: 'add-vscode-config'
+│       │       ├── build_runner_command.dart              → name: 'build-runner'
+│       │       ├── list_mono_repo_apps_command.dart       → name: 'list-mono-repo-apps'
+│       │       ├── remove_feature_command.dart            → name: 'remove-feature'
+│       │       ├── regenerate_router_command.dart         → name: 'regenerate-router'
+│       │       ├── generate_localizations_command.dart    → name: 'generate-localizations'
+│       │       └── generate_tools_command.dart            → name: 'generate-tools'
 │       │
 │       ├── commands/           # One file = one public entry-point function
 │       │   ├── init.dart                    → runInit() [async]

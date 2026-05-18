@@ -26,20 +26,20 @@ clean-helper install-completion-files
 |---------|-------------|
 | `clean-helper init` | Full project scaffold — run once on a new Flutter project |
 | `clean-helper bootstrap` | `pub get` → slang → build_runner (re-bootstrap after git pull) |
-| `clean-helper add_network_module` | Set up the network layer (Dio, Retrofit, Chucker) |
-| `clean-helper add_auth_interceptor` | Scaffold AuthInterceptor with token refresh and wire into NetworkModule |
-| `clean-helper add_feature <name> [--di]` | Add a new feature with clean architecture structure |
-| `clean-helper add_repo <feature> <name> [--no_rest]` | Generate the full data layer (entity, domain repo, datasources, models, repo impl) |
-| `clean-helper add_entity <scope> <name> [folder]` | Add an entity (domain) + freezed model (data) |
-| `clean-helper build_runner [clean\|build]` | Run build_runner in the current project (default: build) |
-| `clean-helper remove_feature <name>` | Remove a feature and deregister its router |
-| `clean-helper regenerate_router` | Scan all features on disk and regenerate `app_router_module.dart` |
-| `clean-helper add_vscode_config` | Generate `.vscode/extensions.json`, `launch.json`, and `tasks.json` |
-| `clean-helper generate_localizations` | Generate locales using slang |
-| `clean-helper generate_tools [--overwrite]` | Generate `tools/` scripts in the current project |
-| `clean-helper list_mono_repo_apps` | List all apps declared in `pubspec.yaml` under `clean-helper.mono_repo_apps` |
+| `clean-helper add-network-module` | Set up the network layer (Dio, Retrofit, Chucker) |
+| `clean-helper add-auth-interceptor` | Scaffold AuthInterceptor with token refresh and wire into NetworkModule |
+| `clean-helper add-feature <name> [--di]` | Add a new feature with clean architecture structure |
+| `clean-helper add-repo <feature> <name> [--no-rest]` | Generate the full data layer (entity, domain repo, datasources, models, repo impl) |
+| `clean-helper add-entity <scope> <name> [folder]` | Add an entity (domain) + freezed model (data) |
+| `clean-helper build-runner [clean\|build]` | Run build_runner in the current project (default: build) |
+| `clean-helper remove-feature <name>` | Remove a feature and deregister its router |
+| `clean-helper regenerate-router` | Scan all features on disk and regenerate `app_router_module.dart` |
+| `clean-helper add-vscode-config` | Generate `.vscode/extensions.json`, `launch.json`, and `tasks.json` |
+| `clean-helper generate-localizations` | Generate locales using slang |
+| `clean-helper generate-tools [--overwrite]` | Generate `tools/` scripts in the current project |
+| `clean-helper list-mono-repo-apps` | List all apps declared in `pubspec.yaml` under `clean-helper.mono_repo_apps` |
 
-`<scope>` for `add_entity` is either `core` or a feature name (e.g. `home`, `auth`). `add_repo` only supports feature scope.
+`<scope>` for `add-entity` is either `core` or a feature name (e.g. `home`, `auth`). `add-repo` only supports feature scope.
 
 ---
 
@@ -102,12 +102,12 @@ Runs `flutter pub get` → `dart run slang` → `dart run build_runner build` in
 
 ---
 
-### `add_feature` — Add a new feature
+### `add-feature` — Add a new feature
 
 ```bash
-clean-helper add_feature auth
-clean-helper add_feature user_profile
-clean-helper add_feature auth --di    # also generate a DI module
+clean-helper add-feature auth
+clean-helper add-feature user_profile
+clean-helper add-feature auth --di    # also generate a DI module
 ```
 
 Feature name must be **snake_case**. Generates:
@@ -150,12 +150,13 @@ The new feature router is **automatically registered** in `lib/app/router/app_ro
 
 ---
 
-### `add_repo` — Add a full data layer
+### `add-repo` — Add a full data layer
 
 ```bash
-clean-helper add_repo home invoice
-clean-helper add_repo auth user
-clean-helper add_repo home invoice --no_rest   # skip REST datasource and API paths
+clean-helper add-repo home invoice
+clean-helper add-repo auth user
+clean-helper add-repo home invoice --no-rest      # skip REST datasource and API paths
+clean-helper add-repo home invoice --add-sample   # generate get/post methods + request/response models
 ```
 
 Generates the complete data layer for a repository inside `lib/features/<feature>/`:
@@ -163,33 +164,33 @@ Generates the complete data layer for a repository inside `lib/features/<feature
 ```
 domain/
   entities/invoice_entity.dart                  (abstract class InvoiceEntity)
-  repositories/invoice_repository.dart          (abstract interface, get + post methods)
+  repositories/invoice_repository.dart          (abstract interface)
 data/
   constants/home_api_paths.dart                 (sealed class HomeApiPaths)
   datasources/invoice_data_source_base.dart     (abstract interface)
   datasources/rest_invoice_data_source.dart     (@RestApi, @Injectable, Retrofit impl)
-  models/requests/invoice_request_model.dart    (@JsonSerializable)
-  models/response/invoice_response_model.dart   (@freezed, implements InvoiceEntity)
   repositories/invoice_repository_impl.dart     (@Singleton, implements InvoiceRepository)
 ```
 
-`--no_rest` skips `rest_invoice_data_source.dart` and `home_api_paths.dart`, even if a network module is present. REST files are also skipped automatically if `lib/core/network/di/network_module.dart` does not exist.
+With `--add-sample`: also adds `get`/`post` sample methods to all interfaces and creates `models/requests/invoice_request_model.dart` and `models/response/invoice_response_model.dart`.
+
+`--no-rest` skips `rest_invoice_data_source.dart` and `home_api_paths.dart`, even if a network module is present. REST files are also skipped automatically if `lib/core/network/di/network_module.dart` does not exist.
 
 All internal imports use relative paths. `dart format` and `build_runner` run automatically at the end.
 
 ---
 
-### `add_entity` — Add an entity + model
+### `add-entity` — Add an entity + model
 
 ```bash
 # Feature scope
-clean-helper add_entity home invoice
+clean-helper add-entity home invoice
 
 # With subfolder (places model in data/models/requests/)
-clean-helper add_entity home invoice requests
+clean-helper add-entity home invoice requests
 
 # Core scope
-clean-helper add_entity core error
+clean-helper add-entity core error
 ```
 
 Generates a domain entity and a freezed model:
@@ -211,13 +212,13 @@ sealed class InvoiceModel with _$InvoiceModel implements InvoiceEntity {
 
 ---
 
-### `add_auth_interceptor` — Scaffold the auth interceptor
+### `add-auth-interceptor` — Scaffold the auth interceptor
 
 ```bash
-clean-helper add_auth_interceptor
+clean-helper add-auth-interceptor
 ```
 
-Run this **after** `add_network_module`. Idempotent — skips anything already present. Does three things:
+Run this **after** `add-network-module`. Idempotent — skips anything already present. Does three things:
 
 1. Creates `lib/core/network/interceptors/auth_interceptor.dart` — a `@lazySingleton` Dio interceptor with:
    - `onRequest`: attach Bearer token from storage (TODO to implement)
@@ -232,50 +233,50 @@ Run this **after** `add_network_module`. Idempotent — skips anything already p
 
 ---
 
-### `add_network_module` — Set up the network layer
+### `add-network-module` — Set up the network layer
 
 ```bash
-clean-helper add_network_module
+clean-helper add-network-module
 ```
 
 Generates Dio + Retrofit network files, installs network dependencies (including `chucker_flutter`), patches `AppGoRouter`, and runs `build_runner` automatically.
 
 ---
 
-### `build_runner` — Run build_runner
+### `build-runner` — Run build_runner
 
 ```bash
-clean-helper build_runner         # build (default)
-clean-helper build_runner build   # build
-clean-helper build_runner clean   # clean generated files
+clean-helper build-runner         # build (default)
+clean-helper build-runner build   # build
+clean-helper build-runner clean   # clean generated files
 ```
 
 ---
 
-### `remove_feature` — Remove a feature
+### `remove-feature` — Remove a feature
 
 ```bash
-clean-helper remove_feature auth
+clean-helper remove-feature auth
 ```
 
 Deletes the feature directory and deregisters its router from `lib/app/router/app_router_module.dart`.
 
 ---
 
-### `regenerate_router` — Rebuild app_router_module.dart from scratch
+### `regenerate-router` — Rebuild app_router_module.dart from scratch
 
 ```bash
-clean-helper regenerate_router
+clean-helper regenerate-router
 ```
 
 Scans `lib/features/` for any feature that has a `router/<feature>_router.dart` file and regenerates `lib/app/router/app_router_module.dart` from scratch. Features are sorted alphabetically for deterministic output. `app_router_module.dart` is fully managed by the tool — do not edit it manually. Useful when the module has drifted out of sync or after manual edits to the features directory.
 
 ---
 
-### `add_vscode_config` — Generate VSCode configuration
+### `add-vscode-config` — Generate VSCode configuration
 
 ```bash
-clean-helper add_vscode_config
+clean-helper add-vscode-config
 ```
 
 Generates three files under `.vscode/`:
@@ -290,31 +291,31 @@ All files are written with `writeFile` — skipped if they already exist. Also r
 
 ---
 
-### `generate_tools` — Generate tools/ scripts
+### `generate-tools` — Generate tools/ scripts
 
 ```bash
-clean-helper generate_tools             # skip existing files
-clean-helper generate_tools --overwrite # -o  overwrite existing files
+clean-helper generate-tools             # skip existing files
+clean-helper generate-tools --overwrite # -o  overwrite existing files
 ```
 
 Generates helper shell scripts under `tools/` in the current project. Use `--overwrite` to force-update scripts that already exist. Also available as part of `init` via the `--tools` flag.
 
 ---
 
-### `generate_localizations` — Generate locales
+### `generate-localizations` — Generate locales
 
 ```bash
-clean-helper generate_localizations
+clean-helper generate-localizations
 ```
 
 Runs `dart run slang` to regenerate `lib/generated/locales/locales.g.dart` from `assets/locales/en.locale.json`.
 
 ---
 
-### `list_mono_repo_apps` — List declared mono-repo apps
+### `list-mono-repo-apps` — List declared mono-repo apps
 
 ```bash
-clean-helper list_mono_repo_apps
+clean-helper list-mono-repo-apps
 ```
 
 Reads `clean-helper.mono_repo_apps` from `pubspec.yaml` and prints every declared app. Useful for verifying monorepo configuration or debugging project detection.
@@ -383,7 +384,7 @@ abstract interface class CleanRouterBase {
 }
 ```
 
-`AppRouterModule` collects all `CleanRouterBase` implementations, sorts by `priority`, and builds `AppGoRouter`. `app_router_module.dart` is tool-owned and regenerated automatically by `add_feature`, `remove_feature`, and `regenerate_router`.
+`AppRouterModule` collects all `CleanRouterBase` implementations, sorts by `priority`, and builds `AppGoRouter`. `app_router_module.dart` is tool-owned and regenerated automatically by `add-feature`, `remove-feature`, and `regenerate-router`.
 
 ### State Management — `flutter_bloc` + `freezed`
 
@@ -454,8 +455,8 @@ Skip the interactive prompt by passing `--scope=<app_name>` **before** the subco
 
 ```bash
 clean-helper --scope=app1 init
-clean-helper --scope=app1 add_feature login
-clean-helper --scope=app2 add_repo home invoice
+clean-helper --scope=app1 add-feature login
+clean-helper --scope=app2 add-repo home invoice
 ```
 
 The flag matches on the **folder name** (last segment of the declared path). If two apps share the same name but have different paths, a narrowed prompt is shown for only those matches:

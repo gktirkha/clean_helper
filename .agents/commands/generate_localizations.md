@@ -1,4 +1,4 @@
-# Command: generate_localizations
+# Command: generate-localizations
 
 **Entry point:** `lib/src/commands/generate_localizations.dart` → `runGenerateLocalizationsCommand(List<String> args)`
 **Binary:** `dart run bin/generate_localizations.dart`
@@ -8,7 +8,7 @@
 ## Usage
 
 ```bash
-clean-helper generate_localizations
+clean-helper generate-localizations
 ```
 
 No arguments required.

@@ -4,7 +4,7 @@ import '../../commands/regenerate_router.dart';
 
 class RegenerateRouterCommand extends Command<void> {
   @override
-  String get name => 'regenerate_router';
+  String get name => 'regenerate-router';
 
   @override
   String get description =>

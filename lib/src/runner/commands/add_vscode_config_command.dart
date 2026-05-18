@@ -4,7 +4,7 @@ import '../../commands/add_vscode_config.dart';
 
 class AddVscodeConfigCommand extends Command<void> {
   @override
-  String get name => 'add_vscode_config';
+  String get name => 'add-vscode-config';
 
   @override
   String get description =>
