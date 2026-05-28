@@ -39,7 +39,9 @@ void sortPubspecDeps() {
 
     entries.sort((a, b) => a.$1.toLowerCase().compareTo(b.$1.toLowerCase()));
 
-    final sortedBody = '\n${entries.map((e) => e.$2.join('\n')).join('\n')}\n';
+    final trailing = RegExp(r'\n+$').firstMatch(body)?.group(0) ?? '\n';
+    final sortedBody =
+        '\n${entries.map((e) => e.$2.join('\n')).join('\n')}$trailing';
 
     return content.substring(0, bodyStart) +
         sortedBody +
