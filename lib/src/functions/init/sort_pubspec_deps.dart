@@ -2,14 +2,15 @@ import 'dart:io';
 
 void sortPubspecDeps() {
   String sortSection(String content, String sectionName) {
-    final headerMatch =
-        RegExp('^$sectionName:\$', multiLine: true).firstMatch(content);
+    final headerMatch = RegExp(
+      '^$sectionName:\$',
+      multiLine: true,
+    ).firstMatch(content);
     if (headerMatch == null) return content;
 
     final bodyStart = headerMatch.end;
     final afterBody = content.substring(bodyStart);
-    final nextTopLevel =
-        RegExp(r'^\S', multiLine: true).firstMatch(afterBody);
+    final nextTopLevel = RegExp(r'^\S', multiLine: true).firstMatch(afterBody);
     final bodyEnd = nextTopLevel != null
         ? bodyStart + nextTopLevel.start
         : content.length;
@@ -36,12 +37,9 @@ void sortPubspecDeps() {
       entries.add((currentKey, currentLines));
     }
 
-    entries.sort(
-      (a, b) => a.$1.toLowerCase().compareTo(b.$1.toLowerCase()),
-    );
+    entries.sort((a, b) => a.$1.toLowerCase().compareTo(b.$1.toLowerCase()));
 
-    final sortedBody =
-        '\n${entries.map((e) => e.$2.join('\n')).join('\n')}\n';
+    final sortedBody = '\n${entries.map((e) => e.$2.join('\n')).join('\n')}\n';
 
     return content.substring(0, bodyStart) +
         sortedBody +

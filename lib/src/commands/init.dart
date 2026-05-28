@@ -18,6 +18,7 @@ import '../functions/init/update_gitignore.dart';
 import '../functions/init/run_dart_format.dart';
 import '../functions/init/run_flutter_pub_get.dart';
 import '../functions/init/run_slang.dart';
+import '../functions/init/sort_pubspec_deps.dart';
 import '../functions/shared/ensure_pubspec.dart';
 import '../functions/shared/fvm_use.dart';
 import '../functions/shared/read_package_name.dart';
@@ -57,6 +58,7 @@ Future<void> runInit({
   if (withAuthInterceptor) {
     addAuthInterceptor(runBuildRunnerAfter: false, showNextSteps: false);
   }
+  sortPubspecDeps();
   runSlang();
   stdout.writeln();
   runBuildRunner();
