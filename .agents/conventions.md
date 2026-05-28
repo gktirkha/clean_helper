@@ -82,7 +82,10 @@ Every command starts with `ensurePubspec()`.
 It calls `abort(message)` if `pubspec.yaml` is not found in the current directory.
 `abort()` has return type `Never` — it prints to stderr and calls `exit(1)`.
 
-After the pubspec check, `ensurePubspec()` calls `resolveMonoRepoProject()` (from `shared/resolve_mono_repo_project.dart`). This function:
+After the pubspec check, `ensurePubspec()` calls `resolveMonoRepoProject()` then `checkVersionMismatch()`.
+`checkVersionMismatch()` reads `clean-helper.version` from the project's `pubspec.yaml` and warns on stderr if it differs from `toolVersion` — the version constant in `lib/src/functions/shared/tool_version.dart`.
+
+`resolveMonoRepoProject()` (from `shared/resolve_mono_repo_project.dart`):
 - Returns immediately if `lib/` exists (normal single-project).
 - Reads `clean-helper.mono_repo_apps` from pubspec if `lib/` is absent.
   - If found: prompts the user to select a project, then sets `Directory.current` to the chosen app path.

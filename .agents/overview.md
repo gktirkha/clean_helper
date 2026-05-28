@@ -64,6 +64,42 @@ If no app matches, the command aborts and lists available names.
 
 ---
 
+## init sequence
+
+`runInit()` runs these steps in order:
+
+1. `generateAnalysisOptions()` — writes `analysis_options.yaml` first (includes `sort_pub_dependencies` lint rule)
+2. `runFlutterPubGet()` — pub get before any deps are added
+3. `createDirectories()` — scaffold directory tree
+4. File generation steps (localization, flutter_gen, clean_router, core, utils, home feature, tools)
+5. `installDependencies()` — `flutter pub add` (deps land sorted due to `sort_pub_dependencies` lint)
+6. `updateGitignore()`, `addVscodeConfig()`, `addFlutterAssetsToPubSpec()`
+7. Optional: `addNetworkModule()`, `addAuthInterceptor()` (when flags passed)
+8. `sortPubspecDeps()` — alphabetically sorts both `dependencies` and `dev_dependencies`
+9. `runSlang()` → `runBuildRunner()` → `runDartFormat()`
+10. `writeToolVersion()` — stamps `clean-helper.version: <version>` in `pubspec.yaml`
+
+---
+
+## Version stamping
+
+After `init`, the tool version is written to the project's `pubspec.yaml` under the `clean-helper:` key:
+
+```yaml
+clean-helper:
+  version: 1.1.5
+  mono_repo_apps:       # only present in monorepos
+    - apps/app1
+```
+
+On every subsequent command, `ensurePubspec()` calls `checkVersionMismatch()`, which warns on stderr if the stored version differs from the running tool version.
+
+To suppress the warning, update `clean-helper.version` in `pubspec.yaml` to match the current tool version.
+
+The tool version constant lives in `lib/src/functions/shared/tool_version.dart` and **must be kept in sync with `pubspec.yaml`** when the package version is bumped.
+
+---
+
 ## Public API
 
 `lib/clean_helper.dart` exports **only the command files**.

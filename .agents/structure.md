@@ -105,7 +105,8 @@ clean_helper/
 │       │   ├── no_auth_dio_method_template.dart
 │       │   ├── request_model_template.dart
 │       │   ├── response_model_template.dart
-│       │   ├── rest_data_source_template.dart
+│       │   ├── rest_data_source_template.dart               ← uses RetrofitCallAdapter
+│       │   ├── retrofit_call_adapter_template.dart          ← retrofitCallAdapterTemplate()
 │       │   ├── safe_cast_template.dart
 │       │   ├── safe_execute_template.dart
 │       │   ├── slang_yaml_template.dart
@@ -126,7 +127,8 @@ clean_helper/
 │           ├── shared/                 # Cross-cutting utilities
 │           │   ├── abort.dart                        → abort(String) — Never
 │           │   ├── camel_case.dart                   → camelCase(String)
-│           │   ├── ensure_pubspec.dart                → ensurePubspec() — checks pubspec + calls resolveMonoRepoProject()
+│           │   ├── check_version_mismatch.dart        → checkVersionMismatch() — warns if clean-helper.version in pubspec differs from toolVersion
+│           │   ├── ensure_pubspec.dart                → ensurePubspec() — checks pubspec + resolveMonoRepoProject() + checkVersionMismatch()
 │           │   ├── fvm_exec.dart                     → fvmExec(String exe) — returns ['fvm', exe] or [exe]
 │           │   ├── fvm_use.dart                      → fvmUse() [async] — runs 'fvm use' interactively if fvm exists
 │           │   ├── insert_after_last_import.dart      → insertAfterLastImport()
@@ -139,6 +141,7 @@ clean_helper/
 │           │   ├── scope_option.dart                  → resolveScope (String?) — global set by runner, read by resolveMonoRepoProject
 │           │   ├── run_command.dart                  → runCommand(List<String>)
 │           │   ├── run_command_streamed.dart          → runCommandStreamed(List<String>)
+│           │   ├── tool_version.dart                  → toolVersion (String const) — current tool version, must match pubspec.yaml
 │           │   └── write_file.dart                   → writeFile / overwriteFile
 │           │
 │           ├── init/                   # Helpers for runInit()
@@ -146,12 +149,14 @@ clean_helper/
 │           │   ├── add_clean_router_workspace.dart
 │           │   ├── add_flutter_assets_to_pubspec.dart
 │           │   ├── create_directories.dart
+│           │   ├── generate_analysis_options.dart        → generateAnalysisOptions() — writes analysis_options.yaml (first step in init)
 │           │   ├── generate_clean_router_package.dart
 │           │   ├── generate_core_files.dart
 │           │   ├── generate_flutter_gen_files.dart
 │           │   ├── generate_home_feature.dart
 │           │   ├── generate_localization_files.dart
 │           │   ├── generate_network_files.dart
+│           │   ├── generate_retrofit_call_adapter.dart   → generateRetrofitCallAdapter()
 │           │   ├── generate_tools_files.dart
 │           │   ├── generate_utils_files.dart
 │           │   ├── install_dependencies.dart
@@ -159,7 +164,9 @@ clean_helper/
 │           │   ├── run_dart_format.dart
 │           │   ├── run_flutter_pub_get.dart
 │           │   ├── run_slang.dart
-│           │   └── update_gitignore.dart
+│           │   ├── sort_pubspec_deps.dart                → sortPubspecDeps() — sorts dependencies and dev_dependencies alphabetically
+│           │   ├── update_gitignore.dart
+│           │   └── write_tool_version.dart               → writeToolVersion() — writes clean-helper.version to pubspec.yaml (last step in init)
 │           │
 │           ├── feature/                # Helpers for addFeature()
 │           │   ├── build_router_module.dart          → buildRouterModule(List<String>)

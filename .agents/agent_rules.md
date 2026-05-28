@@ -96,6 +96,14 @@ These constraints must be respected when modifying or extending this codebase.
 
 ---
 
+## Version Stamping Rules
+
+- `toolVersion` in `lib/src/functions/shared/tool_version.dart` **must always match** the `version:` field in `clean_helper/pubspec.yaml`.
+- When bumping the package version, update both files.
+- Never modify `clean-helper.version` in a target project's `pubspec.yaml` directly — it is written exclusively by `writeToolVersion()` at the end of `runInit()`.
+
+---
+
 ## What NOT to Do
 
 - Do not add logic to `bin/` files — they must only call the command function.
