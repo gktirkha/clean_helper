@@ -68,5 +68,5 @@ Future<void> runInit({
   stdout.writeln('✅ Done! Project is ready.');
   stdout.writeln();
   stdout.writeln('Next steps:');
-  stdout.writeln('  • Add a feature:     clean-helper add_feature <name>');
+  stdout.writeln('  • Add a feature:     clean-helper add-feature <name>');
 }
