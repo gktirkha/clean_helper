@@ -37,8 +37,9 @@ void writeToolVersion() {
   if (cleanHelperIndex == -1) {
     updated.addAll(['clean-helper:', '  version: $toolVersion', '']);
   } else if (versionIndex == -1) {
-    final insertAt =
-        lastContentLine != -1 ? lastContentLine + 1 : cleanHelperIndex + 1;
+    final insertAt = lastContentLine != -1
+        ? lastContentLine + 1
+        : cleanHelperIndex + 1;
     updated.insert(insertAt, '  version: $toolVersion');
   } else {
     updated[versionIndex] = '  version: $toolVersion';
