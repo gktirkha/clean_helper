@@ -1,3 +1,14 @@
+## 1.2.0
+
+- Write `analysis_options.yaml` as the first step in `init`, before directory creation or any `flutter pub add` calls
+- Run `flutter pub get` immediately after `analysis_options.yaml` is written and before adding dependencies
+- Sort `dependencies` and `dev_dependencies` alphabetically after all packages are added (`sortPubspecDeps`)
+- Stamp `clean-helper.version: <version>` in the project's `pubspec.yaml` at the end of `init`, merged into the existing `clean-helper:` section alongside `mono_repo_apps` if present
+- Warn on version mismatch — every command now checks `clean-helper.version` in `pubspec.yaml` against the running tool version and prints a warning on stderr if they differ
+- Rename `CleanCallAdapter` → `RetrofitCallAdapter`; generated file moves to `lib/core/network/utils/retrofit_call_adapter.dart`
+- Fix kebab-case in CLI usage strings (`<feature-name>`, `<repo-name>`, `--scope=<app-name>`)
+- Fix next-steps message printed after `init` (`add_feature` → `add-feature`)
+
 ## 1.1.5
 
 - Add `--add-sample` flag to `add_repo` command
