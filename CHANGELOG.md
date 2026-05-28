@@ -1,13 +1,10 @@
-## 1.1.6
-
-- Rename all CLI command names from `snake_case` to `kebab-case` (e.g. `add_feature` → `add-feature`, `build_runner` → `build-runner`, etc.)
-- Rename `--no_rest` flag to `--no-rest` on `add-repo` command for consistency
-
 ## 1.1.5
 
 - Add `--add-sample` flag to `add_repo` command
 - When `--add-sample` is passed, generate `get`/`post` sample methods in the domain repo, data source base, repository impl, and REST data source, and create request/response model files
 - Without `--add-sample` (default), all files are generated as empty scaffolds and request/response model files are skipped
+- Rename all CLI command names from `snake_case` to `kebab-case` (e.g. `add_feature` → `add-feature`, `build_runner` → `build-runner`, etc.)
+- Rename `--no_rest` flag to `--no-rest` on `add-repo` command for consistency
 
 ## 1.1.4
 
