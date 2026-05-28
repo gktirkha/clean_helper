@@ -28,7 +28,7 @@ class CleanHelperRunner extends CompletionCommandRunner<void> {
       help:
           'Target a specific mono-repo app by name (e.g. --scope=app1). '
           'Skips the interactive project-selection prompt.',
-      valueHelp: 'app_name',
+      valueHelp: 'app-name',
     );
 
     addCommand(InitCommand());

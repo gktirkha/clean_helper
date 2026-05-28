@@ -20,11 +20,11 @@ class AddFeatureCommand extends Command<void> {
       'Generate a new feature with full clean architecture structure.';
 
   @override
-  String get invocation => '${runner?.executableName} $name <feature_name>';
+  String get invocation => '${runner?.executableName} $name <feature-name>';
 
   @override
   String get usage =>
-      'Generate a new feature with full clean architecture structure.\n\nUsage: ${runner?.executableName} $name <feature_name>';
+      'Generate a new feature with full clean architecture structure.\n\nUsage: ${runner?.executableName} $name <feature-name>';
 
   @override
   void run() => addFeature(argResults!.rest, withDi: argResults!['di'] as bool);

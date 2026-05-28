@@ -26,11 +26,11 @@ class AddRepoCommand extends Command<void> {
 
   @override
   String get invocation =>
-      '${runner?.executableName} $name <feature> <repo_name> [--no-rest] [--add-sample]';
+      '${runner?.executableName} $name <feature> <repo-name> [--no-rest] [--add-sample]';
 
   @override
   String get usage =>
-      'Generate a repository interface (domain) and implementation (data).\n\nUsage: ${runner?.executableName} $name <feature> <repo_name> [--no-rest] [--add-sample]';
+      'Generate a repository interface (domain) and implementation (data).\n\nUsage: ${runner?.executableName} $name <feature> <repo-name> [--no-rest] [--add-sample]';
 
   @override
   void run() => addRepo(
