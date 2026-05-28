@@ -3,6 +3,7 @@ import 'dart:io';
 import '../../clean_helper.dart';
 import '../functions/init/add_clean_router_workspace.dart';
 import '../functions/init/add_flutter_assets_to_pubspec.dart';
+import '../functions/init/generate_analysis_options.dart';
 import '../functions/init/create_directories.dart';
 import '../functions/init/generate_clean_router_package.dart';
 import '../functions/init/generate_core_files.dart';
@@ -15,6 +16,7 @@ import '../functions/init/install_dependencies.dart';
 import '../functions/init/run_build_runner.dart';
 import '../functions/init/update_gitignore.dart';
 import '../functions/init/run_dart_format.dart';
+import '../functions/init/run_flutter_pub_get.dart';
 import '../functions/init/run_slang.dart';
 import '../functions/shared/ensure_pubspec.dart';
 import '../functions/shared/fvm_use.dart';
@@ -34,6 +36,8 @@ Future<void> runInit({
   stdout.writeln();
 
   await fvmUse();
+  generateAnalysisOptions();
+  runFlutterPubGet();
   createDirectories();
   generateLocalizationFiles();
   generateFlutterGenFiles();

@@ -2,7 +2,6 @@ import 'dart:io';
 
 import '../shared/write_file.dart';
 import '../../templates/app_bloc_observer_template.dart';
-import '../../templates/analysis_options_template.dart';
 import '../../templates/app_go_router_redirect_template.dart';
 import '../../templates/app_go_router_template.dart';
 import '../../templates/app_module_template.dart';
@@ -17,7 +16,6 @@ import '../../templates/app_router_module_template.dart';
 import '../../templates/string_extension_template.dart';
 
 void generateCoreFiles(String packageName) {
-  overwriteFile('analysis_options.yaml', analysisOptionsTemplate());
   overwriteFile('lib/main.dart', mainDartTemplate());
   writeFile('lib/app/bootstrap.dart', bootstrapDartTemplate(packageName));
   writeFile('lib/app/main_app.dart', mainAppDartTemplate(packageName));
