@@ -15,7 +15,7 @@ import 'package:retrofit/error_logger.dart';
 import 'package:retrofit/http.dart';
 
 import '../../../../core/domain/failures/failure.dart';
-import '../../../../core/network/utils/clean_call_adapter.dart';
+import '../../../../core/network/utils/retrofit_call_adapter.dart';
 import '../constants/${feature}_api_paths.dart';
 import '../models/requests/${repoName}_request_model.dart';
 import '../models/response/${repoName}_response_model.dart';
@@ -23,7 +23,7 @@ import '${repoName}_data_source_base.dart';
 
 part 'rest_${repoName}_data_source.g.dart';
 
-@RestApi(callAdapter: CleanCallAdapter)
+@RestApi(callAdapter: RetrofitCallAdapter)
 @Injectable(as: $baseClass)
 abstract class $implClass implements $baseClass {
   @factoryMethod
@@ -44,12 +44,12 @@ import 'package:injectable/injectable.dart';
 import 'package:retrofit/error_logger.dart';
 import 'package:retrofit/http.dart';
 
-import '../../../../core/network/utils/clean_call_adapter.dart';
+import '../../../../core/network/utils/retrofit_call_adapter.dart';
 import '${repoName}_data_source_base.dart';
 
 part 'rest_${repoName}_data_source.g.dart';
 
-@RestApi(callAdapter: CleanCallAdapter)
+@RestApi(callAdapter: RetrofitCallAdapter)
 @Injectable(as: $baseClass)
 abstract class $implClass implements $baseClass {
   @factoryMethod
