@@ -16,6 +16,7 @@ import '../functions/init/install_dependencies.dart';
 import '../functions/init/run_build_runner.dart';
 import '../functions/init/update_gitignore.dart';
 import '../functions/init/run_dart_format.dart';
+import '../functions/init/write_tool_version.dart';
 import '../functions/init/run_flutter_pub_get.dart';
 import '../functions/init/run_slang.dart';
 import '../functions/init/sort_pubspec_deps.dart';
@@ -63,6 +64,7 @@ Future<void> runInit({
   stdout.writeln();
   runBuildRunner();
   runDartFormat();
+  writeToolVersion();
 
   stdout.writeln();
   stdout.writeln('✅ Done! Project is ready.');
