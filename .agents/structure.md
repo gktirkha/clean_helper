@@ -93,7 +93,7 @@ clean_helper/
 │       │   ├── feature_page_template.dart
 │       │   ├── feature_router_template.dart
 │       │   ├── feature_routes_template.dart
-│       │   ├── feature_screen_template.dart
+│       │   ├── feature_page_provider_template.dart
 │       │   ├── feature_state_template.dart
 │       │   ├── gitignore_template.dart
 │       │   ├── get_current_function_name_template.dart
@@ -178,7 +178,7 @@ clean_helper/
 │           │   ├── generate_feature_page.dart
 │           │   ├── generate_feature_router.dart
 │           │   ├── generate_feature_routes.dart
-│           │   ├── generate_feature_screen.dart
+│           │   ├── generate_feature_page_provider.dart
 │           │   └── patch_router_module.dart
 │           │
 │           ├── repo/                   # Helpers for addRepo()

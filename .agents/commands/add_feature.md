@@ -47,8 +47,8 @@ lib/
     │   │   └── auth_state.dart        (part of, @freezed)
     │   ├── pages/
     │   │   └── auth_page.dart         (pure UI widget, receives AuthNavigation as constructor param)
-    │   ├── screens/
-    │   │   └── auth_screen.dart       (BlocProvider wrapper — used by router)
+    │   ├── page_providers/
+    │   │   └── auth_page_provider.dart  (BlocProvider wrapper — used by router)
     │   └── widgets/
     └── router/
         ├── auth_routes.dart           (sealed class AuthRoutes)
@@ -58,16 +58,16 @@ lib/
 
 ---
 
-## Screen vs Page Pattern
+## PageProvider vs Page Pattern
 
 Every feature has two presentation entry points:
 
 | File | Role |
 |------|------|
-| `screens/<feature>_screen.dart` | Thin wrapper — provides `BlocProvider` and injects `navigation` via `diContainer()`. Used by the router. |
+| `page_providers/<feature>_page_provider.dart` | Thin wrapper — provides `BlocProvider` and injects `navigation` via `diContainer()`. Used by the router. |
 | `pages/<feature>_page.dart` | Pure UI widget — receives `navigation` as a constructor parameter. No DI knowledge. |
 
-The router builds `const AuthScreen()`. The screen wires up the bloc and navigation, then builds `AuthPage(navigation: diContainer())`.
+The router builds `const AuthPageProvider()`. The page provider wires up the bloc and navigation, then builds `AuthPage(navigation: diContainer())`.
 
 ---
 

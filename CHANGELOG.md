@@ -1,3 +1,7 @@
+## 1.2.1
+
+- Rename `Screen` → `PageProvider` — generated widget class is now `${Feature}PageProvider`, folder moves from `presentation/screens/` to `presentation/page_providers/`, file renamed from `${feature}_screen.dart` to `${feature}_page_provider.dart`
+
 ## 1.2.0
 
 - Write `analysis_options.yaml` as the first step in `init`, before directory creation or any `flutter pub add` calls

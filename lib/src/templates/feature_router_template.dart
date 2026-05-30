@@ -8,7 +8,7 @@ import 'package:injectable/injectable.dart';
 
 import 'package:clean_router/clean_router.dart';
 
-import '../presentation/screens/${feature}_screen.dart';
+import '../presentation/page_providers/${feature}_page_provider.dart';
 import '${feature}_routes.dart';
 
 @lazySingleton
@@ -17,7 +17,7 @@ class ${className}Router implements CleanRouterBase {
   List<RouteBase> get routes => [
     GoRoute(
       path: ${className}Routes.$feature,
-      builder: (context, state) => const ${className}Screen(),
+      builder: (context, state) => const ${className}PageProvider(),
     ),
   ];
 
