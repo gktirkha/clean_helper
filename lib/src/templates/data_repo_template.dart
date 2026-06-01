@@ -28,7 +28,7 @@ class $implClass implements $repositoryClass {
 
   @override
   Future<Either<Failure, ${className}Entity>> get$className(Get${className}Params params) async {
-    return $dataSourceField.get$className(params.get${className}Param);
+    return $dataSourceField.get$className(params.get${className}Query);
   }
 
   @override
