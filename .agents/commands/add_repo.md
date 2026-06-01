@@ -20,7 +20,7 @@ clean-helper add-repo home invoice --no-rest --add-sample
 
 `--no-rest` (optional flag) — skips generating the REST datasource (`rest_<repo>_data_source.dart`) and API paths (`<feature>_api_paths.dart`), even if a network module is present.
 
-`--add-sample` (optional flag) — generates sample `get{Name}()` and `post{Name}()` methods in the domain repo, data source base, repository impl, and REST datasource, and also creates the request/response model files. Without this flag, those files are generated as empty scaffolds and the model files are skipped.
+`--add-sample` (optional flag) — generates sample `get{Name}()` and `post{Name}()` methods in the domain repo, data source base, repository impl, and REST datasource, creates the request/response model files, and generates `Get{Name}UseCase` and `Post{Name}UseCase` in `domain/use_cases/`. Without this flag, those files are generated as empty scaffolds and the model files and use cases are skipped.
 
 ---
 
@@ -33,8 +33,11 @@ lib/features/home/
 ├── domain/
 │   ├── entities/
 │   │   └── invoice_entity.dart                   (abstract class InvoiceEntity)
-│   └── repositories/
-│       └── invoice_repository.dart               (abstract interface InvoiceRepository { getInvoice, postInvoice })
+│   ├── repositories/
+│   │   └── invoice_repository.dart               (abstract interface InvoiceRepository { getInvoice, postInvoice })
+│   └── use_cases/                                (only with --add-sample)
+│       ├── get_invoice_use_case.dart             (GetInvoiceUseCase implements UseCaseBase<InvoiceEntity, Unit>)
+│       └── post_invoice_use_case.dart            (PostInvoiceUseCase implements UseCaseBase<InvoiceEntity, Unit>)
 └── data/
     ├── constants/
     │   └── home_api_paths.dart                   (sealed class HomeApiPaths)
@@ -54,7 +57,7 @@ lib/features/home/
 
 ## Notes
 
-- Without `--add-sample`, domain repo, data source base, and repo impl are generated as empty scaffolds (no methods), and request/response model files are skipped.
+- Without `--add-sample`, domain repo, data source base, and repo impl are generated as empty scaffolds (no methods), and request/response model files and use cases are skipped.
 - With `--add-sample`, both `get` and `post` methods are added as a starting point. Remove or extend as needed. The `postInvoice()` impl instantiates the request model as `const InvoiceRequestModel()`.
 - REST datasource and API paths are skipped if `lib/core/network/di/network_module.dart` is not found, **or** if `--no-rest` is passed.
 - When `--no-rest` is used, the skip is logged as `⏭  Skipping REST datasource and API paths (--no-rest).`

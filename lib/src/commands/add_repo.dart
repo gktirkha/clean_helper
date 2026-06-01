@@ -10,6 +10,7 @@ import '../functions/repo/generate_domain_repo.dart';
 import '../functions/repo/generate_request_model.dart';
 import '../functions/repo/generate_response_model.dart';
 import '../functions/repo/generate_rest_data_source.dart';
+import '../functions/repo/generate_use_cases.dart';
 import '../functions/shared/ensure_pubspec.dart';
 
 void addRepo(
@@ -48,6 +49,7 @@ void addRepo(
   generateDataSourceBase(dataDir, repoName, addSample: addSample);
 
   if (addSample) {
+    generateUseCases(feature, repoName);
     generateRequestModel(dataDir, repoName);
     generateResponseModel(dataDir, repoName);
   } else {

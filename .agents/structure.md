@@ -94,6 +94,8 @@ clean_helper/
 │       │   ├── feature_router_template.dart
 │       │   ├── feature_routes_template.dart
 │       │   ├── feature_page_provider_template.dart
+│       │   ├── get_use_case_template.dart
+│       │   ├── post_use_case_template.dart
 │       │   ├── feature_state_template.dart
 │       │   ├── gitignore_template.dart
 │       │   ├── get_current_function_name_template.dart
@@ -188,7 +190,8 @@ clean_helper/
 │           │   ├── generate_domain_repo.dart
 │           │   ├── generate_request_model.dart
 │           │   ├── generate_response_model.dart
-│           │   └── generate_rest_data_source.dart
+│           │   ├── generate_rest_data_source.dart
+│           │   └── generate_use_cases.dart
 │           │
 │           ├── entity/                 # Helpers for addEntity()
 │           │   ├── generate_entity_file.dart
