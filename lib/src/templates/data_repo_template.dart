@@ -33,7 +33,7 @@ class $implClass implements $repositoryClass {
 
   @override
   Future<Either<Failure, ${className}Entity>> post$className(Post${className}Params params) async {
-    return $dataSourceField.post$className(.new(p1: params.post${className}Param));
+    return $dataSourceField.post$className(.new(p1: params.post${className}Param1));
   }
 }
 '''
