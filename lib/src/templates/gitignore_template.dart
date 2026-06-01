@@ -3,8 +3,12 @@ String gitignoreTemplate() => '''
 *.g.dart
 *.gen.dart
 *.freezed.dart
-lib/app/di/di_initializer.config.dart
+*.config.dart
+*.module.dart
 tools/config/android_build_config.json
+**/pubspec.lock
+**/build/
+**/generated/**
 ''';
 
 const gitignoreMarker = '# Clean-Helper Added';
