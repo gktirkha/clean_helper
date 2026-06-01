@@ -35,9 +35,12 @@ lib/features/home/
 │   │   └── invoice_entity.dart                   (abstract class InvoiceEntity)
 │   ├── repositories/
 │   │   └── invoice_repository.dart               (abstract interface InvoiceRepository { getInvoice, postInvoice })
+│   ├── params/                                   (only with --add-sample)
+│   │   ├── get_invoice_params.dart               (GetInvoiceParams — sample String field)
+│   │   └── post_invoice_params.dart              (PostInvoiceParams — sample String field)
 │   └── use_cases/                                (only with --add-sample)
-│       ├── get_invoice_use_case.dart             (GetInvoiceUseCase implements UseCaseBase<InvoiceEntity, Unit>)
-│       └── post_invoice_use_case.dart            (PostInvoiceUseCase implements UseCaseBase<InvoiceEntity, Unit>)
+│       ├── get_invoice_use_case.dart             (GetInvoiceUseCase implements UseCaseBase<InvoiceEntity, GetInvoiceParams>)
+│       └── post_invoice_use_case.dart            (PostInvoiceUseCase implements UseCaseBase<InvoiceEntity, PostInvoiceParams>)
 └── data/
     ├── constants/
     │   └── home_api_paths.dart                   (sealed class HomeApiPaths)

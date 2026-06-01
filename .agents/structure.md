@@ -94,7 +94,9 @@ clean_helper/
 │       │   ├── feature_router_template.dart
 │       │   ├── feature_routes_template.dart
 │       │   ├── feature_page_provider_template.dart
+│       │   ├── get_use_case_params_template.dart
 │       │   ├── get_use_case_template.dart
+│       │   ├── post_use_case_params_template.dart
 │       │   ├── post_use_case_template.dart
 │       │   ├── feature_state_template.dart
 │       │   ├── gitignore_template.dart

@@ -15,24 +15,25 @@ import 'package:injectable/injectable.dart';
 
 import '../../../../core/domain/failures/failure.dart';
 import '../../domain/entities/${repoName}_entity.dart';
+import '../../domain/params/get_${repoName}_params.dart';
+import '../../domain/params/post_${repoName}_params.dart';
 import '../../domain/repositories/${repoName}_repository.dart';
 import '../datasources/${repoName}_data_source_base.dart';
 
 @Singleton(as: $repositoryClass)
 class $implClass implements $repositoryClass {
-  $implClass({required $dataSourceClass ${camelCase(repoName)}DataSourceBase})
-    : $dataSourceField = ${camelCase(repoName)}DataSourceBase;
+  $implClass({required this.$dataSourceField});
 
   final $dataSourceClass $dataSourceField;
 
   @override
-  Future<Either<Failure, ${className}Entity>> get$className() async {
-    return $dataSourceField.get$className();
+  Future<Either<Failure, ${className}Entity>> get$className(Get${className}Params params) async {
+    return $dataSourceField.get$className(params.get${className}Param);
   }
 
   @override
-  Future<Either<Failure, ${className}Entity>> post$className() async {
-    return $dataSourceField.post$className(const .new());
+  Future<Either<Failure, ${className}Entity>> post$className(Post${className}Params params) async {
+    return $dataSourceField.post$className(.new(p1: params.post${className}Param));
   }
 }
 '''

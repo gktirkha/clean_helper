@@ -31,7 +31,7 @@ abstract class $implClass implements $baseClass {
 
   @override
   @GET(${featureClass}ApiPaths.$repoName)
-  Future<Either<Failure, ${repoClass}ResponseModel>> get$repoClass();
+  Future<Either<Failure, ${repoClass}ResponseModel>> get$repoClass(@Query('q') String? q);
 
   @override
   @POST(${featureClass}ApiPaths.$repoName)
