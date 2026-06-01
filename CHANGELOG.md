@@ -1,3 +1,13 @@
+## 1.2.2
+
+- Add use case generation to `add-repo --add-sample`: generates `Get{Name}UseCase` and `Post{Name}UseCase` in `domain/use_cases/`, and `Get{Name}Params` / `Post{Name}Params` in `domain/params/`
+- Use case params use typed fields: `get{Name}Query` (String) for get, `post{Name}Param1` (String) for post
+- Domain repository sample methods now accept params: `get{Name}(Get{Name}Params)` / `post{Name}(Post{Name}Params)`
+- Data source base `get` method now takes `String? q` instead of no args
+- REST data source `get` method now annotated with `@Query('q')`
+- Repository impl maps params to data layer: `params.get{Name}Query` → datasource `q`, `params.post{Name}Param1` → request model `p1`
+- Request model gains a sample `{String? p1}` constructor field
+
 ## 1.2.1
 
 - Rename `Screen` → `PageProvider` — generated widget class is now `${Feature}PageProvider`, folder moves from `presentation/screens/` to `presentation/page_providers/`, file renamed from `${feature}_screen.dart` to `${feature}_page_provider.dart`

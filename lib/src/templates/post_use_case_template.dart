@@ -10,7 +10,8 @@ import '../params/post_${name}_params.dart';
 import '../repositories/${name}_repository.dart';
 
 class Post${className}UseCase implements UseCaseBase<${className}Entity, Post${className}Params> {
-  Post${className}UseCase({required this._${name}Repository});
+  Post${className}UseCase({required ${className}Repository ${name}Repository})
+      : _${name}Repository = ${name}Repository;
 
   final ${className}Repository _${name}Repository;
 
