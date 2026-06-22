@@ -65,12 +65,14 @@ Future<void> runInit({
   if (withAuthInterceptor) {
     addAuthInterceptor(runBuildRunnerAfter: false, showNextSteps: false);
   }
-  sortPubspecDeps();
   runSlang(localizationPackageName);
   stdout.writeln();
   runBuildRunner(workingDirectory: 'packages/$utilsPackageName');
   runBuildRunner();
   runDartFormat();
+  sortPubspecDeps();
+  sortPubspecDeps('packages/$utilsPackageName/pubspec.yaml');
+  sortPubspecDeps('packages/$localizationPackageName/pubspec.yaml');
   writeToolVersion();
 
   stdout.writeln();
