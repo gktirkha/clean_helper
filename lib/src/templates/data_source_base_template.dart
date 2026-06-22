@@ -1,12 +1,13 @@
 String dataSourceBaseTemplate(
   String className,
-  String repoName, {
+  String repoName,
+  String utilsPackageName, {
   bool addSample = false,
 }) => addSample
     ? '''
 import 'package:fpdart/fpdart.dart';
+import 'package:$utilsPackageName/$utilsPackageName.dart';
 
-import '../../../../core/domain/failures/failure.dart';
 import '../models/requests/${repoName}_request_model.dart';
 import '../models/response/${repoName}_response_model.dart';
 

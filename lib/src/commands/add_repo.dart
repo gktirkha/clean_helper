@@ -54,7 +54,7 @@ void addRepo(
     utilsPackageName,
     addSample: addSample,
   );
-  generateDataSourceBase(dataDir, repoName, addSample: addSample);
+  generateDataSourceBase(dataDir, repoName, utilsPackageName, addSample: addSample);
 
   if (addSample) {
     generateUseCases(feature, repoName, utilsPackageName);
