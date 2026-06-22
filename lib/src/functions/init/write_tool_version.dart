@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import '../shared/tool_version.dart';
+import '../shared/write_file.dart';
 
 void writeToolVersion() {
   final file = File('pubspec.yaml');
@@ -45,5 +46,5 @@ void writeToolVersion() {
     updated[versionIndex] = '  version: $toolVersion';
   }
 
-  file.writeAsStringSync(updated.join('\n'));
+  overwriteFile('pubspec.yaml', updated.join('\n'));
 }

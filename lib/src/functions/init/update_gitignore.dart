@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import '../../templates/gitignore_template.dart';
+import '../shared/write_file.dart';
 
 void updateGitignore() {
   final file = File('.gitignore');
@@ -14,9 +15,9 @@ void updateGitignore() {
       );
       return;
     }
-    file.writeAsStringSync('${content.trimRight()}\n\n$block');
+    overwriteFile('.gitignore', '${content.trimRight()}\n\n$block');
   } else {
-    file.writeAsStringSync(block);
+    overwriteFile('.gitignore', block);
   }
 
   stdout.writeln('📋 .gitignore updated with Clean-Helper entries');

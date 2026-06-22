@@ -1,5 +1,7 @@
 import 'dart:io';
 
+import '../shared/write_file.dart';
+
 void sortPubspecDeps([String path = 'pubspec.yaml']) {
   String sortSection(String content, String sectionName) {
     final headerMatch = RegExp(
@@ -48,10 +50,9 @@ void sortPubspecDeps([String path = 'pubspec.yaml']) {
         content.substring(bodyEnd);
   }
 
-  final file = File(path);
-  var content = file.readAsStringSync();
+  var content = File(path).readAsStringSync();
   content = sortSection(content, 'dependencies');
   content = sortSection(content, 'dev_dependencies');
-  file.writeAsStringSync(content);
+  overwriteFile(path, content);
   stdout.writeln('📋 $path dependencies sorted');
 }

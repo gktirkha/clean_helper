@@ -4,21 +4,17 @@ import '../../templates/analysis_options_template.dart';
 import '../../templates/en_locale_template.dart';
 import '../../templates/localization_lib_export_template.dart';
 import '../../templates/localization_pubspec_tail_template.dart';
-import '../../templates/slang_yaml_template.dart';
+import '../../templates/localization_slang_yaml_template.dart';
 import '../../templates/string_extension_template.dart';
+import '../shared/fvm_exec.dart';
 import '../shared/run_command.dart';
 import '../shared/write_file.dart';
+import 'patch_package_pubspec.dart';
 
 void generateLocalizationPackage(String localizationPackageName) {
   stdout.writeln('📦 Creating $localizationPackageName package...');
 
-  runCommand([
-    'flutter',
-    'create',
-    'packages/$localizationPackageName',
-    '--template',
-    'package',
-  ]);
+  runCommand([...fvmExec('flutter'), 'create', 'packages/$localizationPackageName', '--template', 'package']);
 
   final filesToDelete = [
     'packages/$localizationPackageName/.metadata',
@@ -38,7 +34,10 @@ void generateLocalizationPackage(String localizationPackageName) {
     analysisOptionsTemplate(),
   );
 
-  _patchLocalizationPubspec(localizationPackageName);
+  patchPackagePubspec(
+    'packages/$localizationPackageName',
+    localizationPubspecTailTemplate(),
+  );
 
   overwriteFile(
     'packages/$localizationPackageName/lib/$localizationPackageName.dart',
@@ -50,7 +49,7 @@ void generateLocalizationPackage(String localizationPackageName) {
   );
   overwriteFile(
     'packages/$localizationPackageName/slang.yaml',
-    _localizationSlangYamlTemplate(),
+    localizationSlangYamlTemplate(),
   );
   overwriteFile(
     'packages/$localizationPackageName/assets/locales/en.locale.json',
@@ -61,31 +60,4 @@ void generateLocalizationPackage(String localizationPackageName) {
   stdout.writeln();
 }
 
-String _localizationSlangYamlTemplate() => slangYamlTemplate().replaceFirst(
-  'output_directory: lib/generated/locales',
-  'output_directory: lib/src/generated',
-);
 
-void _patchLocalizationPubspec(String localizationPackageName) {
-  final file = File('packages/$localizationPackageName/pubspec.yaml');
-  final lines = file.readAsLinesSync();
-
-  final noComments = lines.where((l) => !l.trimLeft().startsWith('#')).toList();
-
-  final envStart = noComments.indexWhere((l) => l.startsWith('environment:'));
-  var envEnd = envStart + 1;
-  while (envEnd < noComments.length) {
-    final line = noComments[envEnd];
-    if (line.isNotEmpty && !line.startsWith(' ') && !line.startsWith('\t')) {
-      break;
-    }
-    envEnd++;
-  }
-
-  final header = noComments.sublist(0, envEnd).join('\n').trimRight();
-
-  overwriteFile(
-    'packages/$localizationPackageName/pubspec.yaml',
-    '$header\n\n${localizationPubspecTailTemplate()}',
-  );
-}

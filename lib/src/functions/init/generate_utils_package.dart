@@ -17,9 +17,11 @@ import '../../templates/utils_di_initializer_template.dart';
 import '../../templates/utils_lib_export_template.dart';
 import '../../templates/utils_module_template.dart';
 import '../../templates/utils_pubspec_tail_template.dart';
+import '../shared/fvm_exec.dart';
 import '../shared/pascal_case.dart';
 import '../shared/run_command.dart';
 import '../shared/write_file.dart';
+import 'patch_package_pubspec.dart';
 
 void generateUtilsPackage(
   String utilsPackageName,
@@ -27,13 +29,7 @@ void generateUtilsPackage(
 ) {
   stdout.writeln('📦 Creating $utilsPackageName package...');
 
-  runCommand([
-    'flutter',
-    'create',
-    'packages/$utilsPackageName',
-    '--template',
-    'package',
-  ]);
+  runCommand([...fvmExec('flutter'), 'create', 'packages/$utilsPackageName', '--template', 'package']);
 
   final filesToDelete = [
     'packages/$utilsPackageName/.metadata',
@@ -53,7 +49,10 @@ void generateUtilsPackage(
     analysisOptionsTemplate(),
   );
 
-  _patchUtilsPubspec(utilsPackageName, localizationPackageName);
+  patchPackagePubspec(
+    'packages/$utilsPackageName',
+    utilsPubspecTailTemplate(localizationPackageName),
+  );
 
   final utilsClassName = pascalCase(utilsPackageName);
 
@@ -122,29 +121,3 @@ void generateUtilsPackage(
   stdout.writeln();
 }
 
-void _patchUtilsPubspec(
-  String utilsPackageName,
-  String localizationPackageName,
-) {
-  final file = File('packages/$utilsPackageName/pubspec.yaml');
-  final lines = file.readAsLinesSync();
-
-  final noComments = lines.where((l) => !l.trimLeft().startsWith('#')).toList();
-
-  final envStart = noComments.indexWhere((l) => l.startsWith('environment:'));
-  var envEnd = envStart + 1;
-  while (envEnd < noComments.length) {
-    final line = noComments[envEnd];
-    if (line.isNotEmpty && !line.startsWith(' ') && !line.startsWith('\t')) {
-      break;
-    }
-    envEnd++;
-  }
-
-  final header = noComments.sublist(0, envEnd).join('\n').trimRight();
-
-  overwriteFile(
-    'packages/$utilsPackageName/pubspec.yaml',
-    '$header\n\n${utilsPubspecTailTemplate(localizationPackageName)}',
-  );
-}
