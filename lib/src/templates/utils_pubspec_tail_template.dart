@@ -1,4 +1,5 @@
-String utilsPubspecTailTemplate(String localizationPackageName) => '''
+String utilsPubspecTailTemplate(String localizationPackageName) =>
+    '''
 resolution: workspace
 
 dependencies:

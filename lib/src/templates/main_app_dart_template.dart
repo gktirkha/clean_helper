@@ -1,4 +1,5 @@
-String mainAppDartTemplate(String pkg) => '''
+String mainAppDartTemplate(String pkg) =>
+    '''
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:${pkg}_localization/${pkg}_localization.dart';

@@ -1,4 +1,5 @@
-String safeCastTemplate(String localizationPackageName) => '''
+String safeCastTemplate(String localizationPackageName) =>
+    '''
 import 'dart:convert';
 
 import 'package:$localizationPackageName/$localizationPackageName.dart';

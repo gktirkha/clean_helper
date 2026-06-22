@@ -48,7 +48,12 @@ void addRepo(
   stdout.writeln('🚀 Generating data layer: feature=$feature, repo=$repoName');
 
   generateEntityFile(entitiesDir, repoName);
-  generateDomainRepo(domainDir, repoName, utilsPackageName, addSample: addSample);
+  generateDomainRepo(
+    domainDir,
+    repoName,
+    utilsPackageName,
+    addSample: addSample,
+  );
   generateDataSourceBase(dataDir, repoName, addSample: addSample);
 
   if (addSample) {

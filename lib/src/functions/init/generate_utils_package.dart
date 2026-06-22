@@ -129,8 +129,7 @@ void _patchUtilsPubspec(
   final file = File('packages/$utilsPackageName/pubspec.yaml');
   final lines = file.readAsLinesSync();
 
-  final noComments =
-      lines.where((l) => !l.trimLeft().startsWith('#')).toList();
+  final noComments = lines.where((l) => !l.trimLeft().startsWith('#')).toList();
 
   final envStart = noComments.indexWhere((l) => l.startsWith('environment:'));
   var envEnd = envStart + 1;

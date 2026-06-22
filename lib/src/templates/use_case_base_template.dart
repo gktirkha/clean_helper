@@ -1,4 +1,5 @@
-String useCaseBaseTemplate(String utilsPackageName) => '''
+String useCaseBaseTemplate(String utilsPackageName) =>
+    '''
 import 'dart:async';
 
 import 'package:fpdart/fpdart.dart';

@@ -1,4 +1,5 @@
-String diInitializerTemplate(String utilsPackageName, String utilsClassName) => '''
+String diInitializerTemplate(String utilsPackageName, String utilsClassName) =>
+    '''
 import 'package:$utilsPackageName/$utilsPackageName.dart';
 import 'package:get_it/get_it.dart';
 import 'package:injectable/injectable.dart';

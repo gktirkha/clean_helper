@@ -70,8 +70,7 @@ void _patchLocalizationPubspec(String localizationPackageName) {
   final file = File('packages/$localizationPackageName/pubspec.yaml');
   final lines = file.readAsLinesSync();
 
-  final noComments =
-      lines.where((l) => !l.trimLeft().startsWith('#')).toList();
+  final noComments = lines.where((l) => !l.trimLeft().startsWith('#')).toList();
 
   final envStart = noComments.indexWhere((l) => l.startsWith('environment:'));
   var envEnd = envStart + 1;

@@ -1,10 +1,24 @@
 import 'dart:io';
 
-import '../shared/fvm_exec.dart';
-import '../shared/run_command.dart';
+void runSlang(String localizationPackageName) {
+  stdout.writeln('🌐 Activating slang globally...');
+  Process.runSync('dart', [
+    'pub',
+    'global',
+    'activate',
+    'slang',
+  ], runInShell: true);
 
-void runSlang() {
-  stdout.writeln('🌐 Running slang...');
-  runCommand([...fvmExec('dart'), 'run', 'slang']);
+  stdout.writeln('🌐 Running slang in $localizationPackageName...');
+  final result = Process.runSync(
+    'slang',
+    [],
+    runInShell: true,
+    workingDirectory: 'packages/$localizationPackageName',
+  );
+  if (result.exitCode != 0) {
+    stderr.writeln('⚠️  slang failed');
+    stderr.writeln(result.stderr);
+  }
   stdout.writeln('🌐 Slang generation complete');
 }

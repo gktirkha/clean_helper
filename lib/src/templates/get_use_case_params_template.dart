@@ -1,4 +1,5 @@
-String getUseCaseParamsTemplate(String className) => '''
+String getUseCaseParamsTemplate(String className) =>
+    '''
 class Get${className}Params {
   Get${className}Params({required this.get${className}Query});
 

@@ -1,4 +1,5 @@
-String postUseCaseParamsTemplate(String className) => '''
+String postUseCaseParamsTemplate(String className) =>
+    '''
 class Post${className}Params {
   Post${className}Params({required this.post${className}Param1});
 

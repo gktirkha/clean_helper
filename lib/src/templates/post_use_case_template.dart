@@ -1,4 +1,9 @@
-String postUseCaseTemplate(String className, String name, String utilsPackageName) => '''
+String postUseCaseTemplate(
+  String className,
+  String name,
+  String utilsPackageName,
+) =>
+    '''
 import 'dart:async';
 
 import 'package:fpdart/fpdart.dart' show Either;

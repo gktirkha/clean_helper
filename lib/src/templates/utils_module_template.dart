@@ -1,4 +1,5 @@
-String utilsModuleTemplate(String className) => '''
+String utilsModuleTemplate(String className) =>
+    '''
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
 import 'package:retrofit/error_logger.dart';
