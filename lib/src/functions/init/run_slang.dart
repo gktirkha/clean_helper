@@ -1,18 +1,10 @@
 import 'dart:io';
 
 void runSlang(String localizationPackageName) {
-  stdout.writeln('🌐 Activating slang globally...');
-  Process.runSync('dart', [
-    'pub',
-    'global',
-    'activate',
-    'slang',
-  ], runInShell: true);
-
   stdout.writeln('🌐 Running slang in $localizationPackageName...');
   final result = Process.runSync(
-    'slang',
-    [],
+    'dart',
+    ['run', 'slang'],
     runInShell: true,
     workingDirectory: 'packages/$localizationPackageName',
   );
