@@ -1,3 +1,9 @@
+## 1.3.0
+
+- Shared utilities, network helpers, and DI are now generated in a separate `packages/<app>_utils` workspace package instead of `lib/core/`
+- Localization config, locale assets, and string extension are now generated in a separate `packages/<app>_localization` workspace package
+- Both packages are added to the root `pubspec.yaml` `workspace:` block alongside `clean_router`
+
 ## 1.2.2
 
 - Add use case generation to `add-repo --add-sample`: generates `Get{Name}UseCase` and `Post{Name}UseCase` in `domain/use_cases/`, and `Get{Name}Params` / `Post{Name}Params` in `domain/params/`
