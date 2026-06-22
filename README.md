@@ -62,33 +62,36 @@ clean-helper init --tools             # -t  generate tools/ scripts
 
 What it does (in order):
 
-1. Validates `pubspec.yaml` exists
-2. Reads `name:` from `pubspec.yaml`
-3. Creates the full folder scaffold
-4. Generates localization files (`slang.yaml`, `assets/locales/en.locale.json`)
-5. Generates asset pipeline files (`build.yaml`, `assets/colors/colors.xml`)
-6. Scaffolds `packages/clean_router` local workspace package (`CleanRouterBase` + `CleanRouterRefresh`)
-7. Patches root `pubspec.yaml` with `workspace: - packages/clean_router`
-8. Generates core Dart files (main, bootstrap, DI, routing, string extension)
-9. Generates utils (`Failure`, `AppLogger`, `Debouncer`, `getCurrentFunctionName`, `safeCast`, `safeExecute`, `listToModelList`, type definitions)
+1. Validates `pubspec.yaml` exists and reads `name:`
+2. Creates the main app folder scaffold
+3. Generates asset pipeline files (`build.yaml`, `assets/colors/colors.xml`)
+4. Scaffolds `packages/clean_router` local workspace package (`CleanRouterBase` + `CleanRouterRefresh`)
+5. Scaffolds `packages/<app>_localization` package (slang.yaml, `assets/locales/en.locale.json`, string extension)
+6. Scaffolds `packages/<app>_utils` package (`Failure`, `AppLogger`, `Debouncer`, `safeCast`, `safeExecute`, `listToModelList`, type definitions, DI micro-package)
+7. Patches root `pubspec.yaml` with `workspace:` entries for all three packages
+8. Generates main app core files (main, bootstrap, DI wired to utils package, routing)
+9. Generates `use_case_base.dart` in main app
 10. Generates home feature scaffold
 11. Generates `tools/` scripts (only with `--tools`)
-12. Installs all runtime and dev dependencies
-13. Updates `.gitignore`
-14. Generates VSCode config (`.vscode/extensions.json`, `launch.json`, `tasks.json`)
-15. Patches `pubspec.yaml` flutter assets
-16. Sets up network layer (only with `--network` or `--auth-interceptor`)
-17. Scaffolds auth interceptor (only with `--auth-interceptor`)
-18. Runs `dart run slang`
-19. Runs `dart run build_runner build`
-20. Runs `dart format .`
+12. Installs all runtime and dev dependencies + path deps for all three local packages
+13. Updates `.gitignore`, VSCode config, pubspec assets
+14. Sets up network layer (only with `--network` or `--auth-interceptor`)
+15. Scaffolds auth interceptor (only with `--auth-interceptor`)
+16. Runs `dart run slang` inside `packages/<app>_localization`
+17. Runs `dart run build_runner build` in `packages/<app>_utils` (generates `<App>UtilsPackageModule`)
+18. Runs `dart run build_runner build` in root app
+19. Runs `dart format .`
+20. Sorts `dependencies` and `dev_dependencies` alphabetically in root and both package pubspecs
 
 **Dependencies installed:**
 
 | Type | Packages |
 |------|----------|
-| Runtime | `flutter_bloc`, `go_router`, `get_it`, `injectable`, `freezed_annotation`, `fpdart`, `slang`, `slang_flutter`, `json_annotation`, `package_info_plus`, `flutter_svg`, `flutter_localizations` (SDK), `pretty_dio_logger` (git), `chucker_flutter` (git) |
-| Dev | `build_runner`, `injectable_generator`, `freezed`, `flutter_gen_runner`, `json_serializable` |
+| Main app runtime | `flutter_bloc`, `go_router`, `get_it`, `injectable`, `freezed_annotation`, `fpdart`, `json_annotation`, `package_info_plus`, `flutter_svg`, `flutter_localizations` (SDK), `logger` |
+| Main app dev | `build_runner`, `injectable_generator`, `freezed`, `flutter_gen_runner`, `json_serializable` |
+| Main app local path | `clean_router`, `<app>_localization`, `<app>_utils` |
+| Utils package | `dio`, `flutter_bloc`, `fpdart`, `injectable`, `logger`, `retrofit`, `<app>_localization` |
+| Localization package | `slang`, `slang_flutter` |
 
 ---
 
@@ -347,17 +350,33 @@ Feature
     └── repositories/ @LazySingleton implementations
 ```
 
+### Workspace Packages
+
+Every generated project is a **pub workspace** with three local packages:
+
+| Package | Path | Contains |
+|---------|------|---------|
+| `clean_router` | `packages/clean_router` | `CleanRouterBase`, `CleanRouterRefresh` |
+| `<app>_utils` | `packages/<app>_utils` | `Failure`, `ErrorEntity`, `AppLogger`, `Debouncer`, `safeCast`, `safeExecute`, `listToModelList`, type definitions, `RetrofitCallAdapter`, `RetrofitLogger`, DI micro-package |
+| `<app>_localization` | `packages/<app>_localization` | `slang.yaml`, locale JSON, `string_extension.dart`, generated locales |
+
+All three are listed under `workspace:` in the root `pubspec.yaml` and use `resolution: workspace`.
+
 ### Core Utils
 
-| File | Location |
-|------|----------|
-| `AppLogger` | `lib/core/utils/app_logger.dart` |
-| `Debouncer<T>` | `lib/core/utils/debouncer.dart` |
-| `JsonDecodeFactory` typedef | `lib/core/utils/type_definitions.dart` |
-| `safeCast` | `lib/core/utils/functions/safe_cast.dart` |
-| `safeExecute` | `lib/core/utils/functions/safe_execute.dart` |
-| `listToModelList` | `lib/core/utils/functions/list_to_model_list.dart` |
-| `getCurrentFunctionName` | `lib/core/utils/functions/get_current_function_name.dart` |
+All shared utilities live in `packages/<app>_utils` and are imported via `package:<app>_utils/<app>_utils.dart`:
+
+| Symbol | Description |
+|--------|-------------|
+| `AppLogger` | Static logger wrapping `logger` package |
+| `Debouncer<T>` | Debounce utility for search/input |
+| `JsonDecodeFactory<T>` | typedef for model decoder functions |
+| `safeCast<T>(data, decoder)` | Safely casts dynamic API data to `Either<Failure, T>` |
+| `safeExecute<T>(exec)` | Wraps any async call in `Either<Failure, T>` |
+| `listToModelList<T>(list, decoder)` | Converts a dynamic list using a decoder |
+| `getCurrentFunctionName()` | Returns the calling function's name |
+| `Failure` | `Exception` subtype with `leftFromError(e)` helper |
+| `ErrorEntity` | Abstract entity with `errors: List<String>` |
 
 ### Dependency Injection — `get_it` + `injectable`
 
@@ -368,8 +387,9 @@ Feature
 | `@Singleton(as: X)` | Eager singleton registered as X |
 | `@module` | Provides third-party or platform instances |
 | `@preResolve` | Awaited before app starts |
+| `@InjectableInit.microPackage` | Marks a package for micro-package DI generation |
 
-`GetIt` instance lives in `lib/app/di/di_container.dart`. `@InjectableInit` bootstraps everything via `diInitializer(diContainer)` in `bootstrap.dart`.
+`GetIt` instance lives in `lib/app/di/di_container.dart`. `@InjectableInit` in the main app bootstraps everything via `diInitializer(diContainer)` in `bootstrap.dart`, with `externalPackageModulesAfter: [.new(<App>UtilsPackageModule)]` to wire in utils package registrations (BlocObserver, RetrofitLogger).
 
 ### Routing — `go_router` + `CleanRouterBase`
 
