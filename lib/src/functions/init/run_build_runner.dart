@@ -6,9 +6,11 @@ import '../shared/run_command.dart';
 void runBuildRunner({String? workingDirectory}) {
   final label = workingDirectory != null ? ' in $workingDirectory' : '';
   stdout.writeln('🔨 Running build_runner$label...');
-  runCommand(
-    [...fvmExec('dart'), 'run', 'build_runner', 'build'],
-    workingDirectory: workingDirectory,
-  );
+  runCommand([
+    ...fvmExec('dart'),
+    'run',
+    'build_runner',
+    'build',
+  ], workingDirectory: workingDirectory);
   stdout.writeln('🔨 Code generation complete$label');
 }

@@ -29,7 +29,13 @@ void generateUtilsPackage(
 ) {
   stdout.writeln('📦 Creating $utilsPackageName package...');
 
-  runCommand([...fvmExec('flutter'), 'create', 'packages/$utilsPackageName', '--template', 'package']);
+  runCommand([
+    ...fvmExec('flutter'),
+    'create',
+    'packages/$utilsPackageName',
+    '--template',
+    'package',
+  ]);
 
   final filesToDelete = [
     'packages/$utilsPackageName/.metadata',
@@ -120,4 +126,3 @@ void generateUtilsPackage(
   stdout.writeln('📦 $utilsPackageName package created');
   stdout.writeln();
 }
-

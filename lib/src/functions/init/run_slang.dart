@@ -5,9 +5,10 @@ import '../shared/run_command.dart';
 
 void runSlang(String localizationPackageName) {
   stdout.writeln('🌐 Running slang in $localizationPackageName...');
-  runCommand(
-    [...fvmExec('dart'), 'run', 'slang'],
-    workingDirectory: 'packages/$localizationPackageName',
-  );
+  runCommand([
+    ...fvmExec('dart'),
+    'run',
+    'slang',
+  ], workingDirectory: 'packages/$localizationPackageName');
   stdout.writeln('🌐 Slang generation complete');
 }

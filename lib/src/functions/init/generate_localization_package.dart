@@ -14,7 +14,13 @@ import 'patch_package_pubspec.dart';
 void generateLocalizationPackage(String localizationPackageName) {
   stdout.writeln('📦 Creating $localizationPackageName package...');
 
-  runCommand([...fvmExec('flutter'), 'create', 'packages/$localizationPackageName', '--template', 'package']);
+  runCommand([
+    ...fvmExec('flutter'),
+    'create',
+    'packages/$localizationPackageName',
+    '--template',
+    'package',
+  ]);
 
   final filesToDelete = [
     'packages/$localizationPackageName/.metadata',
@@ -59,5 +65,3 @@ void generateLocalizationPackage(String localizationPackageName) {
   stdout.writeln('📦 $localizationPackageName package created');
   stdout.writeln();
 }
-
-

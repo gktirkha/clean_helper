@@ -68,16 +68,31 @@ If no app matches, the command aborts and lists available names.
 
 `runInit()` runs these steps in order:
 
-1. `generateAnalysisOptions()` — writes `analysis_options.yaml` first (includes `sort_pub_dependencies` lint rule)
+1. `generateAnalysisOptions()` — writes `analysis_options.yaml`
 2. `runFlutterPubGet()` — pub get before any deps are added
-3. `createDirectories()` — scaffold directory tree
-4. File generation steps (localization, flutter_gen, clean_router, core, utils, home feature, tools)
-5. `installDependencies()` — `flutter pub add` (deps land sorted due to `sort_pub_dependencies` lint)
-6. `updateGitignore()`, `addVscodeConfig()`, `addFlutterAssetsToPubSpec()`
-7. Optional: `addNetworkModule()`, `addAuthInterceptor()` (when flags passed)
-8. `sortPubspecDeps()` — alphabetically sorts both `dependencies` and `dev_dependencies`
-9. `runSlang()` → `runBuildRunner()` → `runDartFormat()`
-10. `writeToolVersion()` — stamps `clean-helper.version: <version>` in `pubspec.yaml`
+3. `createDirectories()` — scaffold directory tree (main app only; packages create their own dirs)
+4. `generateLocalizationFiles()` — no-op (localization is now in the localization package)
+5. `generateFlutterGenFiles()` — `build.yaml` + `assets/colors/colors.xml`
+6. `generateCleanRouterPackage()` — scaffolds `packages/clean_router`
+7. `generateLocalizationPackage(localizationPackageName)` — scaffolds `packages/<app>_localization` with slang.yaml, locale JSON, string extension
+8. `generateUtilsPackage(utilsPackageName, localizationPackageName)` — scaffolds `packages/<app>_utils` with all shared utils + DI micro-package
+9. `addCleanRouterWorkspace(utilsPackageName, localizationPackageName)` — patches root `pubspec.yaml` with all three workspace entries
+10. `generateCoreFiles(packageName, utilsPackageName)` — main app core files (main, bootstrap, DI wired to utils PackageModule, routing)
+11. `generateUtilsFiles(utilsPackageName)` — `use_case_base.dart` only (everything else is in utils package)
+12. `generateHomeFeature(packageName)` — complete home feature scaffold
+13. `installDependencies(utilsPackageName, localizationPackageName)` — `flutter pub add` for runtime + dev deps; adds path deps for all three local packages
+14. `updateGitignore()`, `addVscodeConfig()`, `addFlutterAssetsToPubSpec()` — config files
+15. Optional: `addNetworkModule()`, `addAuthInterceptor()` (when flags passed)
+16. `runSlang(localizationPackageName)` — runs `dart run slang` inside `packages/<app>_localization`
+17. `runBuildRunner(workingDirectory: 'packages/<app>_utils')` — generates `<App>UtilsPackageModule` in utils package first
+18. `runBuildRunner()` — runs build_runner in the root app (uses the generated PackageModule from step 17)
+19. `runDartFormat()` — `[fvm] dart format .`
+20. `sortPubspecDeps()` — sorts root `pubspec.yaml`
+21. `sortPubspecDeps('packages/<app>_utils/pubspec.yaml')` — sorts utils package deps
+22. `sortPubspecDeps('packages/<app>_localization/pubspec.yaml')` — sorts localization package deps
+23. `writeToolVersion()` — stamps `clean-helper.version: <version>` in root `pubspec.yaml`
+
+`[fvm]` means the command is prefixed with `fvm` if fvm is detected.
 
 ---
 
@@ -93,8 +108,6 @@ clean-helper:
 ```
 
 On every subsequent command, `ensurePubspec()` calls `checkVersionMismatch()`, which warns on stderr if the stored version differs from the running tool version.
-
-To suppress the warning, update `clean-helper.version` in `pubspec.yaml` to match the current tool version.
 
 The tool version constant lives in `lib/src/functions/shared/tool_version.dart` and **must be kept in sync with `pubspec.yaml`** when the package version is bumped.
 

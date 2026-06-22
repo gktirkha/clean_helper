@@ -8,26 +8,33 @@
 ## What It Does (in order)
 
 1. `ensurePubspec()` — aborts if not run from a Flutter project root
-2. `readPackageName()` — reads `name:` from `pubspec.yaml`
-3. `fvmUse()` — if fvm is installed, runs `fvm use` interactively so the user can select a Flutter version
-4. `createDirectories()` — creates the full folder scaffold
-5. `generateLocalizationFiles()` — `slang.yaml` + `assets/locales/en.locale.json`
-6. `generateFlutterGenFiles()` — `build.yaml` + `assets/colors/colors.xml`
-7. `generateCleanRouterPackage()` — scaffolds `packages/clean_router` with `CleanRouterBase` + `CleanRouterRefresh`
-8. `addCleanRouterWorkspace()` — patches root `pubspec.yaml` with `workspace: - packages/clean_router`
-9. `generateCoreFiles(packageName)` — all core Dart files (main, bootstrap, DI, routing, string extension)
-10. `generateUtilsFiles()` — `Failure`, `getCurrentFunctionName`, `safeCast`, `safeExecute`, `listToModelList`, type definitions
-11. `generateHomeFeature(packageName)` — complete home feature scaffold
-12. `generateToolsFiles()` — `tools/` scripts (command_runner, clean, bootstrap, build_android, build_config.json)
-13. `installDependencies()` — `flutter pub add` for all runtime + dev deps
-14. `updateGitignore()` — appends generated-file patterns to `.gitignore`
-15. `addVscodeConfig()` — VS Code settings
-16. `addFlutterAssetsToPubSpec()` — patches `pubspec.yaml` flutter.assets
-17. `addNetworkModule()` — optional, only if `--network` or `--auth-interceptor` flag passed
-18. `addAuthInterceptor()` — optional, only if `--auth-interceptor` flag passed
-19. `runSlang()` — `[fvm] dart run slang`
-20. `runBuildRunner()` — `[fvm] dart run build_runner build`
-21. `runDartFormat()` — `[fvm] dart format .`
+2. `readPackageName()` — reads `name:` from `pubspec.yaml`; derives `utilsPackageName` and `localizationPackageName`
+3. `fvmUse()` — if fvm is installed, runs `fvm use` interactively
+4. `generateAnalysisOptions()` — writes `analysis_options.yaml`
+5. `runFlutterPubGet()` — pub get before any deps are added
+6. `createDirectories()` — creates main app folder scaffold only
+7. `generateLocalizationFiles()` — no-op (localization lives in the localization package)
+8. `generateFlutterGenFiles()` — `build.yaml` + `assets/colors/colors.xml`
+9. `generateCleanRouterPackage()` — scaffolds `packages/clean_router` via `flutter create --template package`
+10. `generateLocalizationPackage(localizationPackageName)` — scaffolds `packages/<app>_localization` (slang.yaml, locale JSON, string extension)
+11. `generateUtilsPackage(utilsPackageName, localizationPackageName)` — scaffolds `packages/<app>_utils` (all shared utils + DI micro-package)
+12. `addCleanRouterWorkspace(utilsPackageName, localizationPackageName)` — patches root `pubspec.yaml` with `workspace:` entries for all three packages
+13. `generateCoreFiles(packageName, utilsPackageName)` — main, bootstrap, DI (wired to `<App>UtilsPackageModule`), routing
+14. `generateUtilsFiles(utilsPackageName)` — only `use_case_base.dart` in main app
+15. `generateHomeFeature(packageName)` — complete home feature scaffold
+16. `generateToolsFiles()` — optional, only with `--tools` flag
+17. `installDependencies(utilsPackageName, localizationPackageName)` — `flutter pub add` for all deps + path deps for all three local packages
+18. `updateGitignore()`, `addVscodeConfig()`, `addFlutterAssetsToPubSpec()`
+19. `addNetworkModule()` — optional, only if `--network` or `--auth-interceptor` flag
+20. `addAuthInterceptor()` — optional, only if `--auth-interceptor` flag
+21. `runSlang(localizationPackageName)` — `[fvm] dart run slang` inside `packages/<app>_localization`
+22. `runBuildRunner(workingDirectory: 'packages/<app>_utils')` — generates `<App>UtilsPackageModule` first
+23. `runBuildRunner()` — builds root app (depends on PackageModule from step 22)
+24. `runDartFormat()` — `[fvm] dart format .`
+25. `sortPubspecDeps()` — sorts root `pubspec.yaml`
+26. `sortPubspecDeps('packages/<app>_utils/pubspec.yaml')` — sorts utils package deps
+27. `sortPubspecDeps('packages/<app>_localization/pubspec.yaml')` — sorts localization package deps
+28. `writeToolVersion()` — stamps `clean-helper.version: <version>` in root `pubspec.yaml`
 
 `[fvm]` means the command is prefixed with `fvm` automatically if fvm is detected.
 
@@ -52,10 +59,10 @@ lib/
 │   ├── bootstrap.dart
 │   ├── main_app.dart
 │   ├── di/
-│   │   ├── di_container.dart        (GetIt instance)
-│   │   ├── di_initializer.dart      (@InjectableInit)
+│   │   ├── di_container.dart
+│   │   ├── di_initializer.dart      (@InjectableInit + externalPackageModulesAfter: [<App>UtilsPackageModule])
 │   │   ├── di_keys.dart
-│   │   └── app_module.dart          (navigationKey, scaffoldMessengerKey)
+│   │   └── app_module.dart
 │   ├── navigations/
 │   │   └── home_navigation_impl.dart
 │   └── router/
@@ -64,49 +71,50 @@ lib/
 │       └── app_router_module.dart
 ├── core/
 │   ├── di/
-│   │   └── core_module.dart         (PackageInfo)
+│   │   └── core_module.dart
 │   ├── domain/
-│   │   ├── entities/
-│   │   │   └── error_entity.dart
-│   │   └── failures/
-│   │       └── failure.dart         (Failure + leftFromError)
-│   ├── data/models/
-│   │   └── error_model.dart
-│   ├── network/
-│   │   ├── constants/api_paths.dart
-│   │   ├── di/network_module.dart
-│   │   └── interceptors/error_interceptor.dart
-│   ├── utils/
-│   │   ├── extensions/
-│   │   │   └── string_extension.dart   (String.tr)
-│   │   └── functions/
-│   │       ├── get_current_function_name.dart
-│   │       ├── type_definitions.dart
-│   │       ├── safe_cast.dart
-│   │       ├── safe_execute.dart
-│   │       └── list_to_model_list.dart
-│   └── generated/
-│       ├── locales/                 (slang output)
-│       └── flutter_gen/             (flutter_gen output)
+│   │   └── use_cases/
+│   │       └── use_case_base.dart
+│   └── data/models/
+│       └── error_model.dart         (@freezed, implements ErrorEntity from utils package)
 └── features/
     └── home/
         └── ...                      (see add_feature.md for full structure)
 assets/
-├── locales/en.locale.json
 └── colors/colors.xml
 build.yaml
-slang.yaml
 analysis_options.yaml
-tools/
-├── command_runner.dart
-├── clean.dart
-├── bootstrap.dart
-├── write_key_properties.dart
-├── build_android.dart
-└── config/
-    └── android_build_config.json  ← gitignored
 packages/
-└── clean_router/                    (local workspace package)
+├── clean_router/                    (workspace package — router base classes)
+├── <app>_localization/              (workspace package)
+│   ├── slang.yaml                   (output_directory: lib/src/generated)
+│   ├── assets/locales/en.locale.json
+│   └── lib/
+│       ├── <app>_localization.dart
+│       └── src/
+│           ├── string_extension.dart
+│           └── generated/locales.g.dart   ← slang output
+└── <app>_utils/                     (workspace package)
+    └── lib/
+        ├── <app>_utils.dart
+        └── src/
+            ├── app_logger.dart
+            ├── bloc_observer.dart
+            ├── debouncer.dart
+            ├── error_entity.dart
+            ├── failure.dart
+            ├── type_definitions.dart
+            ├── di/
+            │   ├── <app>_utils_module.dart    (@module — BlocObserver, RetrofitLogger)
+            │   └── di_initializer.dart        (@InjectableInit.microPackage)
+            ├── functions/
+            │   ├── get_current_function_name.dart
+            │   ├── list_to_model_list.dart
+            │   ├── safe_cast.dart
+            │   └── safe_execute.dart
+            └── network/
+                ├── retrofit_call_adapter.dart
+                └── retrofit_logger.dart
 ```
 
 ---
@@ -115,14 +123,22 @@ packages/
 
 All installed via `flutter pub add`.
 
-**Runtime:**
-`clean_router` (local path: `packages/clean_router`),
+**Runtime (main app):**
 `flutter_bloc`, `go_router`, `get_it`, `injectable`, `freezed_annotation`,
-`fpdart`, `slang`, `slang_flutter`, `package_info_plus`, `flutter_svg`,
-`json_annotation`, `flutter_localizations` (SDK), `logger`
+`fpdart`, `package_info_plus`, `flutter_svg`, `json_annotation`,
+`flutter_localizations` (SDK), `logger`
 
-**Dev:**
+**Dev (main app):**
 `build_runner`, `injectable_generator`, `freezed`, `flutter_gen_runner`, `json_serializable`
 
-**Git-hosted (added separately):**
-`pretty_dio_logger`, `chucker_flutter`
+**Local path deps (main app):**
+`clean_router` (`packages/clean_router`),
+`<app>_localization` (`packages/<app>_localization`),
+`<app>_utils` (`packages/<app>_utils`)
+
+**Utils package deps:**
+`dio`, `flutter_bloc`, `fpdart`, `injectable`, `logger`, `retrofit`, `<app>_localization`
+Dev: `build_runner`, `injectable_generator`
+
+**Localization package deps:**
+`slang`, `slang_flutter`

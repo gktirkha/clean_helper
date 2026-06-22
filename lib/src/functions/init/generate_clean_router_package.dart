@@ -13,7 +13,13 @@ import 'patch_package_pubspec.dart';
 void generateCleanRouterPackage() {
   stdout.writeln('📦 Creating clean_router package...');
 
-  runCommand([...fvmExec('flutter'), 'create', 'packages/clean_router', '--template', 'package']);
+  runCommand([
+    ...fvmExec('flutter'),
+    'create',
+    'packages/clean_router',
+    '--template',
+    'package',
+  ]);
 
   // Remove unwanted generated files
   final filesToDelete = [
@@ -35,7 +41,10 @@ void generateCleanRouterPackage() {
     analysisOptionsTemplate(),
   );
 
-  patchPackagePubspec('packages/clean_router', cleanRouterPubspecTailTemplate());
+  patchPackagePubspec(
+    'packages/clean_router',
+    cleanRouterPubspecTailTemplate(),
+  );
 
   // Write lib files
   overwriteFile(
@@ -51,4 +60,3 @@ void generateCleanRouterPackage() {
     cleanRouterRefreshTemplate(),
   );
 }
-

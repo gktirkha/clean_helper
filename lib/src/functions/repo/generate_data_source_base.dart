@@ -15,7 +15,12 @@ void generateDataSourceBase(
 
   writeFile(
     path,
-    dataSourceBaseTemplate(className, repoName, utilsPackageName, addSample: addSample),
+    dataSourceBaseTemplate(
+      className,
+      repoName,
+      utilsPackageName,
+      addSample: addSample,
+    ),
   );
   stdout.writeln('  📄 $path');
 }

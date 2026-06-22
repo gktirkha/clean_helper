@@ -17,34 +17,96 @@ Feature
 
 ---
 
-## Core Structure
+## Workspace Packages
+
+Every generated project is a **pub workspace** with three local packages:
+
+| Package | Path | Purpose |
+|---------|------|---------|
+| `clean_router` | `packages/clean_router` | Router base classes shared across features |
+| `<app>_utils` | `packages/<app>_utils` | Shared utilities, DI micro-package, network helpers |
+| `<app>_localization` | `packages/<app>_localization` | slang config, locale JSON, string extension |
+
+All three are listed under `workspace:` in the root `pubspec.yaml`.
+They use `resolution: workspace` so dependency resolution is shared.
+
+---
+
+## Utils Package — `packages/<app>_utils`
+
+Contains everything shared that isn't feature-specific:
+
+```
+packages/<app>_utils/
+└── lib/
+    ├── <app>_utils.dart          (barrel export)
+    └── src/
+        ├── app_logger.dart
+        ├── bloc_observer.dart
+        ├── debouncer.dart
+        ├── error_entity.dart
+        ├── failure.dart
+        ├── type_definitions.dart
+        ├── di/
+        │   ├── <app>_utils_module.dart     (@module — provides BlocObserver, RetrofitLogger)
+        │   └── di_initializer.dart         (@InjectableInit.microPackage)
+        ├── functions/
+        │   ├── get_current_function_name.dart
+        │   ├── list_to_model_list.dart
+        │   ├── safe_cast.dart
+        │   └── safe_execute.dart
+        └── network/
+            ├── retrofit_call_adapter.dart
+            └── retrofit_logger.dart
+```
+
+The utils package uses `@InjectableInit.microPackage(preferRelativeImports: true)` to generate
+`<App>UtilsPackageModule`, which is referenced in the main app's `@InjectableInit` via
+`externalPackageModulesAfter: [.new(<App>UtilsPackageModule)]`.
+
+`BlocObserver` and `RetrofitLogger` are registered by `<App>UtilsModule` (the `@module` class),
+**not** annotated directly on the classes.
+
+---
+
+## Localization Package — `packages/<app>_localization`
+
+```
+packages/<app>_localization/
+├── slang.yaml                          (output_directory: lib/src/generated)
+├── assets/locales/en.locale.json
+└── lib/
+    ├── <app>_localization.dart         (barrel export)
+    └── src/
+        ├── string_extension.dart       (StringLocaleExtension — String.tr)
+        └── generated/
+            └── locales.g.dart          (slang output — generated, not committed)
+```
+
+`dart run slang` is run inside this package directory during `init`.
+
+---
+
+## Main App Core Structure
 
 ```
 lib/core/
 ├── di/
 │   └── core_module.dart         (PackageInfo via @preResolve)
 ├── domain/
-│   ├── entities/
-│   │   └── error_entity.dart    (abstract class with errors: List<String>)
-│   └── failures/
-│       └── failure.dart         (Failure implements Exception + leftFromError<T>)
+│   └── use_cases/
+│       └── use_case_base.dart   (abstract UseCase<Type, Params>)
 ├── data/models/
-│   └── error_model.dart         (@freezed, implements ErrorEntity)
-├── network/
-│   ├── constants/api_paths.dart
-│   ├── di/network_module.dart   (Dio + interceptors)
-│   └── interceptors/
-│       └── error_interceptor.dart
-└── utils/
-    ├── extensions/
-    │   └── string_extension.dart   (String.tr — shorthand for slang translation)
-    └── functions/
-        ├── get_current_function_name.dart
-        ├── type_definitions.dart        (JsonDecodeFactory typedef)
-        ├── safe_cast.dart               (Either<Failure, T> from dynamic)
-        ├── safe_execute.dart            (FutureOr<Either<Failure, T>> from async call)
-        └── list_to_model_list.dart      (List<T> from List using decoder)
+│   └── error_model.dart         (@freezed, implements ErrorEntity from utils package)
+└── network/                     (only present after add-network-module)
+    ├── constants/api_paths.dart
+    ├── di/network_module.dart   (Dio + interceptors)
+    └── interceptors/
+        └── error_interceptor.dart
 ```
+
+`ErrorEntity` and `Failure` live in the utils package and are imported via
+`package:<app>_utils/<app>_utils.dart`.
 
 ---
 
@@ -57,9 +119,14 @@ lib/core/
 | `@Singleton(as: X)` | Eager singleton registered as X |
 | `@module` | Provides third-party or platform instances |
 | `@preResolve` | Awaited before app starts (e.g. PackageInfo) |
+| `@InjectableInit.microPackage` | Marks a package for micro-package DI generation |
 
 `GetIt` instance lives in `lib/app/di/di_container.dart`.
-`@InjectableInit` bootstraps everything via `diInitializer(diContainer)` in `bootstrap.dart`.
+`@InjectableInit` in the main app bootstraps everything via `diInitializer(diContainer)` in `bootstrap.dart`,
+with `externalPackageModulesAfter: [.new(<App>UtilsPackageModule)]` to wire in the utils package.
+
+Build runner must run in the **utils package first**, then in the root app, so that
+`<App>UtilsPackageModule` exists when the root app's code generation runs.
 
 ---
 
@@ -101,18 +168,21 @@ Every feature BLoC:
 - `ErrorInterceptor` parses `{"errors": [...]}` API responses into `ErrorModel`
 - `ChuckerDioInterceptor` + `PrettyDioLogger` added in debug builds
 - Base URL lives in `lib/core/network/constants/api_paths.dart`
+- `RetrofitCallAdapter` (in utils package) wraps Retrofit calls into `Either<Failure, T>`
+- `RetrofitLogger` (in utils package) implements `ParseErrorLogger` for Retrofit error logging
 - Retrofit datasources use `@RestApi()` — run `build_runner` to generate
 
 ---
 
 ## Error Handling — fpdart + Failure
 
-- `Failure` (`lib/core/domain/failures/failure.dart`) implements `Exception` with an optional `message`
-- `Failure.leftFromError(e)` wraps any caught object as `Left<Failure>`
+All of the following live in `packages/<app>_utils` and are imported via `package:<app>_utils/<app>_utils.dart`:
+
+- `Failure` implements `Exception` with an optional `message`; `Failure.leftFromError(e)` wraps any caught object as `Left<Failure>`
+- `ErrorEntity` abstract class with `errors: List<String>`
 - `safeCast<T>(data, decoder)` — safely casts dynamic API responses to `Either<Failure, T>`
 - `safeExecute<T>(exec)` — wraps any async call in `Either<Failure, T>`
-- Both live in `lib/core/utils/functions/`
-- `JsonDecodeFactory<T>` typedef defined in `lib/core/utils/functions/type_definitions.dart`
+- `JsonDecodeFactory<T>` typedef in `type_definitions.dart`
 - `listToModelList<T>(list, decoder)` — converts a list of dynamic values to `List<T>` using a decoder
 
 ---
@@ -128,12 +198,12 @@ Data models:
 
 ## Localization — slang
 
-- Config: `slang.yaml` at project root
-- Source: `assets/locales/en.locale.json`
-- Output: `lib/generated/locales/locales.g.dart`
+- Config: `slang.yaml` lives in `packages/<app>_localization`
+- Source: `packages/<app>_localization/assets/locales/en.locale.json`
+- Output: `packages/<app>_localization/lib/src/generated/locales.g.dart`
 - Initialized in `bootstrap.dart` via `LocaleSettings.useDeviceLocale()`
 - Wrapped in `TranslationProvider` in `MainApp`
-- `String.tr` extension in `lib/core/utils/extensions/string_extension.dart` provides shorthand access
+- `String.tr` extension lives in the localization package; imported via `package:<app>_localization/<app>_localization.dart`
 
 ---
 
