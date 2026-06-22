@@ -12,6 +12,7 @@ import '../functions/repo/generate_response_model.dart';
 import '../functions/repo/generate_rest_data_source.dart';
 import '../functions/repo/generate_use_cases.dart';
 import '../functions/shared/ensure_pubspec.dart';
+import '../functions/shared/read_package_name.dart';
 
 void addRepo(
   List<String> args, {
@@ -31,6 +32,8 @@ void addRepo(
 
   final feature = args[0].toLowerCase();
   final repoName = args[1].toLowerCase();
+  final packageName = readPackageName();
+  final utilsPackageName = '${packageName}_utils';
 
   final dataDir = 'lib/features/$feature/data';
   final domainDir = 'lib/features/$feature/domain/repositories';
@@ -45,11 +48,11 @@ void addRepo(
   stdout.writeln('🚀 Generating data layer: feature=$feature, repo=$repoName');
 
   generateEntityFile(entitiesDir, repoName);
-  generateDomainRepo(domainDir, repoName, addSample: addSample);
+  generateDomainRepo(domainDir, repoName, utilsPackageName, addSample: addSample);
   generateDataSourceBase(dataDir, repoName, addSample: addSample);
 
   if (addSample) {
-    generateUseCases(feature, repoName);
+    generateUseCases(feature, repoName, utilsPackageName);
     generateRequestModel(dataDir, repoName);
     generateResponseModel(dataDir, repoName);
   } else {
@@ -58,11 +61,17 @@ void addRepo(
     );
   }
 
-  generateDataRepo(dataDir, repoName, addSample: addSample);
+  generateDataRepo(dataDir, repoName, utilsPackageName, addSample: addSample);
 
   if (generateRest) {
     generateApiPaths(dataDir, feature, repoName);
-    generateRestDataSource(dataDir, feature, repoName, addSample: addSample);
+    generateRestDataSource(
+      dataDir,
+      feature,
+      repoName,
+      utilsPackageName,
+      addSample: addSample,
+    );
   } else if (noRest) {
     stdout.writeln('  ⏭  Skipping REST datasource and API paths (--no-rest).');
   } else {

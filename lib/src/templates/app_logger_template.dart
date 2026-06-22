@@ -1,10 +1,8 @@
 String appLoggerTemplate() => '''
 import 'package:logger/logger.dart';
 
-import '../../../app/di/di_container.dart';
-
 class AppLogger {
-  static Logger get _logger => diContainer();
+  static final Logger _logger = Logger();
   static final trace = _logger.t;
   static final debug = _logger.d;
   static final info = _logger.i;

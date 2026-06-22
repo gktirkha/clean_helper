@@ -1,9 +1,9 @@
 String mainAppDartTemplate(String pkg) => '''
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:${pkg}_localization/${pkg}_localization.dart';
 
 import 'di/di_container.dart';
-import '../generated/locales/locales.g.dart';
 import 'router/app_go_router.dart';
 
 class MainApp extends StatelessWidget {

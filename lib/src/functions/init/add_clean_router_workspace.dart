@@ -2,21 +2,33 @@ import 'dart:io';
 
 import '../shared/write_file.dart';
 
-void addCleanRouterWorkspace() {
+void addCleanRouterWorkspace(
+  String utilsPackageName,
+  String localizationPackageName,
+) {
   final content = File('pubspec.yaml').readAsStringSync();
 
-  if (content.contains('packages/clean_router')) {
-    stdout.writeln('  ⏭  Skipped (exists): clean_router workspace entry');
+  if (content.contains('packages/clean_router') &&
+      content.contains('packages/$utilsPackageName') &&
+      content.contains('packages/$localizationPackageName')) {
+    stdout.writeln('  ⏭  Skipped (exists): workspace entries');
     return;
   }
 
-  // Insert workspace section before the dependencies: line
+  final workspaceEntry =
+      'workspace:\n'
+      '  - packages/clean_router\n'
+      '  - packages/$localizationPackageName\n'
+      '  - packages/$utilsPackageName\n';
+
   final updated = content.replaceFirst(
     RegExp(r'^dependencies:', multiLine: true),
-    'workspace:\n  - packages/clean_router\n\ndependencies:',
+    '$workspaceEntry\ndependencies:',
   );
 
   overwriteFile('pubspec.yaml', updated);
-  stdout.writeln('  📦 clean_router package created');
-  stdout.writeln('📋 clean_router workspace added to pubspec.yaml');
+  stdout.writeln(
+    '📋 Workspace entries added to pubspec.yaml'
+    ' (clean_router, $utilsPackageName, $localizationPackageName)',
+  );
 }

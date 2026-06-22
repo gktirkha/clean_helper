@@ -10,16 +10,18 @@ import '../functions/init/generate_core_files.dart';
 import '../functions/init/generate_flutter_gen_files.dart';
 import '../functions/init/generate_home_feature.dart';
 import '../functions/init/generate_localization_files.dart';
+import '../functions/init/generate_localization_package.dart';
 import '../functions/init/generate_tools_files.dart';
 import '../functions/init/generate_utils_files.dart';
+import '../functions/init/generate_utils_package.dart';
 import '../functions/init/install_dependencies.dart';
 import '../functions/init/run_build_runner.dart';
-import '../functions/init/update_gitignore.dart';
 import '../functions/init/run_dart_format.dart';
 import '../functions/init/write_tool_version.dart';
 import '../functions/init/run_flutter_pub_get.dart';
 import '../functions/init/run_slang.dart';
 import '../functions/init/sort_pubspec_deps.dart';
+import '../functions/init/update_gitignore.dart';
 import '../functions/shared/ensure_pubspec.dart';
 import '../functions/shared/fvm_use.dart';
 import '../functions/shared/read_package_name.dart';
@@ -33,6 +35,8 @@ Future<void> runInit({
   ensurePubspec();
 
   final packageName = readPackageName();
+  final utilsPackageName = '${packageName}_utils';
+  final localizationPackageName = '${packageName}_localization';
 
   stdout.writeln('Initializing architecture for: $packageName');
   stdout.writeln();
@@ -44,12 +48,14 @@ Future<void> runInit({
   generateLocalizationFiles();
   generateFlutterGenFiles();
   generateCleanRouterPackage();
-  addCleanRouterWorkspace();
-  generateCoreFiles(packageName);
-  generateUtilsFiles();
+  generateLocalizationPackage(localizationPackageName);
+  generateUtilsPackage(utilsPackageName, localizationPackageName);
+  addCleanRouterWorkspace(utilsPackageName, localizationPackageName);
+  generateCoreFiles(packageName, utilsPackageName);
+  generateUtilsFiles(utilsPackageName);
   generateHomeFeature(packageName, withDi: withDi);
   if (withTools) generateToolsFiles();
-  installDependencies();
+  installDependencies(utilsPackageName, localizationPackageName);
   updateGitignore();
   addVscodeConfig();
   addFlutterAssetsToPubSpec();

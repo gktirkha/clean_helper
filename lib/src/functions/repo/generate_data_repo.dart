@@ -7,7 +7,8 @@ import '../../templates/data_repo_template.dart';
 
 void generateDataRepo(
   String dataDir,
-  String repoName, {
+  String repoName,
+  String utilsPackageName, {
   bool addSample = false,
 }) {
   final className = pascalCase(repoName);
@@ -26,6 +27,7 @@ void generateDataRepo(
       dataSourceClass,
       dataSourceField,
       repoName,
+      utilsPackageName,
       addSample: addSample,
     ),
   );

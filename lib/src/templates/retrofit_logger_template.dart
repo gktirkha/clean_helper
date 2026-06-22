@@ -1,11 +1,9 @@
 String retrofitLoggerTemplate() => '''
 import 'package:dio/dio.dart';
-import 'package:injectable/injectable.dart';
 import 'package:retrofit/error_logger.dart';
 
-import '../../utils/app_logger.dart';
+import '../app_logger.dart';
 
-@LazySingleton(as: ParseErrorLogger)
 class RetrofitLogger implements ParseErrorLogger {
   @override
   void logError(
@@ -18,7 +16,7 @@ class RetrofitLogger implements ParseErrorLogger {
       'Error While Parsing Response with data \${response?.data ?? "N/A"}',
       stackTrace: stackTrace,
       error: error,
-      time: .now(),
+      time: DateTime.now(),
     );
   }
 }

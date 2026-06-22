@@ -1,10 +1,8 @@
 String appBlocObserverTemplate() => '''
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:injectable/injectable.dart';
 
-import '../../core/utils/app_logger.dart';
+import 'app_logger.dart';
 
-@LazySingleton(as: BlocObserver)
 class AppBlocObserver extends BlocObserver {
   @override
   void onCreate(BlocBase bloc) {

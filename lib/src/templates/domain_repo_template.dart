@@ -1,12 +1,13 @@
 String domainRepoTemplate(
   String className,
-  String name, {
+  String name,
+  String utilsPackageName, {
   bool addSample = false,
 }) => addSample
     ? '''
 import 'package:fpdart/fpdart.dart';
+import 'package:$utilsPackageName/$utilsPackageName.dart';
 
-import '../../../../core/domain/failures/failure.dart';
 import '../entities/${name}_entity.dart';
 import '../params/get_${name}_params.dart';
 import '../params/post_${name}_params.dart';

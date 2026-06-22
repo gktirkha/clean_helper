@@ -1,11 +1,11 @@
-String safeCastTemplate() => '''
+String safeCastTemplate(String localizationPackageName) => '''
 import 'dart:convert';
 
+import 'package:$localizationPackageName/$localizationPackageName.dart';
 import 'package:fpdart/fpdart.dart';
 
-import '../../../generated/locales/locales.g.dart';
-import '../../domain/entities/error_entity.dart';
-import '../../domain/failures/failure.dart';
+import '../error_entity.dart';
+import '../failure.dart';
 import '../app_logger.dart';
 import '../type_definitions.dart';
 
@@ -35,7 +35,7 @@ Either<Failure, T> safeCast<T>(dynamic data, JsonDecodeFactory<T> decoder) {
       'Error in safe cast',
       error: e,
       stackTrace: s,
-      time: .now(),
+      time: DateTime.now(),
     );
     if (e is Failure) return Left(e);
     return Left(Failure(message: e.toString()));

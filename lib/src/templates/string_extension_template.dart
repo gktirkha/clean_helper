@@ -1,7 +1,7 @@
 String stringExtensionTemplate() => '''
-import '../../../generated/locales/locales.g.dart';
+import 'generated/locales.g.dart';
 
-extension StringExtension on String {
+extension StringLocaleExtension on String {
   String get tr => locales.\$meta.getTranslation(this);
 }
 ''';

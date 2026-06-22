@@ -6,14 +6,15 @@ String dataRepoTemplate(
   String implClass,
   String dataSourceClass,
   String dataSourceField,
-  String repoName, {
+  String repoName,
+  String utilsPackageName, {
   bool addSample = false,
 }) => addSample
     ? '''
 import 'package:fpdart/fpdart.dart';
 import 'package:injectable/injectable.dart';
+import 'package:$utilsPackageName/$utilsPackageName.dart';
 
-import '../../../../core/domain/failures/failure.dart';
 import '../../domain/entities/${repoName}_entity.dart';
 import '../../domain/params/get_${repoName}_params.dart';
 import '../../domain/params/post_${repoName}_params.dart';

@@ -3,7 +3,7 @@ import 'dart:async';
 
 import 'package:fpdart/fpdart.dart';
 
-import '../../domain/failures/failure.dart';
+import '../failure.dart';
 import '../app_logger.dart';
 
 FutureOr<Either<Failure, T>> safeExecute<T>(FutureOr<T> exec) async {
@@ -15,7 +15,7 @@ FutureOr<Either<Failure, T>> safeExecute<T>(FutureOr<T> exec) async {
       'Error in Safe Execute',
       stackTrace: s,
       error: e,
-      time: .now(),
+      time: DateTime.now(),
     );
     return Failure.leftFromError(e);
   }

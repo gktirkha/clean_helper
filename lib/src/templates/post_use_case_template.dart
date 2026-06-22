@@ -1,9 +1,9 @@
-String postUseCaseTemplate(String className, String name) => '''
+String postUseCaseTemplate(String className, String name, String utilsPackageName) => '''
 import 'dart:async';
 
 import 'package:fpdart/fpdart.dart' show Either;
+import 'package:$utilsPackageName/$utilsPackageName.dart';
 
-import '../../../../core/domain/failures/failure.dart';
 import '../../../../core/domain/use_cases/use_case_base.dart';
 import '../entities/${name}_entity.dart';
 import '../params/post_${name}_params.dart';

@@ -7,7 +7,8 @@ import '../../templates/rest_data_source_template.dart';
 void generateRestDataSource(
   String dataDir,
   String feature,
-  String repoName, {
+  String repoName,
+  String utilsPackageName, {
   bool addSample = false,
 }) {
   final featureClass = pascalCase(feature);
@@ -25,6 +26,7 @@ void generateRestDataSource(
       implClass,
       feature,
       repoName,
+      utilsPackageName,
       addSample: addSample,
     ),
   );

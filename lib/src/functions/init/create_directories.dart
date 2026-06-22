@@ -6,23 +6,19 @@ void createDirectories() {
     'lib/app/router',
     'lib/app/navigation',
     'lib/app/di',
-    'lib/app/utils',
     'lib/core/di',
-    'lib/core/domain/failures',
-    'lib/core/utils/extensions',
-    'lib/core/utils/functions',
-    'lib/generated/locales',
-    'lib/generated/flutter_gen',
-    'assets/locales',
-    'assets/colors',
+    'lib/core/domain/use_cases',
     // network
     'lib/core/network/constants',
     'lib/core/network/di',
     'lib/core/network/interceptors',
     'lib/core/network/models',
     'lib/core/data/models',
-    'lib/core/domain/entities',
     'lib/core/services',
+    // assets
+    'assets/colors',
+    // generated
+    'lib/generated/flutter_gen',
     // home feature
     'lib/features/home/data/constants',
     'lib/features/home/data/datasources',

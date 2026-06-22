@@ -25,7 +25,7 @@ String getCurrentFunctionName({int frameIndex = 2, bool includePath = false}) {
       'Error in get current function name',
       stackTrace: s,
       error: e,
-      time: .now(),
+      time: DateTime.now(),
     );
     return nameNotFound;
   }

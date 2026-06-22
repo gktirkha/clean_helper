@@ -3,7 +3,10 @@ import 'dart:io';
 import '../shared/fvm_exec.dart';
 import '../shared/run_command.dart';
 
-void installDependencies() {
+void installDependencies(
+  String utilsPackageName,
+  String localizationPackageName,
+) {
   stdout.writeln('📦 Installing dependencies...');
 
   final deps = [
@@ -13,8 +16,6 @@ void installDependencies() {
     'injectable',
     'freezed_annotation',
     'fpdart',
-    'slang',
-    'slang_flutter',
     'package_info_plus',
     'flutter_svg',
     'json_annotation',
@@ -44,6 +45,20 @@ void installDependencies() {
     'add',
     'clean_router',
     '--path=packages/clean_router',
+  ]);
+  runCommand([
+    ...fvmExec('flutter'),
+    'pub',
+    'add',
+    localizationPackageName,
+    '--path=packages/$localizationPackageName',
+  ]);
+  runCommand([
+    ...fvmExec('flutter'),
+    'pub',
+    'add',
+    utilsPackageName,
+    '--path=packages/$utilsPackageName',
   ]);
 
   stdout.writeln('📦 Dependencies installed');

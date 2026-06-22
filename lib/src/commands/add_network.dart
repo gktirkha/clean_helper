@@ -5,6 +5,7 @@ import '../functions/init/add_chucker_dependency.dart';
 import '../functions/init/generate_network_files.dart';
 import '../functions/init/run_dart_format.dart';
 import '../functions/shared/ensure_pubspec.dart';
+import '../functions/shared/read_package_name.dart';
 
 void addNetwork() {
   ensurePubspec();
@@ -12,7 +13,8 @@ void addNetwork() {
   stdout.writeln('🌐 Setting up network layer...');
   stdout.writeln();
 
-  generateNetworkFiles();
+  final utilsPackageName = '${readPackageName()}_utils';
+  generateNetworkFiles(utilsPackageName);
   installNetworkDependencies();
   addChuckerDependency();
   runDartFormat();

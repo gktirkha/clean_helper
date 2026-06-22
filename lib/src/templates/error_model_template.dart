@@ -1,7 +1,6 @@
-String errorModelTemplate() => '''
+String errorModelTemplate(String utilsPackageName) => '''
 import 'package:freezed_annotation/freezed_annotation.dart';
-
-import '../../domain/entities/error_entity.dart';
+import 'package:$utilsPackageName/$utilsPackageName.dart';
 
 part 'error_model.freezed.dart';
 part 'error_model.g.dart';

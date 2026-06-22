@@ -7,13 +7,15 @@ import '../functions/init/generate_network_files.dart';
 import '../functions/init/run_build_runner.dart';
 import '../functions/init/run_dart_format.dart';
 import '../functions/shared/ensure_pubspec.dart';
+import '../functions/shared/read_package_name.dart';
 
 void addNetworkModule({bool runBuildRunnerAfter = true}) {
   ensurePubspec();
 
   stdout.writeln('🌐 Setting up network layer...');
 
-  generateNetworkFiles();
+  final utilsPackageName = '${readPackageName()}_utils';
+  generateNetworkFiles(utilsPackageName);
   installNetworkDependencies();
   addChuckerDependency();
   patchAppGoRouter();
