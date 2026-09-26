@@ -1,3 +1,7 @@
+## 1.3.1
+
+- Remove redundant `final` modifier from the `list` parameter in the generated `listToModelList` helper
+
 ## 1.3.0
 
 - Shared utilities, network helpers, and DI are now generated in a separate `packages/<app>_utils` workspace package instead of `lib/core/`
