@@ -98,7 +98,7 @@ lib/core/
 │   └── core_module.dart         (PackageInfo via @preResolve)
 ├── domain/
 │   └── use_cases/
-│       └── use_case_base.dart   (abstract UseCaseBase<Type, Params> — call returns TaskEither)
+│       └── use_case_base.dart   (abstract UseCaseBase<Type, Params> — call returns FutureOr<TaskEither>)
 ├── data/models/
 │   └── error_model.dart         (@freezed, implements ErrorEntity from utils package)
 └── network/                     (only present after add-network-module)

@@ -189,6 +189,8 @@ The generated API chain — call adapter, datasource, repository, use case — r
 final result = await getInvoiceUseCase(params).run(); // Either<Failure, InvoiceEntity>
 ```
 
+`UseCaseBase.call` is declared as `FutureOr<TaskEither<Failure, T>>`, so a use case may do async work before returning its `TaskEither`. Generated use cases return `TaskEither` directly; when calling through the `UseCaseBase` type, await it first: `await (await useCase(params)).run()`.
+
 Projects initialised before 1.4.2 have a `Future<Either>` call adapter and `UseCaseBase`; set `clean-helper.result_type: future_either` in their `pubspec.yaml` to keep generating the old style (see [Result type](#result-type)).
 
 All internal imports use relative paths. `dart format` and `build_runner` run automatically at the end.

@@ -1,3 +1,7 @@
+## 1.4.3
+
+- `UseCaseBase.call` now returns `FutureOr<TaskEither<Failure, ReturnType>>`, so a use case can do async work before building its `TaskEither`. Generated use cases still return `TaskEither` directly (a valid override); code calling through the `UseCaseBase` type awaits first: `await (await useCase(params)).run()`
+
 ## 1.4.2
 
 - `add-repo` now generates fpdart `TaskEither<Failure, T>` across the API chain — datasource, repository and use case — instead of `Future<Either<Failure, T>>` / `FutureOr<Either<…>>`. A `TaskEither` is lazy: call `.run()` to execute it (`await useCase(params).run()`)
