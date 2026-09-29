@@ -62,7 +62,13 @@ lib/features/home/
 
 - Without `--add-sample`, domain repo, data source base, and repo impl are generated as empty scaffolds (no methods), and request/response model files and use cases are skipped.
 - With `--add-sample`, both `get` and `post` methods are added as a starting point. Remove or extend as needed. The `postInvoice()` impl instantiates the request model as `const InvoiceRequestModel()`.
-- REST datasource and API paths are skipped if `lib/core/network/di/network_module.dart` is not found, **or** if `--no-rest` is passed.
+- REST datasource and API paths are skipped if there is no network module — neither `lib/core/network/di/network_module.dart` nor `clean-helper.packages.network` — **or** if `--no-rest` is passed.
+- The utils import is `utilsPackageConfig.import` when `clean-helper.packages.utils` is set, else `package:<app>_utils/<app>_utils.dart`. Templates take the full import URI (`utilsImport`), not a package name.
+- With `packages.utils` set: use cases omit the `core/domain/use_cases/use_case_base.dart` import (the utils package provides `UseCaseBase`), and the REST datasource marks `errorLogger` `@ignoreParam` (injectable would otherwise emit `gh<ParseErrorLogger>()`, which throws when nothing registers it).
+- With `packages.network` set, the REST datasource also imports the network barrel (for `RetrofitCallAdapter`).
+- After generating the REST datasource, `warnMissingRestDependencies()` warns if the app pubspec lacks `dio`, `retrofit` or `retrofit_generator`.
+- Package imports are sorted via `sortImports()` so `directives_ordering` passes for any package name.
+- Multi-word repo names become camelCase identifiers (`HomeApiPaths.userAccount`, `userAccountRepository`).
 - When `--no-rest` is used, the skip is logged as `⏭  Skipping REST datasource and API paths (--no-rest).`
 - When `--add-sample` is not set, model files are skipped and logged as `⏭  Skipping request/response models (--add-sample not set).`
 - All imports are relative — no `package:` imports for internal project files.

@@ -1,3 +1,6 @@
+import '../functions/shared/camel_case.dart';
+import '../functions/shared/sort_imports.dart';
+
 String restDataSourceTemplate(
   String featureClass,
   String repoClass,
@@ -5,16 +8,35 @@ String restDataSourceTemplate(
   String implClass,
   String feature,
   String repoName,
-  String utilsPackageName, {
+  String utilsImport, {
+  String? networkImport,
+  bool ignoreErrorLogger = false,
   bool addSample = false,
-}) => addSample
-    ? '''
-import 'package:dio/dio.dart';
-import 'package:fpdart/fpdart.dart';
-import 'package:injectable/injectable.dart';
-import 'package:retrofit/error_logger.dart';
-import 'package:retrofit/http.dart';
-import 'package:$utilsPackageName/$utilsPackageName.dart';
+}) {
+  final imports = sortImports([
+    "import 'package:dio/dio.dart';",
+    if (addSample) "import 'package:fpdart/fpdart.dart';",
+    "import 'package:injectable/injectable.dart';",
+    "import 'package:retrofit/error_logger.dart';",
+    "import 'package:retrofit/http.dart';",
+    "import '$utilsImport';",
+    if (networkImport != null && networkImport != utilsImport)
+      "import '$networkImport';",
+  ]);
+
+  final factory = ignoreErrorLogger
+      ? '''
+  // No ParseErrorLogger is registered by the configured packages, so it is
+  // ignored here. Remove @ignoreParam once one is registered in DI.
+  @factoryMethod
+  factory $implClass(Dio dio, {@ignoreParam ParseErrorLogger? errorLogger}) = _$implClass;'''
+      : '''
+  @factoryMethod
+  factory $implClass(Dio dio, {ParseErrorLogger? errorLogger}) = _$implClass;''';
+
+  return addSample
+      ? '''
+$imports
 
 import '../constants/${feature}_api_paths.dart';
 import '../models/requests/${repoName}_request_model.dart';
@@ -26,24 +48,19 @@ part 'rest_${repoName}_data_source.g.dart';
 @RestApi(callAdapter: RetrofitCallAdapter)
 @Injectable(as: $baseClass)
 abstract class $implClass implements $baseClass {
-  @factoryMethod
-  factory $implClass(Dio dio, {ParseErrorLogger? errorLogger}) = _$implClass;
+$factory
 
   @override
-  @GET(${featureClass}ApiPaths.$repoName)
+  @GET(${featureClass}ApiPaths.${camelCase(repoName)})
   Future<Either<Failure, ${repoClass}ResponseModel>> get$repoClass(@Query('q') String? q);
 
   @override
-  @POST(${featureClass}ApiPaths.$repoName)
+  @POST(${featureClass}ApiPaths.${camelCase(repoName)})
   Future<Either<Failure, ${repoClass}ResponseModel>> post$repoClass(@Body() ${repoClass}RequestModel? requestModel);
 }
 '''
-    : '''
-import 'package:dio/dio.dart';
-import 'package:injectable/injectable.dart';
-import 'package:retrofit/error_logger.dart';
-import 'package:retrofit/http.dart';
-import 'package:$utilsPackageName/$utilsPackageName.dart';
+      : '''
+$imports
 
 import '${repoName}_data_source_base.dart';
 
@@ -52,7 +69,7 @@ part 'rest_${repoName}_data_source.g.dart';
 @RestApi(callAdapter: RetrofitCallAdapter)
 @Injectable(as: $baseClass)
 abstract class $implClass implements $baseClass {
-  @factoryMethod
-  factory $implClass(Dio dio, {ParseErrorLogger? errorLogger}) = _$implClass;
+$factory
 }
 ''';
+}

@@ -17,7 +17,8 @@ No arguments. Run from the monorepo root (or any directory containing `pubspec.y
 
 ## What It Does
 
-Reads `clean-helper.mono_repo_apps` from `pubspec.yaml` and prints each declared app with its index and path.
+Reads `clean-helper.mono_repo_apps` from `pubspec.yaml` and prints each declared app with its index and path,
+then prints the resolved `clean-helper.packages` config (utils / network) via `loadPackageConfigs()`.
 
 **Example output (monorepo configured):**
 ```

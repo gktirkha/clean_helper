@@ -1,4 +1,5 @@
 import '../functions/shared/camel_case.dart';
+import '../functions/shared/sort_imports.dart';
 
 String dataRepoTemplate(
   String className,
@@ -7,13 +8,11 @@ String dataRepoTemplate(
   String dataSourceClass,
   String dataSourceField,
   String repoName,
-  String utilsPackageName, {
+  String utilsImport, {
   bool addSample = false,
 }) => addSample
     ? '''
-import 'package:fpdart/fpdart.dart';
-import 'package:injectable/injectable.dart';
-import 'package:$utilsPackageName/$utilsPackageName.dart';
+${sortImports(["import 'package:fpdart/fpdart.dart';", "import 'package:injectable/injectable.dart';", "import '$utilsImport';"])}
 
 import '../../domain/entities/${repoName}_entity.dart';
 import '../../domain/params/get_${repoName}_params.dart';

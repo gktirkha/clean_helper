@@ -8,7 +8,9 @@ void generateRestDataSource(
   String dataDir,
   String feature,
   String repoName,
-  String utilsPackageName, {
+  String utilsImport, {
+  String? networkImport,
+  bool ignoreErrorLogger = false,
   bool addSample = false,
 }) {
   final featureClass = pascalCase(feature);
@@ -26,7 +28,9 @@ void generateRestDataSource(
       implClass,
       feature,
       repoName,
-      utilsPackageName,
+      utilsImport,
+      networkImport: networkImport,
+      ignoreErrorLogger: ignoreErrorLogger,
       addSample: addSample,
     ),
   );

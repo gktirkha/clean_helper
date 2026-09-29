@@ -135,13 +135,13 @@ lib/
     │   └── use_cases/
     ├── presentation/
     │   ├── bloc/auth/
-    │   │   ├── auth_bloc.dart         (@lazySingleton, extends Bloc)
+    │   │   ├── auth_bloc.dart         (@injectable, extends Bloc)
     │   │   ├── auth_event.dart        (part of, @freezed)
     │   │   └── auth_state.dart        (part of, @freezed)
     │   ├── pages/
     │   │   └── auth_page.dart         (pure UI widget)
-    │   ├── screens/
-    │   │   └── auth_screen.dart       (BlocProvider wiring)
+    │   ├── page_providers/
+    │   │   └── auth_page_provider.dart  (BlocProvider wiring — used by the router)
     │   └── widgets/
     └── router/
         ├── auth_routes.dart           (sealed class AuthRoutes)
@@ -149,7 +149,9 @@ lib/
         └── auth_router.dart           (@lazySingleton, implements CleanRouterBase)
 ```
 
-The new feature router is **automatically registered** in `lib/app/router/app_router_module.dart`. `dart format` and `build_runner` run automatically at the end.
+Multi-word names become camelCase identifiers with kebab-case paths — `user_profile` generates `UserProfileRoutes.userProfile = '/user-profile'`.
+
+The new feature router is **automatically registered** in `lib/app/router/app_router_module.dart` (routers are kept in alphabetical order). `dart format` and `build_runner` run automatically at the end.
 
 ---
 
@@ -177,7 +179,7 @@ data/
 
 With `--add-sample`: also adds `get`/`post` sample methods to all interfaces and creates `models/requests/invoice_request_model.dart` and `models/response/invoice_response_model.dart`.
 
-`--no-rest` skips `rest_invoice_data_source.dart` and `home_api_paths.dart`, even if a network module is present. REST files are also skipped automatically if `lib/core/network/di/network_module.dart` does not exist.
+`--no-rest` skips `rest_invoice_data_source.dart` and `home_api_paths.dart`, even if a network module is present. REST files are also skipped automatically if there is no network module — neither `lib/core/network/di/network_module.dart` nor a `clean-helper.packages.network` entry (see [Monorepo Support](#monorepo-support)). If the app's `pubspec.yaml` lacks `dio`, `retrofit` or `retrofit_generator`, a warning is printed.
 
 All internal imports use relative paths. `dart format` and `build_runner` run automatically at the end.
 
@@ -329,7 +331,13 @@ Detected mono-repo apps (2):
   2. app2  (apps/app2)
 ```
 
-If no apps are declared, prints setup instructions instead.
+If no apps are declared, prints setup instructions instead. It also prints the resolved `clean-helper.packages` config:
+
+```
+Packages (clean-helper.packages):
+  utils:    ropein_utils  (package:ropein_utils/ropein_utils.dart)
+  network:  ropein_network  (package:ropein_network/ropein_network_module.dart)
+```
 
 ---
 
@@ -410,7 +418,7 @@ abstract interface class CleanRouterBase {
 
 Every feature BLoC:
 - Extends `Bloc<FeatureEvent, FeatureState>`
-- Is annotated `@lazySingleton` for DI
+- Is annotated `@injectable` (a factory) — `BlocProvider` closes the bloc on dispose, so each page gets a fresh instance
 - Events and states are `@freezed` union types
 
 ### Error Handling — `fpdart` + `Failure`
@@ -489,6 +497,29 @@ Enter number (1–2):
 ```
 
 If no app matches, the command aborts and lists all available app names.
+
+### Shared workspace packages
+
+By default, generated code imports shared code from `package:<app>_utils/<app>_utils.dart` and detects networking from `lib/core/network/`. When the shared code lives in separately named workspace packages, declare them in the root `pubspec.yaml`. Every key is optional:
+
+```yaml
+clean-helper:
+  mono_repo_apps:
+    - apps/consumer
+    - apps/organizer
+  packages:
+    utils:
+      name: my_utils                 # default: <app>_utils
+      # import defaults to package:<name>/<name>.dart
+    network:
+      name: my_network
+      import: package:my_network/my_network_module.dart   # when the barrel isn't <name>.dart
+```
+
+- **`packages.utils`** — `add-repo` imports this package instead of `<app>_utils`. It must export `Failure` and `UseCaseBase`; generated use cases no longer import `lib/core/domain/use_cases/use_case_base.dart`. Because the utils package no longer registers a `ParseErrorLogger`, the REST datasource marks its `errorLogger` parameter `@ignoreParam` — remove it once your packages register one.
+- **`packages.network`** — counts as a network module, so `add-repo` generates the REST datasource and API paths. Its import is added to the REST datasource for `RetrofitCallAdapter`.
+
+The config is read from the `pubspec.yaml` in the directory the command is started from, before the tool switches into the selected app.
 
 ### No config, no `lib/`?
 

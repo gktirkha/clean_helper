@@ -83,6 +83,7 @@ These constraints must be respected when modifying or extending this codebase.
 - **Every command already gets monorepo support for free** — `ensurePubspec()` calls `resolveMonoRepoProject()`, which detects monorepos and changes `Directory.current` before any command logic runs.
 - **Never add monorepo detection inside individual command files** — it lives exclusively in `lib/src/functions/shared/resolve_mono_repo_project.dart`.
 - **New commands must call `ensurePubspec()` as their first statement** — this is what makes them monorepo-aware automatically.
+- Root-pubspec settings needed after the directory change (e.g. `clean-helper.packages`) must be read in `ensurePubspec()` **before** `resolveMonoRepoProject()`, and stored in a shared global like `utilsPackageConfig` — never re-read the root pubspec from a command.
 - The global `--scope=<name>` flag is declared on `CleanHelperRunner.argParser` and stored in `resolveScope` (from `lib/src/functions/shared/scope_option.dart`) via an override of `runCommand`. No command file touches this.
 - Detection logic (in order):
   1. `lib/` folder present → normal single-project flow, no selection prompt.

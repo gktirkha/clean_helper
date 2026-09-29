@@ -10,7 +10,7 @@ part '${feature}_bloc.freezed.dart';
 part '${feature}_event.dart';
 part '${feature}_state.dart';
 
-@lazySingleton
+@injectable
 class ${className}Bloc extends Bloc<${className}Event, ${className}State> {
   ${className}Bloc() : super(const .initial()) {
     on<${className}Event>(_handleEvents);

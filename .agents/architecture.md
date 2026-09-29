@@ -156,7 +156,7 @@ refresh streams and notifies `GoRouter` to re-evaluate redirects.
 
 Every feature BLoC:
 - Extends `Bloc<FeatureEvent, FeatureState>`
-- Is annotated `@lazySingleton` for DI
+- Is annotated `@injectable` (factory) — `BlocProvider` closes it on dispose, so a singleton would be reused closed
 - Events and states are `@freezed` union types
 - Event and state files are `part of` the bloc file
 

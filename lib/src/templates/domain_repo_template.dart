@@ -1,12 +1,13 @@
+import '../functions/shared/sort_imports.dart';
+
 String domainRepoTemplate(
   String className,
   String name,
-  String utilsPackageName, {
+  String utilsImport, {
   bool addSample = false,
 }) => addSample
     ? '''
-import 'package:fpdart/fpdart.dart';
-import 'package:$utilsPackageName/$utilsPackageName.dart';
+${sortImports(["import 'package:fpdart/fpdart.dart';", "import '$utilsImport';"])}
 
 import '../entities/${name}_entity.dart';
 import '../params/get_${name}_params.dart';

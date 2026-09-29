@@ -1,3 +1,17 @@
+## 1.4.0
+
+- Add optional `clean-helper.packages` config (`utils`, `network`) for monorepos whose shared code lives in separately named workspace packages; read from the starting directory before switching into the app
+- `add-repo` imports the configured utils package instead of `<app>_utils`, and skips the `core/domain/use_cases/use_case_base.dart` import in use cases when utils is configured
+- `add-repo` treats a configured `packages.network` as a network module, so the REST datasource and API paths are generated; the datasource imports the network barrel for `RetrofitCallAdapter`
+- REST datasource marks `errorLogger` `@ignoreParam` when utils is configured, since injectable would otherwise resolve an unregistered `ParseErrorLogger` and throw at runtime
+- `add-repo` warns when the app's pubspec lacks `dio`, `retrofit` or `retrofit_generator`
+- `list-mono-repo-apps` prints the resolved package config
+- Fix multi-word feature and repo names producing snake_case identifiers — `sign_up` now generates `SignUpRoutes.signUp` (path stays `/sign-up`), `HomeApiPaths.userAccount`, `userAccountRepository`
+- Feature blocs are now `@injectable` instead of `@lazySingleton` — `BlocProvider` closes the bloc on dispose, so a singleton came back closed on the next visit
+- `app_router_module.dart` is always sorted alphabetically, regardless of which command wrote it
+- Sort package imports in generated router, repository, datasource and use case files so `directives_ordering` passes
+- README: document `presentation/page_providers/` instead of the old `presentation/screens/`
+
 ## 1.3.1
 
 - Remove redundant `final` modifier from the `list` parameter in the generated `listToModelList` helper

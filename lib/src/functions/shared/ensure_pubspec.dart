@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'abort.dart';
 import 'check_version_mismatch.dart';
+import 'load_package_configs.dart';
 import 'resolve_mono_repo_project.dart';
 
 void ensurePubspec() {
@@ -10,6 +11,7 @@ void ensurePubspec() {
       'pubspec.yaml not found. Run this tool from the Flutter project root.',
     );
   }
+  loadPackageConfigs();
   resolveMonoRepoProject();
   checkVersionMismatch();
 }

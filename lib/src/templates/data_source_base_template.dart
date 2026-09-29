@@ -1,12 +1,13 @@
+import '../functions/shared/sort_imports.dart';
+
 String dataSourceBaseTemplate(
   String className,
   String repoName,
-  String utilsPackageName, {
+  String utilsImport, {
   bool addSample = false,
 }) => addSample
     ? '''
-import 'package:fpdart/fpdart.dart';
-import 'package:$utilsPackageName/$utilsPackageName.dart';
+${sortImports(["import 'package:fpdart/fpdart.dart';", "import '$utilsImport';"])}
 
 import '../models/requests/${repoName}_request_model.dart';
 import '../models/response/${repoName}_response_model.dart';

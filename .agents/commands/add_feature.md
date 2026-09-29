@@ -14,7 +14,8 @@ clean-helper add-feature auth --di    # also generate DI module
 ```
 
 Feature name must be **snake_case**. It is used as-is for file/directory names and converted to
-`PascalCase` / `camelCase` for class names.
+`PascalCase` / `camelCase` for class names and identifiers (`user_profile` → `UserProfileRoutes.userProfile`,
+path `/user-profile`).
 
 ---
 
@@ -42,7 +43,7 @@ lib/
     │   └── use_cases/
     ├── presentation/
     │   ├── bloc/auth/
-    │   │   ├── auth_bloc.dart         (@lazySingleton, extends Bloc)
+    │   │   ├── auth_bloc.dart         (@injectable, extends Bloc)
     │   │   ├── auth_event.dart        (part of, @freezed)
     │   │   └── auth_state.dart        (part of, @freezed)
     │   ├── pages/
@@ -76,7 +77,7 @@ The router builds `const AuthPageProvider()`. The page provider wires up the blo
 The new feature's router is **automatically registered** in `lib/app/router/app_router_module.dart`
 by `patchRouterModule(featureName)`. No manual step is required.
 
-`app_router_module.dart` is fully regenerated (not patched line-by-line) using `buildRouterModule(List<String> features)` from `lib/src/functions/feature/build_router_module.dart`.
+`app_router_module.dart` is fully regenerated (not patched line-by-line) using `buildRouterModule(List<String> features)` from `lib/src/functions/feature/build_router_module.dart`, which sorts features alphabetically so output is the same regardless of which command wrote it.
 
 ---
 

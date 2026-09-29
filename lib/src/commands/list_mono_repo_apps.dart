@@ -1,6 +1,8 @@
 import 'dart:io';
 
 import '../functions/shared/abort.dart';
+import '../functions/shared/load_package_configs.dart';
+import '../functions/shared/package_configs.dart';
 import '../functions/shared/read_mono_repo_apps.dart';
 
 // Does NOT call ensurePubspec() — that would trigger project selection before
@@ -10,6 +12,7 @@ void listMonoRepoApps() {
     abort('pubspec.yaml not found. Run this tool from the project root.');
   }
 
+  loadPackageConfigs();
   final apps = readMonoRepoApps();
 
   if (apps == null) {
@@ -22,12 +25,26 @@ void listMonoRepoApps() {
     stdout.writeln('    mono_repo_apps:');
     stdout.writeln('      - apps/app1');
     stdout.writeln('      - apps/app2');
-    return;
+  } else {
+    stdout.writeln('Detected mono-repo apps (${apps.length}):');
+    for (var i = 0; i < apps.length; i++) {
+      final label = apps[i].split('/').last;
+      stdout.writeln('  ${i + 1}. $label  (${apps[i]})');
+    }
   }
 
-  stdout.writeln('Detected mono-repo apps (${apps.length}):');
-  for (var i = 0; i < apps.length; i++) {
-    final label = apps[i].split('/').last;
-    stdout.writeln('  ${i + 1}. $label  (${apps[i]})');
-  }
+  final utils = utilsPackageConfig;
+  final network = networkPackageConfig;
+  stdout.writeln();
+  stdout.writeln('Packages (clean-helper.packages):');
+  stdout.writeln(
+    utils == null
+        ? '  utils:    <app>_utils (default)'
+        : '  utils:    ${utils.name}  (${utils.import})',
+  );
+  stdout.writeln(
+    network == null
+        ? '  network:  not configured (detected from lib/core/network/)'
+        : '  network:  ${network.name}  (${network.import})',
+  );
 }

@@ -72,14 +72,14 @@ clean_helper/
 │       │   ├── colors_xml_template.dart
 │       │   ├── core_api_paths_template.dart
 │       │   ├── core_module_template.dart
-│       │   ├── data_repo_template.dart               ← takes utilsPackageName
-│       │   ├── data_source_base_template.dart        ← takes utilsPackageName
+│       │   ├── data_repo_template.dart               ← takes utilsImport (full import URI)
+│       │   ├── data_source_base_template.dart        ← takes utilsImport (full import URI)
 │       │   ├── debounce_template.dart
 │       │   ├── di_container_template.dart
 │       │   ├── di_initializer_template.dart          ← takes utilsPackageName + utilsClassName; wires externalPackageModulesAfter
 │       │   ├── di_keys_no_auth_template.dart
 │       │   ├── di_keys_template.dart
-│       │   ├── domain_repo_template.dart             ← takes utilsPackageName
+│       │   ├── domain_repo_template.dart             ← takes utilsImport (full import URI)
 │       │   ├── en_locale_template.dart
 │       │   ├── entity_template.dart
 │       │   ├── error_entity_template.dart
@@ -99,7 +99,7 @@ clean_helper/
 │       │   ├── feature_state_template.dart
 │       │   ├── get_current_function_name_template.dart
 │       │   ├── get_use_case_params_template.dart
-│       │   ├── get_use_case_template.dart            ← takes utilsPackageName
+│       │   ├── get_use_case_template.dart            ← takes utilsImport (full import URI)
 │       │   ├── gitignore_template.dart
 │       │   ├── list_to_model_list_template.dart
 │       │   ├── localization_lib_export_template.dart ← barrel for localization package
@@ -111,10 +111,10 @@ clean_helper/
 │       │   ├── network_module_template.dart
 │       │   ├── no_auth_dio_method_template.dart
 │       │   ├── post_use_case_params_template.dart
-│       │   ├── post_use_case_template.dart           ← takes utilsPackageName
+│       │   ├── post_use_case_template.dart           ← takes utilsImport (full import URI)
 │       │   ├── request_model_template.dart
 │       │   ├── response_model_template.dart
-│       │   ├── rest_data_source_template.dart        ← takes utilsPackageName
+│       │   ├── rest_data_source_template.dart        ← takes utilsImport (full import URI)
 │       │   ├── retrofit_call_adapter_template.dart   ← relative imports within utils package
 │       │   ├── retrofit_logger_template.dart         ← no injectable annotation
 │       │   ├── safe_cast_template.dart               ← takes localizationPackageName
@@ -147,14 +147,18 @@ clean_helper/
 │           │   ├── fvm_use.dart                      → fvmUse() [async]
 │           │   ├── insert_after_last_import.dart      → insertAfterLastImport()
 │           │   ├── kebab_case.dart                   → kebabCase(String)
+│           │   ├── load_package_configs.dart         → loadPackageConfigs() — called by ensurePubspec() before chdir
+│           │   ├── package_configs.dart              → PackageConfig typedef + utilsPackageConfig / networkPackageConfig
 │           │   ├── pascal_case.dart                  → pascalCase(String)
 │           │   ├── prompt_project_selection.dart      → promptProjectSelection(List<String>)
 │           │   ├── read_mono_repo_apps.dart           → readMonoRepoApps()
+│           │   ├── read_package_config.dart           → readPackageConfig(key) — parses clean-helper.packages.<key>
 │           │   ├── read_package_name.dart             → readPackageName()
 │           │   ├── resolve_mono_repo_project.dart     → resolveMonoRepoProject()
 │           │   ├── run_command.dart                  → runCommand(List<String>, {String? workingDirectory})
 │           │   ├── run_command_streamed.dart          → runCommandStreamed(List<String>)
 │           │   ├── scope_option.dart                  → resolveScope (String?)
+│           │   ├── sort_imports.dart                  → sortImports(List<String>) — alphabetical import directives
 │           │   ├── tool_version.dart                  → toolVersion (String const)
 │           │   └── write_file.dart                   → writeFile / overwriteFile
 │           │
@@ -199,13 +203,14 @@ clean_helper/
 │           │
 │           ├── repo/                   # Helpers for addRepo()
 │           │   ├── generate_api_paths.dart
-│           │   ├── generate_data_repo.dart               → takes utilsPackageName
-│           │   ├── generate_data_source_base.dart        → takes utilsPackageName
-│           │   ├── generate_domain_repo.dart             → takes utilsPackageName
+│           │   ├── generate_data_repo.dart               → takes utilsImport
+│           │   ├── generate_data_source_base.dart        → takes utilsImport
+│           │   ├── generate_domain_repo.dart             → takes utilsImport
 │           │   ├── generate_request_model.dart
 │           │   ├── generate_response_model.dart
-│           │   ├── generate_rest_data_source.dart        → takes utilsPackageName
-│           │   └── generate_use_cases.dart               → takes utilsPackageName
+│           │   ├── generate_rest_data_source.dart        → takes utilsImport, networkImport, ignoreErrorLogger
+│           │   ├── generate_use_cases.dart               → takes utilsImport, importUseCaseBase
+│           │   └── warn_missing_rest_dependencies.dart   → warns if dio/retrofit/retrofit_generator missing
 │           │
 │           ├── entity/
 │           │   ├── generate_entity_file.dart
