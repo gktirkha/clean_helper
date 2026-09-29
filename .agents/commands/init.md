@@ -105,13 +105,14 @@ packages/
             ├── failure.dart
             ├── type_definitions.dart
             ├── di/
-            │   ├── <app>_utils_module.dart    (@module — BlocObserver, RetrofitLogger)
+            │   ├── <app>_utils_module.dart    (@module — BlocObserver)
             │   └── di_initializer.dart        (@InjectableInit.microPackage)
             ├── functions/
             │   ├── get_current_function_name.dart
             │   ├── list_to_model_list.dart
             │   ├── safe_cast.dart
-            │   └── safe_execute.dart
+            │   ├── safe_execute.dart
+            │   └── safe_execute_task.dart
             └── network/
                 ├── retrofit_call_adapter.dart
                 └── retrofit_logger.dart

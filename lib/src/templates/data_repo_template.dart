@@ -10,8 +10,16 @@ String dataRepoTemplate(
   String repoName,
   String utilsImport, {
   bool addSample = false,
-}) => addSample
-    ? '''
+  bool taskEither = true,
+}) {
+  // TaskEither is returned as-is (covariant in its value), so no `async`.
+  final result = taskEither
+      ? 'TaskEither<Failure, ${className}Entity>'
+      : 'Future<Either<Failure, ${className}Entity>>';
+  final modifier = taskEither ? '' : ' async';
+
+  return addSample
+      ? '''
 ${sortImports(["import 'package:fpdart/fpdart.dart';", "import 'package:injectable/injectable.dart';", "import '$utilsImport';"])}
 
 import '../../domain/entities/${repoName}_entity.dart';
@@ -27,17 +35,17 @@ class $implClass implements $repositoryClass {
   final $dataSourceClass $dataSourceField;
 
   @override
-  Future<Either<Failure, ${className}Entity>> get$className(Get${className}Params params) async {
+  $result get$className(Get${className}Params params)$modifier {
     return $dataSourceField.get$className(params.get${className}Query);
   }
 
   @override
-  Future<Either<Failure, ${className}Entity>> post$className(Post${className}Params params) async {
+  $result post$className(Post${className}Params params)$modifier {
     return $dataSourceField.post$className(.new(p1: params.post${className}Param1));
   }
 }
 '''
-    : '''
+      : '''
 import 'package:injectable/injectable.dart';
 
 import '../../domain/repositories/${repoName}_repository.dart';
@@ -51,3 +59,4 @@ class $implClass implements $repositoryClass {
   final $dataSourceClass $dataSourceField;
 }
 ''';
+}

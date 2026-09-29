@@ -64,8 +64,10 @@ lib/features/home/
 - With `--add-sample`, both `get` and `post` methods are added as a starting point. Remove or extend as needed. The `postInvoice()` impl instantiates the request model as `const InvoiceRequestModel()`.
 - REST datasource and API paths are skipped if there is no network module — neither `lib/core/network/di/network_module.dart` nor `clean-helper.packages.network` — **or** if `--no-rest` is passed.
 - The utils import is `utilsPackageConfig.import` when `clean-helper.packages.utils` is set, else `package:<app>_utils/<app>_utils.dart`. Templates take the full import URI (`utilsImport`), not a package name.
-- With `packages.utils` set: use cases omit the `core/domain/use_cases/use_case_base.dart` import (the utils package provides `UseCaseBase`), and the REST datasource marks `errorLogger` `@ignoreParam` (injectable would otherwise emit `gh<ParseErrorLogger>()`, which throws when nothing registers it).
-- With `packages.network` set, the REST datasource also imports the network barrel (for `RetrofitCallAdapter`).
+- Return types: `TaskEither<Failure, T>` by default (repo impl methods are not `async` — the datasource's `TaskEither` is returned as-is). `clean-helper.result_type: future_either` (read via `usesTaskEither()`) generates the pre-1.4.2 `Future<Either>` / `FutureOr<Either>` style. Templates take `taskEither`.
+- With `packages.utils` set: use cases omit the `core/domain/use_cases/use_case_base.dart` import (the utils package provides `UseCaseBase`).
+- With `packages.network` set: the REST datasource marks `errorLogger` `@ignoreParam`, because the tool can't know whether the external network package registers `ParseErrorLogger` (injectable would otherwise emit `gh<ParseErrorLogger>()`, which throws when nothing registers it). In the legacy layout the generated `NetworkModule` registers it.
+- Call adapter: `@RestApi(callAdapter: <retrofitCallAdapterConfig.name ?? RetrofitCallAdapter>)`, imported from `retrofitCallAdapterConfig.import ?? networkPackageConfig.import` (skipped when equal to the utils import).
 - After generating the REST datasource, `warnMissingRestDependencies()` warns if the app pubspec lacks `dio`, `retrofit` or `retrofit_generator`.
 - Package imports are sorted via `sortImports()` so `directives_ordering` passes for any package name.
 - Multi-word repo names become camelCase identifiers (`HomeApiPaths.userAccount`, `userAccountRepository`).

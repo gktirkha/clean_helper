@@ -1,6 +1,6 @@
 String retrofitLoggerTemplate() => '''
 import 'package:dio/dio.dart';
-import 'package:retrofit/error_logger.dart';
+import 'package:retrofit/retrofit.dart';
 
 import '../app_logger.dart';
 

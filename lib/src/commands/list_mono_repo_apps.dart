@@ -47,4 +47,18 @@ void listMonoRepoApps() {
         ? '  network:  not configured (detected from lib/core/network/)'
         : '  network:  ${network.name}  (${network.import})',
   );
+
+  stdout.writeln();
+  stdout.writeln(
+    'Result type (clean-helper.result_type): '
+    '${resultTypeConfig ?? 'task_either (default)'}',
+  );
+
+  final adapter = retrofitCallAdapterConfig;
+  stdout.writeln();
+  stdout.writeln('Retrofit call adapter (clean-helper.retrofit_call_adapter):');
+  stdout.writeln(
+    '  ${adapter?.name ?? 'RetrofitCallAdapter'}  '
+    '(${adapter?.import ?? network?.import ?? utils?.import ?? '<app>_utils'})',
+  );
 }

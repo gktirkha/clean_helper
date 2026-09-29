@@ -6,19 +6,28 @@ import '../../templates/error_model_template.dart';
 import '../../templates/error_interceptor_template.dart';
 import '../../templates/network_module_template.dart';
 
-void generateNetworkFiles(String utilsPackageName) {
+void generateNetworkFiles(
+  String utilsImport, {
+  bool registerErrorLogger = true,
+}) {
   writeFile(
     'lib/core/network/constants/api_paths.dart',
     coreApiPathsTemplate(),
   );
   writeFile(
     'lib/core/data/models/error_model.dart',
-    errorModelTemplate(utilsPackageName),
+    errorModelTemplate(utilsImport),
   );
   writeFile(
     'lib/core/network/interceptors/error_interceptor.dart',
     errorInterceptorTemplate(),
   );
-  writeFile('lib/core/network/di/network_module.dart', networkModuleTemplate());
+  writeFile(
+    'lib/core/network/di/network_module.dart',
+    networkModuleTemplate(
+      utilsImport,
+      registerErrorLogger: registerErrorLogger,
+    ),
+  );
   stdout.writeln('🌐 Network module generated');
 }

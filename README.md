@@ -69,7 +69,7 @@ What it does (in order):
 3. Generates asset pipeline files (`build.yaml`, `assets/colors/colors.xml`)
 4. Scaffolds `packages/clean_router` local workspace package (`CleanRouterBase` + `CleanRouterRefresh`)
 5. Scaffolds `packages/<app>_localization` package (slang.yaml, `assets/locales/en.locale.json`, string extension)
-6. Scaffolds `packages/<app>_utils` package (`Failure`, `AppLogger`, `Debouncer`, `safeCast`, `safeExecute`, `listToModelList`, type definitions, DI micro-package)
+6. Scaffolds `packages/<app>_utils` package (`Failure`, `AppLogger`, `Debouncer`, `safeCast`, `safeExecute`, `safeExecuteTask`, `listToModelList`, type definitions, DI micro-package)
 7. Patches root `pubspec.yaml` with `workspace:` entries for all three packages
 8. Generates main app core files (main, bootstrap, DI wired to utils package, routing)
 9. Generates `use_case_base.dart` in main app
@@ -182,6 +182,14 @@ data/
 With `--add-sample`: also adds `get`/`post` sample methods to all interfaces and creates `models/requests/invoice_request_model.dart` and `models/response/invoice_response_model.dart`.
 
 `--no-rest` skips `rest_invoice_data_source.dart` and `home_api_paths.dart`, even if a network module is present. REST files are also skipped automatically if there is no network module — neither `lib/core/network/di/network_module.dart` nor a `clean-helper.packages.network` entry (see [Monorepo Support](#monorepo-support)). If the app's `pubspec.yaml` lacks `dio`, `retrofit` or `retrofit_generator`, a warning is printed.
+
+The generated API chain — call adapter, datasource, repository, use case — returns fpdart's `TaskEither<Failure, T>`. A `TaskEither` is lazy: nothing runs until `.run()`, and it composes with `map`, `flatMap` and `orElse` first. Callers (e.g. blocs) do:
+
+```dart
+final result = await getInvoiceUseCase(params).run(); // Either<Failure, InvoiceEntity>
+```
+
+Projects initialised before 1.4.2 have a `Future<Either>` call adapter and `UseCaseBase`; set `clean-helper.result_type: future_either` in their `pubspec.yaml` to keep generating the old style (see [Result type](#result-type)).
 
 All internal imports use relative paths. `dart format` and `build_runner` run automatically at the end.
 
@@ -367,7 +375,7 @@ Every generated project is a **pub workspace** with three local packages:
 | Package | Path | Contains |
 |---------|------|---------|
 | `clean_router` | `packages/clean_router` | `CleanRouterBase`, `CleanRouterRefresh` |
-| `<app>_utils` | `packages/<app>_utils` | `Failure`, `ErrorEntity`, `AppLogger`, `Debouncer`, `safeCast`, `safeExecute`, `listToModelList`, type definitions, `RetrofitCallAdapter`, `RetrofitLogger`, DI micro-package |
+| `<app>_utils` | `packages/<app>_utils` | `Failure`, `ErrorEntity`, `AppLogger`, `Debouncer`, `safeCast`, `safeExecute`, `listToModelList`, type definitions, `RetrofitCallAdapter`, `RetrofitLogger`, DI micro-package (registers `BlocObserver`) |
 | `<app>_localization` | `packages/<app>_localization` | `slang.yaml`, locale JSON, `string_extension.dart`, generated locales |
 
 All three are listed under `workspace:` in the root `pubspec.yaml` and use `resolution: workspace`.
@@ -383,6 +391,7 @@ All shared utilities live in `packages/<app>_utils` and are imported via `packag
 | `JsonDecodeFactory<T>` | typedef for model decoder functions |
 | `safeCast<T>(data, decoder)` | Safely casts dynamic API data to `Either<Failure, T>` |
 | `safeExecute<T>(exec)` | Wraps any async call in `Either<Failure, T>` |
+| `safeExecuteTask<T>(exec)` | Lazy `TaskEither<Failure, T>` from a `Future<T> Function()` |
 | `listToModelList<T>(list, decoder)` | Converts a dynamic list using a decoder |
 | `getCurrentFunctionName()` | Returns the calling function's name |
 | `Failure` | `Exception` subtype with `leftFromError(e)` helper |
@@ -399,7 +408,7 @@ All shared utilities live in `packages/<app>_utils` and are imported via `packag
 | `@preResolve` | Awaited before app starts |
 | `@InjectableInit.microPackage` | Marks a package for micro-package DI generation |
 
-`GetIt` instance lives in `lib/app/di/di_container.dart`. `@InjectableInit` in the main app bootstraps everything via `diInitializer(diContainer)` in `bootstrap.dart`, with `externalPackageModulesAfter: [.new(<App>UtilsPackageModule)]` to wire in utils package registrations (BlocObserver, RetrofitLogger).
+`GetIt` instance lives in `lib/app/di/di_container.dart`. `@InjectableInit` in the main app bootstraps everything via `diInitializer(diContainer)` in `bootstrap.dart`, with `externalPackageModulesAfter: [.new(<App>UtilsPackageModule)]` to wire in utils package registrations (BlocObserver).
 
 ### Routing — `go_router` + `CleanRouterBase`
 
@@ -429,11 +438,23 @@ Every feature BLoC:
 - `Failure.leftFromError(e)` wraps any caught object as `Left<Failure>`
 - `safeCast<T>(data, decoder)` — safely casts dynamic API responses to `Either<Failure, T>`
 - `safeExecute<T>(exec)` — wraps any async call in `Either<Failure, T>`
+- `safeExecuteTask<T>(() => exec)` — lazy variant returning `TaskEither<Failure, T>`; takes a thunk so nothing runs until `.run()`. Used by `RetrofitCallAdapter`
+
+### Result type
+
+Generated datasources, repositories and use cases return `TaskEither<Failure, T>` by default. To keep `Future<Either<Failure, T>>` (projects whose `RetrofitCallAdapter` and `UseCaseBase` predate 1.4.2), set:
+
+```yaml
+clean-helper:
+  result_type: future_either   # default: task_either
+```
+
+In a monorepo this goes in the root `pubspec.yaml`, with the other `clean-helper` keys.
 
 ### Network — `dio` + `retrofit`
 
 - `Dio` instance provided by `NetworkModule` (`@module`)
-- `RetrofitLogger` (`@LazySingleton(as: ParseErrorLogger)`) logs Retrofit parse errors via `AppLogger`
+- `RetrofitLogger` (from the utils package) is registered as `ParseErrorLogger` by `NetworkModule` and logs Retrofit parse errors via `AppLogger`
 - `ErrorInterceptor` parses `{"errors": [...]}` API responses into `ErrorModel`
 - `ChuckerDioInterceptor` + `PrettyDioLogger` added in all builds
 
@@ -516,10 +537,14 @@ clean-helper:
     network:
       name: my_network
       import: package:my_network/my_network_module.dart   # when the barrel isn't <name>.dart
+  retrofit_call_adapter:
+    name: MyCallAdapter              # default: RetrofitCallAdapter
+    import: package:my_network/src/my_call_adapter.dart   # default: network import, else utils import
 ```
 
-- **`packages.utils`** — `add-repo` imports this package instead of `<app>_utils`. It must export `Failure` and `UseCaseBase`; generated use cases no longer import `lib/core/domain/use_cases/use_case_base.dart`. Because the utils package no longer registers a `ParseErrorLogger`, the REST datasource marks its `errorLogger` parameter `@ignoreParam` — remove it once your packages register one.
-- **`packages.network`** — counts as a network module, so `add-repo` generates the REST datasource and API paths. Its import is added to the REST datasource for `RetrofitCallAdapter`.
+- **`packages.utils`** — `add-repo` and `add-network-module` import this package instead of `<app>_utils`. It must export `Failure` and `UseCaseBase`; generated use cases no longer import `lib/core/domain/use_cases/use_case_base.dart`.
+- **`packages.network`** — counts as a network module, so `add-repo` generates the REST datasource and API paths. Its import is added to the REST datasource for the call adapter. The tool can't tell whether this package registers a `ParseErrorLogger`, so the REST datasource marks its `errorLogger` parameter `@ignoreParam` (resolving an unregistered one throws) — remove it once your network package registers one.
+- **`retrofit_call_adapter`** — the class used in `@RestApi(callAdapter: …)` and where to import it from. Defaults to `RetrofitCallAdapter` from the network import, or the utils import when no network package is set.
 
 The config is read from the `pubspec.yaml` in the directory the command is started from, before the tool switches into the selected app.
 

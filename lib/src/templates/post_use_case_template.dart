@@ -6,11 +6,10 @@ String postUseCaseTemplate(
   String name,
   String utilsImport, {
   bool importUseCaseBase = true,
+  bool taskEither = true,
 }) =>
     '''
-import 'dart:async';
-
-${sortImports(["import 'package:fpdart/fpdart.dart' show Either;", "import '$utilsImport';"])}
+${taskEither ? '' : "import 'dart:async';\n\n"}${sortImports(["import 'package:fpdart/fpdart.dart' show ${taskEither ? 'TaskEither' : 'Either'};", "import '$utilsImport';"])}
 
 ${importUseCaseBase ? "import '../../../../core/domain/use_cases/use_case_base.dart';\n" : ''}import '../entities/${name}_entity.dart';
 import '../params/post_${name}_params.dart';
@@ -23,7 +22,7 @@ class Post${className}UseCase implements UseCaseBase<${className}Entity, Post${c
   final ${className}Repository _${camelCase(name)}Repository;
 
   @override
-  FutureOr<Either<Failure, ${className}Entity>> call(Post${className}Params params) {
+  ${taskEither ? 'TaskEither<Failure, ${className}Entity>' : 'FutureOr<Either<Failure, ${className}Entity>>'} call(Post${className}Params params) {
     return _${camelCase(name)}Repository.post$className(params);
   }
 }

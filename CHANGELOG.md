@@ -1,6 +1,18 @@
+## 1.4.2
+
+- `add-repo` now generates fpdart `TaskEither<Failure, T>` across the API chain — datasource, repository and use case — instead of `Future<Either<Failure, T>>` / `FutureOr<Either<…>>`. A `TaskEither` is lazy: call `.run()` to execute it (`await useCase(params).run()`)
+- `init` generates a `RetrofitCallAdapter` that adapts to `TaskEither<Failure, T>`, a `UseCaseBase` whose `call` returns `TaskEither`, and a new lazy `safeExecuteTask` helper in the utils package (`safeExecute` is unchanged)
+- Add `clean-helper.result_type` (`task_either` default, `future_either`). Projects initialised before 1.4.2 still have a `Future<Either>` call adapter and `UseCaseBase` — set `result_type: future_either` to keep generating compatible code
+- `list-mono-repo-apps` prints the result type
+
 ## 1.4.1
 
 - Add global `--version` flag that prints the tool version
+- The generated `NetworkModule` now registers `RetrofitLogger` as `ParseErrorLogger` (moved from the utils package's DI module). `add-network-module` skips it when an older utils module already registers one
+- Add optional `clean-helper.retrofit_call_adapter` config (`name`, `import`) for the call adapter used by generated REST datasources
+- `add-repo` now marks the REST datasource's `errorLogger` `@ignoreParam` when `packages.network` is configured (previously keyed on `packages.utils`)
+- `add-network-module` uses the configured `packages.utils` import
+- Generated files import `package:retrofit/retrofit.dart` instead of `retrofit/error_logger.dart` + `retrofit/http.dart`
 
 ## 1.4.0
 

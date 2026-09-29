@@ -12,6 +12,7 @@ void generateUseCases(
   String name,
   String utilsImport, {
   bool importUseCaseBase = true,
+  bool taskEither = true,
 }) {
   final className = pascalCase(name);
   final paramsDir = 'lib/features/$feature/domain/params';
@@ -31,6 +32,7 @@ void generateUseCases(
       name,
       utilsImport,
       importUseCaseBase: importUseCaseBase,
+      taskEither: taskEither,
     ),
   );
   writeFile(
@@ -40,6 +42,7 @@ void generateUseCases(
       name,
       utilsImport,
       importUseCaseBase: importUseCaseBase,
+      taskEither: taskEither,
     ),
   );
   stdout.writeln('  📄 $paramsDir/get_${name}_params.dart');

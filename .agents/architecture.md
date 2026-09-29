@@ -48,13 +48,14 @@ packages/<app>_utils/
         ├── failure.dart
         ├── type_definitions.dart
         ├── di/
-        │   ├── <app>_utils_module.dart     (@module — provides BlocObserver, RetrofitLogger)
+        │   ├── <app>_utils_module.dart     (@module — provides BlocObserver)
         │   └── di_initializer.dart         (@InjectableInit.microPackage)
         ├── functions/
         │   ├── get_current_function_name.dart
         │   ├── list_to_model_list.dart
         │   ├── safe_cast.dart
-        │   └── safe_execute.dart
+        │   ├── safe_execute.dart
+        │   └── safe_execute_task.dart
         └── network/
             ├── retrofit_call_adapter.dart
             └── retrofit_logger.dart
@@ -64,7 +65,9 @@ The utils package uses `@InjectableInit.microPackage(preferRelativeImports: true
 `<App>UtilsPackageModule`, which is referenced in the main app's `@InjectableInit` via
 `externalPackageModulesAfter: [.new(<App>UtilsPackageModule)]`.
 
-`BlocObserver` and `RetrofitLogger` are registered by `<App>UtilsModule` (the `@module` class),
+`BlocObserver` is registered by `<App>UtilsModule` (the `@module` class). `RetrofitLogger` lives in the
+utils package but is registered as `ParseErrorLogger` by the app's `NetworkModule` (projects initialised before
+1.4.1 register it in the utils module instead; `add-network-module` detects that and skips the second registration),
 **not** annotated directly on the classes.
 
 ---
@@ -95,7 +98,7 @@ lib/core/
 │   └── core_module.dart         (PackageInfo via @preResolve)
 ├── domain/
 │   └── use_cases/
-│       └── use_case_base.dart   (abstract UseCase<Type, Params>)
+│       └── use_case_base.dart   (abstract UseCaseBase<Type, Params> — call returns TaskEither)
 ├── data/models/
 │   └── error_model.dart         (@freezed, implements ErrorEntity from utils package)
 └── network/                     (only present after add-network-module)
@@ -169,7 +172,8 @@ Every feature BLoC:
 - `ChuckerDioInterceptor` + `PrettyDioLogger` added in debug builds
 - Base URL lives in `lib/core/network/constants/api_paths.dart`
 - `RetrofitCallAdapter` (in utils package) wraps Retrofit calls into `Either<Failure, T>`
-- `RetrofitLogger` (in utils package) implements `ParseErrorLogger` for Retrofit error logging
+- `RetrofitLogger` (in utils package) implements `ParseErrorLogger`; `NetworkModule` registers it via `@LazySingleton(as: ParseErrorLogger)`
+- The call adapter class/import used by generated REST datasources is configurable via `clean-helper.retrofit_call_adapter`
 - Retrofit datasources use `@RestApi()` — run `build_runner` to generate
 
 ---
@@ -182,6 +186,8 @@ All of the following live in `packages/<app>_utils` and are imported via `packag
 - `ErrorEntity` abstract class with `errors: List<String>`
 - `safeCast<T>(data, decoder)` — safely casts dynamic API responses to `Either<Failure, T>`
 - `safeExecute<T>(exec)` — wraps any async call in `Either<Failure, T>`
+- `safeExecuteTask<T>(exec)` — lazy `TaskEither<Failure, T>` from a `Future<T> Function()`; used by `RetrofitCallAdapter`, which adapts to `TaskEither<Failure, T>`
+- Generated datasource → repository → use case chain returns `TaskEither<Failure, T>` (callers `await x(params).run()`); `clean-helper.result_type: future_either` switches `add-repo` back to `Future<Either>` for pre-1.4.2 projects
 - `JsonDecodeFactory<T>` typedef in `type_definitions.dart`
 - `listToModelList<T>(list, decoder)` — converts a list of dynamic values to `List<T>` using a decoder
 

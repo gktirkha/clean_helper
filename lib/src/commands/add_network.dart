@@ -1,10 +1,12 @@
 import 'dart:io';
 
 import '../functions/add_network_module/install_network_dependencies.dart';
+import '../functions/add_network_module/utils_registers_error_logger.dart';
 import '../functions/init/add_chucker_dependency.dart';
 import '../functions/init/generate_network_files.dart';
 import '../functions/init/run_dart_format.dart';
 import '../functions/shared/ensure_pubspec.dart';
+import '../functions/shared/package_configs.dart';
 import '../functions/shared/read_package_name.dart';
 
 void addNetwork() {
@@ -13,8 +15,13 @@ void addNetwork() {
   stdout.writeln('🌐 Setting up network layer...');
   stdout.writeln();
 
-  final utilsPackageName = '${readPackageName()}_utils';
-  generateNetworkFiles(utilsPackageName);
+  final utilsPackageName =
+      utilsPackageConfig?.name ?? '${readPackageName()}_utils';
+  generateNetworkFiles(
+    utilsPackageConfig?.import ??
+        'package:$utilsPackageName/$utilsPackageName.dart',
+    registerErrorLogger: !utilsRegistersErrorLogger(utilsPackageName),
+  );
   installNetworkDependencies();
   addChuckerDependency();
   runDartFormat();

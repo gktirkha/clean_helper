@@ -85,7 +85,7 @@ clean_helper/
 │       │   ├── entity_template.dart
 │       │   ├── error_entity_template.dart
 │       │   ├── error_interceptor_template.dart
-│       │   ├── error_model_template.dart             ← takes utilsPackageName
+│       │   ├── error_model_template.dart             ← takes utilsImport
 │       │   ├── failure_template.dart
 │       │   ├── feature_api_paths_template.dart
 │       │   ├── feature_bloc_template.dart
@@ -109,7 +109,7 @@ clean_helper/
 │       │   ├── main_app_dart_template.dart
 │       │   ├── main_dart_template.dart
 │       │   ├── model_template.dart
-│       │   ├── network_module_template.dart
+│       │   ├── network_module_template.dart          ← takes utilsImport; registers RetrofitLogger as ParseErrorLogger unless registerErrorLogger: false
 │       │   ├── no_auth_dio_method_template.dart
 │       │   ├── post_use_case_params_template.dart
 │       │   ├── post_use_case_template.dart           ← takes utilsImport (full import URI)
@@ -119,6 +119,7 @@ clean_helper/
 │       │   ├── retrofit_call_adapter_template.dart   ← relative imports within utils package
 │       │   ├── retrofit_logger_template.dart         ← no injectable annotation
 │       │   ├── safe_cast_template.dart               ← takes localizationPackageName
+│       │   ├── safe_execute_task_template.dart       ← lazy TaskEither variant (safeExecuteTask)
 │       │   ├── safe_execute_template.dart
 │       │   ├── slang_yaml_template.dart              ← base template (output_directory: lib/generated/locales)
 │       │   ├── string_extension_template.dart        ← relative import within localization package
@@ -132,7 +133,7 @@ clean_helper/
 │       │   ├── use_case_base_template.dart           ← stays in main app; takes utilsPackageName
 │       │   ├── utils_di_initializer_template.dart    ← @InjectableInit.microPackage for utils package
 │       │   ├── utils_lib_export_template.dart        ← barrel export for utils package
-│       │   ├── utils_module_template.dart            ← @module providing BlocObserver + RetrofitLogger
+│       │   ├── utils_module_template.dart            ← @module providing BlocObserver
 │       │   ├── utils_pubspec_tail_template.dart      ← pubspec tail for utils package; takes localizationPackageName
 │       │   ├── vscode_extensions_template.dart
 │       │   ├── vscode_launch_template.dart
@@ -149,10 +150,11 @@ clean_helper/
 │           │   ├── insert_after_last_import.dart      → insertAfterLastImport()
 │           │   ├── kebab_case.dart                   → kebabCase(String)
 │           │   ├── load_package_configs.dart         → loadPackageConfigs() — called by ensurePubspec() before chdir
-│           │   ├── package_configs.dart              → PackageConfig typedef + utilsPackageConfig / networkPackageConfig
+│           │   ├── package_configs.dart              → PackageConfig typedef + utilsPackageConfig / networkPackageConfig / retrofitCallAdapterConfig
 │           │   ├── pascal_case.dart                  → pascalCase(String)
 │           │   ├── prompt_project_selection.dart      → promptProjectSelection(List<String>)
 │           │   ├── read_mono_repo_apps.dart           → readMonoRepoApps()
+│           │   ├── read_clean_helper_fields.dart      → readCleanHelperFields(path) — scalar children of clean-helper.<path>
 │           │   ├── read_package_config.dart           → readPackageConfig(key) — parses clean-helper.packages.<key>
 │           │   ├── read_package_name.dart             → readPackageName()
 │           │   ├── resolve_mono_repo_project.dart     → resolveMonoRepoProject()
@@ -175,7 +177,7 @@ clean_helper/
 │           │   ├── generate_home_feature.dart
 │           │   ├── generate_localization_files.dart      → no-op (localization is in the package)
 │           │   ├── generate_localization_package.dart    → generateLocalizationPackage(localizationPackageName)
-│           │   ├── generate_network_files.dart           → generateNetworkFiles(utilsPackageName)
+│           │   ├── generate_network_files.dart           → generateNetworkFiles(utilsImport, {registerErrorLogger})
 │           │   ├── generate_tools_files.dart
 │           │   ├── generate_utils_files.dart             → generateUtilsFiles(utilsPackageName) — only use_case_base.dart
 │           │   ├── generate_utils_package.dart           → generateUtilsPackage(utilsPackageName, localizationPackageName)
@@ -209,8 +211,9 @@ clean_helper/
 │           │   ├── generate_domain_repo.dart             → takes utilsImport
 │           │   ├── generate_request_model.dart
 │           │   ├── generate_response_model.dart
-│           │   ├── generate_rest_data_source.dart        → takes utilsImport, networkImport, ignoreErrorLogger
-│           │   ├── generate_use_cases.dart               → takes utilsImport, importUseCaseBase
+│           │   ├── generate_rest_data_source.dart        → takes utilsImport, callAdapter, adapterImport, ignoreErrorLogger
+│           │   ├── generate_use_cases.dart               → takes utilsImport, importUseCaseBase, taskEither
+│           │   ├── uses_task_either.dart                 → usesTaskEither() — from clean-helper.result_type, default true
 │           │   └── warn_missing_rest_dependencies.dart   → warns if dio/retrofit/retrofit_generator missing
 │           │
 │           ├── entity/
@@ -224,7 +227,8 @@ clean_helper/
 │           │
 │           ├── add_network_module/
 │           │   ├── install_network_dependencies.dart
-│           │   └── patch_app_go_router.dart
+│           │   ├── patch_app_go_router.dart
+│           │   └── utils_registers_error_logger.dart     → utilsRegistersErrorLogger(utilsPackageName)
 │           │
 │           ├── remove_feature/
 │           │   ├── delete_feature_files.dart

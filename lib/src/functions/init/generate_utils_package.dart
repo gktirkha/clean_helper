@@ -11,6 +11,7 @@ import '../../templates/list_to_model_list_template.dart';
 import '../../templates/retrofit_call_adapter_template.dart';
 import '../../templates/retrofit_logger_template.dart';
 import '../../templates/safe_cast_template.dart';
+import '../../templates/safe_execute_task_template.dart';
 import '../../templates/safe_execute_template.dart';
 import '../../templates/type_definitions_template.dart';
 import '../../templates/utils_di_initializer_template.dart';
@@ -105,6 +106,10 @@ void generateUtilsPackage(
   overwriteFile(
     'packages/$utilsPackageName/lib/src/functions/safe_execute.dart',
     safeExecuteTemplate(),
+  );
+  overwriteFile(
+    'packages/$utilsPackageName/lib/src/functions/safe_execute_task.dart',
+    safeExecuteTaskTemplate(),
   );
   overwriteFile(
     'packages/$utilsPackageName/lib/src/network/retrofit_call_adapter.dart',

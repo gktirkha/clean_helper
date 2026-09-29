@@ -11,6 +11,7 @@ import '../functions/repo/generate_request_model.dart';
 import '../functions/repo/generate_response_model.dart';
 import '../functions/repo/generate_rest_data_source.dart';
 import '../functions/repo/generate_use_cases.dart';
+import '../functions/repo/uses_task_either.dart';
 import '../functions/repo/warn_missing_rest_dependencies.dart';
 import '../functions/shared/ensure_pubspec.dart';
 import '../functions/shared/package_configs.dart';
@@ -37,9 +38,11 @@ void addRepo(
   final packageName = readPackageName();
   final utilsPackage = utilsPackageConfig;
   final networkPackage = networkPackageConfig;
+  final callAdapter = retrofitCallAdapterConfig;
   final utilsImport =
       utilsPackage?.import ??
       'package:${packageName}_utils/${packageName}_utils.dart';
+  final taskEither = usesTaskEither();
 
   final dataDir = 'lib/features/$feature/data';
   final domainDir = 'lib/features/$feature/domain/repositories';
@@ -54,8 +57,20 @@ void addRepo(
   stdout.writeln('🚀 Generating data layer: feature=$feature, repo=$repoName');
 
   generateEntityFile(entitiesDir, repoName);
-  generateDomainRepo(domainDir, repoName, utilsImport, addSample: addSample);
-  generateDataSourceBase(dataDir, repoName, utilsImport, addSample: addSample);
+  generateDomainRepo(
+    domainDir,
+    repoName,
+    utilsImport,
+    addSample: addSample,
+    taskEither: taskEither,
+  );
+  generateDataSourceBase(
+    dataDir,
+    repoName,
+    utilsImport,
+    addSample: addSample,
+    taskEither: taskEither,
+  );
 
   if (addSample) {
     generateUseCases(
@@ -63,6 +78,7 @@ void addRepo(
       repoName,
       utilsImport,
       importUseCaseBase: utilsPackage == null,
+      taskEither: taskEither,
     );
     generateRequestModel(dataDir, repoName);
     generateResponseModel(dataDir, repoName);
@@ -72,7 +88,13 @@ void addRepo(
     );
   }
 
-  generateDataRepo(dataDir, repoName, utilsImport, addSample: addSample);
+  generateDataRepo(
+    dataDir,
+    repoName,
+    utilsImport,
+    addSample: addSample,
+    taskEither: taskEither,
+  );
 
   if (generateRest) {
     generateApiPaths(dataDir, feature, repoName);
@@ -81,9 +103,11 @@ void addRepo(
       feature,
       repoName,
       utilsImport,
-      networkImport: networkPackage?.import,
-      ignoreErrorLogger: utilsPackage != null,
+      callAdapter: callAdapter?.name ?? 'RetrofitCallAdapter',
+      adapterImport: callAdapter?.import ?? networkPackage?.import,
+      ignoreErrorLogger: networkPackage != null,
       addSample: addSample,
+      taskEither: taskEither,
     );
     warnMissingRestDependencies();
   } else if (noRest) {

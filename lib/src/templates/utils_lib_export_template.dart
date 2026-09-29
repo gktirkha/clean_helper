@@ -8,6 +8,7 @@ export 'src/functions/get_current_function_name.dart';
 export 'src/functions/list_to_model_list.dart';
 export 'src/functions/safe_cast.dart';
 export 'src/functions/safe_execute.dart';
+export 'src/functions/safe_execute_task.dart';
 export 'src/network/retrofit_call_adapter.dart';
 export 'src/network/retrofit_logger.dart';
 export 'src/type_definitions.dart';

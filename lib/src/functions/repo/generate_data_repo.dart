@@ -10,6 +10,7 @@ void generateDataRepo(
   String repoName,
   String utilsImport, {
   bool addSample = false,
+  bool taskEither = true,
 }) {
   final className = pascalCase(repoName);
   final repositoryClass = '${className}Repository';
@@ -29,6 +30,7 @@ void generateDataRepo(
       repoName,
       utilsImport,
       addSample: addSample,
+      taskEither: taskEither,
     ),
   );
   stdout.writeln('  📄 $path');

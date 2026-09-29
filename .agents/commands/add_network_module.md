@@ -33,9 +33,13 @@ No arguments. Must be run from the Flutter project root. Idempotent — `writeFi
 | `lib/core/network/constants/api_paths.dart` | `core_api_paths_template.dart` |
 | `lib/core/data/models/error_model.dart` | `error_model_template.dart` |
 | `lib/core/network/interceptors/error_interceptor.dart` | `error_interceptor_template.dart` |
-| `lib/core/network/di/network_module.dart` | `network_module_template.dart` |
+| `lib/core/network/di/network_module.dart` | `network_module_template.dart` — also registers `RetrofitLogger` as `ParseErrorLogger` |
 
 All written with `writeFile` — skipped if they already exist.
+
+The utils import is `clean-helper.packages.utils` when configured, else `package:<app>_utils/<app>_utils.dart`.
+If the local utils module already registers `ParseErrorLogger` (projects initialised before 1.4.1),
+`utilsRegistersErrorLogger()` detects it and the network module skips its own registration — a second one makes GetIt throw.
 
 ---
 

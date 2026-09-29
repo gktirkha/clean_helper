@@ -108,10 +108,12 @@ clean-helper:
 
 Parsed by `readMonoRepoApps()` in `lib/src/functions/shared/read_mono_repo_apps.dart`.
 
-Optional `clean-helper.packages.utils` / `clean-helper.packages.network` (each with `name` and/or `import`)
+Optional `clean-helper.packages.utils` / `clean-helper.packages.network` (each with `name` and/or `import`),
+plus `clean-helper.retrofit_call_adapter` (`name` = adapter class, `import`) and `clean-helper.result_type`
+(`task_either` default, or `future_either`),
 point generated code at separately named workspace packages. `ensurePubspec()` calls `loadPackageConfigs()`
 **before** `resolveMonoRepoProject()` changes directory, storing them in `utilsPackageConfig` /
-`networkPackageConfig` (`lib/src/functions/shared/package_configs.dart`). Missing keys keep the legacy behaviour.
+`networkPackageConfig` / `retrofitCallAdapterConfig` / `resultTypeConfig` (`lib/src/functions/shared/package_configs.dart`). Missing keys keep the legacy behaviour.
 
 ---
 
