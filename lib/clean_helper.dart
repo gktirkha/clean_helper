@@ -12,3 +12,4 @@ export 'src/commands/generate_localizations.dart';
 export 'src/commands/generate_tools.dart';
 export 'src/commands/init.dart';
 export 'src/commands/list_mono_repo_apps.dart';
+export 'src/commands/print_version.dart';

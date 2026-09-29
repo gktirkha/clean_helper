@@ -27,6 +27,8 @@ routing, DI, BLoC state management, and all required dependencies in one command
 | `clean-helper add-vscode-config` | Generate `.vscode/` extensions, launch, and tasks config |
 | `clean-helper list-mono-repo-apps` | List all apps declared under `clean-helper.mono_repo_apps` in pubspec.yaml |
 
+Global flags: `--scope=<app>` (monorepo app selection) and `--version` (prints `toolVersion` via `printVersion()` and exits).
+
 `<scope>` for `add-entity` is either `core` or a feature name (e.g. `home`, `auth`).
 `add-repo` only supports feature scope — not `core`.
 
@@ -132,4 +134,5 @@ export 'src/commands/generate_tools.dart';
 export 'src/commands/init.dart';
 export 'src/commands/regenerate_router.dart';
 export 'src/commands/remove_feature.dart';
+export 'src/commands/print_version.dart';
 ```

@@ -12,6 +12,8 @@ Run it from inside a Flutter project root to generate the full directory structu
 dart pub global activate --source git https://github.com/gktirkha/clean_helper
 ```
 
+Check the installed version with `clean-helper --version`.
+
 ### Enable Shell Auto-completion
 
 ```bash

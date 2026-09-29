@@ -1,3 +1,7 @@
+## 1.4.1
+
+- Add global `--version` flag that prints the tool version
+
 ## 1.4.0
 
 - Add optional `clean-helper.packages` config (`utils`, `network`) for monorepos whose shared code lives in separately named workspace packages; read from the starting directory before switching into the app

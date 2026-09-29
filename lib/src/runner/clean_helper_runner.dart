@@ -1,6 +1,7 @@
 import 'package:args/args.dart';
 import 'package:cli_completion/cli_completion.dart';
 
+import '../commands/print_version.dart';
 import '../functions/shared/scope_option.dart';
 import 'commands/add_auth_interceptor_command.dart';
 import 'commands/bootstrap_command.dart';
@@ -30,6 +31,11 @@ class CleanHelperRunner extends CompletionCommandRunner<void> {
           'Skips the interactive project-selection prompt.',
       valueHelp: 'app-name',
     );
+    argParser.addFlag(
+      'version',
+      negatable: false,
+      help: 'Print the clean-helper version.',
+    );
 
     addCommand(InitCommand());
     addCommand(BootstrapCommand());
@@ -49,6 +55,10 @@ class CleanHelperRunner extends CompletionCommandRunner<void> {
 
   @override
   Future<void> runCommand(ArgResults topLevelResults) async {
+    if (topLevelResults['version'] as bool) {
+      printVersion();
+      return;
+    }
     resolveScope = topLevelResults['scope'] as String?;
     await super.runCommand(topLevelResults);
   }

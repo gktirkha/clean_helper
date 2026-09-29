@@ -48,6 +48,7 @@ clean_helper/
 │       │   ├── bootstrap.dart               → runBootstrapCommand() [async]
 │       │   ├── build_runner.dart            → runBuildRunnerCommand(List<String>)
 │       │   ├── list_mono_repo_apps.dart     → listMonoRepoApps() — does NOT call ensurePubspec()
+│       │   ├── print_version.dart           → printVersion() — run by the global --version flag
 │       │   ├── remove_feature.dart          → removeFeature(List<String>)
 │       │   ├── regenerate_router.dart       → regenerateRouter()
 │       │   ├── generate_localizations.dart  → runGenerateLocalizationsCommand(List<String>)
