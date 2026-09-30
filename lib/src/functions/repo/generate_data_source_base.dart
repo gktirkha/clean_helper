@@ -7,8 +7,9 @@ import '../../templates/data_source_base_template.dart';
 void generateDataSourceBase(
   String dataDir,
   String repoName,
-  String utilsPackageName, {
+  String utilsImport, {
   bool addSample = false,
+  bool taskEither = true,
 }) {
   final className = pascalCase(repoName);
   final path = '$dataDir/datasources/${repoName}_data_source_base.dart';
@@ -18,8 +19,9 @@ void generateDataSourceBase(
     dataSourceBaseTemplate(
       className,
       repoName,
-      utilsPackageName,
+      utilsImport,
       addSample: addSample,
+      taskEither: taskEither,
     ),
   );
   stdout.writeln('  📄 $path');

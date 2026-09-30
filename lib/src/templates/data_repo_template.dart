@@ -1,4 +1,5 @@
 import '../functions/shared/camel_case.dart';
+import '../functions/shared/sort_imports.dart';
 
 String dataRepoTemplate(
   String className,
@@ -7,13 +8,19 @@ String dataRepoTemplate(
   String dataSourceClass,
   String dataSourceField,
   String repoName,
-  String utilsPackageName, {
+  String utilsImport, {
   bool addSample = false,
-}) => addSample
-    ? '''
-import 'package:fpdart/fpdart.dart';
-import 'package:injectable/injectable.dart';
-import 'package:$utilsPackageName/$utilsPackageName.dart';
+  bool taskEither = true,
+}) {
+  // TaskEither is returned as-is (covariant in its value), so no `async`.
+  final result = taskEither
+      ? 'TaskEither<Failure, ${className}Entity>'
+      : 'Future<Either<Failure, ${className}Entity>>';
+  final modifier = taskEither ? '' : ' async';
+
+  return addSample
+      ? '''
+${sortImports(["import 'package:fpdart/fpdart.dart';", "import 'package:injectable/injectable.dart';", "import '$utilsImport';"])}
 
 import '../../domain/entities/${repoName}_entity.dart';
 import '../../domain/params/get_${repoName}_params.dart';
@@ -28,17 +35,17 @@ class $implClass implements $repositoryClass {
   final $dataSourceClass $dataSourceField;
 
   @override
-  Future<Either<Failure, ${className}Entity>> get$className(Get${className}Params params) async {
+  $result get$className(Get${className}Params params)$modifier {
     return $dataSourceField.get$className(params.get${className}Query);
   }
 
   @override
-  Future<Either<Failure, ${className}Entity>> post$className(Post${className}Params params) async {
+  $result post$className(Post${className}Params params)$modifier {
     return $dataSourceField.post$className(.new(p1: params.post${className}Param1));
   }
 }
 '''
-    : '''
+      : '''
 import 'package:injectable/injectable.dart';
 
 import '../../domain/repositories/${repoName}_repository.dart';
@@ -52,3 +59,4 @@ class $implClass implements $repositoryClass {
   final $dataSourceClass $dataSourceField;
 }
 ''';
+}

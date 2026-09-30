@@ -8,8 +8,9 @@ import '../../templates/data_repo_template.dart';
 void generateDataRepo(
   String dataDir,
   String repoName,
-  String utilsPackageName, {
+  String utilsImport, {
   bool addSample = false,
+  bool taskEither = true,
 }) {
   final className = pascalCase(repoName);
   final repositoryClass = '${className}Repository';
@@ -27,8 +28,9 @@ void generateDataRepo(
       dataSourceClass,
       dataSourceField,
       repoName,
-      utilsPackageName,
+      utilsImport,
       addSample: addSample,
+      taskEither: taskEither,
     ),
   );
   stdout.writeln('  📄 $path');

@@ -1,15 +1,14 @@
-String retrofitCallAdapterTemplate() => '''
-import 'package:fpdart/fpdart.dart';
-import 'package:retrofit/retrofit.dart';
+import '../functions/shared/sort_imports.dart';
 
-import '../failure.dart';
-import '../functions/safe_execute.dart';
+String retrofitCallAdapterTemplate(String utilsImport) =>
+    '''
+${sortImports(["import 'package:fpdart/fpdart.dart';", "import 'package:retrofit/retrofit.dart';", "import '$utilsImport';"])}
 
 class RetrofitCallAdapter<T>
-    extends CallAdapter<Future<T>, Future<Either<Failure, T>>> {
+    extends CallAdapter<Future<T>, TaskEither<Failure, T>> {
   @override
-  Future<Either<Failure, T>> adapt(Future<T> Function() call) async {
-    return await safeExecute(call());
+  TaskEither<Failure, T> adapt(Future<T> Function() call) {
+    return safeExecuteTask(call);
   }
 }
 ''';

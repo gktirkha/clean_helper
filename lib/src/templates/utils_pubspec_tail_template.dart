@@ -3,7 +3,6 @@ String utilsPubspecTailTemplate(String localizationPackageName) =>
 resolution: workspace
 
 dependencies:
-  dio:
   flutter:
     sdk: flutter
   flutter_bloc:
@@ -11,7 +10,6 @@ dependencies:
   injectable:
   logger:
   $localizationPackageName:
-  retrofit:
 
 dev_dependencies:
   build_runner:

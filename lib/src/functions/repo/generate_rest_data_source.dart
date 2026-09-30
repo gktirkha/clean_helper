@@ -8,8 +8,12 @@ void generateRestDataSource(
   String dataDir,
   String feature,
   String repoName,
-  String utilsPackageName, {
+  String utilsImport, {
+  String callAdapter = 'RetrofitCallAdapter',
+  String? adapterImport,
+  bool ignoreErrorLogger = false,
   bool addSample = false,
+  bool taskEither = true,
 }) {
   final featureClass = pascalCase(feature);
   final repoClass = pascalCase(repoName);
@@ -26,8 +30,12 @@ void generateRestDataSource(
       implClass,
       feature,
       repoName,
-      utilsPackageName,
+      utilsImport,
+      callAdapter: callAdapter,
+      adapterImport: adapterImport,
+      ignoreErrorLogger: ignoreErrorLogger,
       addSample: addSample,
+      taskEither: taskEither,
     ),
   );
   stdout.writeln('  📄 $path');

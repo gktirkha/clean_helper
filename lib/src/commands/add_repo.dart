@@ -11,7 +11,10 @@ import '../functions/repo/generate_request_model.dart';
 import '../functions/repo/generate_response_model.dart';
 import '../functions/repo/generate_rest_data_source.dart';
 import '../functions/repo/generate_use_cases.dart';
+import '../functions/repo/uses_task_either.dart';
+import '../functions/repo/warn_missing_rest_dependencies.dart';
 import '../functions/shared/ensure_pubspec.dart';
+import '../functions/shared/package_configs.dart';
 import '../functions/shared/read_package_name.dart';
 
 void addRepo(
@@ -33,15 +36,21 @@ void addRepo(
   final feature = args[0].toLowerCase();
   final repoName = args[1].toLowerCase();
   final packageName = readPackageName();
-  final utilsPackageName = '${packageName}_utils';
+  final utilsPackage = utilsPackageConfig;
+  final networkPackage = networkPackageConfig;
+  final callAdapter = retrofitCallAdapterConfig;
+  final utilsImport =
+      utilsPackage?.import ??
+      'package:${packageName}_utils/${packageName}_utils.dart';
+  final taskEither = usesTaskEither();
 
   final dataDir = 'lib/features/$feature/data';
   final domainDir = 'lib/features/$feature/domain/repositories';
   final entitiesDir = 'lib/features/$feature/domain/entities';
 
-  final hasNetworkModule = File(
-    'lib/core/network/di/network_module.dart',
-  ).existsSync();
+  final hasNetworkModule =
+      networkPackage != null ||
+      File('lib/core/network/di/network_module.dart').existsSync();
 
   final generateRest = !noRest && hasNetworkModule;
 
@@ -51,18 +60,26 @@ void addRepo(
   generateDomainRepo(
     domainDir,
     repoName,
-    utilsPackageName,
+    utilsImport,
     addSample: addSample,
+    taskEither: taskEither,
   );
   generateDataSourceBase(
     dataDir,
     repoName,
-    utilsPackageName,
+    utilsImport,
     addSample: addSample,
+    taskEither: taskEither,
   );
 
   if (addSample) {
-    generateUseCases(feature, repoName, utilsPackageName);
+    generateUseCases(
+      feature,
+      repoName,
+      utilsImport,
+      importUseCaseBase: utilsPackage == null,
+      taskEither: taskEither,
+    );
     generateRequestModel(dataDir, repoName);
     generateResponseModel(dataDir, repoName);
   } else {
@@ -71,7 +88,13 @@ void addRepo(
     );
   }
 
-  generateDataRepo(dataDir, repoName, utilsPackageName, addSample: addSample);
+  generateDataRepo(
+    dataDir,
+    repoName,
+    utilsImport,
+    addSample: addSample,
+    taskEither: taskEither,
+  );
 
   if (generateRest) {
     generateApiPaths(dataDir, feature, repoName);
@@ -79,14 +102,26 @@ void addRepo(
       dataDir,
       feature,
       repoName,
-      utilsPackageName,
+      utilsImport,
+      callAdapter: callAdapter?.name ?? 'RetrofitCallAdapter',
+      adapterImport:
+          callAdapter?.import ??
+          networkPackage?.import ??
+          (File('lib/core/network/utils/retrofit_call_adapter.dart')
+                  .existsSync()
+              ? '../../../../core/network/utils/retrofit_call_adapter.dart'
+              : null),
+      ignoreErrorLogger: networkPackage != null,
       addSample: addSample,
+      taskEither: taskEither,
     );
+    warnMissingRestDependencies();
   } else if (noRest) {
     stdout.writeln('  ⏭  Skipping REST datasource and API paths (--no-rest).');
   } else {
     stdout.writeln(
-      '  ⚠️  Network module not found — skipping REST datasource and API paths.',
+      '  ⚠️  Network module not found (no lib/core/network/di/network_module.dart '
+      'or clean-helper.packages.network) — skipping REST datasource and API paths.',
     );
   }
 

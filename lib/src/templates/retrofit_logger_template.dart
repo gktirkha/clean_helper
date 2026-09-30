@@ -1,8 +1,8 @@
-String retrofitLoggerTemplate() => '''
-import 'package:dio/dio.dart';
-import 'package:retrofit/error_logger.dart';
+import '../functions/shared/sort_imports.dart';
 
-import '../app_logger.dart';
+String retrofitLoggerTemplate(String utilsImport) =>
+    '''
+${sortImports(["import 'package:dio/dio.dart';", "import 'package:retrofit/retrofit.dart';", "import '$utilsImport';"])}
 
 class RetrofitLogger implements ParseErrorLogger {
   @override

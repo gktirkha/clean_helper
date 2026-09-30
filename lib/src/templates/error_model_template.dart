@@ -1,7 +1,7 @@
-String errorModelTemplate(String utilsPackageName) =>
+String errorModelTemplate(String utilsImport) =>
     '''
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:$utilsPackageName/$utilsPackageName.dart';
+import '$utilsImport';
 
 part 'error_model.freezed.dart';
 part 'error_model.g.dart';

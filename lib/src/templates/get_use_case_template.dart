@@ -1,28 +1,29 @@
+import '../functions/shared/camel_case.dart';
+import '../functions/shared/sort_imports.dart';
+
 String getUseCaseTemplate(
   String className,
   String name,
-  String utilsPackageName,
-) =>
+  String utilsImport, {
+  bool importUseCaseBase = true,
+  bool taskEither = true,
+}) =>
     '''
-import 'dart:async';
+${taskEither ? '' : "import 'dart:async';\n\n"}${sortImports(["import 'package:fpdart/fpdart.dart' show ${taskEither ? 'TaskEither' : 'Either'};", "import '$utilsImport';"])}
 
-import 'package:fpdart/fpdart.dart' show Either;
-import 'package:$utilsPackageName/$utilsPackageName.dart';
-
-import '../../../../core/domain/use_cases/use_case_base.dart';
-import '../entities/${name}_entity.dart';
+${importUseCaseBase ? "import '../../../../core/domain/use_cases/use_case_base.dart';\n" : ''}import '../entities/${name}_entity.dart';
 import '../params/get_${name}_params.dart';
 import '../repositories/${name}_repository.dart';
 
 class Get${className}UseCase implements UseCaseBase<${className}Entity, Get${className}Params> {
-  Get${className}UseCase({required ${className}Repository ${name}Repository})
-      : _${name}Repository = ${name}Repository;
+  Get${className}UseCase({required ${className}Repository ${camelCase(name)}Repository})
+      : _${camelCase(name)}Repository = ${camelCase(name)}Repository;
 
-  final ${className}Repository _${name}Repository;
+  final ${className}Repository _${camelCase(name)}Repository;
 
   @override
-  FutureOr<Either<Failure, ${className}Entity>> call(Get${className}Params params) {
-    return _${name}Repository.get$className(params);
+  ${taskEither ? 'TaskEither<Failure, ${className}Entity>' : 'FutureOr<Either<Failure, ${className}Entity>>'} call(Get${className}Params params) {
+    return _${camelCase(name)}Repository.get$className(params);
   }
 }
 ''';

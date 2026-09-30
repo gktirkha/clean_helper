@@ -7,15 +7,22 @@ import '../../templates/domain_repo_template.dart';
 void generateDomainRepo(
   String dir,
   String name,
-  String utilsPackageName, {
+  String utilsImport, {
   bool addSample = false,
+  bool taskEither = true,
 }) {
   final className = pascalCase(name);
   final path = '$dir/${name}_repository.dart';
 
   writeFile(
     path,
-    domainRepoTemplate(className, name, utilsPackageName, addSample: addSample),
+    domainRepoTemplate(
+      className,
+      name,
+      utilsImport,
+      addSample: addSample,
+      taskEither: taskEither,
+    ),
   );
   stdout.writeln('  📄 $path');
 }

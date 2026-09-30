@@ -1,3 +1,5 @@
+import '../functions/shared/camel_case.dart';
+
 String featureNavigationImplTemplate(String feature, String className) =>
     '''
 import 'package:flutter/material.dart';
@@ -11,7 +13,7 @@ import '../../features/$feature/router/${feature}_routes.dart';
 class ${className}NavigationImpl implements ${className}Navigation {
   @override
   void goTo$className(BuildContext context) {
-    context.go(${className}Routes.$feature);
+    context.go(${className}Routes.${camelCase(feature)});
   }
 }
 ''';

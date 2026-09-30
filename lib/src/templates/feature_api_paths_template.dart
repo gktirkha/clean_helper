@@ -1,3 +1,4 @@
+import '../functions/shared/camel_case.dart';
 import '../functions/shared/kebab_case.dart';
 
 String featureApiPathsTemplate(
@@ -7,6 +8,6 @@ String featureApiPathsTemplate(
 ) =>
     '''
 sealed class ${className}ApiPaths {
-  static const String $repoName = '/api/${kebabCase(feature)}/';
+  static const String ${camelCase(repoName)} = '/api/${kebabCase(feature)}/';
 }
 ''';

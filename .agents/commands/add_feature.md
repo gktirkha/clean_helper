@@ -1,85 +1,42 @@
 # Command: add-feature
 
-**Entry point:** `lib/src/commands/add_feature.dart` → `addFeature(List<String> args)`
-**Binary:** `dart bin/add_feature.dart <feature_name>`
-
----
+**Entry point:** `lib/src/commands/add_feature.dart` → `addFeature(args, {withDi, runBuildRunnerAfter})`
+**Runner:** `AddFeatureCommand` — flag `--di` / `-d`
 
 ## Usage
 
 ```bash
-clean-helper add-feature auth
 clean-helper add-feature user_profile
-clean-helper add-feature auth --di    # also generate DI module
+clean-helper add-feature user_profile --di
 ```
 
-Feature name must be **snake_case**. It is used as-is for file/directory names and converted to
-`PascalCase` / `camelCase` for class names.
+The name is lower-cased and should be snake_case.
 
----
+## Flow
 
-## What It Generates
+1. `ensurePubspec()`
+2. `createFeatureStructure('lib/features/<f>', f, withDi:)`, which calls `generateFeatureRoutes`, `…Navigation`, `…NavigationImpl`, `…Page`, `…PageProvider`, `…Router` and `…Bloc`, plus `…Module` with `--di`
+3. `patchRouterModule(f)`
+4. `runDartFormat()`, `runBuildRunner()`
 
-Given `clean-helper add-feature auth`:
+## Output
 
 ```
-lib/
-├── app/navigations/
-│   └── auth_navigation_impl.dart      (@LazySingleton, implements AuthNavigation)
-└── features/auth/
-    ├── data/
-    │   ├── constants/
-    │   ├── datasources/
-    │   ├── models/
-    │   │   ├── requests/
-    │   │   └── response/
-    │   └── repositories/
-    ├── di/                            (only with --di flag)
-    │   └── auth_module.dart           (@module abstract class AuthModule)
-    ├── domain/
-    │   ├── entities/
-    │   ├── repositories/
-    │   └── use_cases/
-    ├── presentation/
-    │   ├── bloc/auth/
-    │   │   ├── auth_bloc.dart         (@lazySingleton, extends Bloc)
-    │   │   ├── auth_event.dart        (part of, @freezed)
-    │   │   └── auth_state.dart        (part of, @freezed)
-    │   ├── pages/
-    │   │   └── auth_page.dart         (pure UI widget, receives AuthNavigation as constructor param)
-    │   ├── page_providers/
-    │   │   └── auth_page_provider.dart  (BlocProvider wrapper — used by router)
-    │   └── widgets/
-    └── router/
-        ├── auth_routes.dart           (sealed class AuthRoutes)
-        ├── auth_navigation.dart       (abstract class AuthNavigation)
-        └── auth_router.dart           (@lazySingleton, implements CleanRouterBase)
+lib/app/navigation/<f>_navigation_impl.dart                 @LazySingleton(as: <F>Navigation); context.go(<F>Routes.<camel>)
+lib/features/<f>/router/<f>_routes.dart                      sealed class <F>Routes { static const String <camel> = '/<kebab>'; }
+lib/features/<f>/router/<f>_navigation.dart                  abstract class <F>Navigation { void goTo<F>(BuildContext) }
+lib/features/<f>/router/<f>_router.dart                      @lazySingleton, implements CleanRouterBase, priority 10
+lib/features/<f>/presentation/pages/<f>_page.dart            pure UI, takes `navigation`
+lib/features/<f>/presentation/page_providers/<f>_page_provider.dart   BlocProvider(create: (_) => diContainer()), <F>Page(navigation: diContainer())
+lib/features/<f>/presentation/bloc/<f>/<f>_bloc.dart         @injectable; part '<f>_event.dart', '<f>_state.dart', '<f>_bloc.freezed.dart'
+lib/features/<f>/di/<f>_module.dart                          --di only
 ```
 
----
+- **Identifiers:** `camelCase(f)` for the route constant (`SignUpRoutes.signUp`), `kebabCase(f)` for the path (`/sign-up`), `pascalCase(f)` for classes.
+- **Bloc:** `@injectable`, not a singleton, because `BlocProvider` closes the bloc on dispose.
+- **Router template imports:** `clean_router`, `flutter`, `go_router`, `injectable` — alphabetical, in one block.
+- **No empty folders:** `add-feature` doesn't create empty `data/` or `domain/` folders; `add-repo` and `add-entity` create them as needed.
 
-## PageProvider vs Page Pattern
+## Router registration
 
-Every feature has two presentation entry points:
-
-| File | Role |
-|------|------|
-| `page_providers/<feature>_page_provider.dart` | Thin wrapper — provides `BlocProvider` and injects `navigation` via `diContainer()`. Used by the router. |
-| `pages/<feature>_page.dart` | Pure UI widget — receives `navigation` as a constructor parameter. No DI knowledge. |
-
-The router builds `const AuthPageProvider()`. The page provider wires up the bloc and navigation, then builds `AuthPage(navigation: diContainer())`.
-
----
-
-## Router Registration
-
-The new feature's router is **automatically registered** in `lib/app/router/app_router_module.dart`
-by `patchRouterModule(featureName)`. No manual step is required.
-
-`app_router_module.dart` is fully regenerated (not patched line-by-line) using `buildRouterModule(List<String> features)` from `lib/src/functions/feature/build_router_module.dart`.
-
----
-
-## Post-generation
-
-`dart format` and `build_runner` run automatically — no manual step needed.
+`patchRouterModule(f)` reads the feature imports already in `lib/app/router/app_router_module.dart`, adds `f`, and rewrites the file with `buildRouterModule(features)`, which sorts alphabetically. It skips a feature that's already registered, and warns if the file is missing. The file is tool-owned, and `overwriteFile` is used.

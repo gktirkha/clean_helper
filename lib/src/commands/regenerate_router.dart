@@ -23,9 +23,9 @@ void regenerateRouter() {
           .whereType<Directory>()
           .map((d) => d.path.split('/').last)
           .where(
-            (name) => File(
-              '$featuresDir/$name/router/${name}_router.dart',
-            ).existsSync(),
+            (name) =>
+                File('$featuresDir/$name/router/${name}_router.dart')
+                    .existsSync(),
           )
           .toList()
         ..sort();

@@ -1,12 +1,13 @@
+import '../functions/shared/camel_case.dart';
+
 String featureRouterTemplate(String feature, String className) =>
     '''
 import 'dart:async';
 
+import 'package:clean_router/clean_router.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:injectable/injectable.dart';
-
-import 'package:clean_router/clean_router.dart';
 
 import '../presentation/page_providers/${feature}_page_provider.dart';
 import '${feature}_routes.dart';
@@ -16,7 +17,7 @@ class ${className}Router implements CleanRouterBase {
   @override
   List<RouteBase> get routes => [
     GoRoute(
-      path: ${className}Routes.$feature,
+      path: ${className}Routes.${camelCase(feature)},
       builder: (context, state) => const ${className}PageProvider(),
     ),
   ];
