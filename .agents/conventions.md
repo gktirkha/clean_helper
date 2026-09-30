@@ -1,138 +1,124 @@
 # Code Conventions
 
-## One Function Definition Per File
-
-Every `.dart` file under `lib/src/` contains exactly **one** public function definition.
-A file may import and call other functions freely, but must never define additional ones.
-
-```
-✅ correct — imports and calls other functions
-void generateCoreFiles(String packageName) {
-  writeFile(...);              // imported from shared/write_file.dart
-  overwriteFile(...);          // imported from shared/write_file.dart
-  analysisOptionsTemplate();   // imported from templates/
-}
-
-❌ wrong — two definitions in one file
-void generateCoreFiles(...) { ... }
-void generateNetworkFiles(...) { ... }  // must be a separate file
-```
+The reasoning behind the rules in `agent_rules.md`.
 
 ---
 
-## Command Files
+## Layers
 
-Files in `lib/src/commands/` contain **exactly one function** — the command entry point.
-All logic lives in `lib/src/functions/`.
+```
+bin/                    thin entry points → command functions
+lib/src/runner/         args + cli_completion wiring (CleanHelperRunner, one Command class per command)
+lib/src/commands/       one entry-point function per command
+lib/src/functions/      helpers, grouped by command (init/, feature/, repo/, …) plus shared/
+lib/src/templates/      generated file contents, one template function per file
+```
+
+A command function reads as a script: `ensurePubspec()`, validate the arguments, call helpers, format, and run build_runner. Helpers do one thing each. Templates are pure: arguments in, `String` out, with no file I/O.
+
+---
+
+## One function per file
+
+This keeps files small and searchable, and makes the file name the function name:
+
+```dart
+// ✅ lib/src/functions/repo/generate_domain_repo.dart
+void generateDomainRepo(String dir, String name, String utilsImport, {...}) {
+  writeFile('$dir/${name}_repository.dart', domainRepoTemplate(...));
+}
+
+// ❌ a second function in the same file
+```
 
 ---
 
 ## Templates
 
-All generated file content lives in `lib/src/templates/` — one function per file, returning `String`.
-Generator functions must **never** contain inline template strings.
+- They return the whole file as a `String`. Use an arrow body for simple templates, and a block body when they compute pieces first (see `rest_data_source_template.dart`).
+- Escape `$` for Dart code that must appear literally in the output: `'\${packageInfo.appName}'`.
+- A multi-line `'''` string drops the newline right after the opening quotes. To start a fragment with a blank line, use `'\n\n...'`.
+- Optional output is controlled by named `bool` parameters that default to today's behaviour (`addSample`, `taskEither`, `importUseCaseBase`, `ignoreErrorLogger`, `registerErrorLogger`).
+- Imports that depend on runtime values go through `sortImports([...])`, one call per section:
 
+```dart
+${sortImports([
+  "import 'package:fpdart/fpdart.dart';",
+  "import '$utilsImport';",          // configured, so its position varies
+])}
+
+${sortImports([
+  ...adapterRelative,                // relative, so it goes in the relative section
+  "import '${repoName}_data_source_base.dart';",
+])}
 ```
-✅ correct
-void generateFeaturePage(String feature, String basePath) {
-  final className = pascalCase(feature);
-  writeFile('$basePath/...', featurePageTemplate(feature, className));
-}
 
-❌ wrong — inline string in generator
-void generateFeaturePage(...) {
-  writeFile('$basePath/...', '''
-  import 'package:flutter/material.dart';
-  ...
-  ''');
-}
-```
-
-Template functions are imported using `../../templates/<file>.dart` from within `lib/src/functions/*/`.
+- Templates take the **full import URI** (`utilsImport`), not a package name. That lets a configured barrel (`packages.utils.import`) work unchanged.
 
 ---
 
 ## writeFile vs overwriteFile
 
-Both are exported from `lib/src/functions/shared/write_file.dart`.
-Both automatically create parent directories — never call `Directory.createSync` before them.
+| Helper | Behaviour | Use for |
+|---|---|---|
+| `writeFile(path, content)` | Skips an existing file and logs the skip | Anything the user may edit — nearly everything |
+| `overwriteFile(path, content)` | Always writes | Tool-owned files: `app_router_module.dart`, `analysis_options.yaml`, package scaffolding in `init`, pubspec patches |
 
-| Function | Behaviour | When to use |
-|----------|-----------|-------------|
-| `writeFile(path, content)` | Skips if file already exists, logs skip | User-editable files — never stomp on their work |
-| `overwriteFile(path, content)` | Always writes, logs the write | Tool-owned generated files (e.g. `analysis_options.yaml`, `app_router_module.dart`) |
-
----
-
-## String Case Helpers
-
-All in `lib/src/functions/shared/`:
-
-| File | Function | Input → Output |
-|------|----------|----------------|
-| `pascal_case.dart` | `pascalCase(input)` | `my_feature` → `MyFeature` |
-| `camel_case.dart` | `camelCase(input)` | `my_feature` → `myFeature` |
-| `kebab_case.dart` | `kebabCase(input)` | `my_feature` → `my-feature` |
+Both create parent directories.
 
 ---
 
-## ensurePubspec & abort
+## Case helpers (`functions/shared/`)
 
-Every command starts with `ensurePubspec()`.
-It calls `abort(message)` if `pubspec.yaml` is not found in the current directory.
-`abort()` has return type `Never` — it prints to stderr and calls `exit(1)`.
-
-After the pubspec check, `ensurePubspec()` calls `resolveMonoRepoProject()` then `checkVersionMismatch()`.
-`checkVersionMismatch()` reads `clean-helper.version` from the project's `pubspec.yaml` and warns on stderr if it differs from `toolVersion` — the version constant in `lib/src/functions/shared/tool_version.dart`.
-
-`resolveMonoRepoProject()` (from `shared/resolve_mono_repo_project.dart`):
-- Returns immediately if `lib/` exists (normal single-project).
-- Reads `clean-helper.mono_repo_apps` from pubspec if `lib/` is absent.
-  - If found: prompts the user to select a project, then sets `Directory.current` to the chosen app path.
-  - If not found: calls `abort()` with instructions to declare the apps.
-
-All subsequent file operations use relative paths and therefore automatically target the selected project directory. **No command needs any monorepo-specific logic.**
+| Helper | `user_profile` → |
+|---|---|
+| `pascalCase` | `UserProfile` — class names |
+| `camelCase` | `userProfile` — identifiers, fields, parameters, constants |
+| `kebabCase` | `user-profile` — URL paths |
 
 ---
 
-## Monorepo pubspec declaration
+## Config and monorepo state
 
-Users declare a monorepo by adding this section to the root `pubspec.yaml`:
+The runner and `ensurePubspec()` fill shared globals before any command logic runs:
 
-```yaml
-clean-helper:
-  mono_repo_apps:
-    - apps/app1
-    - apps/app2
-```
+| Global (file) | Set by | Meaning |
+|---|---|---|
+| `resolveScope` (`scope_option.dart`) | `CleanHelperRunner.runCommand` | `--scope` value |
+| `utilsPackageConfig` (`package_configs.dart`) | `loadPackageConfigs()` | `packages.utils` as a `PackageConfig` `(name, import)`, or null |
+| `networkPackageConfig` | `loadPackageConfigs()` | `packages.network`, or null |
+| `retrofitCallAdapterConfig` | `loadPackageConfigs()` | `(name, import?)`, or null |
+| `resultTypeConfig` | `loadPackageConfigs()` | raw `result_type` string, or null |
 
-Parsed by `readMonoRepoApps()` in `lib/src/functions/shared/read_mono_repo_apps.dart`.
+`loadPackageConfigs()` runs **before** `resolveMonoRepoProject()` changes directory, so it reads the root pubspec. Config parsing is line-based, with no YAML dependency:
 
-Optional `clean-helper.packages.utils` / `clean-helper.packages.network` (each with `name` and/or `import`),
-plus `clean-helper.retrofit_call_adapter` (`name` = adapter class, `import`) and `clean-helper.result_type`
-(`task_either` default, or `future_either`),
-point generated code at separately named workspace packages. `ensurePubspec()` calls `loadPackageConfigs()`
-**before** `resolveMonoRepoProject()` changes directory, storing them in `utilsPackageConfig` /
-`networkPackageConfig` / `retrofitCallAdapterConfig` / `resultTypeConfig` (`lib/src/functions/shared/package_configs.dart`). Missing keys keep the legacy behaviour.
+- `readCleanHelperFields(path)` returns the scalar children of `clean-helper.<path…>`. It tracks indentation, strips comments and quotes, and ignores list items.
+- `readPackageConfig(key)` builds on it for `packages.<key>`: the name comes from the import, or the import defaults to `package:<name>/<name>.dart`.
+- `readMonoRepoApps()` and `checkVersionMismatch()` are older, hand-written parsers for their own keys.
 
----
+Resolution helpers turn config into decisions, so commands don't repeat the logic:
 
-## `--scope` global flag
-
-`--scope=<app_name>` is a global option declared on `CleanHelperRunner.argParser`. It is extracted in `CleanHelperRunner.runCommand()` and stored in the `resolveScope` variable (`lib/src/functions/shared/scope_option.dart`) before any subcommand runs. `resolveMonoRepoProject()` reads it to skip or narrow the interactive prompt. No command or helper file needs to handle it directly.
-
----
-
-## All Paths Are Relative to the Target Flutter Project
-
-This tool is run **from inside a Flutter project root**, not from inside `clean_helper/`.
-All file paths in `writeFile`, `overwriteFile`, `Directory.createSync`, etc. are relative to the user's project CWD.
+| Helper | Decides |
+|---|---|
+| `usesTaskEither()` | `TaskEither` (default) vs `Future<Either>` return types; aborts on invalid values |
+| `utilsRegistersErrorLogger(utils)` | whether an older utils DI module already registers `ParseErrorLogger` |
+| `utilsHasRetrofitHelpers(utils)` | whether an older utils package still contains the call adapter and logger |
 
 ---
 
-## Import Paths
+## `ensurePubspec()` and `abort()`
 
-- Shared utilities: `../shared/<file>.dart`
-- Templates: `../../templates/<file>.dart` (from within `lib/src/functions/*/`)
-- Init helpers: relative sibling imports within `init/`
-- Feature/repo/entity helpers: relative sibling imports within their folder
+- `ensurePubspec()` is the first statement of every command.
+- `abort(message)` returns `Never`: it prints `❌ message` to stderr and exits with code 1. Use it for unrecoverable input or config errors. Use `stderr.writeln('⚠️ …')` for warnings that shouldn't stop the command.
+
+---
+
+## Output style
+
+The command output uses emoji-prefixed lines: `🚀` start, `📄` file written, `⏭` skipped, `⚠️` warning, `✅` done. Keep new messages consistent with the surrounding command.
+
+---
+
+## fvm
+
+`fvmExec('dart' | 'flutter')` returns `['fvm', exe]` when fvm is installed, otherwise `[exe]`; the check is cached. `fvmUse()` (async) runs `fvm use` interactively at the start of `init` and `bootstrap`.

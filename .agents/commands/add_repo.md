@@ -1,91 +1,69 @@
 # Command: add-repo
 
-**Entry point:** `lib/src/commands/add_repo.dart` → `addRepo(List<String> args)`
-**Binary:** `dart run bin/add_repo.dart <feature> <repo_name>`
-
----
+**Entry point:** `lib/src/commands/add_repo.dart` → `addRepo(args, {runBuildRunnerAfter, noRest, addSample})`
+**Runner:** `AddRepoCommand` — flags `--no-rest`, `--add-sample`
 
 ## Usage
 
 ```bash
-clean-helper add-repo home invoice
-clean-helper add-repo auth user
-clean-helper add-repo home invoice --no-rest          # skip REST datasource and API paths
-clean-helper add-repo home invoice --add-sample       # generate get/post methods + request/response models
-clean-helper add-repo home invoice --no-rest --add-sample
+clean-helper add-repo <feature> <repo_name> [--add-sample] [--no-rest]
 ```
 
-`<feature>` is the feature name (snake_case). Core scope is **not supported** — use `add_entity` for core models.
-`<repo_name>` is snake_case.
+Feature scope only; use `add-entity core …` for core models. Both names are lower-cased.
 
-`--no-rest` (optional flag) — skips generating the REST datasource (`rest_<repo>_data_source.dart`) and API paths (`<feature>_api_paths.dart`), even if a network module is present.
+## Resolution — at the top of `addRepo`
 
-`--add-sample` (optional flag) — generates sample `get{Name}()` and `post{Name}()` methods in the domain repo, data source base, repository impl, and REST datasource, creates the request/response model files, and generates `Get{Name}UseCase` and `Post{Name}UseCase` in `domain/use_cases/`. Without this flag, those files are generated as empty scaffolds and the model files and use cases are skipped.
+| Value | Source |
+|---|---|
+| `utilsImport` | `utilsPackageConfig?.import` ?? `package:<app>_utils/<app>_utils.dart` |
+| `taskEither` | `usesTaskEither()` — `result_type`; default `true`; aborts on invalid values |
+| `hasNetworkModule` | `networkPackageConfig != null` or `lib/core/network/di/network_module.dart` exists |
+| `generateRest` | `!noRest && hasNetworkModule` |
+| call adapter name | `retrofitCallAdapterConfig?.name` ?? `RetrofitCallAdapter` |
+| `adapterImport` | `retrofitCallAdapterConfig?.import` ?? `networkPackageConfig?.import` ?? `../../../../core/network/utils/retrofit_call_adapter.dart` if that file exists ?? null (the utils import provides it) |
+| `ignoreErrorLogger` | `networkPackageConfig != null` |
+| `importUseCaseBase` | `utilsPackageConfig == null` |
 
----
-
-## What It Generates
-
-`clean-helper add-repo home invoice` produces:
+## Output
 
 ```
-lib/features/home/
-├── domain/
-│   ├── entities/
-│   │   └── invoice_entity.dart                   (abstract class InvoiceEntity)
-│   ├── repositories/
-│   │   └── invoice_repository.dart               (abstract interface InvoiceRepository { getInvoice, postInvoice })
-│   ├── params/                                   (only with --add-sample)
-│   │   ├── get_invoice_params.dart               (GetInvoiceParams — sample String field)
-│   │   └── post_invoice_params.dart              (PostInvoiceParams — sample String field)
-│   └── use_cases/                                (only with --add-sample)
-│       ├── get_invoice_use_case.dart             (GetInvoiceUseCase implements UseCaseBase<InvoiceEntity, GetInvoiceParams>)
-│       └── post_invoice_use_case.dart            (PostInvoiceUseCase implements UseCaseBase<InvoiceEntity, PostInvoiceParams>)
-└── data/
-    ├── constants/
-    │   └── home_api_paths.dart                   (sealed class HomeApiPaths)
-    ├── datasources/
-    │   ├── invoice_data_source_base.dart          (abstract interface with get + post methods)
-    │   └── rest_invoice_data_source.dart          (@RestApi, @Injectable, Retrofit impl)
-    ├── models/
-    │   ├── requests/
-    │   │   └── invoice_request_model.dart         (@JsonSerializable)
-    │   └── response/
-    │       └── invoice_response_model.dart        (@freezed, implements InvoiceEntity)
-    └── repositories/
-        └── invoice_repository_impl.dart           (@Singleton, implements InvoiceRepository)
+lib/features/<f>/domain/entities/<r>_entity.dart                  always
+lib/features/<f>/domain/repositories/<r>_repository.dart           always (empty interface without --add-sample)
+lib/features/<f>/data/datasources/<r>_data_source_base.dart        always (empty interface without --add-sample)
+lib/features/<f>/data/repositories/<r>_repository_impl.dart        always — @Singleton(as: <R>Repository)
+lib/features/<f>/domain/params/{get,post}_<r>_params.dart          --add-sample
+lib/features/<f>/domain/use_cases/{get,post}_<r>_use_case.dart     --add-sample
+lib/features/<f>/data/models/requests/<r>_request_model.dart       --add-sample — @JsonSerializable
+lib/features/<f>/data/models/response/<r>_response_model.dart      --add-sample — @freezed, implements <R>Entity
+lib/features/<f>/data/constants/<f>_api_paths.dart                 REST — static const <camelRepo> = '/api/<kebab-feature>/'
+lib/features/<f>/data/datasources/rest_<r>_data_source.dart        REST — @RestApi(callAdapter: …), @Injectable(as: <R>DataSourceBase)
 ```
 
----
+After generating REST files, `warnMissingRestDependencies()` warns if the app's pubspec lacks `dio`, `retrofit` or `retrofit_generator`.
 
-## Notes
+## Result types (`--add-sample`)
 
-- Without `--add-sample`, domain repo, data source base, and repo impl are generated as empty scaffolds (no methods), and request/response model files and use cases are skipped.
-- With `--add-sample`, both `get` and `post` methods are added as a starting point. Remove or extend as needed. The `postInvoice()` impl instantiates the request model as `const InvoiceRequestModel()`.
-- REST datasource and API paths are skipped if there is no network module — neither `lib/core/network/di/network_module.dart` nor `clean-helper.packages.network` — **or** if `--no-rest` is passed.
-- The utils import is `utilsPackageConfig.import` when `clean-helper.packages.utils` is set, else `package:<app>_utils/<app>_utils.dart`. Templates take the full import URI (`utilsImport`), not a package name.
-- Return types: `TaskEither<Failure, T>` by default (repo impl methods are not `async` — the datasource's `TaskEither` is returned as-is). `clean-helper.result_type: future_either` (read via `usesTaskEither()`) generates the pre-1.4.2 `Future<Either>` / `FutureOr<Either>` style. Templates take `taskEither`.
-- With `packages.utils` set: use cases omit the `core/domain/use_cases/use_case_base.dart` import (the utils package provides `UseCaseBase`).
-- With `packages.network` set: the REST datasource marks `errorLogger` `@ignoreParam`, because the tool can't know whether the external network package registers `ParseErrorLogger` (injectable would otherwise emit `gh<ParseErrorLogger>()`, which throws when nothing registers it). In the legacy layout the generated `NetworkModule` registers it.
-- Call adapter: `@RestApi(callAdapter: <retrofitCallAdapterConfig.name ?? RetrofitCallAdapter>)`, imported from `retrofitCallAdapterConfig.import ?? networkPackageConfig.import` (skipped when equal to the utils import).
-- After generating the REST datasource, `warnMissingRestDependencies()` warns if the app pubspec lacks `dio`, `retrofit` or `retrofit_generator`.
-- Package imports are sorted via `sortImports()` so `directives_ordering` passes for any package name.
-- Multi-word repo names become camelCase identifiers (`HomeApiPaths.userAccount`, `userAccountRepository`).
-- When `--no-rest` is used, the skip is logged as `⏭  Skipping REST datasource and API paths (--no-rest).`
-- When `--add-sample` is not set, model files are skipped and logged as `⏭  Skipping request/response models (--add-sample not set).`
-- All imports are relative — no `package:` imports for internal project files.
+| Layer | `task_either` (default) | `future_either` |
+|---|---|---|
+| datasource base / REST | `TaskEither<Failure, <R>ResponseModel>` | `Future<Either<Failure, <R>ResponseModel>>` |
+| domain repo | `TaskEither<Failure, <R>Entity>` | `Future<Either<…>>` |
+| repo impl | same, **not** `async`; returns the datasource's value directly (covariant) | `async` |
+| use cases | `TaskEither<…>`; `import 'package:fpdart/fpdart.dart' show TaskEither;` with no `dart:async` | `FutureOr<Either<…>>`, `show Either`, `dart:async` |
 
----
+## Generated-code rules
 
-## Post-generation
+- Package imports go through `sortImports`. A relative adapter import goes in the relative section.
+- Multi-word repo names use `camelCase` identifiers: `HomeApiPaths.userAccount`, `userAccountRepository`.
+- With `importUseCaseBase: false`, use cases rely on the utils package exporting `UseCaseBase`.
+- With `ignoreErrorLogger`, the factory is `factory Rest<R>DataSource(Dio dio, {@ignoreParam ParseErrorLogger? errorLogger})`, with a comment explaining why.
+- Retrofit is imported as `package:retrofit/retrofit.dart`.
 
-`dart format` and `build_runner` run automatically — no manual step needed.
+## Logging
 
----
+- `--no-rest` → `⏭  Skipping REST datasource and API paths (--no-rest).`
+- No network module → a `⚠️` line naming both detection sources.
+- No `--add-sample` → `⏭  Skipping request/response models (--add-sample not set).`
 
-## Next steps after generating
+## Known issue
 
-1. Replace the placeholder path in `data/constants/home_api_paths.dart`
-2. Add fields to the request/response models
-3. Change `@GET` to `@POST` (or other verbs) in the REST datasource as appropriate
-4. Add use cases in `domain/use_cases/`
+Every file uses `writeFile`, so a second repo in the same feature doesn't add its constant to the existing `<f>_api_paths.dart`, and the REST datasource then references a missing constant.

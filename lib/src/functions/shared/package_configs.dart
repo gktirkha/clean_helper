@@ -14,7 +14,8 @@ PackageConfig? networkPackageConfig;
 
 /// `clean-helper.retrofit_call_adapter`, set by [loadPackageConfigs].
 /// [name] is the adapter class; a null [import] means it comes from the
-/// network package, or the utils package when no network package is set.
+/// network package, else `lib/core/network/utils/retrofit_call_adapter.dart`
+/// when present, else the utils package (projects initialised before 1.4.4).
 /// Null means `RetrofitCallAdapter` from those same imports.
 ({String name, String? import})? retrofitCallAdapterConfig;
 

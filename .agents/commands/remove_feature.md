@@ -1,48 +1,23 @@
 # Command: remove-feature
 
-**Entry point:** `lib/src/commands/remove_feature.dart` → `removeFeature(List<String> args)`
-**Binary:** `dart run bin/remove_feature.dart <feature_name>`
-
----
+**Entry point:** `lib/src/commands/remove_feature.dart` → `removeFeature(args)`
+**Runner:** `RemoveFeatureCommand`
 
 ## Usage
 
 ```bash
-clean-helper remove-feature auth
 clean-helper remove-feature user_profile
 ```
 
-Feature name is lowercased automatically. Aborts with an error if no name is provided.
+The name is lower-cased. It aborts if no name is given.
 
----
+## Flow
 
-## What It Does (in order)
+1. `ensurePubspec()`
+2. `unpatchRouterModule(f)`:
+   - If `lib/app/router/app_router_module.dart` doesn't import the feature's router, it logs `⏭ … not registered` and moves on.
+   - Otherwise it rebuilds the file from the remaining feature imports with `buildRouterModule`, which sorts them, using `overwriteFile`.
+   - It warns if the file is missing.
+3. `deleteFeatureFiles(f)`: deletes `lib/features/<f>/` recursively, and `lib/app/navigation/<f>_navigation_impl.dart`. It warns about, but doesn't abort on, missing paths.
 
-1. `unpatchRouterModule(feature)` — removes the feature's router from `lib/app/router/app_router_module.dart`
-2. `deleteFeatureFiles(feature)` — deletes the feature directory and its navigation impl
-
----
-
-## unpatchRouterModule
-
-- Reads `lib/app/router/app_router_module.dart` and checks for the feature's import line
-- If the import is not present, logs `⏭  Router for "<feature>" not registered, skipping` and returns
-- Otherwise, parses all remaining feature router imports, filters out the target feature, and regenerates `app_router_module.dart` from scratch using `buildRouterModule(remainingFeatures)`
-- Writes via `overwriteFile` — `app_router_module.dart` is fully tool-owned
-
-## deleteFeatureFiles
-
-Deletes:
-- `lib/features/<feature>/` (recursive)
-- `lib/app/navigations/<feature>_navigation_impl.dart`
-
-Warns (but does not abort) if either path does not exist.
-
----
-
-## Notes
-
-- No `dart format` or `build_runner` run automatically — run them manually afterwards if needed.
-- The command does **not** remove feature-specific DI modules (`di/<feature>_module.dart`) if they exist inside the feature folder — these are deleted as part of the recursive directory delete.
-- If `app_router_module.dart` does not exist, router deregistration is skipped with a warning.
-- Safe to run on a feature that was partially deleted manually — it will clean up what remains.
+It doesn't run `dart format` or build_runner. Stale DI registrations disappear the next time build_runner runs.

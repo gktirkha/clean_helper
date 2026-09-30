@@ -1,117 +1,58 @@
 # Rules for AI Agents
 
-These constraints must be respected when modifying or extending this codebase.
+Hard constraints for changing clean_helper. `conventions.md` explains the reasoning; `extending.md` has step-by-step recipes.
 
 ---
 
-## File Structure Rules
+## File structure
 
-- **One function definition per file** — everywhere under `lib/src/`.
-- **Command files have one function** — never add helpers directly in `lib/src/commands/`.
-- **Never export function files** from `lib/clean_helper.dart` — commands only.
-- **New helpers go in `lib/src/functions/<group>/`** — create a new file, never add to an existing one.
-- **New templates go in `lib/src/templates/`** — one template function per file, returning `String`.
-- **No inline template strings in generator functions** — all generated file content must live in `lib/src/templates/`.
+- **One public function per file** under `lib/src/`, named after the file (`sort_imports.dart` → `sortImports`). Two long-standing exceptions: `shared/write_file.dart` defines both `writeFile` and `overwriteFile`, and shared state files (`scope_option.dart`, `package_configs.dart`, `tool_version.dart`) hold variables or typedefs rather than a function.
+- **Command files** (`lib/src/commands/`) contain exactly one function, the command entry point. Put helpers in `lib/src/functions/<group>/`.
+- **New helpers get a new file.** Never add a second function to an existing file.
+- **Templates** live in `lib/src/templates/`, one `…Template` function per file, returning `String`. Generator functions never contain inline template strings.
+- `lib/clean_helper.dart` exports command files only — never functions or templates.
+- `bin/` files only call a command function.
 
----
+## Writing files in the target project
 
-## File Writing Rules
+- Use `writeFile(path, content)` for files the user may edit. It skips files that already exist.
+- Use `overwriteFile(path, content)` only for tool-owned files, such as `app_router_module.dart`, `analysis_options.yaml` or package scaffolding during `init`.
+- Never call `File(...).writeAsStringSync` directly.
+- Both helpers create parent directories, so never create directories before writing. `Directory.createSync` is allowed only in `init/create_directories.dart`, for empty folders `init` scaffolds.
+- A command with an overwrite flag picks its writer once: `final write = overwrite ? overwriteFile : writeFile`.
 
-- Use `writeFile(path, content)` for files the user may edit — skips if file exists.
-- Use `overwriteFile(path, content)` only for config files owned by the tool (e.g. `analysis_options.yaml`, `app_router_module.dart`).
-- Never use `File(...).writeAsStringSync(...)` directly — always go through the shared helpers.
-- `writeFile` and `overwriteFile` both call `file.parent.createSync(recursive: true)` — **never** manually create directories before writing.
-- When a command supports optional overwrite (e.g. `generate_tools --overwrite`), select the write function via `final write = overwrite ? overwriteFile : writeFile` and use that variable throughout.
+## Paths and imports
 
----
+- Every path is a plain relative string, relative to the **target project's** current directory. Don't use `path.join` or absolute paths.
+- Inside clean_helper, import shared helpers as `../shared/<file>.dart` and templates as `../../templates/<file>.dart`. Templates may import from `../functions/shared/` (`camelCase`, `sortImports`, …). No circular imports.
+- **Generated code** uses relative imports for files inside the app, and `package:` imports for other packages.
+- Generated imports must satisfy `directives_ordering`. Build any import list containing a runtime value — a configured package or a user-derived name — with `sortImports([...])`, one call per section (`dart:`, then `package:`, then relative). A configured import may be either a package URI or a relative path, so check `startsWith('package:')` and put it in the matching section.
 
-## Directory Creation Rules
+## Naming in generated code
 
-- Never call `Directory(...).createSync(...)` outside of `lib/src/functions/init/create_directories.dart`.
-- Directory creation for generated files is handled automatically by `writeFile`/`overwriteFile`.
-- New directory paths needed during `init` must be added to the list in `create_directories.dart`.
+- Feature and repo names arrive in snake_case. Use `pascalCase(x)` for classes, `camelCase(x)` for **every** identifier (fields, parameters, constants), and `kebabCase(x)` for URL paths. Never put a raw snake_case name in an identifier.
 
----
+## Commands and monorepos
 
-## Path Rules
+- **Every command calls `ensurePubspec()` first.** It loads the root-pubspec config, handles monorepo app selection (which changes `Directory.current`) and checks the version stamp. The only exceptions are `list-mono-repo-apps`, which must not trigger selection, and the global `--version` flag, which is handled in the runner.
+- Never add monorepo detection anywhere except `shared/resolve_mono_repo_project.dart`.
+- Anything read from the **root** pubspec must be read in `loadPackageConfigs()` — which `ensurePubspec()` calls before the directory change — and stored in a shared global in `shared/package_configs.dart`. Commands read the global; they never re-read the root pubspec.
+- New `clean-helper:` keys are parsed with `readCleanHelperFields(path)`. Missing keys must keep today's behaviour.
 
-- All generated file paths are **relative to the Flutter project's CWD**, not to `clean_helper/`.
-- Do not use `path.join` or absolute paths — keep paths as plain relative strings.
+## Compatibility with existing projects
 
----
+- Generated code has to compile in projects scaffolded by **older** versions. When a template change depends on something `init` generates (the call adapter, `UseCaseBase`, utils exports, DI registrations), either detect the old layout from files on disk, or add a config key and document the upgrade step in the README's "Upgrading existing projects" table.
+- Never register a type in DI that an older layout already registers — GetIt throws on duplicates. See `utils_registers_error_logger.dart`.
 
-## Import Rules
+## Toolchain
 
-- Shared utilities: import from `../shared/<file>.dart`.
-- Templates: import from `../../templates/<file>.dart` (from within `lib/src/functions/*/`).
-- Do not create circular imports between function files.
-- `camel_case.dart` may import `pascal_case.dart` (it depends on it); nothing else may form a cycle.
-- Generated Flutter project files must use **relative imports** for internal project files — no `package:` imports between files within the same feature.
+- Run every `dart`/`flutter` command through `fvmExec('dart')` / `fvmExec('flutter')`.
+- Add dependencies with `flutter pub add`, never `dart pub add`.
+- Only command functions call `runDartFormat()` and `runBuildRunner()`, never helpers.
 
----
+## Versioning and docs
 
-## Naming Rules
-
-- Function files: `snake_case.dart` matching the function name.
-- Public functions: `camelCase`, matching the file name in camelCase.
-- Template functions: suffix `Template` (e.g. `mainDartTemplate()`).
-- Generator functions in `init/`: prefix `generate` or `create` or `run` or `install` or `add`.
-- Generator functions in `feature/`: prefix `generateFeature`.
-
----
-
-## FVM Rules
-
-- All `dart` and `flutter` commands in init helpers must go through `fvmExec(exe)` from `lib/src/functions/shared/fvm_exec.dart`.
-- `fvmExec(exe)` checks once (cached) whether fvm is available and returns `['fvm', exe]` or `[exe]`.
-- Use `flutter pub add` (not `dart pub add`) for adding dependencies.
-- `fvmUse()` (async) is called once at the start of `runInit()` to let the user select a Flutter version interactively. It is a no-op if fvm is not installed.
-- `runInit()` is `async` because of `fvmUse()`. Its `bin/` entry point and runner command must also be `async`/`Future<void>`.
-
----
-
-## dart format & build_runner Rules
-
-- `runDartFormat()` is called at the end of: `runInit()`, `addFeature()`, `addRepo()`, `addEntity()`.
-- `runBuildRunner()` is called only from `runInit()`.
-- Helper functions (under `lib/src/functions/`) must **never** call `runDartFormat()` or `runBuildRunner()` — only command functions do this.
-
----
-
-## Monorepo Rules
-
-- **Every command already gets monorepo support for free** — `ensurePubspec()` calls `resolveMonoRepoProject()`, which detects monorepos and changes `Directory.current` before any command logic runs.
-- **Never add monorepo detection inside individual command files** — it lives exclusively in `lib/src/functions/shared/resolve_mono_repo_project.dart`.
-- **New commands must call `ensurePubspec()` as their first statement** — this is what makes them monorepo-aware automatically.
-- Root-pubspec settings needed after the directory change (e.g. `clean-helper.packages`) must be read in `ensurePubspec()` **before** `resolveMonoRepoProject()`, and stored in a shared global like `utilsPackageConfig` — never re-read the root pubspec from a command.
-- The global `--scope=<name>` flag is declared on `CleanHelperRunner.argParser` and stored in `resolveScope` (from `lib/src/functions/shared/scope_option.dart`) via an override of `runCommand`. No command file touches this.
-- Detection logic (in order):
-  1. `lib/` folder present → normal single-project flow, no selection prompt.
-  2. `lib/` absent + `clean-helper.mono_repo_apps` in root pubspec:
-     - `--scope` given, one match → auto-select.
-     - `--scope` given, multiple matches (same name, different paths) → prompt from that subset.
-     - `--scope` given, no match → `abort()` listing available names.
-     - No `--scope`, one app declared → auto-select.
-     - No `--scope`, multiple apps → full interactive prompt.
-  3. `lib/` absent + no declaration → `abort()` with instructions to declare apps in pubspec.
-
----
-
-## Version Stamping Rules
-
-- `toolVersion` in `lib/src/functions/shared/tool_version.dart` **must always match** the `version:` field in `clean_helper/pubspec.yaml`.
-- When bumping the package version, update both files.
-- Never modify `clean-helper.version` in a target project's `pubspec.yaml` directly — it is written exclusively by `writeToolVersion()` at the end of `runInit()`.
-
----
-
-## What NOT to Do
-
-- Do not add logic to `bin/` files — they must only call the command function.
-- Do not add more than one public function to any `.dart` file under `lib/src/`.
-- Do not modify files that already exist in the target project without using `overwriteFile`.
-- Do not use `package:` imports for cross-file references within a generated Flutter feature — always use relative imports.
-- Do not embed template strings inline inside generator functions — extract to `lib/src/templates/`.
-- Do not use `dart pub add` — always use `flutter pub add`.
-- Do not call `dart` or `flutter` directly in init helpers — always use `fvmExec('dart')` or `fvmExec('flutter')`.
-- Do not duplicate monorepo detection — it is handled once in `resolveMonoRepoProject()`; never replicate it in commands or helpers.
+- `toolVersion` in `shared/tool_version.dart` must always equal `version:` in `pubspec.yaml`. Bump both together, and add a CHANGELOG section for the new version.
+- Never edit `clean-helper.version` in a target project; only `writeToolVersion()` writes it.
+- A behaviour change updates `README.md`, the matching `.agents/commands/<command>.md`, and `structure.md` for new or renamed files.
+- After changing the source, `dart analyze` must report no issues and `dart format` must leave nothing to change.

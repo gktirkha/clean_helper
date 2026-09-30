@@ -59,6 +59,6 @@ void listMonoRepoApps() {
   stdout.writeln('Retrofit call adapter (clean-helper.retrofit_call_adapter):');
   stdout.writeln(
     '  ${adapter?.name ?? 'RetrofitCallAdapter'}  '
-    '(${adapter?.import ?? network?.import ?? utils?.import ?? '<app>_utils'})',
+    '(${adapter?.import ?? network?.import ?? 'lib/core/network/utils/retrofit_call_adapter.dart'})',
   );
 }

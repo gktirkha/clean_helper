@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import '../functions/add_network_module/install_network_dependencies.dart';
+import '../functions/add_network_module/utils_has_retrofit_helpers.dart';
 import '../functions/add_network_module/utils_registers_error_logger.dart';
 import '../functions/init/add_chucker_dependency.dart';
 import '../functions/init/generate_network_files.dart';
@@ -21,6 +22,7 @@ void addNetwork() {
     utilsPackageConfig?.import ??
         'package:$utilsPackageName/$utilsPackageName.dart',
     registerErrorLogger: !utilsRegistersErrorLogger(utilsPackageName),
+    retrofitHelpersInUtils: utilsHasRetrofitHelpers(utilsPackageName),
   );
   installNetworkDependencies();
   addChuckerDependency();

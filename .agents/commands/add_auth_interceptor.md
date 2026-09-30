@@ -1,9 +1,7 @@
 # Command: add-auth-interceptor
 
-**Entry point:** `lib/src/commands/add_auth_interceptor.dart` → `addAuthInterceptor()`
-**Binary:** `dart run bin/add_auth_interceptor.dart`
-
----
+**Entry point:** `lib/src/commands/add_auth_interceptor.dart` → `addAuthInterceptor({runBuildRunnerAfter, showNextSteps})`
+**Runner:** `AddAuthInterceptorCommand`. Also called by `init --auth-interceptor`.
 
 ## Usage
 
@@ -11,61 +9,25 @@
 clean-helper add-auth-interceptor
 ```
 
-No arguments. Must be run from the Flutter project root after `add-network-module`.
-Idempotent — skips files/patches that already exist.
+Run after `add-network-module`. It's idempotent: each step skips work that's already done.
 
----
+## Flow
 
-## What It Does (in order)
+1. `ensurePubspec()`
+2. `generateAuthInterceptor()` → `lib/core/network/interceptors/auth_interceptor.dart` (`auth_interceptor` template)
+3. `patchDiKeys()` → adds `static const String noAuthDio = 'noAuthDio';` to `DIKeys` in `lib/core/di/di_keys.dart`, or creates the file from `di_keys_no_auth`
+4. `patchNetworkModule()` → in `lib/core/network/di/network_module.dart`:
+   - imports `../interceptors/auth_interceptor.dart` and `../../di/di_keys.dart` (via `insertAfterLastImport`);
+   - adds an `AuthInterceptor authInterceptor` parameter to `dio()` and puts it first in the interceptor list;
+   - appends a `@Named(DIKeys.noAuthDio)` `noAuthDio()` provider (`no_auth_dio_method` template).
+5. `runDartFormat()`, `runBuildRunner()`, then next steps (unless `showNextSteps: false`)
 
-1. `generateAuthInterceptor()` — creates `lib/core/network/interceptors/auth_interceptor.dart`
-2. `patchDiKeys()` — adds `noAuthDio` constant to `lib/core/di/di_keys.dart` (creates file if missing)
-3. `patchNetworkModule()` — wires `AuthInterceptor` + `noAuthDio` into `lib/core/network/di/network_module.dart`
+Each patch is skipped when its marker is already in the file. If `network_module.dart` is missing, the step warns and skips.
 
----
+## Generated interceptor
 
-## Generated: auth_interceptor.dart
-
-Template: `lib/src/templates/auth_interceptor_template.dart`
-
-Key behaviour:
-- `onRequest` — attaches Bearer token (TODO to implement storage read)
-- `onError` — on 401, calls `_refreshToken()`, retries the original request with new token
-- `_refreshToken()` — deduplicates concurrent refresh calls using `_isRefreshing` + `_refreshFuture`
-- Uses `_dio` (the `noAuthDio` instance) for the refresh call to avoid infinite loops
-
----
-
-## Patched: di_keys.dart
-
-Template (when creating new): `lib/src/templates/di_keys_no_auth_template.dart`
-
-Inserts `static const String noAuthDio = 'noAuthDio';` into the existing `DIKeys` sealed class,
-or creates the file with the constant if it doesn't exist.
-
----
-
-## Patched: network_module.dart
-
-Template for new method: `lib/src/templates/no_auth_dio_method_template.dart`
-
-- Adds `auth_interceptor.dart` and `di_keys.dart` imports
-- Adds `AuthInterceptor authInterceptor` parameter to `dio()`
-- Inserts `authInterceptor` as first entry in `dio()`'s interceptors list
-- Adds `noAuthDio()` provider annotated `@Named(DIKeys.noAuthDio)` — Dio without AuthInterceptor
-
----
-
-## Post-generation
-
-`build_runner` runs automatically — no manual step needed.
-
----
-
-## Next steps
-
-1. Fill in the TODOs in `auth_interceptor.dart`:
-   - Read access token from storage in `_addAuthHeader()`
-   - POST to token refresh endpoint in `_performRefresh()`
-   - Save new tokens to storage
-   - Clear tokens on refresh failure
+- `onRequest` attaches the bearer token (TODO: read it from storage).
+- `onError` on 401: refreshes via `_refreshToken()` and retries the original request.
+- Concurrent refreshes are de-duplicated with `_isRefreshing` / `_refreshFuture`.
+- The refresh call uses the `noAuthDio` instance to avoid loops.
+- TODOs cover the refresh endpoint, token persistence, and clearing tokens on failure.

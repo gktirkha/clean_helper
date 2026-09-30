@@ -1,42 +1,21 @@
 # Command: build-runner
 
-**Entry point:** `lib/src/commands/build_runner.dart` → `runBuildRunnerCommand(List<String> args)`
-**Binary:** `dart run bin/build_runner.dart [clean|build]`
-
----
+**Entry point:** `lib/src/commands/build_runner.dart` → `runBuildRunnerCommand(args)`
+**Runner:** `BuildRunnerCommand`
 
 ## Usage
 
 ```bash
-clean-helper build-runner           # defaults to build
-clean-helper build-runner build     # build
-clean-helper build-runner clean     # clean generated files
+clean-helper build-runner          # build (default)
+clean-helper build-runner build
+clean-helper build-runner clean
 ```
 
----
+| Action | Helper | Runs |
+|---|---|---|
+| `build` | `functions/build_runner/run_build_runner_build.dart` → `runBuildRunnerBuild()` | `[fvm] dart run build_runner build` (streamed) |
+| `clean` | `functions/build_runner/run_build_runner_clean.dart` → `runBuildRunnerClean()` | `[fvm] dart run build_runner clean` (streamed) |
 
-## What Each Action Does
+An unknown action prints an error and exits with code 1. `ensurePubspec()` runs first, so `--scope` works.
 
-| Action | Helper | Underlying command |
-|--------|--------|--------------------|
-| `build` (default) | `runBuildRunnerBuild()` | `dart run build_runner build` |
-| `clean` | `runBuildRunnerClean()` | `dart run build_runner clean` |
-
-An unknown action prints an error and exits with code 1.
-
----
-
-## Implementation Notes
-
-- Each action lives in its own helper file under `lib/src/functions/build_runner/`:
-  - `run_build_runner_build.dart` → `runBuildRunnerBuild()`
-  - `run_build_runner_clean.dart` → `runBuildRunnerClean()`
-- Output is streamed in real time via `runCommandStreamed`.
-- `ensurePubspec()` is called first — aborts if `pubspec.yaml` is not found.
-
----
-
-## Notes
-
-- `build-runner` is also run automatically at the end of `init`, `add-feature`, `add-repo`, `add-entity`, `add-auth-interceptor`, and `add-network-module` — this command is for manual invocation.
-- Use `clean` if generated files are out of sync or causing build errors, then re-run `build`.
+Generating commands don't use these helpers. They call `runBuildRunner()` from `functions/init/run_build_runner.dart`, which accepts a `workingDirectory`.

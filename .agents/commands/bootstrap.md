@@ -1,8 +1,7 @@
 # Command: bootstrap
 
-**Entry point:** `lib/src/commands/bootstrap.dart` → `runBootstrapCommand()` [async]
-
----
+**Entry point:** `lib/src/commands/bootstrap.dart` → `runBootstrapCommand()` (async)
+**Runner:** `BootstrapCommand`
 
 ## Usage
 
@@ -10,29 +9,16 @@
 clean-helper bootstrap
 ```
 
-No arguments. Must be run from a Flutter project root.
+## Flow
 
----
+1. `ensurePubspec()`
+2. `fvmUse()` — interactive `fvm use`, a no-op without fvm
+3. `runFlutterPubGet()`
+4. `runSlang('<app>_localization')` — runs slang inside `packages/<app>_localization`
+5. `runBuildRunner()` — in the app only
 
-## What It Does (in order)
+It doesn't run `dart format`.
 
-1. `fvmUse()` — if fvm is installed, runs `fvm use` interactively so the user can select a Flutter version
-2. `runFlutterPubGet()` — `[fvm] flutter pub get`
-3. `runSlang()` — `[fvm] dart run slang`
-4. `runBuildRunner()` — `[fvm] dart run build_runner build`
+## Known issue
 
-`[fvm]` means the command is prefixed with `fvm` automatically if fvm is detected.
-
----
-
-## When To Use
-
-- After `git pull` when dependencies or generated files may have changed
-- As a quick full-refresh alternative to running pub get, slang, and build_runner manually
-
----
-
-## Notes
-
-- `runBootstrapCommand()` is `async` because of `fvmUse()`
-- Does **not** run `dart format` — use `build_runner` command or `dart format .` manually if needed
+Unlike `init`, it doesn't run build_runner in `packages/<app>_utils` first. After a clean checkout, the app build can miss `<App>UtilsPackageModule` until the utils package has been built.

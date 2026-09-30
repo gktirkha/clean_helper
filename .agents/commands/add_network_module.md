@@ -1,9 +1,7 @@
 # Command: add-network-module
 
-**Entry point:** `lib/src/commands/add_network_module.dart` → `addNetworkModule()`
-**Binary:** `dart run bin/add_network_module.dart`
-
----
+**Entry point:** `lib/src/commands/add_network_module.dart` → `addNetworkModule({runBuildRunnerAfter})`
+**Runner:** `AddNetworkModuleCommand`. Also called by `init --network` / `--auth-interceptor`.
 
 ## Usage
 
@@ -11,59 +9,37 @@
 clean-helper add-network-module
 ```
 
-No arguments. Must be run from the Flutter project root. Idempotent — `writeFile` skips files that already exist.
+It's idempotent: every file goes through `writeFile`.
 
----
+## Flow
 
-## What It Does (in order)
+1. `ensurePubspec()`
+2. `utilsPackageName` = `utilsPackageConfig?.name` ?? `<app>_utils`; `utilsImport` = `utilsPackageConfig?.import` ?? `package:<utils>/<utils>.dart`
+3. `generateNetworkFiles(utilsImport, registerErrorLogger: !utilsRegistersErrorLogger(utils), retrofitHelpersInUtils: utilsHasRetrofitHelpers(utils))`
+4. `installNetworkDependencies()` — `dio`, `retrofit`, `json_annotation`; dev `retrofit_generator`, `json_serializable`; `pretty_dio_logger` from git
+5. `addChuckerDependency()` — `chucker_flutter` from git
+6. `patchAppGoRouter()` — adds the Chucker import and `observers: [ChuckerFlutter.navigatorObserver]` to `lib/app/router/app_go_router.dart`
+7. `runDartFormat()`, `runBuildRunner()` (unless `runBuildRunnerAfter: false`)
 
-1. `generateNetworkFiles()` — writes core network files (see below)
-2. `installNetworkDependencies()` — installs runtime and dev packages via `dart pub add`
-3. `addChuckerDependency()` — installs `chucker_flutter` from git
-4. `patchAppGoRouter()` — adds `ChuckerFlutter.navigatorObserver` to `lib/app/router/app_go_router.dart`
-5. `runDartFormat()` — formats the project
-6. `runBuildRunner()` — runs `build_runner build`
+## Generated files
 
----
+| File | Template | Notes |
+|---|---|---|
+| `lib/core/network/constants/api_paths.dart` | `core_api_paths` | `ApiPaths.baseUrl` |
+| `lib/core/data/models/error_model.dart` | `error_model(utilsImport)` | `@freezed`, implements `ErrorEntity` |
+| `lib/core/network/interceptors/error_interceptor.dart` | `error_interceptor` | |
+| `lib/core/network/utils/retrofit_call_adapter.dart` | `retrofit_call_adapter(utilsImport)` | skipped when `retrofitHelpersInUtils` |
+| `lib/core/network/utils/retrofit_logger.dart` | `retrofit_logger(utilsImport)` | skipped when `retrofitHelpersInUtils` |
+| `lib/core/network/di/network_module.dart` | `network_module(loggerImport, registerErrorLogger:)` | `loggerImport` is `../utils/retrofit_logger.dart`, or `utilsImport` when `retrofitHelpersInUtils` |
 
-## Generated Files
+## Compatibility with older projects
 
-| File | Template |
-|------|----------|
-| `lib/core/network/constants/api_paths.dart` | `core_api_paths_template.dart` |
-| `lib/core/data/models/error_model.dart` | `error_model_template.dart` |
-| `lib/core/network/interceptors/error_interceptor.dart` | `error_interceptor_template.dart` |
-| `lib/core/network/di/network_module.dart` | `network_module_template.dart` — also registers `RetrofitLogger` as `ParseErrorLogger` |
-
-All written with `writeFile` — skipped if they already exist.
-
-The utils import is `clean-helper.packages.utils` when configured, else `package:<app>_utils/<app>_utils.dart`.
-If the local utils module already registers `ParseErrorLogger` (projects initialised before 1.4.1),
-`utilsRegistersErrorLogger()` detects it and the network module skips its own registration — a second one makes GetIt throw.
-
----
-
-## Patched Files
-
-**`lib/app/router/app_go_router.dart`** (via `overwriteFile`):
-- Adds `import 'package:chucker_flutter/chucker_flutter.dart';` after the flutter import
-- Adds `observers: [ChuckerFlutter.navigatorObserver]` before `refreshListenable`
-- Skipped silently if the file does not exist
-
----
-
-## Dependencies Installed
-
-| Type | Packages |
-|------|----------|
-| Runtime | `dio`, `retrofit`, `json_annotation` |
-| Dev | `retrofit_generator`, `json_serializable` |
-| Git (runtime) | `pretty_dio_logger` (from `https://github.com/gktirkha/pretty_dio_logger.git`) |
-| Git (runtime) | `chucker_flutter` (added by `addChuckerDependency`) |
-
----
+| Helper | Detects | Effect |
+|---|---|---|
+| `utilsRegistersErrorLogger(utils)` | `packages/<utils>/lib/src/di/<utils>_module.dart` mentions `ParseErrorLogger` (before 1.4.1) | `NetworkModule` doesn't register `RetrofitLogger` again — GetIt throws on duplicates |
+| `utilsHasRetrofitHelpers(utils)` | `packages/<utils>/lib/src/network/retrofit_call_adapter.dart` exists (before 1.4.4) | No copies in `lib/core/network/utils/`; `NetworkModule` imports `RetrofitLogger` from the utils package |
 
 ## Notes
 
-- `addNetworkModule()` is also called from `runInit()` when the `--network` flag is passed — the `runBuildRunnerAfter` parameter lets `init` skip the redundant `build_runner` call (it runs its own at the end).
-- After running this command, use `add-auth-interceptor` to wire token-based auth into the network layer.
+- `add-auth-interceptor` patches the generated `NetworkModule` by regex (`@lazySingleton\s+Dio dio\(`). Keep that signature stable.
+- `commands/add_network.dart` (`addNetwork()`) is a legacy variant without `patchAppGoRouter` or build_runner, and it isn't registered. Keep its arguments in step with `generateNetworkFiles`.

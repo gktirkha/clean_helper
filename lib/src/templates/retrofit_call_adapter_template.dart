@@ -1,9 +1,8 @@
-String retrofitCallAdapterTemplate() => '''
-import 'package:fpdart/fpdart.dart';
-import 'package:retrofit/retrofit.dart';
+import '../functions/shared/sort_imports.dart';
 
-import '../failure.dart';
-import '../functions/safe_execute_task.dart';
+String retrofitCallAdapterTemplate(String utilsImport) =>
+    '''
+${sortImports(["import 'package:fpdart/fpdart.dart';", "import 'package:retrofit/retrofit.dart';", "import '$utilsImport';"])}
 
 class RetrofitCallAdapter<T>
     extends CallAdapter<Future<T>, TaskEither<Failure, T>> {

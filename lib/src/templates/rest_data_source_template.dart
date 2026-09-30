@@ -19,15 +19,20 @@ String restDataSourceTemplate(
       ? 'TaskEither<Failure, ${repoClass}ResponseModel>'
       : 'Future<Either<Failure, ${repoClass}ResponseModel>>';
 
+  // [adapterImport] is a package URI or a path relative to the datasource.
+  final packageAdapter = adapterImport?.startsWith('package:') ?? false;
   final imports = sortImports([
     "import 'package:dio/dio.dart';",
     if (addSample) "import 'package:fpdart/fpdart.dart';",
     "import 'package:injectable/injectable.dart';",
     "import 'package:retrofit/retrofit.dart';",
     "import '$utilsImport';",
-    if (adapterImport != null && adapterImport != utilsImport)
+    if (packageAdapter && adapterImport != utilsImport)
       "import '$adapterImport';",
   ]);
+  final adapterRelative = adapterImport != null && !packageAdapter
+      ? ["import '$adapterImport';"]
+      : <String>[];
 
   final factory = ignoreErrorLogger
       ? '''
@@ -43,10 +48,7 @@ String restDataSourceTemplate(
       ? '''
 $imports
 
-import '../constants/${feature}_api_paths.dart';
-import '../models/requests/${repoName}_request_model.dart';
-import '../models/response/${repoName}_response_model.dart';
-import '${repoName}_data_source_base.dart';
+${sortImports([...adapterRelative, "import '../constants/${feature}_api_paths.dart';", "import '../models/requests/${repoName}_request_model.dart';", "import '../models/response/${repoName}_response_model.dart';", "import '${repoName}_data_source_base.dart';"])}
 
 part 'rest_${repoName}_data_source.g.dart';
 
@@ -67,7 +69,7 @@ $factory
       : '''
 $imports
 
-import '${repoName}_data_source_base.dart';
+${sortImports([...adapterRelative, "import '${repoName}_data_source_base.dart';"])}
 
 part 'rest_${repoName}_data_source.g.dart';
 

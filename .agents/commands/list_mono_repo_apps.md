@@ -1,9 +1,7 @@
 # Command: list-mono-repo-apps
 
 **Entry point:** `lib/src/commands/list_mono_repo_apps.dart` → `listMonoRepoApps()`
-**Binary:** `dart bin/list_mono_repo_apps.dart`
-
----
+**Runner:** `ListMonoRepoAppsCommand`
 
 ## Usage
 
@@ -11,37 +9,15 @@
 clean-helper list-mono-repo-apps
 ```
 
-No arguments. Run from the monorepo root (or any directory containing `pubspec.yaml`).
+Read-only. Run it from the directory other commands are run from — the monorepo root, in a monorepo.
 
----
+## Behaviour
 
-## What It Does
+- **Doesn't call `ensurePubspec()`**, because that would trigger app selection. It checks for `pubspec.yaml` itself (and aborts without one) and calls `loadPackageConfigs()` directly.
+- Prints, in order:
+  1. The `mono_repo_apps` entries (`n. <folder>  (<path>)`), or setup instructions if there are none.
+  2. `packages.utils` and `packages.network`: name and import, or their defaults.
+  3. `result_type`, or `task_either (default)`.
+  4. The resolved call adapter name and import: `retrofit_call_adapter.import` ?? `packages.network.import` ?? `lib/core/network/utils/retrofit_call_adapter.dart`.
 
-Reads `clean-helper.mono_repo_apps` from `pubspec.yaml` and prints each declared app with its index and path,
-then prints the resolved `clean-helper.packages` config (utils / network) via `loadPackageConfigs()`.
-
-**Example output (monorepo configured):**
-```
-Detected mono-repo apps (2):
-  1. app1  (apps/app1)
-  2. app2  (apps/app2)
-```
-
-**Example output (no config):**
-```
-No mono-repo apps configured.
-Add a clean-helper section to pubspec.yaml to declare your apps:
-
-  clean-helper:
-    mono_repo_apps:
-      - apps/app1
-      - apps/app2
-```
-
----
-
-## Notes
-
-- **Does NOT call `ensurePubspec()`** — that would trigger project selection before the list can be shown. The pubspec check is done directly instead. This is an intentional exception to the normal command pattern.
-- Read-only — makes no changes to the project.
-- Works from both a monorepo root and a single-project root.
+Any new `clean-helper:` config key should be printed here too.

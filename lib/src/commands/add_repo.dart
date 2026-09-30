@@ -104,7 +104,13 @@ void addRepo(
       repoName,
       utilsImport,
       callAdapter: callAdapter?.name ?? 'RetrofitCallAdapter',
-      adapterImport: callAdapter?.import ?? networkPackage?.import,
+      adapterImport:
+          callAdapter?.import ??
+          networkPackage?.import ??
+          (File('lib/core/network/utils/retrofit_call_adapter.dart')
+                  .existsSync()
+              ? '../../../../core/network/utils/retrofit_call_adapter.dart'
+              : null),
       ignoreErrorLogger: networkPackage != null,
       addSample: addSample,
       taskEither: taskEither,
