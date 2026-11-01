@@ -138,7 +138,7 @@ The name must be **snake_case**. It is used as-is for paths, as PascalCase for c
 ```
 lib/
 ├── app/navigation/
-│   └── user_profile_navigation_impl.dart        @LazySingleton(as: UserProfileNavigation)
+│   └── user_profile_navigation_impl.dart        @LazySingleton(as: UserProfileNavigation); context optional, falls back to ContextUtils
 └── features/user_profile/
     ├── di/user_profile_module.dart              only with --di
     ├── presentation/
@@ -435,7 +435,7 @@ build.yaml
 |---|---|
 | `clean_router` | `CleanRouterBase` — the interface every feature router implements (`routes`, `refreshStreams`, `redirect`, `priority`) — and `CleanRouterRefresh`, which merges the routers' refresh streams for go_router |
 | `<app>_localization` | `slang.yaml`, `assets/locales/en.locale.json`, the `String.tr` extension and the generated translations |
-| `<app>_utils` | `Failure`, `ErrorEntity`, `AppLogger`, `AppBlocObserver`, `Debouncer`, `safeCast`, `safeExecute`, `safeExecuteTask`, `listToModelList`, `getCurrentFunctionName`, `JsonDecodeFactory`, and an injectable micro-package that registers `BlocObserver` |
+| `<app>_utils` | `Failure`, `ErrorEntity`, `AppLogger`, `AppBlocObserver`, `ContextUtils`, `Debouncer`, `safeCast`, `safeExecute`, `safeExecuteTask`, `listToModelList`, `getCurrentFunctionName`, `JsonDecodeFactory`, and an injectable micro-package that registers `BlocObserver` |
 
 The app's `@InjectableInit` pulls in the utils micro-package through `externalPackageModulesAfter`, so build_runner has to run in `packages/<app>_utils` before the app. `init` does this for you.
 
@@ -482,6 +482,7 @@ The newer templates work with older projects, as long as you tell the tool what 
 | 1.4.1 | The utils DI module registers `ParseErrorLogger` | Nothing — `add-network-module` detects it and doesn't register a second one |
 | 1.4.2 | Call adapter and `UseCaseBase` use `Future<Either>` | Set `result_type: future_either` |
 | 1.4.4 | `RetrofitCallAdapter` / `RetrofitLogger` live in the utils package | Nothing — `add-network-module` detects them and doesn't generate copies in `lib/core/network/utils/` |
+| 1.5.1 | The utils package has no `ContextUtils` | Nothing required — `add-feature` detects it and keeps generating navigation that takes a required `BuildContext`. To switch, copy `context_utils.dart` and `di/di_container.dart` into `packages/<app>_utils/lib/src/`, export `context_utils.dart`, and add `get_it` to its pubspec |
 | 1.5.0 | No `init_service.dart`; `NetworkModule` uses Chucker and `PrettyDioLogger` | Nothing required — `add-network-module` adds `DioLens.init` to `bootstrap.dart` instead, and `add-auth-interceptor` keeps the Chucker-style `noAuthDio`. To switch to Dio Lens, replace the Chucker and pretty-log interceptors in `NetworkModule` with `DioLensInterceptor(dio: dio)` and drop the Chucker observer from `AppGoRouter` |
 
 Then update `clean-helper.version` to silence the version warning.

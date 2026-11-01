@@ -109,7 +109,7 @@ clean_helper/
 
 ### `feature/` — `add-feature`
 
-`create_feature_structure.dart` → `createFeatureStructure(basePath, feature, {withDi})` calls the `generateFeature*` helpers: `routes`, `navigation`, `navigation_impl`, `page`, `page_provider`, `router`, `bloc`, `module`. `patch_router_module.dart` → `patchRouterModule(feature)`. `build_router_module.dart` → `buildRouterModule(features)`, which sorts features and is the single source of `app_router_module.dart` content.
+`create_feature_structure.dart` → `createFeatureStructure(basePath, feature, utilsImport, {withDi, contextUtils})` calls the `generateFeature*` helpers: `routes`, `navigation`, `navigation_impl`, `page`, `page_provider`, `router`, `bloc`, `module`. `patch_router_module.dart` → `patchRouterModule(feature)`. `build_router_module.dart` → `buildRouterModule(features)`, which sorts features and is the single source of `app_router_module.dart` content. `utils_has_context_utils.dart` → `utilsHasContextUtils(utils)`: whether `packages/<utils>/lib/src/context_utils.dart` exists.
 
 ### `repo/` — `add-repo`
 
@@ -150,7 +150,7 @@ Each file is `<name>_template.dart` → `<name>Template(...)`.
 | Repo | `domain_repo`, `data_source_base`, `data_repo`, `rest_data_source`, `feature_api_paths`, `request_model`, `response_model`, `get_use_case`, `post_use_case`, `get_use_case_params`, `post_use_case_params`, `use_case_base` |
 | Entity | `entity`, `model` |
 | Network | `network_module`, `core_api_paths`, `error_interceptor`, `error_model`, `retrofit_call_adapter`, `retrofit_logger`, `auth_interceptor`, `di_keys_no_auth`, `no_auth_dio_method`, `dio_lens_init` |
-| Utils package | `utils_lib_export`, `utils_pubspec_tail`, `utils_module`, `utils_di_initializer`, `app_logger`, `app_bloc_observer`, `debounce`, `error_entity`, `failure`, `type_definitions`, `get_current_function_name`, `list_to_model_list`, `safe_cast`, `safe_execute`, `safe_execute_task` |
+| Utils package | `utils_lib_export`, `utils_pubspec_tail`, `context_utils`, `di_container` (shared with the app), `utils_module`, `utils_di_initializer`, `app_logger`, `app_bloc_observer`, `debounce`, `error_entity`, `failure`, `type_definitions`, `get_current_function_name`, `list_to_model_list`, `safe_cast`, `safe_execute`, `safe_execute_task` |
 | Localization package | `localization_lib_export`, `localization_pubspec_tail`, `localization_slang_yaml`, `string_extension`, `en_locale`, `slang_yaml` |
 | clean_router package | `clean_router_base`, `clean_router_refresh`, `clean_router_lib_export`, `clean_router_pubspec_tail` |
 | Project config | `analysis_options`, `build_yaml`, `colors_xml`, `gitignore` |
@@ -170,3 +170,5 @@ Templates that take configurable input:
 | `init_service` | `pkg` |
 | `retrofit_call_adapter`, `retrofit_logger`, `error_model` | `utilsImport` |
 | `use_case_base`, `di_initializer` | `utilsPackageName` |
+| `feature_navigation` | `optionalContext` |
+| `feature_navigation_impl` | `utilsImport`, `contextUtils` |

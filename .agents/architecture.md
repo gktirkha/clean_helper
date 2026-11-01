@@ -69,12 +69,14 @@ lib/<app>_utils.dart                 barrel
 lib/src/
 ├── app_logger.dart                  AppLogger (static)
 ├── bloc_observer.dart               AppBlocObserver
+├── context_utils.dart               ContextUtils — root navigator/context, theme, media query, focus, snackbar, dialog, bottom sheet, clipboard, haptics, system UI
 ├── debouncer.dart
 ├── error_entity.dart
 ├── failure.dart                     Failure({message}); Failure.leftFromError(e)
 ├── type_definitions.dart            JsonDecodeFactory<T>
 ├── di/<app>_utils_module.dart       @module — registers BlocObserver
 ├── di/di_initializer.dart           @InjectableInit.microPackage → <App>UtilsPackageModule
+├── di/di_container.dart             GetIt.instance (same instance as the app's), used by ContextUtils for the navigator key
 └── functions/
     ├── get_current_function_name.dart
     ├── list_to_model_list.dart
@@ -83,7 +85,7 @@ lib/src/
     └── safe_execute_task.dart       safeExecuteTask(Future<T> Function()) → TaskEither<Failure, T> (lazy)
 ```
 
-Dependencies: `flutter_bloc`, `fpdart`, `injectable`, `logger`, `<app>_localization`; dev `build_runner`, `injectable_generator`. Build_runner must run here before it runs in the app, so that `<App>UtilsPackageModule` exists.
+Dependencies: `flutter_bloc`, `fpdart`, `get_it`, `injectable`, `logger`, `<app>_localization`; dev `build_runner`, `injectable_generator`. Build_runner must run here before it runs in the app, so that `<App>UtilsPackageModule` exists.
 
 ---
 
@@ -98,7 +100,7 @@ lib/features/<f>/
 │   └── pages/<f>_page.dart                  pure UI, receives <F>Navigation
 ├── router/
 │   ├── <f>_routes.dart                      sealed class <F>Routes { static const <camel> = '/<kebab>'; }
-│   ├── <f>_navigation.dart                  abstract class <F>Navigation { goTo<F>(context) }
+│   ├── <f>_navigation.dart                  abstract class <F>Navigation { goTo<F>([context]) }
 │   └── <f>_router.dart                      @lazySingleton, implements CleanRouterBase
 ├── domain/                                  add-repo / add-entity
 │   ├── entities/<r>_entity.dart
@@ -112,7 +114,7 @@ lib/features/<f>/
     └── repositories/<r>_repository_impl.dart
 ```
 
-`lib/app/navigation/<f>_navigation_impl.dart` is `@LazySingleton(as: <F>Navigation)` and calls `context.go(<F>Routes.<camel>)`.
+`lib/app/navigation/<f>_navigation_impl.dart` is `@LazySingleton(as: <F>Navigation)`. `goTo<F>([BuildContext? context])` uses the given context or falls back to `ContextUtils.currentContext` (the root navigator's), logs through `AppLogger.error` and returns if neither exists, then calls `.go(<F>Routes.<camel>)`. When the utils package has no `ContextUtils` (before 1.5.1), the context is required and there is no fallback.
 
 ---
 

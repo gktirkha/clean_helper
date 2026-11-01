@@ -44,7 +44,7 @@ See `architecture.md` for the full tree. Key points:
 - **App runtime:** `flutter_bloc`, `go_router`, `get_it`, `injectable`, `freezed_annotation`, `fpdart`, `package_info_plus`, `flutter_svg`, `json_annotation`, `logger`, `flutter_localizations` (SDK)
 - **App dev:** `build_runner`, `injectable_generator`, `freezed`, `flutter_gen_runner`, `json_serializable`
 - **App path:** `clean_router`, `<app>_localization`, `<app>_utils`
-- **Utils package:** `flutter_bloc`, `fpdart`, `injectable`, `logger`, `<app>_localization`; dev `build_runner`, `injectable_generator`
+- **Utils package:** `flutter_bloc`, `fpdart`, `get_it`, `injectable`, `logger`, `<app>_localization`; dev `build_runner`, `injectable_generator`
 - **Localization package:** `slang`, `slang_flutter`
 
 ## Notes

@@ -7,6 +7,7 @@ dependencies:
     sdk: flutter
   flutter_bloc:
   fpdart:
+  get_it:
   injectable:
   logger:
   $localizationPackageName:

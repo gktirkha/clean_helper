@@ -15,7 +15,10 @@ void generateHomeFeature(String packageName, {bool withDi = false}) {
 
   generateFeatureRoutes(feature, basePath);
   generateFeatureNavigation(feature, basePath);
-  generateFeatureNavigationImpl(feature);
+  generateFeatureNavigationImpl(
+    feature,
+    'package:${packageName}_utils/${packageName}_utils.dart',
+  );
   generateFeatureRouter(feature, basePath);
   generateFeaturePage(feature, basePath);
   generateFeaturePageProvider(feature, basePath);

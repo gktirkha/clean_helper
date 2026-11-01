@@ -3,7 +3,9 @@ import 'dart:io';
 import '../../templates/analysis_options_template.dart';
 import '../../templates/app_bloc_observer_template.dart';
 import '../../templates/app_logger_template.dart';
+import '../../templates/context_utils_template.dart';
 import '../../templates/debounce_template.dart';
+import '../../templates/di_container_template.dart';
 import '../../templates/error_entity_template.dart';
 import '../../templates/failure_template.dart';
 import '../../templates/get_current_function_name_template.dart';
@@ -116,6 +118,14 @@ void generateUtilsPackage(
   overwriteFile(
     'packages/$utilsPackageName/lib/src/di/di_initializer.dart',
     utilsDiInitializerTemplate(),
+  );
+  overwriteFile(
+    'packages/$utilsPackageName/lib/src/di/di_container.dart',
+    diContainerTemplate(),
+  );
+  overwriteFile(
+    'packages/$utilsPackageName/lib/src/context_utils.dart',
+    contextUtilsTemplate(),
   );
 
   stdout.writeln('📦 $utilsPackageName package created');

@@ -2,10 +2,19 @@ import '../shared/pascal_case.dart';
 import '../shared/write_file.dart';
 import '../../templates/feature_navigation_impl_template.dart';
 
-void generateFeatureNavigationImpl(String feature) {
+void generateFeatureNavigationImpl(
+  String feature,
+  String utilsImport, {
+  bool contextUtils = true,
+}) {
   final className = pascalCase(feature);
   writeFile(
     'lib/app/navigation/${feature}_navigation_impl.dart',
-    featureNavigationImplTemplate(feature, className),
+    featureNavigationImplTemplate(
+      feature,
+      className,
+      utilsImport,
+      contextUtils: contextUtils,
+    ),
   );
 }

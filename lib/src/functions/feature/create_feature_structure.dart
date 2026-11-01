@@ -9,12 +9,22 @@ import 'generate_feature_page_provider.dart';
 
 void createFeatureStructure(
   String basePath,
-  String featureName, {
+  String featureName,
+  String utilsImport, {
   bool withDi = false,
+  bool contextUtils = true,
 }) {
   generateFeatureRoutes(featureName, basePath);
-  generateFeatureNavigation(featureName, basePath);
-  generateFeatureNavigationImpl(featureName);
+  generateFeatureNavigation(
+    featureName,
+    basePath,
+    optionalContext: contextUtils,
+  );
+  generateFeatureNavigationImpl(
+    featureName,
+    utilsImport,
+    contextUtils: contextUtils,
+  );
   generateFeaturePage(featureName, basePath);
   generateFeaturePageProvider(featureName, basePath);
   generateFeatureRouter(featureName, basePath);
