@@ -19,7 +19,8 @@ Run after `add-network-module`. It's idempotent: each step skips work that's alr
 4. `patchNetworkModule()` → in `lib/core/network/di/network_module.dart`:
    - imports `../interceptors/auth_interceptor.dart` and `../../di/di_keys.dart` (via `insertAfterLastImport`);
    - adds an `AuthInterceptor authInterceptor` parameter to `dio()` and puts it first in the interceptor list;
-   - appends a `@Named(DIKeys.noAuthDio)` `noAuthDio()` provider (`no_auth_dio_method` template).
+   - appends a `@Named(DIKeys.noAuthDio)` `noAuthDio()` provider (`no_auth_dio_method` template) with its own `DioLensInterceptor`. A module that still has `ChuckerDioInterceptor` (before 1.5.0) gets the old Chucker / `PrettyDioLogger` variant (`chucker: true`).
+   - The interceptor list is found by `interceptors.addAll([`, which matches both the `..interceptors` cascade (before 1.5.0) and `dio.interceptors` (1.5.0+).
 5. `runDartFormat()`, `runBuildRunner()`, then next steps (unless `showNextSteps: false`)
 
 Each patch is skipped when its marker is already in the file. If `network_module.dart` is missing, the step warns and skips.

@@ -107,7 +107,7 @@ What it does:
 
 1. Writes `analysis_options.yaml` and runs `flutter pub get`.
 2. Creates three workspace packages under `packages/`: `clean_router`, `<app>_localization` and `<app>_utils` (see [Workspace packages](#workspace-packages)), and adds them to `workspace:` in `pubspec.yaml`.
-3. Generates the app skeleton: `main.dart`, `bootstrap.dart`, `MainApp`, go_router setup, get_it/injectable DI, `UseCaseBase`, and a `home` feature.
+3. Generates the app skeleton: `main.dart`, `bootstrap.dart`, `InitService`, `MainApp`, go_router setup, get_it/injectable DI, `UseCaseBase`, and a `home` feature.
 4. Installs dependencies, updates `.gitignore`, adds `.vscode/` config and flutter_gen setup (`build.yaml`, `assets/colors/colors.xml`).
 5. Optionally adds the network layer, auth interceptor and tools.
 6. Runs slang, then build_runner in the utils package and in the app, then `dart format`.
@@ -217,13 +217,13 @@ Generates:
 | File | Contents |
 |---|---|
 | `lib/core/network/constants/api_paths.dart` | `ApiPaths.baseUrl` |
-| `lib/core/network/di/network_module.dart` | `@module` providing `Dio` (error, Chucker and pretty-log interceptors) and registering `RetrofitLogger` as `ParseErrorLogger` |
+| `lib/core/network/di/network_module.dart` | `@module` providing `Dio` (error and [Dio Lens](https://pub.dev/packages/dio_lens) interceptors) and registering `RetrofitLogger` as `ParseErrorLogger` |
 | `lib/core/network/interceptors/error_interceptor.dart` | Parses `{"errors": [...]}` responses into `ErrorModel` |
 | `lib/core/network/utils/retrofit_call_adapter.dart` | `RetrofitCallAdapter` — adapts Retrofit calls to `TaskEither<Failure, T>` |
 | `lib/core/network/utils/retrofit_logger.dart` | `RetrofitLogger` — logs Retrofit parse errors |
 | `lib/core/data/models/error_model.dart` | `@freezed` `ErrorModel` implementing `ErrorEntity` |
 
-It then installs `dio`, `retrofit`, `json_annotation`, `pretty_dio_logger` and `chucker_flutter` (plus dev `retrofit_generator` and `json_serializable`), adds `ChuckerFlutter.navigatorObserver` to `AppGoRouter`, formats and runs build_runner. Existing files are skipped.
+It then installs `dio`, `dio_lens`, `retrofit` and `json_annotation` (plus dev `retrofit_generator` and `json_serializable`), adds `DioLens.init(...)` to `InitService.init` (or `bootstrap()` in older projects) right after `Bloc.observer`, formats and runs build_runner. Existing files are skipped.
 
 ### `add-auth-interceptor`
 
@@ -408,7 +408,8 @@ When shared code lives in separately named workspace packages rather than `packa
 lib/
 ├── main.dart
 ├── app/
-│   ├── bootstrap.dart         DI, locale, BlocObserver, runApp
+│   ├── bootstrap.dart         binding, InitService().init(), runApp
+│   ├── init_service.dart      locale, DI, BlocObserver, DioLens (add-network-module)
 │   ├── main_app.dart
 │   ├── di/                    di_container.dart (GetIt), di_initializer.dart (@InjectableInit), app_module.dart
 │   ├── navigation/            <feature>_navigation_impl.dart
@@ -481,6 +482,7 @@ The newer templates work with older projects, as long as you tell the tool what 
 | 1.4.1 | The utils DI module registers `ParseErrorLogger` | Nothing — `add-network-module` detects it and doesn't register a second one |
 | 1.4.2 | Call adapter and `UseCaseBase` use `Future<Either>` | Set `result_type: future_either` |
 | 1.4.4 | `RetrofitCallAdapter` / `RetrofitLogger` live in the utils package | Nothing — `add-network-module` detects them and doesn't generate copies in `lib/core/network/utils/` |
+| 1.5.0 | No `init_service.dart`; `NetworkModule` uses Chucker and `PrettyDioLogger` | Nothing required — `add-network-module` adds `DioLens.init` to `bootstrap.dart` instead, and `add-auth-interceptor` keeps the Chucker-style `noAuthDio`. To switch to Dio Lens, replace the Chucker and pretty-log interceptors in `NetworkModule` with `DioLensInterceptor(dio: dio)` and drop the Chucker observer from `AppGoRouter` |
 
 Then update `clean-helper.version` to silence the version warning.
 
@@ -490,6 +492,7 @@ Then update `clean-helper.version` to silence the version warning.
 
 - Dart SDK ^3.11.3 and a Flutter SDK
 - Run from a Flutter project root (with `pubspec.yaml` and `lib/`), or from a monorepo root that declares `mono_repo_apps`
+- `add-network-module` installs `dio_lens`, which needs Dart ^3.13.7 (Flutter 3.47.8+) in the target project
 - [fvm](https://fvm.app) is optional and used automatically when installed
 
 Release notes: [CHANGELOG.md](CHANGELOG.md).

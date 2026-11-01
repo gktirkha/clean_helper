@@ -86,7 +86,7 @@ bin/clean_helper.dart → CleanHelperRunner.run(args)
 6. `generateFlutterGenFiles()` — `build.yaml`, `assets/colors/colors.xml`
 7. `generateCleanRouterPackage()`, `generateLocalizationPackage()`, `generateUtilsPackage()`
 8. `addCleanRouterWorkspace()` — adds all three packages to `workspace:`
-9. `generateCoreFiles()` — main, bootstrap, app, DI, router
+9. `generateCoreFiles()` — main, bootstrap, init service, app, DI, router
 10. `generateUtilsFiles()` — `lib/core/domain/use_cases/use_case_base.dart`
 11. `generateHomeFeature()`; `generateToolsFiles()` with `--tools`
 12. `installDependencies()`, `updateGitignore()`, `addVscodeConfig()`, `addFlutterAssetsToPubSpec()`

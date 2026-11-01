@@ -16,10 +16,9 @@ It's idempotent: every file goes through `writeFile`.
 1. `ensurePubspec()`
 2. `utilsPackageName` = `utilsPackageConfig?.name` ?? `<app>_utils`; `utilsImport` = `utilsPackageConfig?.import` ?? `package:<utils>/<utils>.dart`
 3. `generateNetworkFiles(utilsImport, registerErrorLogger: !utilsRegistersErrorLogger(utils), retrofitHelpersInUtils: utilsHasRetrofitHelpers(utils))`
-4. `installNetworkDependencies()` — `dio`, `retrofit`, `json_annotation`; dev `retrofit_generator`, `json_serializable`; `pretty_dio_logger` from git
-5. `addChuckerDependency()` — `chucker_flutter` from git
-6. `patchAppGoRouter()` — adds the Chucker import and `observers: [ChuckerFlutter.navigatorObserver]` to `lib/app/router/app_go_router.dart`
-7. `runDartFormat()`, `runBuildRunner()` (unless `runBuildRunnerAfter: false`)
+4. `installNetworkDependencies()` — `dio`, `dio_lens`, `retrofit`, `json_annotation`; dev `retrofit_generator`, `json_serializable`
+5. `patchDioLensInit()` — inserts `DioLens.init(navigatorKey: diContainer(), settings: const DioLensSettings(themeMode: .system))` (`dio_lens_init` template) after the `Bloc.observer = diContainer();` line of `lib/app/init_service.dart`, falling back to `lib/app/bootstrap.dart` for projects before 1.5.0, and adds the `dio_lens` import at its sorted place. Skips if `DioLens.init(` is already there; warns if the anchor line is missing
+6. `runDartFormat()`, `runBuildRunner()` (unless `runBuildRunnerAfter: false`)
 
 ## Generated files
 
@@ -30,7 +29,7 @@ It's idempotent: every file goes through `writeFile`.
 | `lib/core/network/interceptors/error_interceptor.dart` | `error_interceptor` | |
 | `lib/core/network/utils/retrofit_call_adapter.dart` | `retrofit_call_adapter(utilsImport)` | skipped when `retrofitHelpersInUtils` |
 | `lib/core/network/utils/retrofit_logger.dart` | `retrofit_logger(utilsImport)` | skipped when `retrofitHelpersInUtils` |
-| `lib/core/network/di/network_module.dart` | `network_module(loggerImport, registerErrorLogger:)` | `loggerImport` is `../utils/retrofit_logger.dart`, or `utilsImport` when `retrofitHelpersInUtils` |
+| `lib/core/network/di/network_module.dart` | `network_module(loggerImport, registerErrorLogger:)` — `Dio` built in a block body so `DioLensInterceptor(dio: dio)` can take the instance | `loggerImport` is `../utils/retrofit_logger.dart`, or `utilsImport` when `retrofitHelpersInUtils` |
 
 ## Compatibility with older projects
 
@@ -41,5 +40,7 @@ It's idempotent: every file goes through `writeFile`.
 
 ## Notes
 
+- Projects before 1.5.0 keep their Chucker / `PrettyDioLogger` network module and `app_go_router.dart` (`writeFile` skips them); `add-network-module` no longer installs either package.
+
 - `add-auth-interceptor` patches the generated `NetworkModule` by regex (`@lazySingleton\s+Dio dio\(`). Keep that signature stable.
-- `commands/add_network.dart` (`addNetwork()`) is a legacy variant without `patchAppGoRouter` or build_runner, and it isn't registered. Keep its arguments in step with `generateNetworkFiles`.
+- `commands/add_network.dart` (`addNetwork()`) is a legacy variant without `patchDioLensInit` or build_runner, and it isn't registered. Keep its arguments in step with `generateNetworkFiles`.

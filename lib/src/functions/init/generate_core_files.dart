@@ -10,6 +10,7 @@ import '../../templates/core_module_template.dart';
 import '../../templates/di_container_template.dart';
 import '../../templates/di_initializer_template.dart';
 import '../../templates/di_keys_template.dart';
+import '../../templates/init_service_template.dart';
 import '../../templates/main_app_dart_template.dart';
 import '../../templates/main_dart_template.dart';
 import '../../templates/app_router_module_template.dart';
@@ -18,7 +19,8 @@ void generateCoreFiles(String packageName, String utilsPackageName) {
   final utilsClassName = pascalCase(utilsPackageName);
 
   overwriteFile('lib/main.dart', mainDartTemplate());
-  writeFile('lib/app/bootstrap.dart', bootstrapDartTemplate(packageName));
+  writeFile('lib/app/bootstrap.dart', bootstrapDartTemplate());
+  writeFile('lib/app/init_service.dart', initServiceTemplate(packageName));
   writeFile('lib/app/main_app.dart', mainAppDartTemplate(packageName));
   writeFile(
     'lib/app/router/app_go_router.dart',

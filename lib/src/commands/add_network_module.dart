@@ -1,10 +1,9 @@
 import 'dart:io';
 
 import '../functions/add_network_module/install_network_dependencies.dart';
-import '../functions/add_network_module/patch_app_go_router.dart';
+import '../functions/add_network_module/patch_dio_lens_init.dart';
 import '../functions/add_network_module/utils_has_retrofit_helpers.dart';
 import '../functions/add_network_module/utils_registers_error_logger.dart';
-import '../functions/init/add_chucker_dependency.dart';
 import '../functions/init/generate_network_files.dart';
 import '../functions/init/run_build_runner.dart';
 import '../functions/init/run_dart_format.dart';
@@ -26,8 +25,7 @@ void addNetworkModule({bool runBuildRunnerAfter = true}) {
     retrofitHelpersInUtils: utilsHasRetrofitHelpers(utilsPackageName),
   );
   installNetworkDependencies();
-  addChuckerDependency();
-  patchAppGoRouter();
+  patchDioLensInit();
   runDartFormat();
   if (runBuildRunnerAfter) runBuildRunner();
 

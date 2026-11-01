@@ -20,7 +20,7 @@ String networkModuleTemplate(
   return '''
 import 'dart:io';
 
-${sortImports(["import 'package:chucker_flutter/chucker_flutter.dart';", "import 'package:dio/dio.dart';", "import 'package:injectable/injectable.dart';", "import 'package:package_info_plus/package_info_plus.dart';", "import 'package:pretty_dio_logger/pretty_dio_logger.dart';", if (registerErrorLogger) "import 'package:retrofit/retrofit.dart';", if (registerErrorLogger && packageLogger) "import '$loggerImport';"])}
+${sortImports(["import 'package:dio/dio.dart';", "import 'package:dio_lens/dio_lens.dart';", "import 'package:injectable/injectable.dart';", "import 'package:package_info_plus/package_info_plus.dart';", if (registerErrorLogger) "import 'package:retrofit/retrofit.dart';", if (registerErrorLogger && packageLogger) "import '$loggerImport';"])}
 
 ${sortImports(["import '../constants/api_paths.dart';", "import '../interceptors/error_interceptor.dart';", if (registerErrorLogger && !packageLogger) "import '$loggerImport';"])}
 
@@ -36,26 +36,20 @@ abstract class NetworkModule {
       'User-Agent':
           '\${packageInfo.appName}-\${Platform.operatingSystem}/\${packageInfo.version}+\${packageInfo.buildNumber}',
     },
-  );
-
-  @lazySingleton
-  ChuckerDioInterceptor get chuckerDioInterceptor => ChuckerDioInterceptor();
-
-  @lazySingleton
-  PrettyDioLogger get prettyDioLogger => PrettyDioLogger();$errorLogger
+  );$errorLogger
 
   @lazySingleton
   Dio dio(
     BaseOptions baseOptions,
     ErrorInterceptor errorInterceptor,
-    ChuckerDioInterceptor chuckerDioInterceptor,
-    PrettyDioLogger prettyDioLogger,
-  ) => Dio(baseOptions)
-    ..interceptors.addAll([
+  ) {
+    final dio = Dio(baseOptions);
+    dio.interceptors.addAll([
       errorInterceptor,
-      chuckerDioInterceptor,
-      prettyDioLogger,
+      DioLensInterceptor(dio: dio),
     ]);
+    return dio;
+  }
 }
 ''';
 }

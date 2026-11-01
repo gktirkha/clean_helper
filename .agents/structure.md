@@ -72,6 +72,7 @@ clean_helper/
 | `tool_version.dart` | `toolVersion` | Must equal pubspec `version:` |
 | `write_file.dart` | `writeFile`, `overwriteFile` | The only way to write target files |
 | `insert_after_last_import.dart` | `insertAfterLastImport(content, line)` | Patch helper |
+| `insert_package_import.dart` | `insertPackageImport(content, line)` | Patch helper — `package:` import at its sorted place |
 | `run_command.dart` | `runCommand(cmd, {workingDirectory})` | Run a process, abort on failure |
 | `run_command_streamed.dart` | `runCommandStreamed(cmd)` | Same, streaming output |
 | `fvm_exec.dart` | `fvmExec(exe)` | `['fvm', exe]` or `[exe]` |
@@ -98,7 +99,6 @@ clean_helper/
 | `install_dependencies.dart` | `installDependencies(utilsPackageName, localizationPackageName)` |
 | `update_gitignore.dart` | `updateGitignore()` |
 | `add_flutter_assets_to_pubspec.dart` | `addFlutterAssetsToPubSpec()` |
-| `add_chucker_dependency.dart` | `addChuckerDependency()` |
 | `generate_network_files.dart` | `generateNetworkFiles(utilsImport, {registerErrorLogger, retrofitHelpersInUtils})` |
 | `generate_retrofit_call_adapter.dart` | `generateRetrofitCallAdapter(utilsImport)` → `lib/core/network/utils/` |
 | `generate_retrofit_logger.dart` | `generateRetrofitLogger(utilsImport)` → `lib/core/network/utils/` |
@@ -131,7 +131,7 @@ clean_helper/
 | Folder | Files → functions |
 |---|---|
 | `entity/` | `generateEntityFile(dir, name)`, `generateModelFile(dir, name, entityImport)` |
-| `add_network_module/` | `installNetworkDependencies()`, `patchAppGoRouter()`, `utilsRegistersErrorLogger(utils)`, `utilsHasRetrofitHelpers(utils)` |
+| `add_network_module/` | `installNetworkDependencies()`, `patchDioLensInit()`, `utilsRegistersErrorLogger(utils)`, `utilsHasRetrofitHelpers(utils)` |
 | `auth_interceptor/` | `generateAuthInterceptor()`, `patchDiKeys()`, `patchNetworkModule()` |
 | `remove_feature/` | `deleteFeatureFiles(feature)`, `unpatchRouterModule(feature)` |
 | `build_runner/` | `runBuildRunnerBuild()`, `runBuildRunnerClean()` |
@@ -146,11 +146,11 @@ Each file is `<name>_template.dart` → `<name>Template(...)`.
 
 | Area | Templates |
 |---|---|
-| App skeleton | `main_dart`, `main_app_dart`, `bootstrap_dart`, `di_container`, `di_initializer`, `di_keys`, `app_module`, `core_module`, `app_go_router`, `app_go_router_redirect`, `app_router_module`, `app_router_module_build` |
+| App skeleton | `main_dart`, `main_app_dart`, `bootstrap_dart`, `init_service`, `di_container`, `di_initializer`, `di_keys`, `app_module`, `core_module`, `app_go_router`, `app_go_router_redirect`, `app_router_module`, `app_router_module_build` |
 | Feature | `feature_routes`, `feature_navigation`, `feature_navigation_impl`, `feature_router`, `feature_page`, `feature_page_provider`, `feature_bloc`, `feature_event`, `feature_state`, `feature_module` |
 | Repo | `domain_repo`, `data_source_base`, `data_repo`, `rest_data_source`, `feature_api_paths`, `request_model`, `response_model`, `get_use_case`, `post_use_case`, `get_use_case_params`, `post_use_case_params`, `use_case_base` |
 | Entity | `entity`, `model` |
-| Network | `network_module`, `core_api_paths`, `error_interceptor`, `error_model`, `retrofit_call_adapter`, `retrofit_logger`, `auth_interceptor`, `di_keys_no_auth`, `no_auth_dio_method` |
+| Network | `network_module`, `core_api_paths`, `error_interceptor`, `error_model`, `retrofit_call_adapter`, `retrofit_logger`, `auth_interceptor`, `di_keys_no_auth`, `no_auth_dio_method`, `dio_lens_init` |
 | Utils package | `utils_lib_export`, `utils_pubspec_tail`, `utils_module`, `utils_di_initializer`, `app_logger`, `app_bloc_observer`, `debounce`, `error_entity`, `failure`, `type_definitions`, `get_current_function_name`, `list_to_model_list`, `safe_cast`, `safe_execute`, `safe_execute_task` |
 | Localization package | `localization_lib_export`, `localization_pubspec_tail`, `localization_slang_yaml`, `string_extension`, `en_locale`, `slang_yaml` |
 | clean_router package | `clean_router_base`, `clean_router_refresh`, `clean_router_lib_export`, `clean_router_pubspec_tail` |
@@ -166,5 +166,8 @@ Templates that take configurable input:
 | `rest_data_source` | `utilsImport`, `callAdapter`, `adapterImport` (package URI or relative path), `ignoreErrorLogger`, `addSample`, `taskEither` |
 | `get_use_case`, `post_use_case` | `utilsImport`, `importUseCaseBase`, `taskEither` |
 | `network_module` | `loggerImport` (package URI or relative path), `registerErrorLogger` |
+| `no_auth_dio_method` | `chucker` (pre-1.5.0 network module) |
+| `dio_lens_init` | `indent` |
+| `init_service` | `pkg` |
 | `retrofit_call_adapter`, `retrofit_logger`, `error_model` | `utilsImport` |
 | `use_case_base`, `di_initializer` | `utilsPackageName` |

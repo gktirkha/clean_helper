@@ -96,11 +96,11 @@ fvm dart format lib bin
 fvm dart analyze                  # must print "No issues found!"
 ```
 
-End-to-end, in a scratch directory outside the repo, using Flutter 3.47.5 via fvm:
+End-to-end, in a scratch directory outside the repo, using Flutter 3.47.8 via fvm:
 
 ```bash
-fvm spawn 3.47.5 create --project-name demo --platforms android demo && cd demo
-fvm use 3.47.5 --force
+fvm spawn 3.47.8 create --project-name demo --platforms android demo && cd demo
+fvm use 3.47.8 --force
 fvm dart run /path/to/clean_helper/bin/clean_helper.dart init --network
 fvm dart run /path/to/clean_helper/bin/clean_helper.dart add-feature x
 fvm dart run /path/to/clean_helper/bin/clean_helper.dart add-repo x x --add-sample
@@ -110,8 +110,7 @@ fvm dart analyze lib packages     # expect no errors or warnings
 The expected infos are:
 
 - `prefer_initializing_formals` in the generated use cases;
-- `prefer_const_constructors` in the model `.g.dart` files;
-- Chucker's `navigatorObserver` deprecation.
+- `prefer_const_constructors` in the model `.g.dart` files.
 
 `test/widget_test.dart` from `flutter create` fails to compile because it references `MyApp`, which `init` removes. Leave it out of analysis.
 

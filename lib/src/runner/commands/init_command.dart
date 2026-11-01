@@ -8,7 +8,7 @@ class InitCommand extends Command<void> {
       'network',
       abbr: 'n',
       negatable: false,
-      help: 'Also set up the network layer (Dio, Retrofit, Chucker).',
+      help: 'Also set up the network layer (Dio, Retrofit, Dio Lens).',
     );
     argParser.addFlag(
       'di',
