@@ -46,7 +46,7 @@ abstract class NetworkModule {
     final dio = Dio(baseOptions);
     dio.interceptors.addAll([
       errorInterceptor,
-      DioLensInterceptor(dio: dio),
+      DioLensInterceptor(dio: dio, name: 'api'),
     ]);
     return dio;
   }

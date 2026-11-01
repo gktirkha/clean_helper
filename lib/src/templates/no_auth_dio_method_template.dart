@@ -23,6 +23,9 @@ String noAuthDioMethodTemplate({bool chucker = false}) => chucker
   @Named(DIKeys.noAuthDio)
   Dio noAuthDio(BaseOptions baseOptions, ErrorInterceptor errorInterceptor) {
     final dio = Dio(baseOptions);
-    dio.interceptors.addAll([DioLensInterceptor(dio: dio), errorInterceptor]);
+    dio.interceptors.addAll([
+      DioLensInterceptor(dio: dio, name: 'no-auth'),
+      errorInterceptor,
+    ]);
     return dio;
   }''';

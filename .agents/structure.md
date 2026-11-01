@@ -71,8 +71,7 @@ clean_helper/
 | `check_version_mismatch.dart` | `checkVersionMismatch()` | Warn if `clean-helper.version` ≠ `toolVersion` |
 | `tool_version.dart` | `toolVersion` | Must equal pubspec `version:` |
 | `write_file.dart` | `writeFile`, `overwriteFile` | The only way to write target files |
-| `insert_after_last_import.dart` | `insertAfterLastImport(content, line)` | Patch helper |
-| `insert_package_import.dart` | `insertPackageImport(content, line)` | Patch helper — `package:` import at its sorted place |
+| `insert_sorted_import.dart` | `insertSortedImport(content, line)` | Patch helper — adds an import at its sorted place within its `dart:` / `package:` / relative section |
 | `run_command.dart` | `runCommand(cmd, {workingDirectory})` | Run a process, abort on failure |
 | `run_command_streamed.dart` | `runCommandStreamed(cmd)` | Same, streaming output |
 | `fvm_exec.dart` | `fvmExec(exe)` | `['fvm', exe]` or `[exe]` |

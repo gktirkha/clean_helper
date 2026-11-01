@@ -157,7 +157,7 @@ retrofit_generator still emits `_setStreamType<Either<Failure, T>>` in `.g.dart`
 | Piece | Location | Notes |
 |---|---|---|
 | `ApiPaths.baseUrl` | `core/network/constants/api_paths.dart` | |
-| `NetworkModule` | `core/network/di/network_module.dart` | `BaseOptions` (User-Agent from `PackageInfo`), `Dio` with the error interceptor and a `DioLensInterceptor(dio: dio)`, and the `RetrofitLogger` registration. `add-auth-interceptor` adds `AuthInterceptor` and a `@Named(DIKeys.noAuthDio)` Dio. Projects before 1.5.0 use `ChuckerDioInterceptor` + `PrettyDioLogger` instead |
+| `NetworkModule` | `core/network/di/network_module.dart` | `BaseOptions` (User-Agent from `PackageInfo`), `Dio` with the error interceptor and a `DioLensInterceptor(dio: dio, name: 'api')`, and the `RetrofitLogger` registration. `add-auth-interceptor` adds `AuthInterceptor` and a `@Named(DIKeys.noAuthDio)` Dio. Projects before 1.5.0 use `ChuckerDioInterceptor` + `PrettyDioLogger` instead |
 | `DioLens.init` | `app/init_service.dart` (`app/bootstrap.dart` before 1.5.0) | Added by `add-network-module` after `Bloc.observer`, with the DI navigator key and `themeMode: .system` |
 | `ErrorInterceptor` | `core/network/interceptors/` | `{"errors": [...]}` → `ErrorModel` |
 | `RetrofitCallAdapter`, `RetrofitLogger` | `core/network/utils/` | Import the utils package. Projects before 1.4.4 have them in `packages/<app>_utils/lib/src/network/` |

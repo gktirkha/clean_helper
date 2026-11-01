@@ -1,6 +1,6 @@
 import 'dart:io';
 
-import '../shared/insert_after_last_import.dart';
+import '../shared/insert_sorted_import.dart';
 import '../shared/write_file.dart';
 import '../../templates/no_auth_dio_method_template.dart';
 
@@ -20,12 +20,12 @@ void patchNetworkModule() {
   const diKeysImport = "import '../../di/di_keys.dart';";
 
   if (!content.contains('auth_interceptor.dart')) {
-    content = insertAfterLastImport(content, authImport);
+    content = insertSortedImport(content, authImport);
     changed = true;
   }
 
   if (!content.contains('di_keys.dart')) {
-    content = insertAfterLastImport(content, diKeysImport);
+    content = insertSortedImport(content, diKeysImport);
     changed = true;
   }
 

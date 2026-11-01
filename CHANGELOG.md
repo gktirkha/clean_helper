@@ -1,3 +1,8 @@
+## 1.5.1
+
+- Each `DioLensInterceptor` is named — `api` for the main `Dio`, `no-auth` for `noAuthDio` — so Dio Lens labels requests by client and replays them through the right one
+- `add-auth-interceptor` inserts its `auth_interceptor.dart` and `di_keys.dart` imports in sorted order instead of after the last import, so `directives_ordering` passes
+
 ## 1.5.0
 
 - `init` generates `lib/app/init_service.dart`: `InitService.init()` sets the device locale, `Debouncer.showLogs`, runs `diInitializer` and sets `Bloc.observer`, logging any exception through `AppLogger.error`. `bootstrap()` now only calls `WidgetsFlutterBinding.ensureInitialized()`, `await InitService().init()` and `runApp`

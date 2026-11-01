@@ -17,9 +17,9 @@ Run after `add-network-module`. It's idempotent: each step skips work that's alr
 2. `generateAuthInterceptor()` → `lib/core/network/interceptors/auth_interceptor.dart` (`auth_interceptor` template)
 3. `patchDiKeys()` → adds `static const String noAuthDio = 'noAuthDio';` to `DIKeys` in `lib/core/di/di_keys.dart`, or creates the file from `di_keys_no_auth`
 4. `patchNetworkModule()` → in `lib/core/network/di/network_module.dart`:
-   - imports `../interceptors/auth_interceptor.dart` and `../../di/di_keys.dart` (via `insertAfterLastImport`);
+   - imports `../interceptors/auth_interceptor.dart` and `../../di/di_keys.dart` (via `insertSortedImport`, so `directives_ordering` still passes);
    - adds an `AuthInterceptor authInterceptor` parameter to `dio()` and puts it first in the interceptor list;
-   - appends a `@Named(DIKeys.noAuthDio)` `noAuthDio()` provider (`no_auth_dio_method` template) with its own `DioLensInterceptor`. A module that still has `ChuckerDioInterceptor` (before 1.5.0) gets the old Chucker / `PrettyDioLogger` variant (`chucker: true`).
+   - appends a `@Named(DIKeys.noAuthDio)` `noAuthDio()` provider (`no_auth_dio_method` template) with its own `DioLensInterceptor(dio: dio, name: 'no-auth')`. A module that still has `ChuckerDioInterceptor` (before 1.5.0) gets the old Chucker / `PrettyDioLogger` variant (`chucker: true`).
    - The interceptor list is found by `interceptors.addAll([`, which matches both the `..interceptors` cascade (before 1.5.0) and `dio.interceptors` (1.5.0+).
 5. `runDartFormat()`, `runBuildRunner()`, then next steps (unless `showNextSteps: false`)
 

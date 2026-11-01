@@ -29,7 +29,7 @@ It's idempotent: every file goes through `writeFile`.
 | `lib/core/network/interceptors/error_interceptor.dart` | `error_interceptor` | |
 | `lib/core/network/utils/retrofit_call_adapter.dart` | `retrofit_call_adapter(utilsImport)` | skipped when `retrofitHelpersInUtils` |
 | `lib/core/network/utils/retrofit_logger.dart` | `retrofit_logger(utilsImport)` | skipped when `retrofitHelpersInUtils` |
-| `lib/core/network/di/network_module.dart` | `network_module(loggerImport, registerErrorLogger:)` — `Dio` built in a block body so `DioLensInterceptor(dio: dio)` can take the instance | `loggerImport` is `../utils/retrofit_logger.dart`, or `utilsImport` when `retrofitHelpersInUtils` |
+| `lib/core/network/di/network_module.dart` | `network_module(loggerImport, registerErrorLogger:)` — `Dio` built in a block body so `DioLensInterceptor(dio: dio, name: 'api')` can take the instance; the name labels its requests in Dio Lens and picks the Dio used to replay them | `loggerImport` is `../utils/retrofit_logger.dart`, or `utilsImport` when `retrofitHelpersInUtils` |
 
 ## Compatibility with older projects
 

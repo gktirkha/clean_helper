@@ -1,6 +1,6 @@
 import 'dart:io';
 
-import '../shared/insert_package_import.dart';
+import '../shared/insert_sorted_import.dart';
 import '../shared/write_file.dart';
 import '../../templates/dio_lens_init_template.dart';
 
@@ -44,7 +44,7 @@ void patchDioLensInit() {
 
   const dioLensImport = "import 'package:dio_lens/dio_lens.dart';";
   if (!content.contains(dioLensImport)) {
-    content = insertPackageImport(content, dioLensImport);
+    content = insertSortedImport(content, dioLensImport);
   }
 
   overwriteFile(path, content);
