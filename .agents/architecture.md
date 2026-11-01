@@ -114,7 +114,7 @@ lib/features/<f>/
     └── repositories/<r>_repository_impl.dart
 ```
 
-`lib/app/navigation/<f>_navigation_impl.dart` is `@LazySingleton(as: <F>Navigation)`. `goTo<F>([BuildContext? context])` uses the given context or falls back to `ContextUtils.currentContext` (the root navigator's), logs through `AppLogger.error` and returns if neither exists, then calls `.go(<F>Routes.<camel>)`. When the utils package has no `ContextUtils` (before 1.5.1), the context is required and there is no fallback.
+`lib/app/navigation/<f>_navigation_impl.dart` is `@LazySingleton(as: <F>Navigation)`. `goTo<F>([BuildContext? context])` uses the given context or falls back to `ContextUtils.currentContext` (the root navigator's), logs through `AppLogger.error` and returns if neither exists, then calls `.go(<F>Routes.<camel>)`. When the utils package has no `ContextUtils` (before 1.6.0), the context is required and there is no fallback.
 
 ---
 

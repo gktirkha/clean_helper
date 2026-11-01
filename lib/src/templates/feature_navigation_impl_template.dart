@@ -4,7 +4,7 @@ import '../functions/shared/sort_imports.dart';
 /// With [contextUtils], `goTo<Feature>` falls back to
 /// `ContextUtils.currentContext` (from [utilsImport]) when no context is
 /// passed, and logs an error if none is available. Without it (utils packages
-/// from before 1.5.1), the context is required.
+/// from before 1.6.0), the context is required.
 String featureNavigationImplTemplate(
   String feature,
   String className,

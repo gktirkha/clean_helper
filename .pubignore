@@ -1,0 +1,15 @@
+# pub uses this file instead of .gitignore, so repeat its entries.
+.dart_tool/
+.DS_Store
+pubspec.lock
+.fvm/
+
+# Tooling and editor config
+.fvmrc
+.vscode/
+.claude/
+
+# Agent docs and notes — not part of the published package
+.agents/
+CLAUDE.md
+structure.md

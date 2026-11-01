@@ -1,7 +1,10 @@
-## 1.5.1
+## 1.6.0
 
 - The utils package gets `ContextUtils` (root navigator and context, theme, media query, focus, snackbar, dialog, bottom sheet, clipboard, haptics and system UI helpers) and its own `di/di_container.dart` (`GetIt.instance`); it now depends on `get_it` and exports `context_utils.dart`
 - Generated navigation takes an optional context: `goTo<Feature>([BuildContext? context])` falls back to `ContextUtils.currentContext` and logs through `AppLogger.error` when no context is available. `add-feature` keeps the required-context shape when the utils package has no `lib/src/context_utils.dart`
+
+## 1.5.1
+
 - Each `DioLensInterceptor` is named — `api` for the main `Dio`, `no-auth` for `noAuthDio` — so Dio Lens labels requests by client and replays them through the right one
 - `add-auth-interceptor` inserts its `auth_interceptor.dart` and `di_keys.dart` imports in sorted order instead of after the last import, so `directives_ordering` passes
 

@@ -36,7 +36,7 @@ lib/features/<f>/di/<f>_module.dart                          --di only
 - **Identifiers:** `camelCase(f)` for the route constant (`SignUpRoutes.signUp`), `kebabCase(f)` for the path (`/sign-up`), `pascalCase(f)` for classes.
 - **Bloc:** `@injectable`, not a singleton, because `BlocProvider` closes the bloc on dispose.
 - **Router template imports:** `clean_router`, `flutter`, `go_router`, `injectable` — alphabetical, in one block.
-- **Navigation context:** callers may omit the context; the impl falls back to `ContextUtils.currentContext` and logs an error if there is none. If the utils package has no `lib/src/context_utils.dart` (projects before 1.5.1, or a configured `packages.utils` outside `packages/`), both files use the old required-`BuildContext` shape.
+- **Navigation context:** callers may omit the context; the impl falls back to `ContextUtils.currentContext` and logs an error if there is none. If the utils package has no `lib/src/context_utils.dart` (projects before 1.6.0, or a configured `packages.utils` outside `packages/`), both files use the old required-`BuildContext` shape.
 - **No empty folders:** `add-feature` doesn't create empty `data/` or `domain/` folders; `add-repo` and `add-entity` create them as needed.
 
 ## Router registration

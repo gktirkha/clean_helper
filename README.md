@@ -482,8 +482,8 @@ The newer templates work with older projects, as long as you tell the tool what 
 | 1.4.1 | The utils DI module registers `ParseErrorLogger` | Nothing — `add-network-module` detects it and doesn't register a second one |
 | 1.4.2 | Call adapter and `UseCaseBase` use `Future<Either>` | Set `result_type: future_either` |
 | 1.4.4 | `RetrofitCallAdapter` / `RetrofitLogger` live in the utils package | Nothing — `add-network-module` detects them and doesn't generate copies in `lib/core/network/utils/` |
-| 1.5.1 | The utils package has no `ContextUtils` | Nothing required — `add-feature` detects it and keeps generating navigation that takes a required `BuildContext`. To switch, copy `context_utils.dart` and `di/di_container.dart` into `packages/<app>_utils/lib/src/`, export `context_utils.dart`, and add `get_it` to its pubspec |
 | 1.5.0 | No `init_service.dart`; `NetworkModule` uses Chucker and `PrettyDioLogger` | Nothing required — `add-network-module` adds `DioLens.init` to `bootstrap.dart` instead, and `add-auth-interceptor` keeps the Chucker-style `noAuthDio`. To switch to Dio Lens, replace the Chucker and pretty-log interceptors in `NetworkModule` with `DioLensInterceptor(dio: dio)` and drop the Chucker observer from `AppGoRouter` |
+| 1.6.0 | The utils package has no `ContextUtils` | Nothing required — `add-feature` detects it and keeps generating navigation that takes a required `BuildContext`. To switch, copy `context_utils.dart` and `di/di_container.dart` into `packages/<app>_utils/lib/src/`, export `context_utils.dart`, and add `get_it` to its pubspec |
 
 Then update `clean-helper.version` to silence the version warning.
 
