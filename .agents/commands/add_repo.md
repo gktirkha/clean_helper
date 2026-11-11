@@ -16,13 +16,11 @@ Feature scope only; use `add-entity core …` for core models. Both names are lo
 | Value | Source |
 |---|---|
 | `utilsImport` | `resolveUtilsPackage().import` |
-| `taskEither` | `usesTaskEither()` — `result_type`; default `true`; aborts on invalid values |
 | `hasNetworkModule` | `networkPackageConfig != null` or `lib/core/network/di/network_module.dart` exists |
 | `generateRest` | `!noRest && hasNetworkModule` |
 | call adapter name | `resolveCallAdapterName()` — `packages.utils.call_adapter_name` ?? `RetrofitCallAdapter` |
-| `adapterImport` | `networkPackageConfig?.import` ?? `../../../../core/network/utils/retrofit_call_adapter.dart` if that file exists ?? null (the utils import provides it) |
+| `adapterImport` | `networkPackageConfig?.import` ?? `../../../../core/network/utils/retrofit_call_adapter.dart` |
 | `ignoreErrorLogger` | `networkPackageConfig != null` |
-| `importUseCaseBase` | `utilsPackageConfig == null && !utilsHasUseCaseBase(<utils name>)` — true only for projects before 1.7.0, whose `UseCaseBase` is in `lib/core/domain/use_cases/` |
 
 ## Output
 
@@ -41,20 +39,19 @@ lib/features/<f>/data/datasources/rest_<r>_data_source.dart        REST — @Res
 
 After generating REST files, `warnMissingRestDependencies()` warns if the app's pubspec lacks `dio`, `retrofit` or `retrofit_generator`.
 
-## Result types (`--add-sample`)
+## Return types (`--add-sample`)
 
-| Layer | `task_either` (default) | `future_either` |
-|---|---|---|
-| datasource base / REST | `TaskEither<Failure, <R>ResponseModel>` | `Future<Either<Failure, <R>ResponseModel>>` |
-| domain repo | `TaskEither<Failure, <R>Entity>` | `Future<Either<…>>` |
-| repo impl | same, **not** `async`; returns the datasource's value directly (covariant) | `async` |
-| use cases | `TaskEither<…>`; `import 'package:fpdart/fpdart.dart' show TaskEither;` with no `dart:async` | `FutureOr<Either<…>>`, `show Either`, `dart:async` |
+| Layer | Returns |
+|---|---|
+| datasource base / REST | `TaskEither<Failure, <R>ResponseModel>` |
+| domain repo | `TaskEither<Failure, <R>Entity>` |
+| repo impl | same, **not** `async`; returns the datasource's value directly (covariant) |
+| use cases | `TaskEither<…>`; `import 'package:fpdart/fpdart.dart' show TaskEither;`, `UseCaseBase` from the utils import |
 
 ## Generated-code rules
 
 - Package imports go through `sortImports`. A relative adapter import goes in the relative section.
 - Multi-word repo names use `camelCase` identifiers: `HomeApiPaths.userAccount`, `userAccountRepository`.
-- With `importUseCaseBase: false`, use cases get `UseCaseBase` from the utils import.
 - With `ignoreErrorLogger`, the factory is `factory Rest<R>DataSource(Dio dio, {@ignoreParam ParseErrorLogger? errorLogger})`, with a comment explaining why.
 - Retrofit is imported as `package:retrofit/retrofit.dart`.
 
@@ -64,6 +61,6 @@ After generating REST files, `warnMissingRestDependencies()` warns if the app's 
 - No network module → a `⚠️` line naming both detection sources.
 - No `--add-sample` → `⏭  Skipping request/response models (--add-sample not set).`
 
-## Known issue
+## API paths
 
-Every file uses `writeFile`, so a second repo in the same feature doesn't add its constant to the existing `<f>_api_paths.dart`, and the REST datasource then references a missing constant.
+`generateApiPaths` writes `<f>_api_paths.dart` for the first repo in a feature. For later repos it adds `static const String <camelRepo> = '/api/<kebab-feature>/';` before the class's closing brace, and skips the change if the constant is already there.

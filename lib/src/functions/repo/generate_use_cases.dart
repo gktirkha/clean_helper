@@ -7,13 +7,7 @@ import '../../templates/get_use_case_template.dart';
 import '../../templates/post_use_case_params_template.dart';
 import '../../templates/post_use_case_template.dart';
 
-void generateUseCases(
-  String feature,
-  String name,
-  String utilsImport, {
-  bool importUseCaseBase = true,
-  bool taskEither = true,
-}) {
+void generateUseCases(String feature, String name, String utilsImport) {
   final className = pascalCase(name);
   final paramsDir = 'lib/features/$feature/domain/params';
   final useCasesDir = 'lib/features/$feature/domain/use_cases';
@@ -27,23 +21,11 @@ void generateUseCases(
   );
   writeFile(
     '$useCasesDir/get_${name}_use_case.dart',
-    getUseCaseTemplate(
-      className,
-      name,
-      utilsImport,
-      importUseCaseBase: importUseCaseBase,
-      taskEither: taskEither,
-    ),
+    getUseCaseTemplate(className, name, utilsImport),
   );
   writeFile(
     '$useCasesDir/post_${name}_use_case.dart',
-    postUseCaseTemplate(
-      className,
-      name,
-      utilsImport,
-      importUseCaseBase: importUseCaseBase,
-      taskEither: taskEither,
-    ),
+    postUseCaseTemplate(className, name, utilsImport),
   );
   stdout.writeln('  📄 $paramsDir/get_${name}_params.dart');
   stdout.writeln('  📄 $paramsDir/post_${name}_params.dart');

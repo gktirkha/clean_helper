@@ -13,19 +13,10 @@ void createFeatureStructure(
   String utilsImport,
   String routerImport, {
   bool withDi = false,
-  bool contextUtils = true,
 }) {
   generateFeatureRoutes(featureName, basePath);
-  generateFeatureNavigation(
-    featureName,
-    basePath,
-    optionalContext: contextUtils,
-  );
-  generateFeatureNavigationImpl(
-    featureName,
-    utilsImport,
-    contextUtils: contextUtils,
-  );
+  generateFeatureNavigation(featureName, basePath);
+  generateFeatureNavigationImpl(featureName, utilsImport);
   generateFeaturePage(featureName, basePath);
   generateFeaturePageProvider(featureName, basePath);
   generateFeatureRouter(featureName, basePath, routerImport);

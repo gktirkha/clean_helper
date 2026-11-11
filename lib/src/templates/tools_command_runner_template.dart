@@ -1,8 +1,9 @@
 String toolsCommandRunnerTemplate() => '''
 import 'dart:io';
 
-Future<void> commandRunner(String command) async {
-  stdout.write('\\n>>> \$command\\n');
+Future<void> commandRunner(String command, {String? workingDirectory}) async {
+  final where = workingDirectory == null ? '' : ' (in \$workingDirectory)';
+  stdout.write('\\n>>> \$command\$where\\n');
 
   final parts = command.split(' ');
   final executable = parts.first;
@@ -11,6 +12,7 @@ Future<void> commandRunner(String command) async {
   final process = await Process.start(
     executable,
     args,
+    workingDirectory: workingDirectory,
     runInShell: true,
     mode: .inheritStdio,
   );
@@ -32,9 +34,9 @@ Future<bool> _checkFvm() async {
   return _hasFvm!;
 }
 
-Future<void> fvmRunner(String command) async {
+Future<void> fvmRunner(String command, {String? workingDirectory}) async {
   final prefix = await _checkFvm() ? 'fvm ' : '';
-  await commandRunner('\$prefix\$command');
+  await commandRunner('\$prefix\$command', workingDirectory: workingDirectory);
 }
 
 Future<void> fvmUse() async {

@@ -1,28 +1,15 @@
-import '../functions/shared/sort_imports.dart';
-
-/// [loggerImport] is where `RetrofitLogger` comes from: `../utils/retrofit_logger.dart`,
-/// or the utils package for projects initialised before 1.4.4.
-///
-/// [registerErrorLogger] is false when the utils package already registers
-/// `ParseErrorLogger` (projects initialised before 1.4.1), since a second
-/// registration makes GetIt throw.
-String networkModuleTemplate(
-  String loggerImport, {
-  bool registerErrorLogger = true,
-}) {
-  final packageLogger = loggerImport.startsWith('package:');
-
-  final errorLogger = registerErrorLogger
-      ? '\n\n  @LazySingleton(as: ParseErrorLogger)\n'
-            '  RetrofitLogger get retrofitLogger => RetrofitLogger();'
-      : '';
-
-  return '''
+String networkModuleTemplate() => '''
 import 'dart:io';
 
-${sortImports(["import 'package:dio/dio.dart';", "import 'package:dio_lens/dio_lens.dart';", "import 'package:injectable/injectable.dart';", "import 'package:package_info_plus/package_info_plus.dart';", if (registerErrorLogger) "import 'package:retrofit/retrofit.dart';", if (registerErrorLogger && packageLogger) "import '$loggerImport';"])}
+import 'package:dio/dio.dart';
+import 'package:dio_lens/dio_lens.dart';
+import 'package:injectable/injectable.dart';
+import 'package:package_info_plus/package_info_plus.dart';
+import 'package:retrofit/retrofit.dart';
 
-${sortImports(["import '../constants/api_paths.dart';", "import '../interceptors/error_interceptor.dart';", if (registerErrorLogger && !packageLogger) "import '$loggerImport';"])}
+import '../constants/api_paths.dart';
+import '../interceptors/error_interceptor.dart';
+import '../utils/retrofit_logger.dart';
 
 @module
 abstract class NetworkModule {
@@ -36,7 +23,10 @@ abstract class NetworkModule {
       'User-Agent':
           '\${packageInfo.appName}-\${Platform.operatingSystem}/\${packageInfo.version}+\${packageInfo.buildNumber}',
     },
-  );$errorLogger
+  );
+
+  @LazySingleton(as: ParseErrorLogger)
+  RetrofitLogger get retrofitLogger => RetrofitLogger();
 
   @lazySingleton
   Dio dio(
@@ -52,4 +42,3 @@ abstract class NetworkModule {
   }
 }
 ''';
-}

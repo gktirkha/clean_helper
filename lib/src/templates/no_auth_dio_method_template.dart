@@ -1,23 +1,6 @@
-/// [chucker] is true for network modules generated before 1.5.0, which still
-/// register `ChuckerDioInterceptor` and `PrettyDioLogger` instead of using
-/// Dio Lens.
-String noAuthDioMethodTemplate({bool chucker = false}) => chucker
-    ? '''
-
-  @lazySingleton
-  @Named(DIKeys.noAuthDio)
-  Dio noAuthDio(
-    BaseOptions baseOptions,
-    PrettyDioLogger prettyDioLogger,
-    ChuckerDioInterceptor chuckerDioInterceptor,
-    ErrorInterceptor errorInterceptor,
-  ) => Dio(baseOptions)
-    ..interceptors.addAll([
-      prettyDioLogger,
-      chuckerDioInterceptor,
-      errorInterceptor,
-    ]);'''
-    : '''
+/// The `@Named(DIKeys.noAuthDio)` Dio that `add-auth-interceptor` appends to
+/// `NetworkModule`: no `AuthInterceptor`, so token refreshes can't loop.
+String noAuthDioMethodTemplate() => '''
 
   @lazySingleton
   @Named(DIKeys.noAuthDio)

@@ -35,17 +35,14 @@ void patchNetworkModule() {
       '@lazySingleton\n  Dio dio(\n    AuthInterceptor authInterceptor,',
     );
     content = content.replaceFirstMapped(
-      RegExp(r'(interceptors\.addAll\(\[)(\s*)'),
+      RegExp(r'(dio\.interceptors\.addAll\(\[)(\s*)'),
       (m) => '${m[1]}${m[2]}authInterceptor,${m[2]}',
     );
     changed = true;
   }
 
   if (!content.contains('noAuthDio')) {
-    // Network modules generated before 1.5.0 use Chucker and PrettyDioLogger.
-    final noAuthDioMethod = noAuthDioMethodTemplate(
-      chucker: content.contains('ChuckerDioInterceptor'),
-    );
+    final noAuthDioMethod = noAuthDioMethodTemplate();
     final lastBrace = content.lastIndexOf('}');
     content =
         '${content.substring(0, lastBrace)}$noAuthDioMethod\n${content.substring(lastBrace)}';

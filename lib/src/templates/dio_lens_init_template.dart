@@ -1,6 +1,5 @@
 /// `DioLens.init` call, indented by [indent], inserted after the
-/// `Bloc.observer` line of `InitService.init` (or `bootstrap()` in projects
-/// initialised before 1.5.0).
+/// `Bloc.observer` line of `InitService.init`.
 String dioLensInitTemplate(String indent) =>
     '''
 ${indent}DioLens.init(

@@ -11,9 +11,8 @@ import '../functions/repo/generate_request_model.dart';
 import '../functions/repo/generate_response_model.dart';
 import '../functions/repo/generate_rest_data_source.dart';
 import '../functions/repo/generate_use_cases.dart';
-import '../functions/repo/uses_task_either.dart';
-import '../functions/repo/utils_has_use_case_base.dart';
 import '../functions/repo/warn_missing_rest_dependencies.dart';
+import '../functions/shared/abort.dart';
 import '../functions/shared/ensure_pubspec.dart';
 import '../functions/shared/package_configs.dart';
 import '../functions/shared/resolve_call_adapter_name.dart';
@@ -28,11 +27,10 @@ void addRepo(
   ensurePubspec();
 
   if (args.length < 2) {
-    stderr.writeln(
-      '❌ Usage: dart run bin/add_repo.dart <feature> <repo_name> [--no-rest] [--add-sample]',
+    abort(
+      'Usage: clean-helper add-repo <feature> <repo_name> '
+      '[--no-rest] [--add-sample]\n   Example: clean-helper add-repo home invoice',
     );
-    stderr.writeln('   Example: dart run bin/add_repo.dart home invoice');
-    exit(1);
   }
 
   final feature = args[0].toLowerCase();
@@ -40,7 +38,6 @@ void addRepo(
   final utils = resolveUtilsPackage();
   final networkPackage = networkPackageConfig;
   final utilsImport = utils.import;
-  final taskEither = usesTaskEither();
 
   final dataDir = 'lib/features/$feature/data';
   final domainDir = 'lib/features/$feature/domain/repositories';
@@ -55,30 +52,11 @@ void addRepo(
   stdout.writeln('🚀 Generating data layer: feature=$feature, repo=$repoName');
 
   generateEntityFile(entitiesDir, repoName);
-  generateDomainRepo(
-    domainDir,
-    repoName,
-    utilsImport,
-    addSample: addSample,
-    taskEither: taskEither,
-  );
-  generateDataSourceBase(
-    dataDir,
-    repoName,
-    utilsImport,
-    addSample: addSample,
-    taskEither: taskEither,
-  );
+  generateDomainRepo(domainDir, repoName, utilsImport, addSample: addSample);
+  generateDataSourceBase(dataDir, repoName, utilsImport, addSample: addSample);
 
   if (addSample) {
-    generateUseCases(
-      feature,
-      repoName,
-      utilsImport,
-      importUseCaseBase:
-          utilsPackageConfig == null && !utilsHasUseCaseBase(utils.name),
-      taskEither: taskEither,
-    );
+    generateUseCases(feature, repoName, utilsImport);
     generateRequestModel(dataDir, repoName);
     generateResponseModel(dataDir, repoName);
   } else {
@@ -87,13 +65,7 @@ void addRepo(
     );
   }
 
-  generateDataRepo(
-    dataDir,
-    repoName,
-    utilsImport,
-    addSample: addSample,
-    taskEither: taskEither,
-  );
+  generateDataRepo(dataDir, repoName, utilsImport, addSample: addSample);
 
   if (generateRest) {
     generateApiPaths(dataDir, feature, repoName);
@@ -105,13 +77,9 @@ void addRepo(
       callAdapter: resolveCallAdapterName(),
       adapterImport:
           networkPackage?.import ??
-          (File('lib/core/network/utils/retrofit_call_adapter.dart')
-                  .existsSync()
-              ? '../../../../core/network/utils/retrofit_call_adapter.dart'
-              : null),
+          '../../../../core/network/utils/retrofit_call_adapter.dart',
       ignoreErrorLogger: networkPackage != null,
       addSample: addSample,
-      taskEither: taskEither,
     );
     warnMissingRestDependencies();
   } else if (noRest) {

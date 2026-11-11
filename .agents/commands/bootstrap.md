@@ -15,10 +15,6 @@ clean-helper bootstrap
 2. `fvmUse()` — interactive `fvm use`, a no-op without fvm
 3. `runFlutterPubGet()`
 4. `runSlang(<localization>)` — runs slang inside `packages/<localization>` (`resolveLocalizationPackage()`); skipped with a note when that folder doesn't exist, i.e. the package lives elsewhere in the workspace
-5. `runBuildRunner()` — in the app only
+5. `runBuildRunner(workingDirectory: packages/<utils>)` if that folder exists — the app's DI config needs the utils micro-package module — then `runBuildRunner()` in the app
 
 It doesn't run `dart format`.
-
-## Known issue
-
-Unlike `init`, it doesn't run build_runner in `packages/<app>_utils` first. After a clean checkout, the app build can miss `<App>UtilsPackageModule` until the utils package has been built.

@@ -5,11 +5,8 @@ String domainRepoTemplate(
   String name,
   String utilsImport, {
   bool addSample = false,
-  bool taskEither = true,
 }) {
-  final result = taskEither
-      ? 'TaskEither<Failure, ${className}Entity>'
-      : 'Future<Either<Failure, ${className}Entity>>';
+  final result = 'TaskEither<Failure, ${className}Entity>';
 
   return addSample
       ? '''

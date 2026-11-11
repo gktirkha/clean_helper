@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import '../feature/build_router_module.dart';
 import '../shared/package_configs.dart';
 import '../shared/pascal_case.dart';
 import '../shared/write_file.dart';
@@ -14,10 +15,8 @@ import '../../templates/di_keys_template.dart';
 import '../../templates/init_service_template.dart';
 import '../../templates/main_app_dart_template.dart';
 import '../../templates/main_dart_template.dart';
-import '../../templates/app_router_module_template.dart';
 
-void generateCoreFiles(
-  String packageName, {
+void generateCoreFiles({
   required PackageConfig utils,
   required PackageConfig localization,
   required PackageConfig router,
@@ -39,7 +38,7 @@ void generateCoreFiles(
   );
   writeFile(
     'lib/app/router/app_router_module.dart',
-    appRouterModuleTemplate(packageName),
+    buildRouterModule(['home']),
   );
   writeFile('lib/app/di/di_container.dart', diContainerTemplate());
   writeFile(

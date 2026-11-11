@@ -78,12 +78,6 @@ void listMonoRepoApps() {
   );
 
   stdout.writeln();
-  stdout.writeln(
-    'Result type (clean-helper.result_type): '
-    '${resultTypeConfig ?? 'task_either (default)'}',
-  );
-
-  stdout.writeln();
   stdout.writeln('Retrofit call adapter:');
   stdout.writeln(
     '  ${resolveCallAdapterName()}  '

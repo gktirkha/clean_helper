@@ -1,7 +1,6 @@
-import 'dart:io';
-
 import '../functions/build_runner/run_build_runner_build.dart';
 import '../functions/build_runner/run_build_runner_clean.dart';
+import '../functions/shared/abort.dart';
 import '../functions/shared/ensure_pubspec.dart';
 
 void runBuildRunnerCommand(List<String> args) {
@@ -15,7 +14,6 @@ void runBuildRunnerCommand(List<String> args) {
     case 'build':
       runBuildRunnerBuild();
     default:
-      stderr.writeln('❌ Unknown action "$action". Use: clean | build');
-      exit(1);
+      abort('Unknown action "$action". Use: clean | build');
   }
 }

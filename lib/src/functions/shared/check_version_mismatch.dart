@@ -1,34 +1,12 @@
 import 'dart:io';
 
+import 'read_clean_helper_fields.dart';
 import 'tool_version.dart';
 
+/// Warns when `clean-helper.version` in the current pubspec differs from the
+/// running tool.
 void checkVersionMismatch() {
-  final lines = File('pubspec.yaml').readAsLinesSync();
-  var inCleanHelper = false;
-  String? projectVersion;
-
-  for (final line in lines) {
-    final isTopLevel =
-        line.isNotEmpty && !line.startsWith(' ') && !line.startsWith('\t');
-
-    if (isTopLevel) {
-      if (line.trimRight() == 'clean-helper:') {
-        inCleanHelper = true;
-        continue;
-      } else if (inCleanHelper) {
-        break;
-      }
-    }
-
-    if (inCleanHelper) {
-      final trimmed = line.trim();
-      if (trimmed.startsWith('version:')) {
-        projectVersion = trimmed.substring('version:'.length).trim();
-        break;
-      }
-    }
-  }
-
+  final projectVersion = readCleanHelperFields([])['version'];
   if (projectVersion == null || projectVersion == toolVersion) return;
 
   stderr.writeln(

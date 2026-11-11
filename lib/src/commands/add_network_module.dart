@@ -2,8 +2,6 @@ import 'dart:io';
 
 import '../functions/add_network_module/install_network_dependencies.dart';
 import '../functions/add_network_module/patch_dio_lens_init.dart';
-import '../functions/add_network_module/utils_has_retrofit_helpers.dart';
-import '../functions/add_network_module/utils_registers_error_logger.dart';
 import '../functions/init/generate_network_files.dart';
 import '../functions/init/run_build_runner.dart';
 import '../functions/init/run_dart_format.dart';
@@ -17,12 +15,7 @@ void addNetworkModule({bool runBuildRunnerAfter = true}) {
   stdout.writeln('🌐 Setting up network layer...');
 
   final utils = resolveUtilsPackage();
-  generateNetworkFiles(
-    utils.import,
-    callAdapterName: resolveCallAdapterName(),
-    registerErrorLogger: !utilsRegistersErrorLogger(utils.name),
-    retrofitHelpersInUtils: utilsHasRetrofitHelpers(utils.name),
-  );
+  generateNetworkFiles(utils.import, callAdapterName: resolveCallAdapterName());
   installNetworkDependencies();
   patchDioLensInit();
   runDartFormat();

@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import '../../clean_helper.dart';
+import '../functions/feature/create_feature_structure.dart';
 import '../functions/init/add_packages_workspace.dart';
 import '../functions/init/add_flutter_assets_to_pubspec.dart';
 import '../functions/init/generate_analysis_options.dart';
@@ -8,8 +9,6 @@ import '../functions/init/create_directories.dart';
 import '../functions/init/generate_clean_router_package.dart';
 import '../functions/init/generate_core_files.dart';
 import '../functions/init/generate_flutter_gen_files.dart';
-import '../functions/init/generate_home_feature.dart';
-import '../functions/init/generate_localization_files.dart';
 import '../functions/init/generate_localization_package.dart';
 import '../functions/init/generate_tools_files.dart';
 import '../functions/init/generate_utils_package.dart';
@@ -52,7 +51,6 @@ Future<void> runInit({
   generateAnalysisOptions();
   runFlutterPubGet();
   createDirectories();
-  generateLocalizationFiles();
   generateFlutterGenFiles();
   if (router.create) generateCleanRouterPackage(router);
   if (localization.create) generateLocalizationPackage(localization, slang);
@@ -65,13 +63,14 @@ Future<void> runInit({
     );
   }
   addPackagesWorkspace([for (final p in created) 'packages/${p.name}']);
-  generateCoreFiles(
-    packageName,
-    utils: utils,
-    localization: localization,
-    router: router,
+  generateCoreFiles(utils: utils, localization: localization, router: router);
+  createFeatureStructure(
+    'lib/features/home',
+    'home',
+    utils.import,
+    router.import,
+    withDi: withDi,
   );
-  generateHomeFeature(utils.import, router.import, withDi: withDi);
   if (withTools) generateToolsFiles();
   installDependencies([router.name, localization.name, utils.name]);
   updateGitignore();

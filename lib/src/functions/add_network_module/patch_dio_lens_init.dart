@@ -5,12 +5,9 @@ import '../shared/write_file.dart';
 import '../../templates/dio_lens_init_template.dart';
 
 /// Adds `DioLens.init` after the `Bloc.observer` line of
-/// `lib/app/init_service.dart`, or of `lib/app/bootstrap.dart` in projects
-/// initialised before 1.5.0.
+/// `lib/app/init_service.dart`.
 void patchDioLensInit() {
-  final path = File('lib/app/init_service.dart').existsSync()
-      ? 'lib/app/init_service.dart'
-      : 'lib/app/bootstrap.dart';
+  const path = 'lib/app/init_service.dart';
   final file = File(path);
 
   if (!file.existsSync()) {

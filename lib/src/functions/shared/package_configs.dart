@@ -59,7 +59,3 @@ bool useRootAnalysisConfig = false;
 /// The monorepo app [resolveMonoRepoProject] switched into, relative to the
 /// starting directory (e.g. `apps/shop`). Null when no switch happened.
 String? monoRepoAppPath;
-
-/// `clean-helper.result_type` (`task_either` or `future_either`), set by
-/// [loadPackageConfigs]. Null means `task_either`.
-String? resultTypeConfig;

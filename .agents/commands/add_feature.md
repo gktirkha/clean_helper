@@ -15,8 +15,8 @@ The name is lower-cased and should be snake_case.
 ## Flow
 
 1. `ensurePubspec()`
-2. `resolveUtilsPackage()` and `resolveRouterPackage()` give the utils and router imports; `contextUtils` = `utilsHasContextUtils(<utils name>)`
-3. `createFeatureStructure('lib/features/<f>', f, utilsImport, routerImport, withDi:, contextUtils:)`, which calls `generateFeatureRoutes`, `…Navigation`, `…NavigationImpl`, `…Page`, `…PageProvider`, `…Router` and `…Bloc`, plus `…Module` with `--di`
+2. `resolveUtilsPackage()` and `resolveRouterPackage()` give the utils and router imports
+3. `createFeatureStructure('lib/features/<f>', f, utilsImport, routerImport, withDi:)`, which calls `generateFeatureRoutes`, `…Navigation`, `…NavigationImpl`, `…Page`, `…PageProvider`, `…Router` and `…Bloc`, plus `…Module` with `--di`
 4. `patchRouterModule(f)`
 5. `runDartFormat()`, `runBuildRunner()`
 
@@ -36,7 +36,7 @@ lib/features/<f>/di/<f>_module.dart                          --di only
 - **Identifiers:** `camelCase(f)` for the route constant (`SignUpRoutes.signUp`), `kebabCase(f)` for the path (`/sign-up`), `pascalCase(f)` for classes.
 - **Bloc:** `@injectable`, not a singleton, because `BlocProvider` closes the bloc on dispose.
 - **Router template imports:** the router package (`packages.router.import`, default `clean_router`), `flutter`, `go_router`, `injectable` — sorted with `sortImports`.
-- **Navigation context:** callers may omit the context; the impl falls back to `ContextUtils.currentContext` and logs an error if there is none. If the utils package has no `lib/src/context_utils.dart` (projects before 1.6.0, or a configured `packages.utils` outside `packages/`), both files use the old required-`BuildContext` shape.
+- **Navigation context:** callers may omit the context; the impl falls back to `ContextUtils.currentContext` from the utils package and logs an error if there is none.
 - **No empty folders:** `add-feature` doesn't create empty `data/` or `domain/` folders; `add-repo` and `add-entity` create them as needed.
 
 ## Router registration

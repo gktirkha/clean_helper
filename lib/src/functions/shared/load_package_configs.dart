@@ -2,8 +2,7 @@ import 'package_configs.dart';
 import 'read_clean_helper_fields.dart';
 import 'read_package_config.dart';
 
-/// Reads `clean-helper.packages`, `clean-helper.result_type` and the other
-/// `clean-helper` keys from the pubspec in the current
+/// Reads the `clean-helper` keys from the pubspec in the current
 /// directory into the globals in `package_configs.dart`.
 ///
 /// Must run before [resolveMonoRepoProject] changes into the app directory,
@@ -33,7 +32,6 @@ void loadPackageConfigs() {
     tasks: enabled('tasks'),
     launch: enabled('launch'),
   );
-  resultTypeConfig = root['result_type'];
   useRootAnalysisConfig =
       (readCleanHelperFields(['packages'])['use_root_analysis'] ??
               root['use_root_analysis'])

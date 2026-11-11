@@ -10,17 +10,14 @@ String restDataSourceTemplate(
   String repoName,
   String utilsImport, {
   String callAdapter = 'RetrofitCallAdapter',
-  String? adapterImport,
+  required String adapterImport,
   bool ignoreErrorLogger = false,
   bool addSample = false,
-  bool taskEither = true,
 }) {
-  final result = taskEither
-      ? 'TaskEither<Failure, ${repoClass}ResponseModel>'
-      : 'Future<Either<Failure, ${repoClass}ResponseModel>>';
+  final result = 'TaskEither<Failure, ${repoClass}ResponseModel>';
 
   // [adapterImport] is a package URI or a path relative to the datasource.
-  final packageAdapter = adapterImport?.startsWith('package:') ?? false;
+  final packageAdapter = adapterImport.startsWith('package:');
   final imports = sortImports([
     "import 'package:dio/dio.dart';",
     if (addSample) "import 'package:fpdart/fpdart.dart';",
@@ -30,7 +27,7 @@ String restDataSourceTemplate(
     if (packageAdapter && adapterImport != utilsImport)
       "import '$adapterImport';",
   ]);
-  final adapterRelative = adapterImport != null && !packageAdapter
+  final adapterRelative = !packageAdapter
       ? ["import '$adapterImport';"]
       : <String>[];
 

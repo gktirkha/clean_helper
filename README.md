@@ -15,7 +15,6 @@ It works in a single Flutter app and in a pub-workspace monorepo with several ap
 - [Monorepos](#monorepos)
 - [What gets generated](#what-gets-generated)
 - [Using the generated code](#using-the-generated-code)
-- [Upgrading existing projects](#upgrading-existing-projects)
 - [Requirements](#requirements)
 
 ---
@@ -127,7 +126,7 @@ Dependencies installed in the app:
 clean-helper bootstrap
 ```
 
-Runs `fvm use` (if fvm is installed), `flutter pub get`, slang in `packages/<app>_localization`, then `build_runner build` in the app. Use it after a `git pull` that changed dependencies or generated inputs.
+Runs `fvm use` (if fvm is installed), `flutter pub get`, slang in the localization package, `build_runner build` in the utils package, then `build_runner build` in the app. The package steps are skipped for packages that aren't under `packages/`. Use it after a `git pull` that changed dependencies or generated inputs.
 
 ### `add-feature`
 
@@ -193,7 +192,7 @@ lib/features/orders/
     └── repositories/order_repository_impl.dart       @Singleton(as: OrderRepository)
 ```
 
-- The API chain returns `TaskEither<Failure, T>` (see [`result_type`](#result_type)).
+- The API chain returns fpdart `TaskEither<Failure, T>`; see [Using the generated code](#using-the-generated-code).
 - REST files are generated only when a network module exists — `lib/core/network/di/network_module.dart`, or a configured [`packages.network`](#packagesnetwork) — and `--no-rest` isn't passed.
 - If the app's pubspec lacks `dio`, `retrofit` or `retrofit_generator`, a warning is printed.
 - Files that already exist are never overwritten. In particular, adding a second repo to a feature doesn't add its constant to the existing `<feature>_api_paths.dart` — add it by hand.
@@ -225,7 +224,7 @@ Generates:
 | `lib/core/network/utils/retrofit_logger.dart` | `RetrofitLogger` — logs Retrofit parse errors |
 | `lib/core/data/models/error_model.dart` | `@freezed` `ErrorModel` implementing `ErrorEntity` |
 
-It then installs `dio`, `dio_lens`, `retrofit` and `json_annotation` (plus dev `retrofit_generator` and `json_serializable`), adds `DioLens.init(...)` to `InitService.init` (or `bootstrap()` in older projects) right after `Bloc.observer`, formats and runs build_runner. Existing files are skipped.
+It then installs `dio`, `dio_lens`, `retrofit` and `json_annotation` (plus dev `retrofit_generator` and `json_serializable`), adds `DioLens.init(...)` to `InitService.init` right after `Bloc.observer`, formats and runs build_runner. Existing files are skipped.
 
 ### `add-auth-interceptor`
 
@@ -264,7 +263,7 @@ clean-helper build-runner clean
 clean-helper generate-localizations
 ```
 
-Runs `dart run slang` in the current project directory. Since 1.3.0 slang's config lives in `packages/<app>_localization/`, so run slang there instead, or use `bootstrap`, which does.
+Runs slang in the localization package (`packages/<localization>`), where `slang.yaml` lives. Stops with an error if the package isn't under `packages/`.
 
 ### `generate-tools`
 
@@ -272,7 +271,7 @@ Runs `dart run slang` in the current project directory. Since 1.3.0 slang's conf
 clean-helper generate-tools [--overwrite | -o]
 ```
 
-Generates `tools/`: `clean.dart`, `bootstrap.dart [--clean]`, `write_key_properties.dart`, `build_android.dart [aab|apk|both] [--no-clean]`, a shared `command_runner.dart`, and a git-ignored `tools/config/android_build_config.json` for signing. The environment variables `JKS_PATH`, `STORE_PASSWORD`, `KEY_PASSWORD` and `KEY_ALIAS` override the JSON.
+Generates `tools/`: `clean.dart`, `bootstrap.dart [--clean]` (pub get, then slang and build_runner in the workspace packages and the app), `write_key_properties.dart`, `build_android.dart [aab|apk|both] [--no-clean]`, a shared `command_runner.dart`, and a git-ignored `tools/config/android_build_config.json` for signing. The environment variables `JKS_PATH`, `STORE_PASSWORD`, `KEY_PASSWORD` and `KEY_ALIAS` override the JSON.
 
 ### `add-vscode-config`
 
@@ -354,7 +353,6 @@ Packages (clean-helper.packages):
   vs_code_configs: extensions true, tasks true, launch true
   use_root_analysis: false (default — packages include the nearest project)
 
-Result type (clean-helper.result_type): task_either (default)
 
 Retrofit call adapter:
   RetrofitCallAdapter  (package:my_app_network/my_app_network_module.dart)
@@ -376,9 +374,6 @@ clean-helper:
   mono_repo_apps:
     - apps/consumer
     - apps/organizer
-
-  # What `add-repo` returns: task_either (default) or future_either.
-  result_type: task_either
 
   # Monorepo only (read from the root pubspec). Same as packages.use_root_analysis.
   # use_root_analysis: true
@@ -451,7 +446,6 @@ clean-helper:
 |---|---|---|
 | `version` | written by `init` | Each command warns if it differs from the running tool |
 | `mono_repo_apps` | — | App paths in a monorepo — see [Monorepos](#monorepos) |
-| [`result_type`](#result_type) | `task_either` | `task_either` or `future_either` |
 | [`packages.utils`](#packagesutils) `.name` / `.import` / `.create` | `<app>_utils` / `package:<name>/<name>.dart` / `true` | Shared utils package |
 | `packages.utils.module_name` | `<UtilsPascal>Module` | The utils package's `@module` class |
 | `packages.utils.call_adapter_name` | `RetrofitCallAdapter` | Call adapter class generated and used by REST datasources |
@@ -461,16 +455,7 @@ clean-helper:
 | [`packages.router`](#packagesrouter) `.name` / `.import` / `.create` | `clean_router` / `package:<name>/<name>.dart` / `true` | Router package with `CleanRouterBase` |
 | [`packages.network`](#packagesnetwork) `.name` / `.import` | not set / `package:<name>/<name>.dart` | External network package |
 
-**Which pubspec is read.** `mono_repo_apps`, `packages` and `result_type` are read from the `pubspec.yaml` in the directory where you run the command — the monorepo root, in a monorepo — before the tool switches into the app. `version` is checked afterwards, so in a monorepo it's each app's own `pubspec.yaml` that counts.
-
-### `result_type`
-
-Controls what `add-repo` generates:
-
-- `task_either` (default) — fpdart `TaskEither<Failure, T>` at every layer.
-- `future_either` — `Future<Either<Failure, T>>`, with `FutureOr<Either<…>>` in use cases. Use this for projects initialised before 1.4.2, whose call adapter and `UseCaseBase` still use `Future<Either>`.
-
-Any other value stops the command with an error.
+**Which pubspec is read.** `mono_repo_apps` and `packages` are read from the `pubspec.yaml` in the directory where you run the command — the monorepo root, in a monorepo — before the tool switches into the app. `version` is checked afterwards, so in a monorepo it's each app's own `pubspec.yaml` that counts.
 
 ### Workspace packages: `create`, `name`, `import`
 
@@ -629,23 +614,6 @@ result.fold(
 ```
 
 `UseCaseBase.call` is declared as `FutureOr<TaskEither<Failure, T>>`, so a use case can do async work before building its `TaskEither`. Generated use cases return `TaskEither` directly. When calling through the `UseCaseBase` type, await it first: `await (await useCase(params)).run()`.
-
----
-
-## Upgrading existing projects
-
-The newer templates work with older projects, as long as you tell the tool what it can't detect:
-
-| Initialised before | What differs | What to do |
-|---|---|---|
-| 1.4.1 | The utils DI module registers `ParseErrorLogger` | Nothing — `add-network-module` detects it and doesn't register a second one |
-| 1.4.2 | Call adapter and `UseCaseBase` use `Future<Either>` | Set `result_type: future_either` |
-| 1.4.4 | `RetrofitCallAdapter` / `RetrofitLogger` live in the utils package | Nothing — `add-network-module` detects them and doesn't generate copies in `lib/core/network/utils/` |
-| 1.5.0 | No `init_service.dart`; `NetworkModule` uses Chucker and `PrettyDioLogger` | Nothing required — `add-network-module` adds `DioLens.init` to `bootstrap.dart` instead, and `add-auth-interceptor` keeps the Chucker-style `noAuthDio`. To switch to Dio Lens, replace the Chucker and pretty-log interceptors in `NetworkModule` with `DioLensInterceptor(dio: dio)` and drop the Chucker observer from `AppGoRouter` |
-| 1.6.0 | The utils package has no `ContextUtils` | Nothing required — `add-feature` detects it and keeps generating navigation that takes a required `BuildContext`. To switch, copy `context_utils.dart` and `di/di_container.dart` into `packages/<app>_utils/lib/src/`, export `context_utils.dart`, and add `get_it` to its pubspec |
-| 1.7.0 | `UseCaseBase` lives in the app at `lib/core/domain/use_cases/use_case_base.dart` | Nothing required — `add-repo` detects that the utils package has no `lib/src/use_case_base.dart` and keeps importing the app copy. To switch, move the file to `packages/<app>_utils/lib/src/use_case_base.dart`, import `failure.dart` relatively, export it from the utils barrel, and update the imports in existing use cases |
-
-Then update `clean-helper.version` to silence the version warning.
 
 ---
 

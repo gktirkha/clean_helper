@@ -10,13 +10,9 @@ String dataRepoTemplate(
   String repoName,
   String utilsImport, {
   bool addSample = false,
-  bool taskEither = true,
 }) {
-  // TaskEither is returned as-is (covariant in its value), so no `async`.
-  final result = taskEither
-      ? 'TaskEither<Failure, ${className}Entity>'
-      : 'Future<Either<Failure, ${className}Entity>>';
-  final modifier = taskEither ? '' : ' async';
+  // The datasource's TaskEither is returned as-is (covariant in its value).
+  final result = 'TaskEither<Failure, ${className}Entity>';
 
   return addSample
       ? '''
@@ -35,12 +31,12 @@ class $implClass implements $repositoryClass {
   final $dataSourceClass $dataSourceField;
 
   @override
-  $result get$className(Get${className}Params params)$modifier {
+  $result get$className(Get${className}Params params) {
     return $dataSourceField.get$className(params.get${className}Query);
   }
 
   @override
-  $result post$className(Post${className}Params params)$modifier {
+  $result post$className(Post${className}Params params) {
     return $dataSourceField.post$className(.new(p1: params.post${className}Param1));
   }
 }

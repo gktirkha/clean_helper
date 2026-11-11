@@ -1,37 +1,15 @@
 import '../functions/shared/camel_case.dart';
 import '../functions/shared/sort_imports.dart';
 
-/// With [contextUtils], `goTo<Feature>` falls back to
-/// `ContextUtils.currentContext` (from [utilsImport]) when no context is
-/// passed, and logs an error if none is available. Without it (utils packages
-/// from before 1.6.0), the context is required.
+/// `goTo<Feature>` uses the given context, else `ContextUtils.currentContext`
+/// (from [utilsImport]), and logs an error if neither is available.
 String featureNavigationImplTemplate(
   String feature,
   String className,
-  String utilsImport, {
-  bool contextUtils = true,
-}) {
+  String utilsImport,
+) {
   final route = '${className}Routes.${camelCase(feature)}';
   final packageUtils = utilsImport.startsWith('package:');
-
-  if (!contextUtils) {
-    return '''
-import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
-import 'package:injectable/injectable.dart';
-
-import '../../features/$feature/router/${feature}_navigation.dart';
-import '../../features/$feature/router/${feature}_routes.dart';
-
-@LazySingleton(as: ${className}Navigation)
-class ${className}NavigationImpl implements ${className}Navigation {
-  @override
-  void goTo$className(BuildContext context) {
-    context.go($route);
-  }
-}
-''';
-  }
 
   return '''
 ${sortImports(["import 'package:flutter/material.dart';", "import 'package:go_router/go_router.dart';", "import 'package:injectable/injectable.dart';", if (packageUtils) "import '$utilsImport';"])}

@@ -29,7 +29,7 @@ Read next:
 | `remove-feature <name>` | `removeFeature(args)` | Delete a feature, unregister its router |
 | `regenerate-router` | `regenerateRouter()` | Rebuild `app_router_module.dart` from disk |
 | `build-runner [build\|clean]` | `runBuildRunnerCommand(args)` | Run build_runner |
-| `generate-localizations` | `runGenerateLocalizationsCommand(args)` | Run slang (see Known issues) |
+| `generate-localizations` | `runGenerateLocalizationsCommand()` | Run slang in `packages/<localization>` |
 | `generate-tools [--overwrite]` | `generateTools(overwrite:)` | `tools/` scripts |
 | `add-vscode-config` | `addVscodeConfig()` | `.vscode/` files |
 | `list-mono-repo-apps` | `listMonoRepoApps()` | Print monorepo apps and resolved config |
@@ -41,7 +41,6 @@ Global flags, declared on `CleanHelperRunner` and handled in its `runCommand` ov
 - `--scope=<app>` — stored in `resolveScope`; narrows monorepo app selection.
 - `--version` — calls `printVersion()` and returns before any command runs.
 
-`lib/src/commands/add_network.dart` (`addNetwork()`) is a legacy entry point with no runner command and no export. Keep it compiling, but don't extend it.
 
 ---
 
@@ -59,7 +58,6 @@ Global flags, declared on `CleanHelperRunner` and handled in its `runCommand` ov
 | `packages.use_root_analysis` (or `clean-helper.use_root_analysis`) | `loadPackageConfigs()` | `useRootAnalysisConfig` |
 | `packages.router.{name,import,create}` | `loadPackageConfigs()` | `routerPackageConfig` |
 | `packages.network.{name,import}` | `loadPackageConfigs()` | `networkPackageConfig` |
-| `result_type` (`task_either` \| `future_either`) | `loadPackageConfigs()` | `resultTypeConfig` |
 
 Everything except `version` is read from the pubspec in the starting directory — the monorepo root in a monorepo — before `resolveMonoRepoProject()` changes directory. The README's Configuration section documents each key's behaviour for users.
 
@@ -89,19 +87,18 @@ bin/clean_helper.dart → CleanHelperRunner.run(args)
 2. `fvmUse()`
 3. `generateAnalysisOptions()`, `runFlutterPubGet()`
 4. `createDirectories()` — empty app folders, including the home feature's
-5. `generateLocalizationFiles()` — no-op, kept for ordering
-6. `generateFlutterGenFiles()` — `build.yaml`, `assets/colors/colors.xml`
-7. `generateCleanRouterPackage()`, `generateLocalizationPackage()`, `generateUtilsPackage()` — each only when its `create` is true
-8. `addPackagesWorkspace(created)` — lists the created packages under `workspace:`; adds nothing when none are created
-9. `generateCoreFiles()` — main, bootstrap, init service, app, DI, router
-10. `generateHomeFeature()`; `generateToolsFiles()` with `--tools`
-11. `installDependencies()`, `updateGitignore()`, `addVscodeConfig()`, `addFlutterAssetsToPubSpec()`
-12. `addNetworkModule(runBuildRunnerAfter: false)` with `--network` / `--auth-interceptor`; `addAuthInterceptor(...)` with `--auth-interceptor`
-13. `runSlang(<localization>)` — only if created
-14. `runBuildRunner(workingDirectory: packages/<utils>)` if created, then `runBuildRunner()` for the app
-15. `runDartFormat()`
-16. `sortPubspecDeps()` for the app and the created utils / localization pubspecs
-17. `writeToolVersion()`
+5. `generateFlutterGenFiles()` — `build.yaml`, `assets/colors/colors.xml`
+6. `generateCleanRouterPackage()`, `generateLocalizationPackage()`, `generateUtilsPackage()` — each only when its `create` is true
+7. `addPackagesWorkspace(created)` — lists the created packages under `workspace:`; adds nothing when none are created
+8. `generateCoreFiles()` — main, bootstrap, init service, app, DI, router
+9. `createFeatureStructure('lib/features/home', 'home', …)`; `generateToolsFiles()` with `--tools`
+10. `installDependencies()`, `updateGitignore()`, `addVscodeConfig()`, `addFlutterAssetsToPubSpec()`
+11. `addNetworkModule(runBuildRunnerAfter: false)` with `--network` / `--auth-interceptor`; `addAuthInterceptor(...)` with `--auth-interceptor`
+12. `runSlang(<localization>)` — only if created
+13. `runBuildRunner(workingDirectory: packages/<utils>)` if created, then `runBuildRunner()` for the app
+14. `runDartFormat()`
+15. `sortPubspecDeps()` for the app and the created utils / localization pubspecs
+16. `writeToolVersion()`
 
 ---
 
@@ -109,12 +106,4 @@ bin/clean_helper.dart → CleanHelperRunner.run(args)
 
 - `toolVersion` (`shared/tool_version.dart`) must match `version:` in `pubspec.yaml`.
 - Every release gets a `CHANGELOG.md` section. Released versions aren't amended — later changes go in a new patch version.
-- Template changes that older projects can't absorb are recorded in the README's "Upgrading existing projects" table.
-
----
-
-## Known issues
-
-- `generate-localizations` runs `dart run slang` in the app root, but since 1.3.0 `slang.yaml` lives in `packages/<app>_localization`. `bootstrap` and `init` use `runSlang(<app>_localization)`, which is correct. The generated `tools/bootstrap.dart` has the same problem as `generate-localizations`.
-- `bootstrap` runs build_runner only in the app, not first in `packages/<app>_utils` as `init` does.
-- `add-repo` never adds a constant to an existing `<feature>_api_paths.dart`, so a second repo in the same feature references a missing constant.
+- Older projects aren't supported: templates only target what the current `init` generates. Breaking changes are called out in the CHANGELOG.

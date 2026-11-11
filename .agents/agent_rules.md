@@ -37,14 +37,13 @@ Hard constraints for changing clean_helper. `conventions.md` explains the reason
 - **Every command calls `ensurePubspec()` first.** It loads the root-pubspec config, handles monorepo app selection (which changes `Directory.current`) and checks the version stamp. The only exceptions are `list-mono-repo-apps`, which must not trigger selection, `add-melos-config` and `create-packages`, which work on the root pubspec, and the global `--version` flag, which is handled in the runner.
 - Never add monorepo detection anywhere except `shared/resolve_mono_repo_project.dart`.
 - Anything read from the **root** pubspec must be read in `loadPackageConfigs()` — which `ensurePubspec()` calls before the directory change — and stored in a shared global in `shared/package_configs.dart`. Commands read the global; they never re-read the root pubspec.
-- New `clean-helper:` keys are parsed with `readCleanHelperFields(path)`. Missing keys must keep today's behaviour.
+- New `clean-helper:` keys are parsed with `readCleanHelperFields(path)`. A missing key means the default behaviour.
 - Get workspace package names and imports from `resolveUtilsPackage()`, `resolveLocalizationPackage()` and `resolveRouterPackage()`. Never build `<app>_utils`, `<app>_localization` or `clean_router` by hand, and never hard-code `package:clean_router/…` in a template — take the import as a parameter.
 - `loadPackageConfigs()` runs once per process (`packageConfigsLoaded`). Don't call it again after the monorepo `chdir`.
 
-## Compatibility with existing projects
+## No backward compatibility
 
-- Generated code has to compile in projects scaffolded by **older** versions. When a template change depends on something `init` generates (the call adapter, `UseCaseBase`, utils exports, DI registrations), either detect the old layout from files on disk, or add a config key and document the upgrade step in the README's "Upgrading existing projects" table.
-- Never register a type in DI that an older layout already registers — GetIt throws on duplicates. See `utils_registers_error_logger.dart`.
+- Templates and commands target only what the current `init` generates. Don't add detection of older layouts, compatibility flags or upgrade paths; note breaking changes in the CHANGELOG instead.
 
 ## Toolchain
 

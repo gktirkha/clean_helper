@@ -75,7 +75,7 @@ lib/src/
 ├── error_entity.dart
 ├── failure.dart                     Failure({message}); Failure.leftFromError(e)
 ├── type_definitions.dart            JsonDecodeFactory<T>
-├── use_case_base.dart               UseCaseBase<ReturnType, ParameterType> (app's lib/core/domain/use_cases/ before 1.7.0)
+├── use_case_base.dart               UseCaseBase<ReturnType, ParameterType>
 ├── di/<app>_utils_module.dart       @module — registers BlocObserver
 ├── di/di_initializer.dart           @InjectableInit.microPackage → <App>UtilsPackageModule
 ├── di/di_container.dart             GetIt.instance (same instance as the app's), used by ContextUtils for the navigator key
@@ -116,7 +116,7 @@ lib/features/<f>/
     └── repositories/<r>_repository_impl.dart
 ```
 
-`lib/app/navigation/<f>_navigation_impl.dart` is `@LazySingleton(as: <F>Navigation)`. `goTo<F>([BuildContext? context])` uses the given context or falls back to `ContextUtils.currentContext` (the root navigator's), logs through `AppLogger.error` and returns if neither exists, then calls `.go(<F>Routes.<camel>)`. When the utils package has no `ContextUtils` (before 1.6.0), the context is required and there is no fallback.
+`lib/app/navigation/<f>_navigation_impl.dart` is `@LazySingleton(as: <F>Navigation)`. `goTo<F>([BuildContext? context])` uses the given context or falls back to `ContextUtils.currentContext` (the root navigator's), logs through `AppLogger.error` and returns if neither exists, then calls `.go(<F>Routes.<camel>)`.
 
 ---
 
@@ -130,16 +130,13 @@ lib/features/<f>/
 | REST datasource | `@Injectable(as: <R>DataSourceBase)` with a `@factoryMethod` factory |
 | `NetworkModule`, `CoreModule`, `AppModule`, utils module | `@module` |
 
-`ParseErrorLogger` is registered once, as `RetrofitLogger`, by `NetworkModule` (`@LazySingleton(as: ParseErrorLogger)`). Two older layouts differ:
-
-- Projects initialised before 1.4.1 register it in the utils module instead. `add-network-module` detects this and skips its own registration, because GetIt throws on duplicates.
-- When `packages.network` is configured, the tool can't see whether the external package registers one, so the REST datasource marks `errorLogger` `@ignoreParam`. injectable_generator otherwise emits `gh<ParseErrorLogger>()`, which throws if nothing is registered.
+`ParseErrorLogger` is registered once, as `RetrofitLogger`, by `NetworkModule` (`@LazySingleton(as: ParseErrorLogger)`). When `packages.network` is configured, the tool can't see whether the external package registers one, so the REST datasource marks `errorLogger` `@ignoreParam`. injectable_generator otherwise emits `gh<ParseErrorLogger>()`, which throws if nothing is registered.
 
 ---
 
 ## Result type — fpdart `TaskEither`
 
-With `result_type: task_either`, the default:
+Every layer returns fpdart `TaskEither`:
 
 ```
 RetrofitCallAdapter<T> extends CallAdapter<Future<T>, TaskEither<Failure, T>>
@@ -150,7 +147,7 @@ Get/Post<R>UseCase                      → TaskEither<Failure, <R>Entity>
 UseCaseBase.call                        → FutureOr<TaskEither<Failure, ReturnType>>
 ```
 
-Callers run `await useCase(params).run()`. With `result_type: future_either`, `add-repo` generates the pre-1.4.2 shape instead: `Future<Either<…>>` with `async` repository methods, and `FutureOr<Either<…>>` in use cases.
+Callers run `await useCase(params).run()`.
 
 retrofit_generator still emits `_setStreamType<Either<Failure, T>>` in `.g.dart` files. This is harmless.
 
@@ -161,13 +158,13 @@ retrofit_generator still emits `_setStreamType<Either<Failure, T>>` in `.g.dart`
 | Piece | Location | Notes |
 |---|---|---|
 | `ApiPaths.baseUrl` | `core/network/constants/api_paths.dart` | |
-| `NetworkModule` | `core/network/di/network_module.dart` | `BaseOptions` (User-Agent from `PackageInfo`), `Dio` with the error interceptor and a `DioLensInterceptor(dio: dio, name: 'api')`, and the `RetrofitLogger` registration. `add-auth-interceptor` adds `AuthInterceptor` and a `@Named(DIKeys.noAuthDio)` Dio. Projects before 1.5.0 use `ChuckerDioInterceptor` + `PrettyDioLogger` instead |
-| `DioLens.init` | `app/init_service.dart` (`app/bootstrap.dart` before 1.5.0) | Added by `add-network-module` after `Bloc.observer`, with the DI navigator key and `themeMode: .system` |
+| `NetworkModule` | `core/network/di/network_module.dart` | `BaseOptions` (User-Agent from `PackageInfo`), `Dio` with the error interceptor and a `DioLensInterceptor(dio: dio, name: 'api')`, and the `RetrofitLogger` registration. `add-auth-interceptor` adds `AuthInterceptor` and a `@Named(DIKeys.noAuthDio)` Dio |
+| `DioLens.init` | `app/init_service.dart` | Added by `add-network-module` after `Bloc.observer`, with the DI navigator key and `themeMode: .system` |
 | `ErrorInterceptor` | `core/network/interceptors/` | `{"errors": [...]}` → `ErrorModel` |
-| `RetrofitCallAdapter`, `RetrofitLogger` | `core/network/utils/` | Import the utils package. Projects before 1.4.4 have them in `packages/<app>_utils/lib/src/network/` |
+| `RetrofitCallAdapter`, `RetrofitLogger` | `core/network/utils/` | Import the utils package. The adapter class name comes from `packages.utils.call_adapter_name` |
 | `<F>ApiPaths` | `features/<f>/data/constants/` | `static const <camelRepo> = '/api/<kebab-feature>/'` |
 
-The REST datasource imports the call adapter (`resolveCallAdapterName()`) from, in order: `packages.network.import`, then `../../../../core/network/utils/retrofit_call_adapter.dart` if it exists. If none of these applies, it relies on the utils import.
+The REST datasource imports the call adapter (`resolveCallAdapterName()`) from, in order: `packages.network.import`, else `../../../../core/network/utils/retrofit_call_adapter.dart`.
 
 ---
 

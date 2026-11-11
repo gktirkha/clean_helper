@@ -38,7 +38,7 @@ void generateDomainRepo(String dir, String name, String utilsImport, {...}) {
 - They return the whole file as a `String`. Use an arrow body for simple templates, and a block body when they compute pieces first (see `rest_data_source_template.dart`).
 - Escape `$` for Dart code that must appear literally in the output: `'\${packageInfo.appName}'`.
 - A multi-line `'''` string drops the newline right after the opening quotes. To start a fragment with a blank line, use `'\n\n...'`.
-- Optional output is controlled by named `bool` parameters that default to today's behaviour (`addSample`, `taskEither`, `importUseCaseBase`, `ignoreErrorLogger`, `registerErrorLogger`).
+- Optional output is controlled by named `bool` parameters that default to today's behaviour (`addSample`, `ignoreErrorLogger`, `withDi`).
 - Imports that depend on runtime values go through `sortImports([...])`, one call per section:
 
 ```dart
@@ -94,13 +94,12 @@ The runner and `ensurePubspec()` fill shared globals before any command logic ru
 | `vscodeConfig` | `loadPackageConfigs()` | `(extensions, tasks, launch)` from `packages.vs_code_configs`; each true unless `false` |
 | `useRootAnalysisConfig` | `loadPackageConfigs()` | `packages.use_root_analysis` |
 | `monoRepoAppPath` | `resolveMonoRepoProject()` | the app switched into, relative to the root (`apps/shop`), or null |
-| `resultTypeConfig` | `loadPackageConfigs()` | raw `result_type` string, or null |
 
 `loadPackageConfigs()` runs **before** `resolveMonoRepoProject()` changes directory, so it reads the root pubspec. Config parsing is line-based, with no YAML dependency:
 
 - `readCleanHelperFields(path)` returns the scalar children of `clean-helper.<path…>`. It tracks indentation, strips comments and quotes, and ignores list items.
 - `readPackageConfig(key)` builds on it for `packages.<key>`: the name comes from the import, or the import defaults to `package:<name>/<name>.dart`; `create` is true unless it's `false`.
-- `readMonoRepoApps()` and `checkVersionMismatch()` are older, hand-written parsers for their own keys.
+- `readMonoRepoApps()` is a hand-written parser for the `mono_repo_apps` list, which `readCleanHelperFields` (scalars only) can't read. `checkVersionMismatch()` reads `version` through `readCleanHelperFields([])`.
 
 Resolution helpers turn config into decisions, so commands don't repeat the logic:
 
@@ -112,9 +111,6 @@ Resolution helpers turn config into decisions, so commands don't repeat the logi
 | `resolveUtilsModuleName(utils)` | `module_name` ?? `<UtilsPascal>Module` |
 | `resolveCallAdapterName()` | `call_adapter_name` ?? `RetrofitCallAdapter` |
 | `packageBarrelPath(p)` / `packageBarrelPrefix(p)` | where a created package's barrel goes (from its import URI), and the `../` prefix its exports need |
-| `usesTaskEither()` | `TaskEither` (default) vs `Future<Either>` return types; aborts on invalid values |
-| `utilsRegistersErrorLogger(utils)` | whether an older utils DI module already registers `ParseErrorLogger` |
-| `utilsHasRetrofitHelpers(utils)` | whether an older utils package still contains the call adapter and logger |
 
 ---
 

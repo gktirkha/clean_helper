@@ -5,8 +5,7 @@ Each file under `lib/src/` holds one public symbol, named after the file. Update
 ```
 clean_helper/
 ├── bin/
-│   ├── clean_helper.dart              main entry: CleanHelperRunner().run(args)
-│   └── <command>.dart                 legacy per-command entries (init, add_feature, add_repo, …) — each only calls its command function
+│   └── clean_helper.dart              the only entry point: CleanHelperRunner().run(args)
 ├── lib/
 │   ├── clean_helper.dart              exports lib/src/commands/*.dart only
 │   └── src/
@@ -33,13 +32,12 @@ clean_helper/
 | `add_feature.dart` | `addFeature(args, {withDi, runBuildRunnerAfter})` | `add-feature` |
 | `create_packages.dart` | `createPackages({dir})` — skips `ensurePubspec()` | `create-packages` |
 | `add_melos_config.dart` | `addMelosConfig()` — skips `ensurePubspec()` | `add-melos-config` |
-| `add_network.dart` | `addNetwork()` | legacy — not registered in the runner |
 | `add_network_module.dart` | `addNetworkModule({runBuildRunnerAfter})` | `add-network-module` |
 | `add_repo.dart` | `addRepo(args, {runBuildRunnerAfter, noRest, addSample})` | `add-repo` |
 | `add_vscode_config.dart` | `addVscodeConfig()` | `add-vscode-config` |
 | `bootstrap.dart` | `runBootstrapCommand()` (async) | `bootstrap` |
 | `build_runner.dart` | `runBuildRunnerCommand(args)` | `build-runner` |
-| `generate_localizations.dart` | `runGenerateLocalizationsCommand(args)` | `generate-localizations` |
+| `generate_localizations.dart` | `runGenerateLocalizationsCommand()` | `generate-localizations` |
 | `generate_tools.dart` | `generateTools({overwrite})` | `generate-tools` |
 | `init.dart` | `runInit({withNetwork, withDi, withAuthInterceptor, withTools})` (async) | `init` |
 | `list_mono_repo_apps.dart` | `listMonoRepoApps()` — skips `ensurePubspec()` | `list-mono-repo-apps` |
@@ -95,7 +93,6 @@ clean_helper/
 | `generate_analysis_options.dart` | `generateAnalysisOptions()` — full rules, or an include of the root's (created if missing) with `use_root_analysis` in a monorepo app |
 | `run_flutter_pub_get.dart` | `runFlutterPubGet()` |
 | `create_directories.dart` | `createDirectories()` — the only place allowed to call `Directory.createSync` |
-| `generate_localization_files.dart` | `generateLocalizationFiles()` — no-op |
 | `generate_flutter_gen_files.dart` | `generateFlutterGenFiles()` |
 | `scaffold_package.dart` | `scaffoldPackage(package, {parentDir})` — `flutter create --template package`, delete unused scaffold files, write an including `analysis_options.yaml` |
 | `generate_clean_router_package.dart` | `generateCleanRouterPackage(router, {parentDir})` |
@@ -104,12 +101,11 @@ clean_helper/
 | `patch_package_pubspec.dart` | `patchPackagePubspec(packagePath, pubspecTail)` |
 | `add_packages_workspace.dart` | `addPackagesWorkspace(packagePaths)` — no-op for an empty list |
 | `generate_core_files.dart` | `generateCoreFiles(packageName, {utils, localization, router})` |
-| `generate_home_feature.dart` | `generateHomeFeature(utilsImport, routerImport, {withDi})` |
 | `generate_tools_files.dart` | `generateToolsFiles({overwrite})` |
 | `install_dependencies.dart` | `installDependencies(workspacePackages)` |
 | `update_gitignore.dart` | `updateGitignore()` |
 | `add_flutter_assets_to_pubspec.dart` | `addFlutterAssetsToPubSpec()` |
-| `generate_network_files.dart` | `generateNetworkFiles(utilsImport, {registerErrorLogger, retrofitHelpersInUtils})` |
+| `generate_network_files.dart` | `generateNetworkFiles(utilsImport, {callAdapterName})` |
 | `generate_retrofit_call_adapter.dart` | `generateRetrofitCallAdapter(utilsImport)` → `lib/core/network/utils/` |
 | `generate_retrofit_logger.dart` | `generateRetrofitLogger(utilsImport)` → `lib/core/network/utils/` |
 | `run_slang.dart` | `runSlang(localizationPackageName, {parentDir})` |
@@ -120,21 +116,19 @@ clean_helper/
 
 ### `feature/` — `add-feature`
 
-`create_feature_structure.dart` → `createFeatureStructure(basePath, feature, utilsImport, routerImport, {withDi, contextUtils})` calls the `generateFeature*` helpers: `routes`, `navigation`, `navigation_impl`, `page`, `page_provider`, `router`, `bloc`, `module`. `patch_router_module.dart` → `patchRouterModule(feature)`. `build_router_module.dart` → `buildRouterModule(features)`, which sorts features and is the single source of `app_router_module.dart` content. `utils_has_context_utils.dart` → `utilsHasContextUtils(utils)`: whether `packages/<utils>/lib/src/context_utils.dart` exists.
+`create_feature_structure.dart` → `createFeatureStructure(basePath, feature, utilsImport, routerImport, {withDi})` (also used by `init` for the home feature) calls the `generateFeature*` helpers: `routes`, `navigation`, `navigation_impl`, `page`, `page_provider`, `router`, `bloc`, `module`. `patch_router_module.dart` → `patchRouterModule(feature)`. `build_router_module.dart` → `buildRouterModule(features)`, which sorts features and is the single source of `app_router_module.dart` content.
 
 ### `repo/` — `add-repo`
 
 | File | Function |
 |---|---|
-| `generate_domain_repo.dart` | `generateDomainRepo(dir, name, utilsImport, {addSample, taskEither})` |
-| `generate_data_source_base.dart` | `generateDataSourceBase(dataDir, name, utilsImport, {addSample, taskEither})` |
-| `generate_data_repo.dart` | `generateDataRepo(dataDir, name, utilsImport, {addSample, taskEither})` |
-| `generate_rest_data_source.dart` | `generateRestDataSource(dataDir, feature, name, utilsImport, {callAdapter, adapterImport, ignoreErrorLogger, addSample, taskEither})` |
-| `generate_use_cases.dart` | `generateUseCases(feature, name, utilsImport, {importUseCaseBase, taskEither})` |
+| `generate_domain_repo.dart` | `generateDomainRepo(dir, name, utilsImport, {addSample})` |
+| `generate_data_source_base.dart` | `generateDataSourceBase(dataDir, name, utilsImport, {addSample})` |
+| `generate_data_repo.dart` | `generateDataRepo(dataDir, name, utilsImport, {addSample})` |
+| `generate_rest_data_source.dart` | `generateRestDataSource(dataDir, feature, name, utilsImport, {callAdapter, required adapterImport, ignoreErrorLogger, addSample})` |
+| `generate_use_cases.dart` | `generateUseCases(feature, name, utilsImport)` |
 | `generate_api_paths.dart` | `generateApiPaths(dataDir, feature, name)` |
 | `generate_request_model.dart` / `generate_response_model.dart` | request/response models |
-| `uses_task_either.dart` | `usesTaskEither()` — from `resultTypeConfig`; aborts on invalid values |
-| `utils_has_use_case_base.dart` | `utilsHasUseCaseBase(utils)` — whether `packages/<utils>/lib/src/use_case_base.dart` exists |
 | `warn_missing_rest_dependencies.dart` | `warnMissingRestDependencies()` |
 
 ### Other groups
@@ -142,11 +136,10 @@ clean_helper/
 | Folder | Files → functions |
 |---|---|
 | `entity/` | `generateEntityFile(dir, name)`, `generateModelFile(dir, name, entityImport)` |
-| `add_network_module/` | `installNetworkDependencies()`, `patchDioLensInit()`, `utilsRegistersErrorLogger(utils)`, `utilsHasRetrofitHelpers(utils)` |
+| `add_network_module/` | `installNetworkDependencies()`, `patchDioLensInit()` |
 | `auth_interceptor/` | `generateAuthInterceptor()`, `patchDiKeys()`, `patchNetworkModule()` |
 | `remove_feature/` | `deleteFeatureFiles(feature)`, `unpatchRouterModule(feature)` |
 | `build_runner/` | `runBuildRunnerBuild()`, `runBuildRunnerClean()` |
-| `generate_localizations/` | `runGenerateLocalizations()` |
 | `melos/` | `installMelos()`, `addMelosToPubspec()` |
 | `vscode_config/` | `generateVscodeExtensions()`, `generateVscodeLaunch()`, `generateVscodeTasks()` |
 
@@ -158,7 +151,7 @@ Each file is `<name>_template.dart` → `<name>Template(...)`.
 
 | Area | Templates |
 |---|---|
-| App skeleton | `main_dart`, `main_app_dart`, `bootstrap_dart`, `init_service`, `di_container`, `di_initializer`, `di_keys`, `app_module`, `core_module`, `app_go_router`, `app_go_router_redirect`, `app_router_module`, `app_router_module_build` |
+| App skeleton | `main_dart`, `main_app_dart`, `bootstrap_dart`, `init_service`, `di_container`, `di_initializer`, `di_keys`, `app_module`, `core_module`, `app_go_router`, `app_go_router_redirect`, `app_router_module_build` (via `buildRouterModule`) |
 | Feature | `feature_routes`, `feature_navigation`, `feature_navigation_impl`, `feature_router`, `feature_page`, `feature_page_provider`, `feature_bloc`, `feature_event`, `feature_state`, `feature_module` |
 | Repo | `domain_repo`, `data_source_base`, `data_repo`, `rest_data_source`, `feature_api_paths`, `request_model`, `response_model`, `get_use_case`, `post_use_case`, `get_use_case_params`, `post_use_case_params` |
 | Entity | `entity`, `model` |
@@ -175,11 +168,9 @@ Templates that take configurable input:
 
 | Template | Parameters beyond names |
 |---|---|
-| `domain_repo`, `data_source_base`, `data_repo` | `utilsImport`, `addSample`, `taskEither` |
-| `rest_data_source` | `utilsImport`, `callAdapter`, `adapterImport` (package URI or relative path), `ignoreErrorLogger`, `addSample`, `taskEither` |
-| `get_use_case`, `post_use_case` | `utilsImport`, `importUseCaseBase`, `taskEither` |
-| `network_module` | `loggerImport` (package URI or relative path), `registerErrorLogger` |
-| `no_auth_dio_method` | `chucker` (pre-1.5.0 network module) |
+| `domain_repo`, `data_source_base`, `data_repo` | `utilsImport`, `addSample` |
+| `rest_data_source` | `utilsImport`, `callAdapter`, `adapterImport` (package URI or relative path), `ignoreErrorLogger`, `addSample` |
+| `get_use_case`, `post_use_case` | `utilsImport` |
 | `dio_lens_init` | `indent` |
 | `retrofit_call_adapter` | `utilsImport`, `className` |
 | `retrofit_logger`, `error_model` | `utilsImport` |
@@ -193,5 +184,5 @@ Templates that take configurable input:
 | `string_extension` | `generatedFile`, `translateVar` |
 | `safe_cast` | `localizationImport`, `translateVar` |
 | `utils_module` | full `moduleName` |
-| `feature_navigation` | `optionalContext` |
-| `feature_navigation_impl` | `utilsImport`, `contextUtils` |
+| `feature_navigation_impl` | `utilsImport` |
+| `tools_bootstrap` | `localizationDir`, `utilsDir` (null when the package isn't under `packages/`) |

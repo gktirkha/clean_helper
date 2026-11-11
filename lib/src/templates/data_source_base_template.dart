@@ -5,11 +5,8 @@ String dataSourceBaseTemplate(
   String repoName,
   String utilsImport, {
   bool addSample = false,
-  bool taskEither = true,
 }) {
-  final result = taskEither
-      ? 'TaskEither<Failure, ${className}ResponseModel>'
-      : 'Future<Either<Failure, ${className}ResponseModel>>';
+  final result = 'TaskEither<Failure, ${className}ResponseModel>';
 
   return addSample
       ? '''
