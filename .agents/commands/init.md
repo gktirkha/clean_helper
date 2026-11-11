@@ -13,21 +13,19 @@ Run once, in a project fresh from `flutter create`. `--auth-interceptor` implies
 
 ## Sequence
 
-`ensurePubspec()` runs first. `readPackageName()` then derives `<app>`, `<app>_utils` and `<app>_localization`. The rest is in `overview.md` → "`init` sequence". In brief:
+`ensurePubspec()` runs first. `resolveUtilsPackage()`, `resolveLocalizationPackage()` and `resolveRouterPackage()` then give each package's name, import and `create` flag (defaults: `<app>_utils`, `<app>_localization`, `clean_router`, all created), and `resolveSlangSettings()` the slang settings. The rest is in `overview.md` → "`init` sequence". In brief:
 
 1. `fvmUse()`, `generateAnalysisOptions()`, `runFlutterPubGet()`
 2. `createDirectories()`, `generateFlutterGenFiles()`
-3. The packages: `generateCleanRouterPackage()`, `generateLocalizationPackage()`, `generateUtilsPackage()`, then `addCleanRouterWorkspace()`
+3. The packages with `create: true`: `generateCleanRouterPackage()`, `generateLocalizationPackage()`, `generateUtilsPackage()`, then `addPackagesWorkspace()` for those created — no `workspace:` key if none are
 4. The app: `generateCoreFiles()`, `generateHomeFeature(withDi:)`, `generateToolsFiles()` if `--tools`
 5. `installDependencies()`, `updateGitignore()`, `addVscodeConfig()`, `addFlutterAssetsToPubSpec()`
 6. `addNetworkModule(runBuildRunnerAfter: false)` / `addAuthInterceptor(runBuildRunnerAfter: false, showNextSteps: false)` when their flags are set
-7. `runSlang()` in the localization package; `runBuildRunner()` in `packages/<app>_utils`, then in the app; `runDartFormat()`
-8. `sortPubspecDeps()` for all three pubspecs; `writeToolVersion()`
+7. `runSlang()` in the localization package and `runBuildRunner()` in the utils package, each only if created; then `runBuildRunner()` in the app and `runDartFormat()`
+8. `sortPubspecDeps()` for the app and the created utils / localization pubspecs; `writeToolVersion()`
 
-The package generators run `flutter create --template package` and then:
+The package generators call `scaffoldPackage()` — `flutter create --template package`, delete the scaffold files (README, CHANGELOG, LICENSE, `.metadata`, `test/`, and `lib/<name>.dart` when the configured barrel is elsewhere), overwrite `analysis_options.yaml` — and then:
 
-- delete the scaffold files (README, CHANGELOG, LICENSE, `test/`);
-- overwrite `analysis_options.yaml`;
 - patch the pubspec tail (`resolution: workspace`, dependencies) via `patchPackagePubspec()`;
 - write their sources with `overwriteFile`.
 
@@ -49,5 +47,6 @@ See `architecture.md` for the full tree. Key points:
 
 ## Notes
 
-- `init` doesn't read `clean-helper.packages`. It always generates `<app>_utils` and `<app>_localization`.
+- `init` reads `clean-helper.packages.{utils,localization,router}`: names, barrel imports (the barrel is written at the import's path), `create`, `utils.module_name` (the `@module` class), `utils.call_adapter_name` (via `add-network-module`) and the slang keys under `localization`, which become `slang.yaml` and set the generated file and `translate_var` used by the barrel, `String.tr` and `safeCast`.
+- Workspace packages are always added with `flutter pub add <name>` (no `--path`), created or not.
 - The home feature's generators take `packageName` but otherwise match `add-feature`.

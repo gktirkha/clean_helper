@@ -61,9 +61,16 @@ clean_helper/
 | `sort_imports.dart` | `sortImports(imports)` | Join import directives alphabetically |
 | `ensure_pubspec.dart` | `ensurePubspec()` | First call of every command: config → monorepo → version check |
 | `load_package_configs.dart` | `loadPackageConfigs()` | Fill the config globals from the starting-directory pubspec |
-| `package_configs.dart` | `PackageConfig` typedef; `utilsPackageConfig`, `networkPackageConfig`, `retrofitCallAdapterConfig`, `resultTypeConfig` | Config globals |
+| `package_configs.dart` | `PackageConfig` typedef `(name, import, create)`; `packageConfigsLoaded`, `utilsPackageConfig`, `networkPackageConfig`, `localizationPackageConfig`, `routerPackageConfig`, `utilsModuleNameConfig`, `callAdapterNameConfig`, `slangSettingsConfig`, `retrofitCallAdapterConfig`, `resultTypeConfig` | Config globals |
 | `read_clean_helper_fields.dart` | `readCleanHelperFields(path)` | Scalar children of `clean-helper.<path…>` |
 | `read_package_config.dart` | `readPackageConfig(key)` | `packages.<key>` → `PackageConfig?` |
+| `resolve_utils_package.dart` | `resolveUtilsPackage()` | Configured utils package or `<app>_utils` |
+| `resolve_localization_package.dart` | `resolveLocalizationPackage()` | Configured localization package or `<app>_localization` |
+| `resolve_router_package.dart` | `resolveRouterPackage()` | Configured router package or `clean_router` |
+| `resolve_slang_settings.dart` | `resolveSlangSettings()` | slang defaults + `slangSettingsConfig` |
+| `resolve_call_adapter_name.dart` | `resolveCallAdapterName()` | `call_adapter_name` ?? `retrofit_call_adapter.name` ?? `RetrofitCallAdapter` |
+| `package_barrel_path.dart` | `packageBarrelPath(package)` | `packages/<name>/lib/<file from import>` |
+| `package_barrel_prefix.dart` | `packageBarrelPrefix(package)` | `../` prefix from a nested barrel back to `lib/` |
 | `read_mono_repo_apps.dart` | `readMonoRepoApps()` | `mono_repo_apps` list |
 | `read_package_name.dart` | `readPackageName()` | `name:` from the current pubspec |
 | `resolve_mono_repo_project.dart` | `resolveMonoRepoProject()` | No `lib/`? Select an app and `chdir` into it |
@@ -87,15 +94,16 @@ clean_helper/
 | `create_directories.dart` | `createDirectories()` — the only place allowed to call `Directory.createSync` |
 | `generate_localization_files.dart` | `generateLocalizationFiles()` — no-op |
 | `generate_flutter_gen_files.dart` | `generateFlutterGenFiles()` |
-| `generate_clean_router_package.dart` | `generateCleanRouterPackage()` |
-| `generate_localization_package.dart` | `generateLocalizationPackage(localizationPackageName)` |
-| `generate_utils_package.dart` | `generateUtilsPackage(utilsPackageName, localizationPackageName)` |
+| `scaffold_package.dart` | `scaffoldPackage(package)` — `flutter create --template package`, delete unused scaffold files, write `analysis_options.yaml` |
+| `generate_clean_router_package.dart` | `generateCleanRouterPackage(router)` |
+| `generate_localization_package.dart` | `generateLocalizationPackage(localization, slangSettings)` |
+| `generate_utils_package.dart` | `generateUtilsPackage(utils, localization, {moduleName, translateVar})` |
 | `patch_package_pubspec.dart` | `patchPackagePubspec(packagePath, pubspecTail)` |
-| `add_clean_router_workspace.dart` | `addCleanRouterWorkspace(utilsPackageName, localizationPackageName)` |
-| `generate_core_files.dart` | `generateCoreFiles(packageName, utilsPackageName)` |
-| `generate_home_feature.dart` | `generateHomeFeature(packageName, {withDi})` |
+| `add_packages_workspace.dart` | `addPackagesWorkspace(packageNames)` — no-op for an empty list |
+| `generate_core_files.dart` | `generateCoreFiles(packageName, {utils, localization, router})` |
+| `generate_home_feature.dart` | `generateHomeFeature(utilsImport, routerImport, {withDi})` |
 | `generate_tools_files.dart` | `generateToolsFiles({overwrite})` |
-| `install_dependencies.dart` | `installDependencies(utilsPackageName, localizationPackageName)` |
+| `install_dependencies.dart` | `installDependencies(workspacePackages)` |
 | `update_gitignore.dart` | `updateGitignore()` |
 | `add_flutter_assets_to_pubspec.dart` | `addFlutterAssetsToPubSpec()` |
 | `generate_network_files.dart` | `generateNetworkFiles(utilsImport, {registerErrorLogger, retrofitHelpersInUtils})` |
@@ -109,7 +117,7 @@ clean_helper/
 
 ### `feature/` — `add-feature`
 
-`create_feature_structure.dart` → `createFeatureStructure(basePath, feature, utilsImport, {withDi, contextUtils})` calls the `generateFeature*` helpers: `routes`, `navigation`, `navigation_impl`, `page`, `page_provider`, `router`, `bloc`, `module`. `patch_router_module.dart` → `patchRouterModule(feature)`. `build_router_module.dart` → `buildRouterModule(features)`, which sorts features and is the single source of `app_router_module.dart` content. `utils_has_context_utils.dart` → `utilsHasContextUtils(utils)`: whether `packages/<utils>/lib/src/context_utils.dart` exists.
+`create_feature_structure.dart` → `createFeatureStructure(basePath, feature, utilsImport, routerImport, {withDi, contextUtils})` calls the `generateFeature*` helpers: `routes`, `navigation`, `navigation_impl`, `page`, `page_provider`, `router`, `bloc`, `module`. `patch_router_module.dart` → `patchRouterModule(feature)`. `build_router_module.dart` → `buildRouterModule(features)`, which sorts features and is the single source of `app_router_module.dart` content. `utils_has_context_utils.dart` → `utilsHasContextUtils(utils)`: whether `packages/<utils>/lib/src/context_utils.dart` exists.
 
 ### `repo/` — `add-repo`
 
@@ -153,7 +161,7 @@ Each file is `<name>_template.dart` → `<name>Template(...)`.
 | Entity | `entity`, `model` |
 | Network | `network_module`, `core_api_paths`, `error_interceptor`, `error_model`, `retrofit_call_adapter`, `retrofit_logger`, `auth_interceptor`, `di_keys_no_auth`, `no_auth_dio_method`, `dio_lens_init` |
 | Utils package | `utils_lib_export`, `utils_pubspec_tail`, `context_utils`, `di_container` (shared with the app), `utils_module`, `utils_di_initializer`, `app_logger`, `app_bloc_observer`, `debounce`, `error_entity`, `failure`, `type_definitions`, `get_current_function_name`, `list_to_model_list`, `safe_cast`, `safe_execute`, `safe_execute_task`, `use_case_base` |
-| Localization package | `localization_lib_export`, `localization_pubspec_tail`, `localization_slang_yaml`, `string_extension`, `en_locale`, `slang_yaml` |
+| Localization package | `localization_lib_export`, `localization_pubspec_tail`, `localization_slang_yaml`, `string_extension`, `en_locale` |
 | clean_router package | `clean_router_base`, `clean_router_refresh`, `clean_router_lib_export`, `clean_router_pubspec_tail` |
 | Project config | `analysis_options`, `build_yaml`, `colors_xml`, `gitignore` |
 | Tools | `tools_command_runner`, `tools_clean`, `tools_bootstrap`, `tools_write_key_properties`, `tools_build_android`, `tools_build_config` |
@@ -170,8 +178,17 @@ Templates that take configurable input:
 | `network_module` | `loggerImport` (package URI or relative path), `registerErrorLogger` |
 | `no_auth_dio_method` | `chucker` (pre-1.5.0 network module) |
 | `dio_lens_init` | `indent` |
-| `init_service` | `pkg` |
-| `retrofit_call_adapter`, `retrofit_logger`, `error_model` | `utilsImport` |
-| `di_initializer` | `utilsPackageName` |
+| `retrofit_call_adapter` | `utilsImport`, `className` |
+| `retrofit_logger`, `error_model` | `utilsImport` |
+| `di_initializer` | `utilsImport`, `utilsPackageModule` |
+| `init_service` | `utilsImport`, `localizationImport` |
+| `main_app_dart` | `localizationImport` |
+| `app_go_router`, `feature_router` | `routerImport` |
+| `utils_lib_export`, `clean_router_lib_export` | barrel `prefix` |
+| `localization_lib_export` | `generatedFile`, barrel `prefix` |
+| `localization_slang_yaml` | slang settings map |
+| `string_extension` | `generatedFile`, `translateVar` |
+| `safe_cast` | `localizationImport`, `translateVar` |
+| `utils_module` | full `moduleName` |
 | `feature_navigation` | `optionalContext` |
 | `feature_navigation_impl` | `utilsImport`, `contextUtils` |

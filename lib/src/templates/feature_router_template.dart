@@ -1,13 +1,15 @@
 import '../functions/shared/camel_case.dart';
+import '../functions/shared/sort_imports.dart';
 
-String featureRouterTemplate(String feature, String className) =>
+String featureRouterTemplate(
+  String feature,
+  String className,
+  String routerImport,
+) =>
     '''
 import 'dart:async';
 
-import 'package:clean_router/clean_router.dart';
-import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
-import 'package:injectable/injectable.dart';
+${sortImports(["import '$routerImport';", "import 'package:flutter/material.dart';", "import 'package:go_router/go_router.dart';", "import 'package:injectable/injectable.dart';"])}
 
 import '../presentation/page_providers/${feature}_page_provider.dart';
 import '${feature}_routes.dart';

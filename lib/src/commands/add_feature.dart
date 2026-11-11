@@ -6,8 +6,8 @@ import '../functions/feature/utils_has_context_utils.dart';
 import '../functions/init/run_build_runner.dart';
 import '../functions/init/run_dart_format.dart';
 import '../functions/shared/ensure_pubspec.dart';
-import '../functions/shared/package_configs.dart';
-import '../functions/shared/read_package_name.dart';
+import '../functions/shared/resolve_router_package.dart';
+import '../functions/shared/resolve_utils_package.dart';
 
 void addFeature(
   List<String> args, {
@@ -25,19 +25,16 @@ void addFeature(
   final featureName = args.first.toLowerCase();
   final basePath = 'lib/features/$featureName';
 
-  final utilsPackageName =
-      utilsPackageConfig?.name ?? '${readPackageName()}_utils';
-  final utilsImport =
-      utilsPackageConfig?.import ??
-      'package:$utilsPackageName/$utilsPackageName.dart';
+  final utils = resolveUtilsPackage();
 
   stdout.writeln('🚀 Generating feature: $featureName');
   createFeatureStructure(
     basePath,
     featureName,
-    utilsImport,
+    utils.import,
+    resolveRouterPackage().import,
     withDi: withDi,
-    contextUtils: utilsHasContextUtils(utilsPackageName),
+    contextUtils: utilsHasContextUtils(utils.name),
   );
   patchRouterModule(featureName);
   runDartFormat();

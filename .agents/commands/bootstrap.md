@@ -14,7 +14,7 @@ clean-helper bootstrap
 1. `ensurePubspec()`
 2. `fvmUse()` — interactive `fvm use`, a no-op without fvm
 3. `runFlutterPubGet()`
-4. `runSlang('<app>_localization')` — runs slang inside `packages/<app>_localization`
+4. `runSlang(<localization>)` — runs slang inside `packages/<localization>` (`resolveLocalizationPackage()`); skipped with a note when that folder doesn't exist, i.e. the package lives elsewhere in the workspace
 5. `runBuildRunner()` — in the app only
 
 It doesn't run `dart format`.

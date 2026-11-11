@@ -42,7 +42,9 @@ What the templates produce. Keep this in sync when a template changes shape.
 └── build.yaml
 ```
 
-The app's `pubspec.yaml` lists all three packages under `workspace:` and as dependencies without a `path:` — pub resolves workspace members from the workspace. Each package pubspec has `resolution: workspace`, and the utils package depends on `<app>_localization` the same way.
+The app's `pubspec.yaml` lists the packages `init` created under `workspace:`, and all three as dependencies without a `path:` — pub resolves workspace members from the workspace. Each package pubspec has `resolution: workspace`, and the utils package depends on `<app>_localization` the same way.
+
+Names, barrel imports and whether each package is created come from `clean-helper.packages.{utils,localization,router}` (the defaults are shown here). Packages with `create: false` aren't generated; when none are created, the app pubspec gets no `workspace:` key, because the packages live in an enclosing workspace.
 
 ---
 

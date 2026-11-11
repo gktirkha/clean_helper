@@ -42,10 +42,7 @@ Example: an `add-use-case <feature> <name>` command.
    void addUseCase(List<String> args) {
      ensurePubspec();
      if (args.length < 2) abort('Usage: clean-helper add-use-case <feature> <name>');
-     final packageName = readPackageName();
-     final utilsImport = utilsPackageConfig?.import ??
-         'package:${packageName}_utils/${packageName}_utils.dart';
-     generateUseCase(args[0], args[1], utilsImport);
+     generateUseCase(args[0], args[1], resolveUtilsPackage().import);
      runDartFormat();
      runBuildRunner();
    }
@@ -69,7 +66,7 @@ Monorepo support comes free with `ensurePubspec()`, so don't add any app-selecti
 Example: `clean-helper.foo.bar`.
 
 1. Add a global to `functions/shared/package_configs.dart`, with a doc comment saying what null means.
-2. Set it in `loadPackageConfigs()` with `readCleanHelperFields(['foo'])['bar']` (or `readPackageConfig(key)` for a `packages.<key>` entry).
+2. Set it in `loadPackageConfigs()` with `readCleanHelperFields(['foo'])['bar']` (or `readPackageConfig(key)` for a `packages.<key>` entry). Workspace packages get a `resolve<Name>Package()` in `shared/` that fills in the default when the key is missing.
 3. If the value needs interpreting or validating, add a resolver in the group that uses it, like `repo/uses_task_either.dart`. Resolvers `abort()` on invalid values.
 4. The command reads the global or resolver. A missing key must produce exactly today's output.
 5. Print the resolved value in `listMonoRepoApps()`.

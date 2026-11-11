@@ -8,21 +8,20 @@ import '../functions/init/generate_network_files.dart';
 import '../functions/init/run_build_runner.dart';
 import '../functions/init/run_dart_format.dart';
 import '../functions/shared/ensure_pubspec.dart';
-import '../functions/shared/package_configs.dart';
-import '../functions/shared/read_package_name.dart';
+import '../functions/shared/resolve_call_adapter_name.dart';
+import '../functions/shared/resolve_utils_package.dart';
 
 void addNetworkModule({bool runBuildRunnerAfter = true}) {
   ensurePubspec();
 
   stdout.writeln('🌐 Setting up network layer...');
 
-  final utilsPackageName =
-      utilsPackageConfig?.name ?? '${readPackageName()}_utils';
+  final utils = resolveUtilsPackage();
   generateNetworkFiles(
-    utilsPackageConfig?.import ??
-        'package:$utilsPackageName/$utilsPackageName.dart',
-    registerErrorLogger: !utilsRegistersErrorLogger(utilsPackageName),
-    retrofitHelpersInUtils: utilsHasRetrofitHelpers(utilsPackageName),
+    utils.import,
+    callAdapterName: resolveCallAdapterName(),
+    registerErrorLogger: !utilsRegistersErrorLogger(utils.name),
+    retrofitHelpersInUtils: utilsHasRetrofitHelpers(utils.name),
   );
   installNetworkDependencies();
   patchDioLensInit();

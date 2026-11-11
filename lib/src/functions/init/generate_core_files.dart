@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import '../shared/package_configs.dart';
 import '../shared/pascal_case.dart';
 import '../shared/write_file.dart';
 import '../../templates/app_go_router_redirect_template.dart';
@@ -15,16 +16,22 @@ import '../../templates/main_app_dart_template.dart';
 import '../../templates/main_dart_template.dart';
 import '../../templates/app_router_module_template.dart';
 
-void generateCoreFiles(String packageName, String utilsPackageName) {
-  final utilsClassName = pascalCase(utilsPackageName);
-
+void generateCoreFiles(
+  String packageName, {
+  required PackageConfig utils,
+  required PackageConfig localization,
+  required PackageConfig router,
+}) {
   overwriteFile('lib/main.dart', mainDartTemplate());
   writeFile('lib/app/bootstrap.dart', bootstrapDartTemplate());
-  writeFile('lib/app/init_service.dart', initServiceTemplate(packageName));
-  writeFile('lib/app/main_app.dart', mainAppDartTemplate(packageName));
+  writeFile(
+    'lib/app/init_service.dart',
+    initServiceTemplate(utils.import, localization.import),
+  );
+  writeFile('lib/app/main_app.dart', mainAppDartTemplate(localization.import));
   writeFile(
     'lib/app/router/app_go_router.dart',
-    appGoRouterTemplate(packageName),
+    appGoRouterTemplate(router.import),
   );
   writeFile(
     'lib/app/router/app_go_router_redirect.dart',
@@ -37,7 +44,10 @@ void generateCoreFiles(String packageName, String utilsPackageName) {
   writeFile('lib/app/di/di_container.dart', diContainerTemplate());
   writeFile(
     'lib/app/di/di_initializer.dart',
-    diInitializerTemplate(utilsPackageName, utilsClassName),
+    diInitializerTemplate(
+      utils.import,
+      '${pascalCase(utils.name)}PackageModule',
+    ),
   );
   writeFile('lib/core/di/di_keys.dart', diKeysTemplate());
   writeFile('lib/app/di/app_module.dart', appModuleTemplate());

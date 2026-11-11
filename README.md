@@ -107,7 +107,7 @@ clean-helper init [--network] [--auth-interceptor] [--di] [--tools]
 What it does:
 
 1. Writes `analysis_options.yaml` and runs `flutter pub get`.
-2. Creates three workspace packages under `packages/`: `clean_router`, `<app>_localization` and `<app>_utils` (see [Workspace packages](#workspace-packages)), and adds them to `workspace:` in `pubspec.yaml`.
+2. Creates three workspace packages under `packages/`: `clean_router`, `<app>_localization` and `<app>_utils` (see [Workspace packages](#workspace-packages)), and adds them to `workspace:` in `pubspec.yaml`. Their names, imports and whether each is created at all are [configurable](#workspace-packages-create-name-import).
 3. Generates the app skeleton: `main.dart`, `bootstrap.dart`, `InitService`, `MainApp`, go_router setup, get_it/injectable DI, and a `home` feature.
 4. Installs dependencies, updates `.gitignore`, adds `.vscode/` config and flutter_gen setup (`build.yaml`, `assets/colors/colors.xml`).
 5. Optionally adds the network layer, auth interceptor and tools.
@@ -337,6 +337,19 @@ clean-helper:
     utils:
       name: my_app_utils
       import: package:my_app_utils/my_app_utils.dart
+      create: true
+      module_name: MyAppUtilsModule
+      call_adapter_name: MyAppCallAdapter
+    localization:
+      name: my_app_locales
+      import: package:my_app_locales/my_app_locales.dart
+      create: true
+      base_locale: en
+      translate_var: locales
+    router:
+      name: my_app_router
+      import: package:my_app_router/my_app_router.dart
+      create: true
     network:
       name: my_app_network
       import: package:my_app_network/my_app_network_module.dart
@@ -350,7 +363,11 @@ clean-helper:
 | `version` | written by `init` | Each command warns if it differs from the running tool |
 | `mono_repo_apps` | — | App paths in a monorepo — see [Monorepos](#monorepos) |
 | [`result_type`](#result_type) | `task_either` | `task_either` or `future_either` |
-| [`packages.utils`](#packagesutils) `.name` / `.import` | `<app>_utils` / `package:<name>/<name>.dart` | Shared utils package |
+| [`packages.utils`](#packagesutils) `.name` / `.import` / `.create` | `<app>_utils` / `package:<name>/<name>.dart` / `true` | Shared utils package |
+| `packages.utils.module_name` | `<UtilsPascal>Module` | The utils package's `@module` class |
+| `packages.utils.call_adapter_name` | `retrofit_call_adapter.name`, else `RetrofitCallAdapter` | Call adapter class generated and used by REST datasources |
+| [`packages.localization`](#packageslocalization) `.name` / `.import` / `.create` | `<app>_localization` / `package:<name>/<name>.dart` / `true` | Localization package; other keys go to `slang.yaml` |
+| [`packages.router`](#packagesrouter) `.name` / `.import` / `.create` | `clean_router` / `package:<name>/<name>.dart` / `true` | Router package with `CleanRouterBase` |
 | [`packages.network`](#packagesnetwork) `.name` / `.import` | not set / `package:<name>/<name>.dart` | External network package |
 | [`retrofit_call_adapter`](#retrofit_call_adapter) `.name` / `.import` | `RetrofitCallAdapter` / see below | Call adapter used by REST datasources |
 
@@ -365,14 +382,44 @@ Controls what `add-repo` generates:
 
 Any other value stops the command with an error.
 
+### Workspace packages: `create`, `name`, `import`
+
+`packages.utils`, `packages.localization` and `packages.router` each describe one workspace package. For each:
+
+- If only `import` is given, `name` is taken from it. If only `name` is given, the import is `package:<name>/<name>.dart`. A package that isn't configured uses its default name.
+- **`create`** (default `true`) — `init` generates the package in `packages/<name>/`, with its barrel at the path in `import`, and lists it under `workspace:` in the app's `pubspec.yaml`. With `create: false`, `init` assumes the package already exists elsewhere in the workspace, such as at a monorepo root, and only depends on it.
+- **No `workspace:` key without created packages.** When nothing is created, `init` leaves the app's `pubspec.yaml` without a `workspace:` key, so the app can be a member of an enclosing workspace. Give the app `resolution: workspace` yourself in that case.
+- Every package is added as a dependency without `path:`. Pub resolves workspace members from the workspace.
+- `init` runs slang and build_runner only in the packages it creates. Run them yourself, or through [`add-melos-config`](#add-melos-config), for packages that live elsewhere.
+
 ### `packages.utils`
 
-The package that `add-repo` and `add-network-module` import shared code from — `Failure`, `UseCaseBase`, `safeExecuteTask` and so on. When it's set:
+The package that `add-repo`, `add-feature` and `add-network-module` import shared code from: `Failure`, `UseCaseBase`, `safeExecuteTask` and so on.
 
 - Its import replaces `package:<app>_utils/<app>_utils.dart`.
-- Generated use cases import `UseCaseBase` from it, so the package must export `UseCaseBase`.
+- When it's configured, generated use cases import `UseCaseBase` from it, so the package must export `UseCaseBase`.
+- `module_name` names the `@module` class in `lib/src/di/<name>_module.dart` that registers `BlocObserver`.
+- `call_adapter_name` names the call adapter class. `add-network-module` generates it in `lib/core/network/utils/retrofit_call_adapter.dart`, and `add-repo` uses it in `@RestApi(callAdapter: …)`. It takes precedence over `retrofit_call_adapter.name`.
 
-If only `import` is given, `name` is taken from it. If only `name` is given, the import is `package:<name>/<name>.dart`.
+### `packages.localization`
+
+The slang package that `MainApp`, `InitService` and the utils package's `safeCast` import. Every key other than `name`, `import` and `create` is written to the package's `slang.yaml`, overriding these defaults:
+
+```yaml
+base_locale: en
+fallback_strategy: base_locale
+input_directory: assets/locales
+input_file_pattern: .locale.json
+output_directory: lib/src/generated    # must be inside lib/
+output_file_name: locales.g.dart
+translate_var: locales
+```
+
+The first locale file is `<input_directory>/<base_locale><input_file_pattern>`. The barrel exports the generated file, and `translate_var` is used in `String.tr` and `safeCast`.
+
+### `packages.router`
+
+The package with `CleanRouterBase` and `CleanRouterRefresh`, imported by `AppGoRouter` and every feature router. Defaults to `clean_router`.
 
 ### `packages.network`
 
@@ -413,7 +460,7 @@ clean-helper:
   If two apps share a folder name, you're prompted between just those. If none matches, the command lists the available names and stops.
 - With no `lib/` and no `mono_repo_apps`, the command stops with setup instructions.
 
-When shared code lives in separately named workspace packages rather than `packages/<app>_utils`, add [`packages`](#packagesutils) — and [`retrofit_call_adapter`](#retrofit_call_adapter) if needed — to the same root pubspec. Run `clean-helper list-mono-repo-apps` to check how everything resolves.
+When shared code lives in separately named workspace packages, such as root-level packages shared by every app, add [`packages`](#workspace-packages-create-name-import) with `create: false` — and [`retrofit_call_adapter`](#retrofit_call_adapter) if needed — to the same root pubspec. Run `clean-helper list-mono-repo-apps` to check how everything resolves.
 
 ---
 

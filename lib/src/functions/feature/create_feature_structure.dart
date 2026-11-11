@@ -10,7 +10,8 @@ import 'generate_feature_page_provider.dart';
 void createFeatureStructure(
   String basePath,
   String featureName,
-  String utilsImport, {
+  String utilsImport,
+  String routerImport, {
   bool withDi = false,
   bool contextUtils = true,
 }) {
@@ -27,7 +28,7 @@ void createFeatureStructure(
   );
   generateFeaturePage(featureName, basePath);
   generateFeaturePageProvider(featureName, basePath);
-  generateFeatureRouter(featureName, basePath);
+  generateFeatureRouter(featureName, basePath, routerImport);
   generateFeatureBloc(featureName, basePath);
   if (withDi) generateFeatureModule(featureName, basePath);
 }

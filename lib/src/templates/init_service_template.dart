@@ -1,8 +1,8 @@
 import '../functions/shared/sort_imports.dart';
 
-String initServiceTemplate(String pkg) =>
+String initServiceTemplate(String utilsImport, String localizationImport) =>
     '''
-${sortImports(["import 'package:flutter/foundation.dart';", "import 'package:flutter_bloc/flutter_bloc.dart';", "import 'package:${pkg}_localization/${pkg}_localization.dart';", "import 'package:${pkg}_utils/${pkg}_utils.dart';"])}
+${sortImports(["import 'package:flutter/foundation.dart';", "import 'package:flutter_bloc/flutter_bloc.dart';", "import '$localizationImport';", "import '$utilsImport';"])}
 
 import 'di/di_container.dart';
 import 'di/di_initializer.dart';

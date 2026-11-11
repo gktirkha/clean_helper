@@ -9,17 +9,18 @@ import '../feature/generate_feature_routes.dart';
 import '../feature/generate_feature_router.dart';
 import '../feature/generate_feature_page_provider.dart';
 
-void generateHomeFeature(String packageName, {bool withDi = false}) {
+void generateHomeFeature(
+  String utilsImport,
+  String routerImport, {
+  bool withDi = false,
+}) {
   const feature = 'home';
   const basePath = 'lib/features/home';
 
   generateFeatureRoutes(feature, basePath);
   generateFeatureNavigation(feature, basePath);
-  generateFeatureNavigationImpl(
-    feature,
-    'package:${packageName}_utils/${packageName}_utils.dart',
-  );
-  generateFeatureRouter(feature, basePath);
+  generateFeatureNavigationImpl(feature, utilsImport);
+  generateFeatureRouter(feature, basePath, routerImport);
   generateFeaturePage(feature, basePath);
   generateFeaturePageProvider(feature, basePath);
   generateFeatureBloc(feature, basePath);

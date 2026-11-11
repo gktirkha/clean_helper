@@ -1,9 +1,10 @@
-String appGoRouterTemplate(String pkg) => '''
+import '../functions/shared/sort_imports.dart';
+
+String appGoRouterTemplate(String routerImport) =>
+    '''
 import 'dart:async';
 
-import 'package:clean_router/clean_router.dart';
-import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
+${sortImports(["import '$routerImport';", "import 'package:flutter/material.dart';", "import 'package:go_router/go_router.dart';"])}
 
 import '../di/di_container.dart';
 import '../../features/home/router/home_routes.dart';

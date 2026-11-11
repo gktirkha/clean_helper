@@ -13,6 +13,7 @@ import 'generate_retrofit_logger.dart';
 /// generating them again under `lib/core/network/utils/` would clash.
 void generateNetworkFiles(
   String utilsImport, {
+  String callAdapterName = 'RetrofitCallAdapter',
   bool registerErrorLogger = true,
   bool retrofitHelpersInUtils = false,
 }) {
@@ -29,7 +30,7 @@ void generateNetworkFiles(
     errorInterceptorTemplate(),
   );
   if (!retrofitHelpersInUtils) {
-    generateRetrofitCallAdapter(utilsImport);
+    generateRetrofitCallAdapter(utilsImport, callAdapterName);
     generateRetrofitLogger(utilsImport);
   }
   writeFile(

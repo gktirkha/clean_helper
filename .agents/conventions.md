@@ -85,21 +85,29 @@ The runner and `ensurePubspec()` fill shared globals before any command logic ru
 | Global (file) | Set by | Meaning |
 |---|---|---|
 | `resolveScope` (`scope_option.dart`) | `CleanHelperRunner.runCommand` | `--scope` value |
-| `utilsPackageConfig` (`package_configs.dart`) | `loadPackageConfigs()` | `packages.utils` as a `PackageConfig` `(name, import)`, or null |
-| `networkPackageConfig` | `loadPackageConfigs()` | `packages.network`, or null |
+| `packageConfigsLoaded` (`package_configs.dart`) | `loadPackageConfigs()` | config already loaded — `ensurePubspec()` loads it only once per process, so nested commands (`init` → `add-network-module`) keep the root config after the monorepo `chdir` |
+| `utilsPackageConfig` | `loadPackageConfigs()` | `packages.utils` as a `PackageConfig` `(name, import, create)`, or null |
+| `localizationPackageConfig`, `routerPackageConfig` | `loadPackageConfigs()` | `packages.localization` / `packages.router`, or null |
+| `networkPackageConfig` | `loadPackageConfigs()` | `packages.network`, or null (`create` is ignored) |
+| `utilsModuleNameConfig`, `callAdapterNameConfig` | `loadPackageConfigs()` | `packages.utils.module_name` / `.call_adapter_name`, or null |
+| `slangSettingsConfig` | `loadPackageConfigs()` | every other scalar key under `packages.localization` |
 | `retrofitCallAdapterConfig` | `loadPackageConfigs()` | `(name, import?)`, or null |
 | `resultTypeConfig` | `loadPackageConfigs()` | raw `result_type` string, or null |
 
 `loadPackageConfigs()` runs **before** `resolveMonoRepoProject()` changes directory, so it reads the root pubspec. Config parsing is line-based, with no YAML dependency:
 
 - `readCleanHelperFields(path)` returns the scalar children of `clean-helper.<path…>`. It tracks indentation, strips comments and quotes, and ignores list items.
-- `readPackageConfig(key)` builds on it for `packages.<key>`: the name comes from the import, or the import defaults to `package:<name>/<name>.dart`.
+- `readPackageConfig(key)` builds on it for `packages.<key>`: the name comes from the import, or the import defaults to `package:<name>/<name>.dart`; `create` is true unless it's `false`.
 - `readMonoRepoApps()` and `checkVersionMismatch()` are older, hand-written parsers for their own keys.
 
 Resolution helpers turn config into decisions, so commands don't repeat the logic:
 
 | Helper | Decides |
 |---|---|
+| `resolveUtilsPackage()`, `resolveLocalizationPackage()`, `resolveRouterPackage()` | the configured package, or the default `<app>_utils` / `<app>_localization` / `clean_router` with `create: true` — commands never build default names themselves |
+| `resolveSlangSettings()` | the slang defaults overlaid with `slangSettingsConfig` |
+| `resolveCallAdapterName()` | `call_adapter_name` ?? `retrofit_call_adapter.name` ?? `RetrofitCallAdapter` |
+| `packageBarrelPath(p)` / `packageBarrelPrefix(p)` | where a created package's barrel goes (from its import URI), and the `../` prefix its exports need |
 | `usesTaskEither()` | `TaskEither` (default) vs `Future<Either>` return types; aborts on invalid values |
 | `utilsRegistersErrorLogger(utils)` | whether an older utils DI module already registers `ParseErrorLogger` |
 | `utilsHasRetrofitHelpers(utils)` | whether an older utils package still contains the call adapter and logger |

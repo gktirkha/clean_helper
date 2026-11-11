@@ -16,7 +16,8 @@ import '../functions/repo/utils_has_use_case_base.dart';
 import '../functions/repo/warn_missing_rest_dependencies.dart';
 import '../functions/shared/ensure_pubspec.dart';
 import '../functions/shared/package_configs.dart';
-import '../functions/shared/read_package_name.dart';
+import '../functions/shared/resolve_call_adapter_name.dart';
+import '../functions/shared/resolve_utils_package.dart';
 
 void addRepo(
   List<String> args, {
@@ -36,13 +37,10 @@ void addRepo(
 
   final feature = args[0].toLowerCase();
   final repoName = args[1].toLowerCase();
-  final packageName = readPackageName();
-  final utilsPackage = utilsPackageConfig;
+  final utils = resolveUtilsPackage();
   final networkPackage = networkPackageConfig;
   final callAdapter = retrofitCallAdapterConfig;
-  final utilsImport =
-      utilsPackage?.import ??
-      'package:${packageName}_utils/${packageName}_utils.dart';
+  final utilsImport = utils.import;
   final taskEither = usesTaskEither();
 
   final dataDir = 'lib/features/$feature/data';
@@ -79,7 +77,7 @@ void addRepo(
       repoName,
       utilsImport,
       importUseCaseBase:
-          utilsPackage == null && !utilsHasUseCaseBase('${packageName}_utils'),
+          utilsPackageConfig == null && !utilsHasUseCaseBase(utils.name),
       taskEither: taskEither,
     );
     generateRequestModel(dataDir, repoName);
@@ -105,7 +103,7 @@ void addRepo(
       feature,
       repoName,
       utilsImport,
-      callAdapter: callAdapter?.name ?? 'RetrofitCallAdapter',
+      callAdapter: resolveCallAdapterName(),
       adapterImport:
           callAdapter?.import ??
           networkPackage?.import ??

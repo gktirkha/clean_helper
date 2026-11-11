@@ -1,8 +1,8 @@
-String mainAppDartTemplate(String pkg) =>
+import '../functions/shared/sort_imports.dart';
+
+String mainAppDartTemplate(String localizationImport) =>
     '''
-import 'package:flutter/material.dart';
-import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:${pkg}_localization/${pkg}_localization.dart';
+${sortImports(["import 'package:flutter/material.dart';", "import 'package:flutter_localizations/flutter_localizations.dart';", "import '$localizationImport';"])}
 
 import 'di/di_container.dart';
 import 'router/app_go_router.dart';

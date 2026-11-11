@@ -50,7 +50,11 @@ Global flags, declared on `CleanHelperRunner` and handled in its `runCommand` ov
 |---|---|---|
 | `version` | `checkVersionMismatch()` — **after** the monorepo directory change | — |
 | `mono_repo_apps` | `readMonoRepoApps()` | — |
-| `packages.utils.{name,import}` | `loadPackageConfigs()` | `utilsPackageConfig` |
+| `packages.utils.{name,import,create}` | `loadPackageConfigs()` | `utilsPackageConfig` |
+| `packages.utils.module_name` / `.call_adapter_name` | `loadPackageConfigs()` | `utilsModuleNameConfig` / `callAdapterNameConfig` |
+| `packages.localization.{name,import,create}` | `loadPackageConfigs()` | `localizationPackageConfig` |
+| `packages.localization.<slang key>` | `loadPackageConfigs()` | `slangSettingsConfig` |
+| `packages.router.{name,import,create}` | `loadPackageConfigs()` | `routerPackageConfig` |
 | `packages.network.{name,import}` | `loadPackageConfigs()` | `networkPackageConfig` |
 | `retrofit_call_adapter.{name,import}` | `loadPackageConfigs()` | `retrofitCallAdapterConfig` |
 | `result_type` (`task_either` \| `future_either`) | `loadPackageConfigs()` | `resultTypeConfig` |
@@ -79,22 +83,22 @@ bin/clean_helper.dart → CleanHelperRunner.run(args)
 
 ## `init` sequence
 
-1. `ensurePubspec()`; `readPackageName()` → `<app>`, `<app>_utils`, `<app>_localization`
+1. `ensurePubspec()`; `resolveUtilsPackage()`, `resolveLocalizationPackage()`, `resolveRouterPackage()`, `resolveSlangSettings()`
 2. `fvmUse()`
 3. `generateAnalysisOptions()`, `runFlutterPubGet()`
 4. `createDirectories()` — empty app folders, including the home feature's
 5. `generateLocalizationFiles()` — no-op, kept for ordering
 6. `generateFlutterGenFiles()` — `build.yaml`, `assets/colors/colors.xml`
-7. `generateCleanRouterPackage()`, `generateLocalizationPackage()`, `generateUtilsPackage()`
-8. `addCleanRouterWorkspace()` — adds all three packages to `workspace:`
+7. `generateCleanRouterPackage()`, `generateLocalizationPackage()`, `generateUtilsPackage()` — each only when its `create` is true
+8. `addPackagesWorkspace(created)` — lists the created packages under `workspace:`; adds nothing when none are created
 9. `generateCoreFiles()` — main, bootstrap, init service, app, DI, router
 10. `generateHomeFeature()`; `generateToolsFiles()` with `--tools`
 11. `installDependencies()`, `updateGitignore()`, `addVscodeConfig()`, `addFlutterAssetsToPubSpec()`
 12. `addNetworkModule(runBuildRunnerAfter: false)` with `--network` / `--auth-interceptor`; `addAuthInterceptor(...)` with `--auth-interceptor`
-13. `runSlang(<app>_localization)`
-14. `runBuildRunner(workingDirectory: packages/<app>_utils)`, then `runBuildRunner()` for the app
+13. `runSlang(<localization>)` — only if created
+14. `runBuildRunner(workingDirectory: packages/<utils>)` if created, then `runBuildRunner()` for the app
 15. `runDartFormat()`
-16. `sortPubspecDeps()` for the app, utils and localization pubspecs
+16. `sortPubspecDeps()` for the app and the created utils / localization pubspecs
 17. `writeToolVersion()`
 
 ---

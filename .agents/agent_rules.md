@@ -38,6 +38,8 @@ Hard constraints for changing clean_helper. `conventions.md` explains the reason
 - Never add monorepo detection anywhere except `shared/resolve_mono_repo_project.dart`.
 - Anything read from the **root** pubspec must be read in `loadPackageConfigs()` — which `ensurePubspec()` calls before the directory change — and stored in a shared global in `shared/package_configs.dart`. Commands read the global; they never re-read the root pubspec.
 - New `clean-helper:` keys are parsed with `readCleanHelperFields(path)`. Missing keys must keep today's behaviour.
+- Get workspace package names and imports from `resolveUtilsPackage()`, `resolveLocalizationPackage()` and `resolveRouterPackage()`. Never build `<app>_utils`, `<app>_localization` or `clean_router` by hand, and never hard-code `package:clean_router/…` in a template — take the import as a parameter.
+- `loadPackageConfigs()` runs once per process (`packageConfigsLoaded`). Don't call it again after the monorepo `chdir`.
 
 ## Compatibility with existing projects
 

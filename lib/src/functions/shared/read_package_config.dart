@@ -7,13 +7,15 @@ import 'read_clean_helper_fields.dart';
 /// ```yaml
 /// clean-helper:
 ///   packages:
-///     network:
-///       name: my_network
-///       import: package:my_network/my_network_module.dart
+///     utils:
+///       name: my_utils
+///       import: package:my_utils/my_utils.dart
+///       create: true
 /// ```
 ///
 /// `import` defaults to `package:<name>/<name>.dart`; `name` defaults to the
-/// package named in `import`. Returns null if neither is set.
+/// package named in `import`; `create` defaults to true. Returns null if
+/// neither `name` nor `import` is set.
 PackageConfig? readPackageConfig(String key) {
   final fields = readCleanHelperFields(['packages', key]);
   final import = fields['import'];
@@ -24,5 +26,9 @@ PackageConfig? readPackageConfig(String key) {
           : RegExp(r'^package:([^/]+)/').firstMatch(import)?.group(1));
   if (name == null) return null;
 
-  return (name: name, import: import ?? 'package:$name/$name.dart');
+  return (
+    name: name,
+    import: import ?? 'package:$name/$name.dart',
+    create: fields['create']?.toLowerCase() != 'false',
+  );
 }

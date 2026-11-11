@@ -3,6 +3,13 @@
 - `UseCaseBase` moves into the utils package: `init` generates `packages/<app>_utils/lib/src/use_case_base.dart` and exports it from the barrel, instead of `lib/core/domain/use_cases/use_case_base.dart` in the app. Generated use cases get it from the utils import
 - `add-repo` keeps importing the app's `use_case_base.dart` when the utils package has no `lib/src/use_case_base.dart` (projects initialised before 1.7.0)
 - `init` adds `clean_router`, `<app>_localization` and `<app>_utils` to the app without `path:` — they're workspace members, so pub resolves them from the workspace
+- `packages.utils`, `packages.localization` and `packages.router` configure the three workspace packages `init` generates, each with `name`, `import` and `create` (default `true`):
+  - `create: false` — `init` doesn't generate the package and assumes it exists elsewhere in the workspace (e.g. a monorepo root). If no package is created, the app's `pubspec.yaml` gets no `workspace:` key
+  - `import` — the barrel is written at that path, e.g. `package:x/src/all.dart` → `lib/src/all.dart`
+  - `utils.module_name` names the utils `@module` class; `utils.call_adapter_name` names the generated call adapter class (over `retrofit_call_adapter.name`)
+  - every other key under `localization` (`base_locale`, `input_directory`, `output_directory`, `translate_var`, …) goes into the package's `slang.yaml`, and the barrel, `String.tr` and `safeCast` follow `output_directory`, `output_file_name` and `translate_var`
+  - `add-feature`, `add-repo`, `add-network-module` and `bootstrap` use the configured names; `bootstrap` skips slang when the localization package isn't under `packages/`; `list-mono-repo-apps` prints the new keys
+- Fix: commands that call other commands (`init --network` → `add-network-module`) no longer reload config from the monorepo app's pubspec after switching into it, which dropped the root `clean-helper.packages` settings
 - New `add-melos-config` command: run from the workspace root, it adds `melos` to `dev_dependencies` and appends a `melos:` block to `pubspec.yaml` — `bootstrap` / `clean` hooks and the `autogen`, `autogen_watch`, `localize`, `fluttergen`, `dependency_validator`, `generate_license`, `update_packages` and `use_fvm` scripts. Each step is skipped if already present
 
 ## 1.6.1

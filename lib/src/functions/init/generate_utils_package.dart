@@ -1,6 +1,5 @@
 import 'dart:io';
 
-import '../../templates/analysis_options_template.dart';
 import '../../templates/app_bloc_observer_template.dart';
 import '../../templates/app_logger_template.dart';
 import '../../templates/context_utils_template.dart';
@@ -19,54 +18,36 @@ import '../../templates/utils_di_initializer_template.dart';
 import '../../templates/utils_lib_export_template.dart';
 import '../../templates/utils_module_template.dart';
 import '../../templates/utils_pubspec_tail_template.dart';
-import '../shared/fvm_exec.dart';
-import '../shared/pascal_case.dart';
-import '../shared/run_command.dart';
+import '../shared/package_barrel_path.dart';
+import '../shared/package_barrel_prefix.dart';
+import '../shared/package_configs.dart';
 import '../shared/write_file.dart';
 import 'patch_package_pubspec.dart';
+import 'scaffold_package.dart';
 
+/// Creates `packages/<name>` from [package]. [localization] is the package
+/// it depends on (for `safeCast`'s message), [translateVar] its slang
+/// `translate_var`, and [moduleName] the `@module` class registering
+/// `BlocObserver`.
 void generateUtilsPackage(
-  String utilsPackageName,
-  String localizationPackageName,
-) {
+  PackageConfig package,
+  PackageConfig localization, {
+  required String moduleName,
+  required String translateVar,
+}) {
+  final utilsPackageName = package.name;
   stdout.writeln('📦 Creating $utilsPackageName package...');
 
-  runCommand([
-    ...fvmExec('flutter'),
-    'create',
-    'packages/$utilsPackageName',
-    '--template',
-    'package',
-  ]);
-
-  final filesToDelete = [
-    'packages/$utilsPackageName/.metadata',
-    'packages/$utilsPackageName/CHANGELOG.md',
-    'packages/$utilsPackageName/LICENSE',
-    'packages/$utilsPackageName/README.md',
-  ];
-  for (final path in filesToDelete) {
-    final file = File(path);
-    if (file.existsSync()) file.deleteSync();
-  }
-  final testDir = Directory('packages/$utilsPackageName/test');
-  if (testDir.existsSync()) testDir.deleteSync(recursive: true);
-
-  overwriteFile(
-    'packages/$utilsPackageName/analysis_options.yaml',
-    analysisOptionsTemplate(),
-  );
+  scaffoldPackage(package);
 
   patchPackagePubspec(
     'packages/$utilsPackageName',
-    utilsPubspecTailTemplate(localizationPackageName),
+    utilsPubspecTailTemplate(localization.name),
   );
 
-  final utilsClassName = pascalCase(utilsPackageName);
-
   overwriteFile(
-    'packages/$utilsPackageName/lib/$utilsPackageName.dart',
-    utilsLibExportTemplate(),
+    packageBarrelPath(package),
+    utilsLibExportTemplate(packageBarrelPrefix(package)),
   );
   overwriteFile(
     'packages/$utilsPackageName/lib/src/app_logger.dart',
@@ -106,7 +87,7 @@ void generateUtilsPackage(
   );
   overwriteFile(
     'packages/$utilsPackageName/lib/src/functions/safe_cast.dart',
-    safeCastTemplate(localizationPackageName),
+    safeCastTemplate(localization.import, translateVar),
   );
   overwriteFile(
     'packages/$utilsPackageName/lib/src/functions/safe_execute.dart',
@@ -118,7 +99,7 @@ void generateUtilsPackage(
   );
   overwriteFile(
     'packages/$utilsPackageName/lib/src/di/${utilsPackageName}_module.dart',
-    utilsModuleTemplate(utilsClassName),
+    utilsModuleTemplate(moduleName),
   );
   overwriteFile(
     'packages/$utilsPackageName/lib/src/di/di_initializer.dart',

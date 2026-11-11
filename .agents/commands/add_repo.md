@@ -15,14 +15,14 @@ Feature scope only; use `add-entity core …` for core models. Both names are lo
 
 | Value | Source |
 |---|---|
-| `utilsImport` | `utilsPackageConfig?.import` ?? `package:<app>_utils/<app>_utils.dart` |
+| `utilsImport` | `resolveUtilsPackage().import` |
 | `taskEither` | `usesTaskEither()` — `result_type`; default `true`; aborts on invalid values |
 | `hasNetworkModule` | `networkPackageConfig != null` or `lib/core/network/di/network_module.dart` exists |
 | `generateRest` | `!noRest && hasNetworkModule` |
-| call adapter name | `retrofitCallAdapterConfig?.name` ?? `RetrofitCallAdapter` |
+| call adapter name | `resolveCallAdapterName()` — `packages.utils.call_adapter_name` ?? `retrofit_call_adapter.name` ?? `RetrofitCallAdapter` |
 | `adapterImport` | `retrofitCallAdapterConfig?.import` ?? `networkPackageConfig?.import` ?? `../../../../core/network/utils/retrofit_call_adapter.dart` if that file exists ?? null (the utils import provides it) |
 | `ignoreErrorLogger` | `networkPackageConfig != null` |
-| `importUseCaseBase` | `utilsPackageConfig == null && !utilsHasUseCaseBase('<app>_utils')` — true only for projects before 1.7.0, whose `UseCaseBase` is in `lib/core/domain/use_cases/` |
+| `importUseCaseBase` | `utilsPackageConfig == null && !utilsHasUseCaseBase(<utils name>)` — true only for projects before 1.7.0, whose `UseCaseBase` is in `lib/core/domain/use_cases/` |
 
 ## Output
 

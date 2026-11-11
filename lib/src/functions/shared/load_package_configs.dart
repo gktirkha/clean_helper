@@ -4,14 +4,24 @@ import 'read_package_config.dart';
 
 /// Reads `clean-helper.packages`, `clean-helper.result_type` and
 /// `clean-helper.retrofit_call_adapter` from the pubspec in the current
-/// directory into [utilsPackageConfig], [networkPackageConfig],
-/// [resultTypeConfig] and [retrofitCallAdapterConfig].
+/// directory into the globals in `package_configs.dart`.
 ///
 /// Must run before [resolveMonoRepoProject] changes into the app directory,
 /// so that the monorepo root pubspec is the one read.
 void loadPackageConfigs() {
+  packageConfigsLoaded = true;
   utilsPackageConfig = readPackageConfig('utils');
   networkPackageConfig = readPackageConfig('network');
+  localizationPackageConfig = readPackageConfig('localization');
+  routerPackageConfig = readPackageConfig('router');
+
+  final utils = readCleanHelperFields(['packages', 'utils']);
+  utilsModuleNameConfig = utils['module_name'];
+  callAdapterNameConfig = utils['call_adapter_name'];
+
+  slangSettingsConfig = Map.of(
+    readCleanHelperFields(['packages', 'localization']),
+  )..removeWhere((key, _) => const {'name', 'import', 'create'}.contains(key));
 
   resultTypeConfig = readCleanHelperFields([])['result_type'];
 

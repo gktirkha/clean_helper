@@ -1,6 +1,4 @@
-import 'slang_yaml_template.dart';
-
-String localizationSlangYamlTemplate() => slangYamlTemplate().replaceFirst(
-  'output_directory: lib/generated/locales',
-  'output_directory: lib/src/generated',
-);
+/// `slang.yaml` for the localization package, one `key: value` line per
+/// setting (see `resolveSlangSettings`).
+String localizationSlangYamlTemplate(Map<String, String> settings) =>
+    '${settings.entries.map((e) => '${e.key}: ${e.value}').join('\n')}\n';

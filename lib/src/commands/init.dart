@@ -1,7 +1,7 @@
 import 'dart:io';
 
 import '../../clean_helper.dart';
-import '../functions/init/add_clean_router_workspace.dart';
+import '../functions/init/add_packages_workspace.dart';
 import '../functions/init/add_flutter_assets_to_pubspec.dart';
 import '../functions/init/generate_analysis_options.dart';
 import '../functions/init/create_directories.dart';
@@ -23,7 +23,13 @@ import '../functions/init/sort_pubspec_deps.dart';
 import '../functions/init/update_gitignore.dart';
 import '../functions/shared/ensure_pubspec.dart';
 import '../functions/shared/fvm_use.dart';
+import '../functions/shared/package_configs.dart';
+import '../functions/shared/pascal_case.dart';
 import '../functions/shared/read_package_name.dart';
+import '../functions/shared/resolve_localization_package.dart';
+import '../functions/shared/resolve_router_package.dart';
+import '../functions/shared/resolve_slang_settings.dart';
+import '../functions/shared/resolve_utils_package.dart';
 
 Future<void> runInit({
   bool withNetwork = false,
@@ -34,8 +40,11 @@ Future<void> runInit({
   ensurePubspec();
 
   final packageName = readPackageName();
-  final utilsPackageName = '${packageName}_utils';
-  final localizationPackageName = '${packageName}_localization';
+  final utils = resolveUtilsPackage();
+  final localization = resolveLocalizationPackage();
+  final router = resolveRouterPackage();
+  final slang = resolveSlangSettings();
+  final created = [router, localization, utils].where((p) => p.create);
 
   stdout.writeln('Initializing architecture for: $packageName');
   stdout.writeln();
@@ -46,14 +55,26 @@ Future<void> runInit({
   createDirectories();
   generateLocalizationFiles();
   generateFlutterGenFiles();
-  generateCleanRouterPackage();
-  generateLocalizationPackage(localizationPackageName);
-  generateUtilsPackage(utilsPackageName, localizationPackageName);
-  addCleanRouterWorkspace(utilsPackageName, localizationPackageName);
-  generateCoreFiles(packageName, utilsPackageName);
-  generateHomeFeature(packageName, withDi: withDi);
+  if (router.create) generateCleanRouterPackage(router);
+  if (localization.create) generateLocalizationPackage(localization, slang);
+  if (utils.create) {
+    generateUtilsPackage(
+      utils,
+      localization,
+      moduleName: utilsModuleNameConfig ?? '${pascalCase(utils.name)}Module',
+      translateVar: slang['translate_var']!,
+    );
+  }
+  addPackagesWorkspace([for (final p in created) p.name]);
+  generateCoreFiles(
+    packageName,
+    utils: utils,
+    localization: localization,
+    router: router,
+  );
+  generateHomeFeature(utils.import, router.import, withDi: withDi);
   if (withTools) generateToolsFiles();
-  installDependencies(utilsPackageName, localizationPackageName);
+  installDependencies([router.name, localization.name, utils.name]);
   updateGitignore();
   addVscodeConfig();
   addFlutterAssetsToPubSpec();
@@ -63,14 +84,17 @@ Future<void> runInit({
   if (withAuthInterceptor) {
     addAuthInterceptor(runBuildRunnerAfter: false, showNextSteps: false);
   }
-  runSlang(localizationPackageName);
+  if (localization.create) runSlang(localization.name);
   stdout.writeln();
-  runBuildRunner(workingDirectory: 'packages/$utilsPackageName');
+  if (utils.create) {
+    runBuildRunner(workingDirectory: 'packages/${utils.name}');
+  }
   runBuildRunner();
   runDartFormat();
   sortPubspecDeps();
-  sortPubspecDeps('packages/$utilsPackageName/pubspec.yaml');
-  sortPubspecDeps('packages/$localizationPackageName/pubspec.yaml');
+  for (final p in created) {
+    if (p != router) sortPubspecDeps('packages/${p.name}/pubspec.yaml');
+  }
   writeToolVersion();
 
   stdout.writeln();
