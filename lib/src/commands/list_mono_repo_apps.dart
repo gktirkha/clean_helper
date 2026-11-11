@@ -49,7 +49,7 @@ void listMonoRepoApps() {
     '    module_name:       ${utilsModuleNameConfig ?? '<UtilsPascal>Module (default)'}',
   );
   stdout.writeln(
-    '    call_adapter_name: ${callAdapterNameConfig ?? 'not set'}',
+    '    call_adapter_name: ${callAdapterNameConfig ?? 'RetrofitCallAdapter (default)'}',
   );
   stdout.writeln(
     '  localization:  ${describe(localizationPackageConfig, '<app>_localization (default)')}',
@@ -83,11 +83,10 @@ void listMonoRepoApps() {
     '${resultTypeConfig ?? 'task_either (default)'}',
   );
 
-  final adapter = retrofitCallAdapterConfig;
   stdout.writeln();
-  stdout.writeln('Retrofit call adapter (clean-helper.retrofit_call_adapter):');
+  stdout.writeln('Retrofit call adapter:');
   stdout.writeln(
     '  ${resolveCallAdapterName()}  '
-    '(${adapter?.import ?? network?.import ?? 'lib/core/network/utils/retrofit_call_adapter.dart'})',
+    '(${network?.import ?? 'lib/core/network/utils/retrofit_call_adapter.dart'})',
   );
 }

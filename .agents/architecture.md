@@ -167,7 +167,7 @@ retrofit_generator still emits `_setStreamType<Either<Failure, T>>` in `.g.dart`
 | `RetrofitCallAdapter`, `RetrofitLogger` | `core/network/utils/` | Import the utils package. Projects before 1.4.4 have them in `packages/<app>_utils/lib/src/network/` |
 | `<F>ApiPaths` | `features/<f>/data/constants/` | `static const <camelRepo> = '/api/<kebab-feature>/'` |
 
-The REST datasource imports the call adapter from, in order: `retrofit_call_adapter.import`, then `packages.network.import`, then `../../../../core/network/utils/retrofit_call_adapter.dart` if it exists. If none of these applies, it relies on the utils import.
+The REST datasource imports the call adapter (`resolveCallAdapterName()`) from, in order: `packages.network.import`, then `../../../../core/network/utils/retrofit_call_adapter.dart` if it exists. If none of these applies, it relies on the utils import.
 
 ---
 

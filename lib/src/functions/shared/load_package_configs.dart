@@ -2,8 +2,8 @@ import 'package_configs.dart';
 import 'read_clean_helper_fields.dart';
 import 'read_package_config.dart';
 
-/// Reads `clean-helper.packages`, `clean-helper.result_type` and
-/// `clean-helper.retrofit_call_adapter` from the pubspec in the current
+/// Reads `clean-helper.packages`, `clean-helper.result_type` and the other
+/// `clean-helper` keys from the pubspec in the current
 /// directory into the globals in `package_configs.dart`.
 ///
 /// Must run before [resolveMonoRepoProject] changes into the app directory,
@@ -39,12 +39,4 @@ void loadPackageConfigs() {
               root['use_root_analysis'])
           ?.toLowerCase() ==
       'true';
-
-  final adapter = readCleanHelperFields(['retrofit_call_adapter']);
-  retrofitCallAdapterConfig = adapter.isEmpty
-      ? null
-      : (
-          name: adapter['name'] ?? 'RetrofitCallAdapter',
-          import: adapter['import'],
-        );
 }

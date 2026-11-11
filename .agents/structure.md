@@ -62,7 +62,7 @@ clean_helper/
 | `sort_imports.dart` | `sortImports(imports)` | Join import directives alphabetically |
 | `ensure_pubspec.dart` | `ensurePubspec()` | First call of every command: config → monorepo → version check |
 | `load_package_configs.dart` | `loadPackageConfigs()` | Fill the config globals from the starting-directory pubspec |
-| `package_configs.dart` | `PackageConfig` typedef `(name, import, create)`; `packageConfigsLoaded`, `vscodeConfig`, `useRootAnalysisConfig`, `monoRepoAppPath`, `utilsPackageConfig`, `networkPackageConfig`, `localizationPackageConfig`, `routerPackageConfig`, `utilsModuleNameConfig`, `callAdapterNameConfig`, `slangSettingsConfig`, `retrofitCallAdapterConfig`, `resultTypeConfig` | Config globals |
+| `package_configs.dart` | `PackageConfig` typedef `(name, import, create)`; `packageConfigsLoaded`, `vscodeConfig`, `useRootAnalysisConfig`, `monoRepoAppPath`, `utilsPackageConfig`, `networkPackageConfig`, `localizationPackageConfig`, `routerPackageConfig`, `utilsModuleNameConfig`, `callAdapterNameConfig`, `slangSettingsConfig`, `resultTypeConfig` | Config globals |
 | `read_clean_helper_fields.dart` | `readCleanHelperFields(path)` | Scalar children of `clean-helper.<path…>` |
 | `read_package_config.dart` | `readPackageConfig(key)` | `packages.<key>` → `PackageConfig?` |
 | `resolve_utils_package.dart` | `resolveUtilsPackage()` | Configured utils package or `<app>_utils` |
@@ -70,7 +70,7 @@ clean_helper/
 | `resolve_router_package.dart` | `resolveRouterPackage()` | Configured router package or `clean_router` |
 | `resolve_slang_settings.dart` | `resolveSlangSettings()` | slang defaults + `slangSettingsConfig` |
 | `resolve_utils_module_name.dart` | `resolveUtilsModuleName(utils)` | `module_name` ?? `<UtilsPascal>Module` |
-| `resolve_call_adapter_name.dart` | `resolveCallAdapterName()` | `call_adapter_name` ?? `retrofit_call_adapter.name` ?? `RetrofitCallAdapter` |
+| `resolve_call_adapter_name.dart` | `resolveCallAdapterName()` | `call_adapter_name` ?? `RetrofitCallAdapter` |
 | `analysis_options_include.dart` | `analysisOptionsInclude(dir)` | `include:` path for a project's `analysis_options.yaml`, or null for full rules |
 | `package_barrel_path.dart` | `packageBarrelPath(package, [parentDir])` | `<parentDir>/<name>/lib/<file from import>`, `parentDir` defaulting to `packages` |
 | `package_barrel_prefix.dart` | `packageBarrelPrefix(package)` | `../` prefix from a nested barrel back to `lib/` |

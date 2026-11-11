@@ -34,8 +34,7 @@ String? utilsModuleNameConfig;
 
 /// `clean-helper.packages.utils.call_adapter_name`, set by
 /// [loadPackageConfigs]: the call adapter class `add-network-module`
-/// generates and `add-repo` uses. Null falls back to
-/// [retrofitCallAdapterConfig], then `RetrofitCallAdapter`.
+/// generates and `add-repo` uses. Null means `RetrofitCallAdapter`.
 String? callAdapterNameConfig;
 
 /// Slang settings under `clean-helper.packages.localization` (every scalar
@@ -60,13 +59,6 @@ bool useRootAnalysisConfig = false;
 /// The monorepo app [resolveMonoRepoProject] switched into, relative to the
 /// starting directory (e.g. `apps/shop`). Null when no switch happened.
 String? monoRepoAppPath;
-
-/// `clean-helper.retrofit_call_adapter`, set by [loadPackageConfigs].
-/// [name] is the adapter class; a null [import] means it comes from the
-/// network package, else `lib/core/network/utils/retrofit_call_adapter.dart`
-/// when present, else the utils package (projects initialised before 1.4.4).
-/// Null means `RetrofitCallAdapter` from those same imports.
-({String name, String? import})? retrofitCallAdapterConfig;
 
 /// `clean-helper.result_type` (`task_either` or `future_either`), set by
 /// [loadPackageConfigs]. Null means `task_either`.

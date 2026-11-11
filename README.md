@@ -338,12 +338,25 @@ Detected mono-repo apps (2):
   2. organizer  (apps/organizer)
 
 Packages (clean-helper.packages):
-  utils:    my_app_utils  (package:my_app_utils/my_app_utils.dart)
-  network:  my_app_network  (package:my_app_network/my_app_network_module.dart)
+  utils:         my_app_utils  (package:my_app_utils/my_app_utils.dart)
+    module_name:       <UtilsPascal>Module (default)
+    call_adapter_name: RetrofitCallAdapter (default)
+  localization:  <app>_localization (default)
+    base_locale: en (default)
+    fallback_strategy: base_locale (default)
+    input_directory: assets/locales (default)
+    input_file_pattern: .locale.json (default)
+    output_directory: lib/src/generated (default)
+    output_file_name: locales.g.dart (default)
+    translate_var: locales (default)
+  router:        clean_router (default)
+  network:       my_app_network  (package:my_app_network/my_app_network_module.dart)
+  vs_code_configs: extensions true, tasks true, launch true
+  use_root_analysis: false (default — packages include the nearest project)
 
 Result type (clean-helper.result_type): task_either (default)
 
-Retrofit call adapter (clean-helper.retrofit_call_adapter):
+Retrofit call adapter:
   RetrofitCallAdapter  (package:my_app_network/my_app_network_module.dart)
 ```
 
@@ -351,38 +364,87 @@ Retrofit call adapter (clean-helper.retrofit_call_adapter):
 
 ## Configuration
 
-Everything lives under a `clean-helper:` key in `pubspec.yaml`. Every key is optional.
+Everything lives under a `clean-helper:` key in `pubspec.yaml`. Every key is optional. The sample below shows every key, with its default noted in the comment above it. Keep comments indented inside the block.
 
 ```yaml
 clean-helper:
-  version: 1.4.4
+  # Stamped by `init`; every command warns when it differs from the running tool.
+  version: 1.7.0
+
+  # Monorepo only: app folders, relative to this pubspec. Commands run from
+  # here switch into one of them (pick with --scope=<folder name>).
   mono_repo_apps:
     - apps/consumer
     - apps/organizer
+
+  # What `add-repo` returns: task_either (default) or future_either.
   result_type: task_either
+
+  # Monorepo only (read from the root pubspec). Same as packages.use_root_analysis.
+  # use_root_analysis: true
+
   packages:
+    # Shared code: Failure, UseCaseBase, safeExecuteTask, AppLogger, …
     utils:
+      # Package name. Default: <app>_utils.
       name: my_app_utils
+      # Barrel import; init writes the barrel at this path.
+      # Default: package:<name>/<name>.dart.
       import: package:my_app_utils/my_app_utils.dart
+      # false: init doesn't generate it; it already exists in the workspace.
+      # Default: true. create-packages ignores this.
       create: true
+      # The @module class that registers BlocObserver. Default: <UtilsPascal>Module.
       module_name: MyAppUtilsModule
+      # The call adapter class add-network-module generates and add-repo uses
+      # in @RestApi(callAdapter: …). Default: RetrofitCallAdapter.
       call_adapter_name: MyAppCallAdapter
+
+    # slang translations, used by MainApp, InitService and safeCast.
     localization:
+      # Package name. Default: <app>_localization.
       name: my_app_locales
+      # Barrel import. Default: package:<name>/<name>.dart.
       import: package:my_app_locales/my_app_locales.dart
+      # Same as utils.create.
       create: true
+      # Every key below is written to the package's slang.yaml.
+      # Default locale; the first locale file is <base_locale><input_file_pattern>.
       base_locale: en
+      fallback_strategy: base_locale
+      # Where the locale files live, inside the package.
+      input_directory: assets/locales
+      input_file_pattern: .locale.json
+      # Generated code; must be inside lib/. The barrel exports it.
+      output_directory: lib/src/generated
+      output_file_name: locales.g.dart
+      # Variable used for translations (locales.general.…), in String.tr and safeCast.
       translate_var: locales
+
+    # CleanRouterBase / CleanRouterRefresh, used by AppGoRouter and feature routers.
     router:
+      # Package name. Default: clean_router.
       name: my_app_router
+      # Barrel import. Default: package:<name>/<name>.dart.
       import: package:my_app_router/my_app_router.dart
+      # Same as utils.create.
       create: true
+
+    # An external package that provides networking instead of lib/core/network/.
+    # Not set by default; init never creates it.
     network:
       name: my_app_network
       import: package:my_app_network/my_app_network_module.dart
-  retrofit_call_adapter:
-    name: RetrofitCallAdapter
-    import: package:my_app_network/my_app_network_module.dart
+
+    # Which .vscode/ files add-vscode-config (and init) write. Each defaults to true.
+    vs_code_configs:
+      extensions: true
+      tasks: true
+      launch: true
+
+    # true: apps and packages include the workspace root's analysis_options.yaml
+    # instead of the nearest project's. Default: false.
+    use_root_analysis: true
 ```
 
 | Key | Default | Purpose |
@@ -392,15 +454,14 @@ clean-helper:
 | [`result_type`](#result_type) | `task_either` | `task_either` or `future_either` |
 | [`packages.utils`](#packagesutils) `.name` / `.import` / `.create` | `<app>_utils` / `package:<name>/<name>.dart` / `true` | Shared utils package |
 | `packages.utils.module_name` | `<UtilsPascal>Module` | The utils package's `@module` class |
-| `packages.utils.call_adapter_name` | `retrofit_call_adapter.name`, else `RetrofitCallAdapter` | Call adapter class generated and used by REST datasources |
+| `packages.utils.call_adapter_name` | `RetrofitCallAdapter` | Call adapter class generated and used by REST datasources |
 | [`packages.localization`](#packageslocalization) `.name` / `.import` / `.create` | `<app>_localization` / `package:<name>/<name>.dart` / `true` | Localization package; other keys go to `slang.yaml` |
 | `packages.vs_code_configs` `.extensions` / `.tasks` / `.launch` | `true` | Which `.vscode/` files [`add-vscode-config`](#add-vscode-config) (and `init`) write |
 | [`packages.use_root_analysis`](#analysis-options) | `false` | Apps and packages include the workspace root's `analysis_options.yaml` |
 | [`packages.router`](#packagesrouter) `.name` / `.import` / `.create` | `clean_router` / `package:<name>/<name>.dart` / `true` | Router package with `CleanRouterBase` |
 | [`packages.network`](#packagesnetwork) `.name` / `.import` | not set / `package:<name>/<name>.dart` | External network package |
-| [`retrofit_call_adapter`](#retrofit_call_adapter) `.name` / `.import` | `RetrofitCallAdapter` / see below | Call adapter used by REST datasources |
 
-**Which pubspec is read.** `mono_repo_apps`, `packages`, `result_type` and `retrofit_call_adapter` are read from the `pubspec.yaml` in the directory where you run the command — the monorepo root, in a monorepo — before the tool switches into the app. `version` is checked afterwards, so in a monorepo it's each app's own `pubspec.yaml` that counts.
+**Which pubspec is read.** `mono_repo_apps`, `packages` and `result_type` are read from the `pubspec.yaml` in the directory where you run the command — the monorepo root, in a monorepo — before the tool switches into the app. `version` is checked afterwards, so in a monorepo it's each app's own `pubspec.yaml` that counts.
 
 ### `result_type`
 
@@ -428,7 +489,7 @@ The package that `add-repo`, `add-feature` and `add-network-module` import share
 - Its import replaces `package:<app>_utils/<app>_utils.dart`.
 - When it's configured, generated use cases import `UseCaseBase` from it, so the package must export `UseCaseBase`.
 - `module_name` names the `@module` class in `lib/src/di/<name>_module.dart` that registers `BlocObserver`.
-- `call_adapter_name` names the call adapter class. `add-network-module` generates it in `lib/core/network/utils/retrofit_call_adapter.dart`, and `add-repo` uses it in `@RestApi(callAdapter: …)`. It takes precedence over `retrofit_call_adapter.name`.
+- `call_adapter_name` names the call adapter class. `add-network-module` generates it in `lib/core/network/utils/retrofit_call_adapter.dart`, and `add-repo` uses it in `@RestApi(callAdapter: …)`. Default: `RetrofitCallAdapter`.
 
 ### `packages.localization`
 
@@ -467,16 +528,10 @@ The lint rules are written once. Every other `analysis_options.yaml` only includ
 An external package that provides networking in place of `lib/core/network/`. When it's set:
 
 - `add-repo` generates REST datasources even though the app has no `network_module.dart`.
-- Its import is used for the call adapter, unless `retrofit_call_adapter.import` is set.
+- REST datasources import the call adapter from it.
 - The tool can't know whether the package registers a `ParseErrorLogger`, so REST datasources mark their `errorLogger` parameter `@ignoreParam` — resolving an unregistered one would throw at runtime. Remove the annotation once the package registers one.
 
-### `retrofit_call_adapter`
-
-This key sits directly under `clean-helper:`, not under `packages:`. `name` is the class used in `@RestApi(callAdapter: …)`. `import` defaults to, in order:
-
-1. `packages.network.import`;
-2. `lib/core/network/utils/retrofit_call_adapter.dart`, as a relative import, when that file exists;
-3. nothing extra — the utils import already provides it (projects initialised before 1.4.4).
+REST datasources import the call adapter (`packages.utils.call_adapter_name`, default `RetrofitCallAdapter`) from `packages.network.import` when that's set, else from `lib/core/network/utils/retrofit_call_adapter.dart`, which `add-network-module` generates.
 
 ---
 
@@ -501,7 +556,7 @@ clean-helper:
   If two apps share a folder name, you're prompted between just those. If none matches, the command lists the available names and stops.
 - With no `lib/` and no `mono_repo_apps`, the command stops with setup instructions.
 
-When shared code lives in separately named workspace packages, such as root-level packages shared by every app, add [`packages`](#workspace-packages-create-name-import) with `create: false` — and [`retrofit_call_adapter`](#retrofit_call_adapter) if needed — to the same root pubspec. Run `clean-helper list-mono-repo-apps` to check how everything resolves.
+When shared code lives in separately named workspace packages, such as root-level packages shared by every app, add [`packages`](#workspace-packages-create-name-import) with `create: false` to the same root pubspec. Run `clean-helper list-mono-repo-apps` to check how everything resolves.
 
 ---
 

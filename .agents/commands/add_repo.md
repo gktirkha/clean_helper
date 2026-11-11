@@ -19,8 +19,8 @@ Feature scope only; use `add-entity core …` for core models. Both names are lo
 | `taskEither` | `usesTaskEither()` — `result_type`; default `true`; aborts on invalid values |
 | `hasNetworkModule` | `networkPackageConfig != null` or `lib/core/network/di/network_module.dart` exists |
 | `generateRest` | `!noRest && hasNetworkModule` |
-| call adapter name | `resolveCallAdapterName()` — `packages.utils.call_adapter_name` ?? `retrofit_call_adapter.name` ?? `RetrofitCallAdapter` |
-| `adapterImport` | `retrofitCallAdapterConfig?.import` ?? `networkPackageConfig?.import` ?? `../../../../core/network/utils/retrofit_call_adapter.dart` if that file exists ?? null (the utils import provides it) |
+| call adapter name | `resolveCallAdapterName()` — `packages.utils.call_adapter_name` ?? `RetrofitCallAdapter` |
+| `adapterImport` | `networkPackageConfig?.import` ?? `../../../../core/network/utils/retrofit_call_adapter.dart` if that file exists ?? null (the utils import provides it) |
 | `ignoreErrorLogger` | `networkPackageConfig != null` |
 | `importUseCaseBase` | `utilsPackageConfig == null && !utilsHasUseCaseBase(<utils name>)` — true only for projects before 1.7.0, whose `UseCaseBase` is in `lib/core/domain/use_cases/` |
 

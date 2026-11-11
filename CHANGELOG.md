@@ -6,13 +6,14 @@
 - `packages.utils`, `packages.localization` and `packages.router` configure the three workspace packages `init` generates, each with `name`, `import` and `create` (default `true`):
   - `create: false` — `init` doesn't generate the package and assumes it exists elsewhere in the workspace (e.g. a monorepo root). If no package is created, the app's `pubspec.yaml` gets no `workspace:` key
   - `import` — the barrel is written at that path, e.g. `package:x/src/all.dart` → `lib/src/all.dart`
-  - `utils.module_name` names the utils `@module` class; `utils.call_adapter_name` names the generated call adapter class (over `retrofit_call_adapter.name`)
+  - `utils.module_name` names the utils `@module` class; `utils.call_adapter_name` names the generated call adapter class
   - every other key under `localization` (`base_locale`, `input_directory`, `output_directory`, `translate_var`, …) goes into the package's `slang.yaml`, and the barrel, `String.tr` and `safeCast` follow `output_directory`, `output_file_name` and `translate_var`
   - `add-feature`, `add-repo`, `add-network-module` and `bootstrap` use the configured names; `bootstrap` skips slang when the localization package isn't under `packages/`; `list-mono-repo-apps` prints the new keys
 - New `create-packages [--dir=<path>]` command: creates the utils, localization and router packages from `clean-helper.packages` (ignoring `create`) in `<dir>/<name>`, `packages/` by default, and lists them under `workspace:` in the current `pubspec.yaml`. It then runs pub get, slang and build_runner. Existing packages are skipped. Meant for a monorepo root whose apps use `create: false`
 - Lint rules are written once: packages' `analysis_options.yaml` is just `include:` of the app's file (or, for `create-packages`, the current directory's, created if missing). With `packages.use_root_analysis: true` in a monorepo, the app and its packages include the workspace root's file instead, which `init` creates if missing
 - `packages.vs_code_configs.{extensions,tasks,launch}` (default `true`) choose which `.vscode/` files `add-vscode-config` and `init` write
 - Generated `analysis_options.yaml` excludes `build/**`, `android/**`, `ios/**` and `web/**` from analysis
+- **Breaking:** `clean-helper.retrofit_call_adapter` is removed. Set the class name with `packages.utils.call_adapter_name`. The import is `packages.network.import`, else `lib/core/network/utils/retrofit_call_adapter.dart`
 - Fix: commands that call other commands (`init --network` → `add-network-module`) no longer reload config from the monorepo app's pubspec after switching into it, which dropped the root `clean-helper.packages` settings
 - New `add-melos-config` command: run from the workspace root, it adds `melos` to `dev_dependencies` and appends a `melos:` block to `pubspec.yaml` — `bootstrap` / `clean` hooks and the `autogen`, `autogen_watch`, `localize`, `fluttergen`, `dependency_validator`, `generate_license`, `update_packages` and `use_fvm` scripts. Each step is skipped if already present
 

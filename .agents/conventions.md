@@ -94,7 +94,6 @@ The runner and `ensurePubspec()` fill shared globals before any command logic ru
 | `vscodeConfig` | `loadPackageConfigs()` | `(extensions, tasks, launch)` from `packages.vs_code_configs`; each true unless `false` |
 | `useRootAnalysisConfig` | `loadPackageConfigs()` | `packages.use_root_analysis` |
 | `monoRepoAppPath` | `resolveMonoRepoProject()` | the app switched into, relative to the root (`apps/shop`), or null |
-| `retrofitCallAdapterConfig` | `loadPackageConfigs()` | `(name, import?)`, or null |
 | `resultTypeConfig` | `loadPackageConfigs()` | raw `result_type` string, or null |
 
 `loadPackageConfigs()` runs **before** `resolveMonoRepoProject()` changes directory, so it reads the root pubspec. Config parsing is line-based, with no YAML dependency:
@@ -111,7 +110,7 @@ Resolution helpers turn config into decisions, so commands don't repeat the logi
 | `resolveSlangSettings()` | the slang defaults overlaid with `slangSettingsConfig` |
 | `analysisOptionsInclude(dir)` | the `include:` path for the `analysis_options.yaml` at `dir` (`''` = the current project), or null for the full rules — `'../' × (depth(dir) + depth(monoRepoAppPath) with use_root_analysis)` |
 | `resolveUtilsModuleName(utils)` | `module_name` ?? `<UtilsPascal>Module` |
-| `resolveCallAdapterName()` | `call_adapter_name` ?? `retrofit_call_adapter.name` ?? `RetrofitCallAdapter` |
+| `resolveCallAdapterName()` | `call_adapter_name` ?? `RetrofitCallAdapter` |
 | `packageBarrelPath(p)` / `packageBarrelPrefix(p)` | where a created package's barrel goes (from its import URI), and the `../` prefix its exports need |
 | `usesTaskEither()` | `TaskEither` (default) vs `Future<Either>` return types; aborts on invalid values |
 | `utilsRegistersErrorLogger(utils)` | whether an older utils DI module already registers `ParseErrorLogger` |

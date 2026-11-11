@@ -39,7 +39,6 @@ void addRepo(
   final repoName = args[1].toLowerCase();
   final utils = resolveUtilsPackage();
   final networkPackage = networkPackageConfig;
-  final callAdapter = retrofitCallAdapterConfig;
   final utilsImport = utils.import;
   final taskEither = usesTaskEither();
 
@@ -105,7 +104,6 @@ void addRepo(
       utilsImport,
       callAdapter: resolveCallAdapterName(),
       adapterImport:
-          callAdapter?.import ??
           networkPackage?.import ??
           (File('lib/core/network/utils/retrofit_call_adapter.dart')
                   .existsSync()

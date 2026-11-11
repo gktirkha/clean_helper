@@ -59,7 +59,6 @@ Global flags, declared on `CleanHelperRunner` and handled in its `runCommand` ov
 | `packages.use_root_analysis` (or `clean-helper.use_root_analysis`) | `loadPackageConfigs()` | `useRootAnalysisConfig` |
 | `packages.router.{name,import,create}` | `loadPackageConfigs()` | `routerPackageConfig` |
 | `packages.network.{name,import}` | `loadPackageConfigs()` | `networkPackageConfig` |
-| `retrofit_call_adapter.{name,import}` | `loadPackageConfigs()` | `retrofitCallAdapterConfig` |
 | `result_type` (`task_either` \| `future_either`) | `loadPackageConfigs()` | `resultTypeConfig` |
 
 Everything except `version` is read from the pubspec in the starting directory — the monorepo root in a monorepo — before `resolveMonoRepoProject()` changes directory. The README's Configuration section documents each key's behaviour for users.
