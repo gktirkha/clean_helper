@@ -13,13 +13,14 @@ import '../shared/write_file.dart';
 import 'patch_package_pubspec.dart';
 import 'scaffold_package.dart';
 
-/// Creates `packages/<name>` from [package] and the resolved slang
+/// Creates `<parentDir>/<name>` from [package] and the resolved slang
 /// [settings] (see `resolveSlangSettings`).
 void generateLocalizationPackage(
   PackageConfig package,
-  Map<String, String> settings,
-) {
-  final dir = 'packages/${package.name}';
+  Map<String, String> settings, {
+  String parentDir = 'packages',
+}) {
+  final dir = '$parentDir/${package.name}';
 
   final outputDir = settings['output_directory']!;
   if (!outputDir.startsWith('lib/')) {
@@ -32,11 +33,11 @@ void generateLocalizationPackage(
       '${outputDir.substring('lib/'.length)}/${settings['output_file_name']}';
 
   stdout.writeln('📦 Creating ${package.name} package...');
-  scaffoldPackage(package);
+  scaffoldPackage(package, parentDir: parentDir);
   patchPackagePubspec(dir, localizationPubspecTailTemplate());
 
   overwriteFile(
-    packageBarrelPath(package),
+    packageBarrelPath(package, parentDir),
     localizationLibExportTemplate(generatedFile, packageBarrelPrefix(package)),
   );
   overwriteFile(

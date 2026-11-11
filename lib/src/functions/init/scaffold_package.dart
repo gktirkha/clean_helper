@@ -7,12 +7,12 @@ import '../shared/package_configs.dart';
 import '../shared/run_command.dart';
 import '../shared/write_file.dart';
 
-/// Runs `flutter create --template package` for `packages/<name>`, removes
+/// Runs `flutter create --template package` for `<parentDir>/<name>`, removes
 /// the scaffold files clean_helper doesn't use (README, CHANGELOG, LICENSE,
 /// `.metadata`, `test/`, and `lib/<name>.dart` when the configured barrel is
 /// elsewhere) and writes `analysis_options.yaml`.
-void scaffoldPackage(PackageConfig package) {
-  final dir = 'packages/${package.name}';
+void scaffoldPackage(PackageConfig package, {String parentDir = 'packages'}) {
+  final dir = '$parentDir/${package.name}';
 
   runCommand([...fvmExec('flutter'), 'create', dir, '--template', 'package']);
 
@@ -22,7 +22,7 @@ void scaffoldPackage(PackageConfig package) {
     '$dir/CHANGELOG.md',
     '$dir/LICENSE',
     '$dir/README.md',
-    if (packageBarrelPath(package) != defaultBarrel) defaultBarrel,
+    if (packageBarrelPath(package, parentDir) != defaultBarrel) defaultBarrel,
   ];
   for (final path in filesToDelete) {
     final file = File(path);

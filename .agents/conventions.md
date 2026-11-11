@@ -106,6 +106,7 @@ Resolution helpers turn config into decisions, so commands don't repeat the logi
 |---|---|
 | `resolveUtilsPackage()`, `resolveLocalizationPackage()`, `resolveRouterPackage()` | the configured package, or the default `<app>_utils` / `<app>_localization` / `clean_router` with `create: true` — commands never build default names themselves |
 | `resolveSlangSettings()` | the slang defaults overlaid with `slangSettingsConfig` |
+| `resolveUtilsModuleName(utils)` | `module_name` ?? `<UtilsPascal>Module` |
 | `resolveCallAdapterName()` | `call_adapter_name` ?? `retrofit_call_adapter.name` ?? `RetrofitCallAdapter` |
 | `packageBarrelPath(p)` / `packageBarrelPrefix(p)` | where a created package's barrel goes (from its import URI), and the `../` prefix its exports need |
 | `usesTaskEither()` | `TaskEither` (default) vs `Future<Either>` return types; aborts on invalid values |

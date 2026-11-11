@@ -88,6 +88,7 @@ Global options go **before** the command:
 | [`generate-localizations`](#generate-localizations) | Run slang |
 | [`generate-tools [--overwrite]`](#generate-tools) | Generate `tools/` scripts |
 | [`add-vscode-config`](#add-vscode-config) | Generate `.vscode/` files |
+| [`create-packages [--dir=<path>]`](#create-packages) | Create the utils, localization and router packages from config, e.g. at a monorepo root |
 | [`add-melos-config`](#add-melos-config) | Add melos and its hooks and scripts to the root `pubspec.yaml` |
 | [`list-mono-repo-apps`](#list-mono-repo-apps) | Show the resolved monorepo and package config |
 
@@ -280,6 +281,23 @@ clean-helper add-vscode-config
 ```
 
 Writes `.vscode/extensions.json`, `launch.json` and `tasks.json`, skipping any that exist. `init` runs it automatically.
+
+### `create-packages`
+
+```bash
+clean-helper create-packages                    # into packages/
+clean-helper create-packages --dir=shared/libs  # into shared/libs/
+```
+
+Creates the utils, localization and router packages described by [`clean-helper.packages`](#workspace-packages-create-name-import), using their names, imports, `module_name` and slang settings, in `<dir>/<name>`. `--dir` defaults to `packages`. `create` is ignored: all three packages are created.
+
+- Run it from the workspace root. It reads and writes the `pubspec.yaml` in the current directory and never prompts for an app. Unconfigured packages get their default names (`<name>_utils`, `<name>_localization`, `clean_router`) from that pubspec's `name`.
+- A package whose folder already has a `pubspec.yaml` is skipped, so it's safe to re-run.
+- Created packages are listed under `workspace:` in that `pubspec.yaml`. If it has no `workspace:` key, the key is added. It then runs `flutter pub get`, slang in the localization package and build_runner in the utils package, and formats the code.
+
+Typical monorepo setup: configure `packages` in the root pubspec, run `create-packages` there, and set `create: false` so each app's `init` uses the shared packages instead of creating its own.
+
+Keep each barrel outside `lib/src/` (for example `package:x/x.dart`): importing from another package's `src/` triggers the `implementation_imports` lint.
 
 ### `add-melos-config`
 

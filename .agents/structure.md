@@ -31,6 +31,7 @@ clean_helper/
 | `add_auth_interceptor.dart` | `addAuthInterceptor({runBuildRunnerAfter, showNextSteps})` | `add-auth-interceptor` |
 | `add_entity.dart` | `addEntity(args, {runBuildRunnerAfter})` | `add-entity` |
 | `add_feature.dart` | `addFeature(args, {withDi, runBuildRunnerAfter})` | `add-feature` |
+| `create_packages.dart` | `createPackages({dir})` — skips `ensurePubspec()` | `create-packages` |
 | `add_melos_config.dart` | `addMelosConfig()` — skips `ensurePubspec()` | `add-melos-config` |
 | `add_network.dart` | `addNetwork()` | legacy — not registered in the runner |
 | `add_network_module.dart` | `addNetworkModule({runBuildRunnerAfter})` | `add-network-module` |
@@ -68,8 +69,9 @@ clean_helper/
 | `resolve_localization_package.dart` | `resolveLocalizationPackage()` | Configured localization package or `<app>_localization` |
 | `resolve_router_package.dart` | `resolveRouterPackage()` | Configured router package or `clean_router` |
 | `resolve_slang_settings.dart` | `resolveSlangSettings()` | slang defaults + `slangSettingsConfig` |
+| `resolve_utils_module_name.dart` | `resolveUtilsModuleName(utils)` | `module_name` ?? `<UtilsPascal>Module` |
 | `resolve_call_adapter_name.dart` | `resolveCallAdapterName()` | `call_adapter_name` ?? `retrofit_call_adapter.name` ?? `RetrofitCallAdapter` |
-| `package_barrel_path.dart` | `packageBarrelPath(package)` | `packages/<name>/lib/<file from import>` |
+| `package_barrel_path.dart` | `packageBarrelPath(package, [parentDir])` | `<parentDir>/<name>/lib/<file from import>`, `parentDir` defaulting to `packages` |
 | `package_barrel_prefix.dart` | `packageBarrelPrefix(package)` | `../` prefix from a nested barrel back to `lib/` |
 | `read_mono_repo_apps.dart` | `readMonoRepoApps()` | `mono_repo_apps` list |
 | `read_package_name.dart` | `readPackageName()` | `name:` from the current pubspec |
@@ -94,12 +96,12 @@ clean_helper/
 | `create_directories.dart` | `createDirectories()` — the only place allowed to call `Directory.createSync` |
 | `generate_localization_files.dart` | `generateLocalizationFiles()` — no-op |
 | `generate_flutter_gen_files.dart` | `generateFlutterGenFiles()` |
-| `scaffold_package.dart` | `scaffoldPackage(package)` — `flutter create --template package`, delete unused scaffold files, write `analysis_options.yaml` |
-| `generate_clean_router_package.dart` | `generateCleanRouterPackage(router)` |
-| `generate_localization_package.dart` | `generateLocalizationPackage(localization, slangSettings)` |
-| `generate_utils_package.dart` | `generateUtilsPackage(utils, localization, {moduleName, translateVar})` |
+| `scaffold_package.dart` | `scaffoldPackage(package, {parentDir})` — `flutter create --template package`, delete unused scaffold files, write `analysis_options.yaml` |
+| `generate_clean_router_package.dart` | `generateCleanRouterPackage(router, {parentDir})` |
+| `generate_localization_package.dart` | `generateLocalizationPackage(localization, slangSettings, {parentDir})` |
+| `generate_utils_package.dart` | `generateUtilsPackage(utils, localization, {moduleName, translateVar, parentDir})` |
 | `patch_package_pubspec.dart` | `patchPackagePubspec(packagePath, pubspecTail)` |
-| `add_packages_workspace.dart` | `addPackagesWorkspace(packageNames)` — no-op for an empty list |
+| `add_packages_workspace.dart` | `addPackagesWorkspace(packagePaths)` — no-op for an empty list |
 | `generate_core_files.dart` | `generateCoreFiles(packageName, {utils, localization, router})` |
 | `generate_home_feature.dart` | `generateHomeFeature(utilsImport, routerImport, {withDi})` |
 | `generate_tools_files.dart` | `generateToolsFiles({overwrite})` |
@@ -109,7 +111,7 @@ clean_helper/
 | `generate_network_files.dart` | `generateNetworkFiles(utilsImport, {registerErrorLogger, retrofitHelpersInUtils})` |
 | `generate_retrofit_call_adapter.dart` | `generateRetrofitCallAdapter(utilsImport)` → `lib/core/network/utils/` |
 | `generate_retrofit_logger.dart` | `generateRetrofitLogger(utilsImport)` → `lib/core/network/utils/` |
-| `run_slang.dart` | `runSlang(localizationPackageName)` |
+| `run_slang.dart` | `runSlang(localizationPackageName, {parentDir})` |
 | `run_build_runner.dart` | `runBuildRunner({workingDirectory})` |
 | `run_dart_format.dart` | `runDartFormat()` |
 | `sort_pubspec_deps.dart` | `sortPubspecDeps([path])` |

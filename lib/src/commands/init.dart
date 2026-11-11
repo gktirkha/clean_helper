@@ -23,12 +23,11 @@ import '../functions/init/sort_pubspec_deps.dart';
 import '../functions/init/update_gitignore.dart';
 import '../functions/shared/ensure_pubspec.dart';
 import '../functions/shared/fvm_use.dart';
-import '../functions/shared/package_configs.dart';
-import '../functions/shared/pascal_case.dart';
 import '../functions/shared/read_package_name.dart';
 import '../functions/shared/resolve_localization_package.dart';
 import '../functions/shared/resolve_router_package.dart';
 import '../functions/shared/resolve_slang_settings.dart';
+import '../functions/shared/resolve_utils_module_name.dart';
 import '../functions/shared/resolve_utils_package.dart';
 
 Future<void> runInit({
@@ -61,11 +60,11 @@ Future<void> runInit({
     generateUtilsPackage(
       utils,
       localization,
-      moduleName: utilsModuleNameConfig ?? '${pascalCase(utils.name)}Module',
+      moduleName: resolveUtilsModuleName(utils),
       translateVar: slang['translate_var']!,
     );
   }
-  addPackagesWorkspace([for (final p in created) p.name]);
+  addPackagesWorkspace([for (final p in created) 'packages/${p.name}']);
   generateCoreFiles(
     packageName,
     utils: utils,

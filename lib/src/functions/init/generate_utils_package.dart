@@ -25,7 +25,7 @@ import '../shared/write_file.dart';
 import 'patch_package_pubspec.dart';
 import 'scaffold_package.dart';
 
-/// Creates `packages/<name>` from [package]. [localization] is the package
+/// Creates `<parentDir>/<name>` from [package]. [localization] is the package
 /// it depends on (for `safeCast`'s message), [translateVar] its slang
 /// `translate_var`, and [moduleName] the `@module` class registering
 /// `BlocObserver`.
@@ -34,83 +34,84 @@ void generateUtilsPackage(
   PackageConfig localization, {
   required String moduleName,
   required String translateVar,
+  String parentDir = 'packages',
 }) {
   final utilsPackageName = package.name;
   stdout.writeln('📦 Creating $utilsPackageName package...');
 
-  scaffoldPackage(package);
+  scaffoldPackage(package, parentDir: parentDir);
 
   patchPackagePubspec(
-    'packages/$utilsPackageName',
+    '$parentDir/$utilsPackageName',
     utilsPubspecTailTemplate(localization.name),
   );
 
   overwriteFile(
-    packageBarrelPath(package),
+    packageBarrelPath(package, parentDir),
     utilsLibExportTemplate(packageBarrelPrefix(package)),
   );
   overwriteFile(
-    'packages/$utilsPackageName/lib/src/app_logger.dart',
+    '$parentDir/$utilsPackageName/lib/src/app_logger.dart',
     appLoggerTemplate(),
   );
   overwriteFile(
-    'packages/$utilsPackageName/lib/src/bloc_observer.dart',
+    '$parentDir/$utilsPackageName/lib/src/bloc_observer.dart',
     appBlocObserverTemplate(),
   );
   overwriteFile(
-    'packages/$utilsPackageName/lib/src/debouncer.dart',
+    '$parentDir/$utilsPackageName/lib/src/debouncer.dart',
     debounceTemplate(),
   );
   overwriteFile(
-    'packages/$utilsPackageName/lib/src/error_entity.dart',
+    '$parentDir/$utilsPackageName/lib/src/error_entity.dart',
     errorEntityTemplate(),
   );
   overwriteFile(
-    'packages/$utilsPackageName/lib/src/failure.dart',
+    '$parentDir/$utilsPackageName/lib/src/failure.dart',
     failureTemplate(),
   );
   overwriteFile(
-    'packages/$utilsPackageName/lib/src/type_definitions.dart',
+    '$parentDir/$utilsPackageName/lib/src/type_definitions.dart',
     typeDefinitionsTemplate(),
   );
   overwriteFile(
-    'packages/$utilsPackageName/lib/src/use_case_base.dart',
+    '$parentDir/$utilsPackageName/lib/src/use_case_base.dart',
     useCaseBaseTemplate(),
   );
   overwriteFile(
-    'packages/$utilsPackageName/lib/src/functions/get_current_function_name.dart',
+    '$parentDir/$utilsPackageName/lib/src/functions/get_current_function_name.dart',
     getCurrentFunctionNameTemplate(),
   );
   overwriteFile(
-    'packages/$utilsPackageName/lib/src/functions/list_to_model_list.dart',
+    '$parentDir/$utilsPackageName/lib/src/functions/list_to_model_list.dart',
     listToModelListTemplate(),
   );
   overwriteFile(
-    'packages/$utilsPackageName/lib/src/functions/safe_cast.dart',
+    '$parentDir/$utilsPackageName/lib/src/functions/safe_cast.dart',
     safeCastTemplate(localization.import, translateVar),
   );
   overwriteFile(
-    'packages/$utilsPackageName/lib/src/functions/safe_execute.dart',
+    '$parentDir/$utilsPackageName/lib/src/functions/safe_execute.dart',
     safeExecuteTemplate(),
   );
   overwriteFile(
-    'packages/$utilsPackageName/lib/src/functions/safe_execute_task.dart',
+    '$parentDir/$utilsPackageName/lib/src/functions/safe_execute_task.dart',
     safeExecuteTaskTemplate(),
   );
   overwriteFile(
-    'packages/$utilsPackageName/lib/src/di/${utilsPackageName}_module.dart',
+    '$parentDir/$utilsPackageName/lib/src/di/${utilsPackageName}_module.dart',
     utilsModuleTemplate(moduleName),
   );
   overwriteFile(
-    'packages/$utilsPackageName/lib/src/di/di_initializer.dart',
+    '$parentDir/$utilsPackageName/lib/src/di/di_initializer.dart',
     utilsDiInitializerTemplate(),
   );
   overwriteFile(
-    'packages/$utilsPackageName/lib/src/di/di_container.dart',
+    '$parentDir/$utilsPackageName/lib/src/di/di_container.dart',
     diContainerTemplate(),
   );
   overwriteFile(
-    'packages/$utilsPackageName/lib/src/context_utils.dart',
+    '$parentDir/$utilsPackageName/lib/src/context_utils.dart',
     contextUtilsTemplate(),
   );
 

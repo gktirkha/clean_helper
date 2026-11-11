@@ -11,16 +11,20 @@ import '../shared/write_file.dart';
 import 'patch_package_pubspec.dart';
 import 'scaffold_package.dart';
 
-/// Creates the router package (`clean_router` by default) from [package].
-void generateCleanRouterPackage(PackageConfig package) {
-  final dir = 'packages/${package.name}';
+/// Creates the router package (`clean_router` by default) from [package]
+/// in `<parentDir>/<name>`.
+void generateCleanRouterPackage(
+  PackageConfig package, {
+  String parentDir = 'packages',
+}) {
+  final dir = '$parentDir/${package.name}';
   stdout.writeln('📦 Creating ${package.name} package...');
 
-  scaffoldPackage(package);
+  scaffoldPackage(package, parentDir: parentDir);
   patchPackagePubspec(dir, cleanRouterPubspecTailTemplate());
 
   overwriteFile(
-    packageBarrelPath(package),
+    packageBarrelPath(package, parentDir),
     cleanRouterLibExportTemplate(packageBarrelPrefix(package)),
   );
   overwriteFile(

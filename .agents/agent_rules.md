@@ -34,7 +34,7 @@ Hard constraints for changing clean_helper. `conventions.md` explains the reason
 
 ## Commands and monorepos
 
-- **Every command calls `ensurePubspec()` first.** It loads the root-pubspec config, handles monorepo app selection (which changes `Directory.current`) and checks the version stamp. The only exceptions are `list-mono-repo-apps`, which must not trigger selection, `add-melos-config`, which writes the root pubspec, and the global `--version` flag, which is handled in the runner.
+- **Every command calls `ensurePubspec()` first.** It loads the root-pubspec config, handles monorepo app selection (which changes `Directory.current`) and checks the version stamp. The only exceptions are `list-mono-repo-apps`, which must not trigger selection, `add-melos-config` and `create-packages`, which work on the root pubspec, and the global `--version` flag, which is handled in the runner.
 - Never add monorepo detection anywhere except `shared/resolve_mono_repo_project.dart`.
 - Anything read from the **root** pubspec must be read in `loadPackageConfigs()` — which `ensurePubspec()` calls before the directory change — and stored in a shared global in `shared/package_configs.dart`. Commands read the global; they never re-read the root pubspec.
 - New `clean-helper:` keys are parsed with `readCleanHelperFields(path)`. Missing keys must keep today's behaviour.
