@@ -5,6 +5,11 @@ analyzer:
     constant_identifier_names: ignore
     invalid_annotation_target: ignore
     unnecessary_constructor_name: ignore
+  exclude:
+    - build/**
+    - android/**
+    - ios/**
+    - web/**
 
 linter:
   rules:
