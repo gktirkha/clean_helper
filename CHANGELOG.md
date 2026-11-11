@@ -1,3 +1,7 @@
+## 1.6.1
+
+- README examples use a generic `my_app` package prefix instead of a project-specific name
+
 ## 1.6.0
 
 - The utils package gets `ContextUtils` (root navigator and context, theme, media query, focus, snackbar, dialog, bottom sheet, clipboard, haptics and system UI helpers) and its own `di/di_container.dart` (`GetIt.instance`); it now depends on `get_it` and exports `context_utils.dart`

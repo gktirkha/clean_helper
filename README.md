@@ -294,13 +294,13 @@ Detected mono-repo apps (2):
   2. organizer  (apps/organizer)
 
 Packages (clean-helper.packages):
-  utils:    ropein_utils  (package:ropein_utils/ropein_utils.dart)
-  network:  ropein_network  (package:ropein_network/ropein_network_module.dart)
+  utils:    my_app_utils  (package:my_app_utils/my_app_utils.dart)
+  network:  my_app_network  (package:my_app_network/my_app_network_module.dart)
 
 Result type (clean-helper.result_type): task_either (default)
 
 Retrofit call adapter (clean-helper.retrofit_call_adapter):
-  RetrofitCallAdapter  (package:ropein_network/ropein_network_module.dart)
+  RetrofitCallAdapter  (package:my_app_network/my_app_network_module.dart)
 ```
 
 ---
@@ -318,14 +318,14 @@ clean-helper:
   result_type: task_either
   packages:
     utils:
-      name: ropein_utils
-      import: package:ropein_utils/ropein_utils.dart
+      name: my_app_utils
+      import: package:my_app_utils/my_app_utils.dart
     network:
-      name: ropein_network
-      import: package:ropein_network/ropein_network_module.dart
+      name: my_app_network
+      import: package:my_app_network/my_app_network_module.dart
   retrofit_call_adapter:
     name: RetrofitCallAdapter
-    import: package:ropein_network/ropein_network_module.dart
+    import: package:my_app_network/my_app_network_module.dart
 ```
 
 | Key | Default | Purpose |
