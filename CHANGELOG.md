@@ -3,6 +3,7 @@
 - `UseCaseBase` moves into the utils package: `init` generates `packages/<app>_utils/lib/src/use_case_base.dart` and exports it from the barrel, instead of `lib/core/domain/use_cases/use_case_base.dart` in the app. Generated use cases get it from the utils import
 - `add-repo` keeps importing the app's `use_case_base.dart` when the utils package has no `lib/src/use_case_base.dart` (projects initialised before 1.7.0)
 - `init` adds `clean_router`, `<app>_localization` and `<app>_utils` to the app without `path:` — they're workspace members, so pub resolves them from the workspace
+- New `add-melos-config` command: run from the workspace root, it adds `melos` to `dev_dependencies` and appends a `melos:` block to `pubspec.yaml` — `bootstrap` / `clean` hooks and the `autogen`, `autogen_watch`, `localize`, `fluttergen`, `dependency_validator`, `generate_license`, `update_packages` and `use_fvm` scripts. Each step is skipped if already present
 
 ## 1.6.1
 

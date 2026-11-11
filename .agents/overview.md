@@ -33,6 +33,7 @@ Read next:
 | `generate-tools [--overwrite]` | `generateTools(overwrite:)` | `tools/` scripts |
 | `add-vscode-config` | `addVscodeConfig()` | `.vscode/` files |
 | `list-mono-repo-apps` | `listMonoRepoApps()` | Print monorepo apps and resolved config |
+| `add-melos-config` | `addMelosConfig()` | melos dev dependency + `melos:` hooks and scripts in the root pubspec |
 
 Global flags, declared on `CleanHelperRunner` and handled in its `runCommand` override:
 

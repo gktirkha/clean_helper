@@ -88,6 +88,7 @@ Global options go **before** the command:
 | [`generate-localizations`](#generate-localizations) | Run slang |
 | [`generate-tools [--overwrite]`](#generate-tools) | Generate `tools/` scripts |
 | [`add-vscode-config`](#add-vscode-config) | Generate `.vscode/` files |
+| [`add-melos-config`](#add-melos-config) | Add melos and its hooks and scripts to the root `pubspec.yaml` |
 | [`list-mono-repo-apps`](#list-mono-repo-apps) | Show the resolved monorepo and package config |
 
 ### `init`
@@ -279,6 +280,22 @@ clean-helper add-vscode-config
 ```
 
 Writes `.vscode/extensions.json`, `launch.json` and `tasks.json`, skipping any that exist. `init` runs it automatically.
+
+### `add-melos-config`
+
+```bash
+clean-helper add-melos-config
+```
+
+Run from the workspace root (the monorepo root in a monorepo); it writes to the `pubspec.yaml` in the current directory and never prompts for an app. It:
+
+1. Adds `melos` to `dev_dependencies`, unless it's already there.
+2. Appends a top-level `melos:` block, unless one already exists:
+   - **`bootstrap` hooks** — before: `melos use_fvm`, then globally activates clean_helper, slang, flutter_gen and dependency_validator. After: `melos localize`, `melos autogen`, `melos generate_license`.
+   - **`clean` hook** — after: `git clean -fdX`, then `melos use_fvm`.
+   - **Scripts** — `autogen`, `autogen_watch` (build_runner in packages that depend on it), `localize` (slang), `fluttergen`, `dependency_validator`, `generate_license` (dart_pubspec_licenses → `lib/generated/oss/oss.dart`), `update_packages`, `use_fvm`.
+
+`generate_license` only runs in packages that depend on `dart_pubspec_licenses`; add it to the app if you want the OSS file.
 
 ### `list-mono-repo-apps`
 

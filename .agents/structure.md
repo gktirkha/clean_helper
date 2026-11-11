@@ -31,6 +31,7 @@ clean_helper/
 | `add_auth_interceptor.dart` | `addAuthInterceptor({runBuildRunnerAfter, showNextSteps})` | `add-auth-interceptor` |
 | `add_entity.dart` | `addEntity(args, {runBuildRunnerAfter})` | `add-entity` |
 | `add_feature.dart` | `addFeature(args, {withDi, runBuildRunnerAfter})` | `add-feature` |
+| `add_melos_config.dart` | `addMelosConfig()` — skips `ensurePubspec()` | `add-melos-config` |
 | `add_network.dart` | `addNetwork()` | legacy — not registered in the runner |
 | `add_network_module.dart` | `addNetworkModule({runBuildRunnerAfter})` | `add-network-module` |
 | `add_repo.dart` | `addRepo(args, {runBuildRunnerAfter, noRest, addSample})` | `add-repo` |
@@ -135,6 +136,7 @@ clean_helper/
 | `remove_feature/` | `deleteFeatureFiles(feature)`, `unpatchRouterModule(feature)` |
 | `build_runner/` | `runBuildRunnerBuild()`, `runBuildRunnerClean()` |
 | `generate_localizations/` | `runGenerateLocalizations()` |
+| `melos/` | `installMelos()`, `addMelosToPubspec()` |
 | `vscode_config/` | `generateVscodeExtensions()`, `generateVscodeLaunch()`, `generateVscodeTasks()` |
 
 ---
@@ -156,6 +158,7 @@ Each file is `<name>_template.dart` → `<name>Template(...)`.
 | Project config | `analysis_options`, `build_yaml`, `colors_xml`, `gitignore` |
 | Tools | `tools_command_runner`, `tools_clean`, `tools_bootstrap`, `tools_write_key_properties`, `tools_build_android`, `tools_build_config` |
 | VS Code | `vscode_extensions`, `vscode_launch`, `vscode_tasks` |
+| Melos | `melos_config` |
 
 Templates that take configurable input:
 
