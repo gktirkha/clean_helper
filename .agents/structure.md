@@ -62,7 +62,7 @@ clean_helper/
 | `sort_imports.dart` | `sortImports(imports)` | Join import directives alphabetically |
 | `ensure_pubspec.dart` | `ensurePubspec()` | First call of every command: config → monorepo → version check |
 | `load_package_configs.dart` | `loadPackageConfigs()` | Fill the config globals from the starting-directory pubspec |
-| `package_configs.dart` | `PackageConfig` typedef `(name, import, create)`; `packageConfigsLoaded`, `useRootAnalysisConfig`, `monoRepoAppPath`, `utilsPackageConfig`, `networkPackageConfig`, `localizationPackageConfig`, `routerPackageConfig`, `utilsModuleNameConfig`, `callAdapterNameConfig`, `slangSettingsConfig`, `retrofitCallAdapterConfig`, `resultTypeConfig` | Config globals |
+| `package_configs.dart` | `PackageConfig` typedef `(name, import, create)`; `packageConfigsLoaded`, `vscodeConfig`, `useRootAnalysisConfig`, `monoRepoAppPath`, `utilsPackageConfig`, `networkPackageConfig`, `localizationPackageConfig`, `routerPackageConfig`, `utilsModuleNameConfig`, `callAdapterNameConfig`, `slangSettingsConfig`, `retrofitCallAdapterConfig`, `resultTypeConfig` | Config globals |
 | `read_clean_helper_fields.dart` | `readCleanHelperFields(path)` | Scalar children of `clean-helper.<path…>` |
 | `read_package_config.dart` | `readPackageConfig(key)` | `packages.<key>` → `PackageConfig?` |
 | `resolve_utils_package.dart` | `resolveUtilsPackage()` | Configured utils package or `<app>_utils` |

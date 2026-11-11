@@ -24,6 +24,15 @@ void loadPackageConfigs() {
   )..removeWhere((key, _) => const {'name', 'import', 'create'}.contains(key));
 
   final root = readCleanHelperFields([]);
+
+  var vscode = readCleanHelperFields(['packages', 'vs_code_configs']);
+  if (vscode.isEmpty) vscode = readCleanHelperFields(['vs_code_configs']);
+  bool enabled(String key) => vscode[key]?.toLowerCase() != 'false';
+  vscodeConfig = (
+    extensions: enabled('extensions'),
+    tasks: enabled('tasks'),
+    launch: enabled('launch'),
+  );
   resultTypeConfig = root['result_type'];
   useRootAnalysisConfig =
       (readCleanHelperFields(['packages'])['use_root_analysis'] ??

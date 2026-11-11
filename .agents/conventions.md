@@ -91,6 +91,7 @@ The runner and `ensurePubspec()` fill shared globals before any command logic ru
 | `networkPackageConfig` | `loadPackageConfigs()` | `packages.network`, or null (`create` is ignored) |
 | `utilsModuleNameConfig`, `callAdapterNameConfig` | `loadPackageConfigs()` | `packages.utils.module_name` / `.call_adapter_name`, or null |
 | `slangSettingsConfig` | `loadPackageConfigs()` | every other scalar key under `packages.localization` |
+| `vscodeConfig` | `loadPackageConfigs()` | `(extensions, tasks, launch)` from `packages.vs_code_configs`; each true unless `false` |
 | `useRootAnalysisConfig` | `loadPackageConfigs()` | `packages.use_root_analysis` |
 | `monoRepoAppPath` | `resolveMonoRepoProject()` | the app switched into, relative to the root (`apps/shop`), or null |
 | `retrofitCallAdapterConfig` | `loadPackageConfigs()` | `(name, import?)`, or null |

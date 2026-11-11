@@ -48,6 +48,15 @@ Map<String, String> slangSettingsConfig = {};
 /// workspace root's `analysis_options.yaml` instead of the nearest project's.
 bool useRootAnalysisConfig = false;
 
+/// `clean-helper.packages.vs_code_configs` (or `clean-helper.vs_code_configs`),
+/// set by [loadPackageConfigs]: which `.vscode/` files `add-vscode-config`
+/// writes. A missing key means true.
+({bool extensions, bool tasks, bool launch}) vscodeConfig = (
+  extensions: true,
+  tasks: true,
+  launch: true,
+);
+
 /// The monorepo app [resolveMonoRepoProject] switched into, relative to the
 /// starting directory (e.g. `apps/shop`). Null when no switch happened.
 String? monoRepoAppPath;

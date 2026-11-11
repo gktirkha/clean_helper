@@ -280,7 +280,16 @@ Generates `tools/`: `clean.dart`, `bootstrap.dart [--clean]`, `write_key_propert
 clean-helper add-vscode-config
 ```
 
-Writes `.vscode/extensions.json`, `launch.json` and `tasks.json`, skipping any that exist. `init` runs it automatically.
+Writes `.vscode/extensions.json`, `launch.json` and `tasks.json`, skipping any that exist. `init` runs it automatically. To leave a file out, set it to `false` under `packages.vs_code_configs`:
+
+```yaml
+clean-helper:
+  packages:
+    vs_code_configs:
+      extensions: true
+      tasks: false
+      launch: true
+```
 
 ### `create-packages`
 
@@ -385,6 +394,7 @@ clean-helper:
 | `packages.utils.module_name` | `<UtilsPascal>Module` | The utils package's `@module` class |
 | `packages.utils.call_adapter_name` | `retrofit_call_adapter.name`, else `RetrofitCallAdapter` | Call adapter class generated and used by REST datasources |
 | [`packages.localization`](#packageslocalization) `.name` / `.import` / `.create` | `<app>_localization` / `package:<name>/<name>.dart` / `true` | Localization package; other keys go to `slang.yaml` |
+| `packages.vs_code_configs` `.extensions` / `.tasks` / `.launch` | `true` | Which `.vscode/` files [`add-vscode-config`](#add-vscode-config) (and `init`) write |
 | [`packages.use_root_analysis`](#analysis-options) | `false` | Apps and packages include the workspace root's `analysis_options.yaml` |
 | [`packages.router`](#packagesrouter) `.name` / `.import` / `.create` | `clean_router` / `package:<name>/<name>.dart` / `true` | Router package with `CleanRouterBase` |
 | [`packages.network`](#packagesnetwork) `.name` / `.import` | not set / `package:<name>/<name>.dart` | External network package |

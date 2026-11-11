@@ -67,6 +67,11 @@ void listMonoRepoApps() {
         : '  network:       ${network.name}  (${network.import})',
   );
 
+  final vscode = vscodeConfig;
+  stdout.writeln(
+    '  vs_code_configs: extensions ${vscode.extensions}, '
+    'tasks ${vscode.tasks}, launch ${vscode.launch}',
+  );
   stdout.writeln(
     '  use_root_analysis: $useRootAnalysisConfig'
     '${useRootAnalysisConfig ? '' : ' (default — packages include the nearest project)'}',
