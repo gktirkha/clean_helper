@@ -87,15 +87,14 @@ bin/clean_helper.dart → CleanHelperRunner.run(args)
 7. `generateCleanRouterPackage()`, `generateLocalizationPackage()`, `generateUtilsPackage()`
 8. `addCleanRouterWorkspace()` — adds all three packages to `workspace:`
 9. `generateCoreFiles()` — main, bootstrap, init service, app, DI, router
-10. `generateUtilsFiles()` — `lib/core/domain/use_cases/use_case_base.dart`
-11. `generateHomeFeature()`; `generateToolsFiles()` with `--tools`
-12. `installDependencies()`, `updateGitignore()`, `addVscodeConfig()`, `addFlutterAssetsToPubSpec()`
-13. `addNetworkModule(runBuildRunnerAfter: false)` with `--network` / `--auth-interceptor`; `addAuthInterceptor(...)` with `--auth-interceptor`
-14. `runSlang(<app>_localization)`
-15. `runBuildRunner(workingDirectory: packages/<app>_utils)`, then `runBuildRunner()` for the app
-16. `runDartFormat()`
-17. `sortPubspecDeps()` for the app, utils and localization pubspecs
-18. `writeToolVersion()`
+10. `generateHomeFeature()`; `generateToolsFiles()` with `--tools`
+11. `installDependencies()`, `updateGitignore()`, `addVscodeConfig()`, `addFlutterAssetsToPubSpec()`
+12. `addNetworkModule(runBuildRunnerAfter: false)` with `--network` / `--auth-interceptor`; `addAuthInterceptor(...)` with `--auth-interceptor`
+13. `runSlang(<app>_localization)`
+14. `runBuildRunner(workingDirectory: packages/<app>_utils)`, then `runBuildRunner()` for the app
+15. `runDartFormat()`
+16. `sortPubspecDeps()` for the app, utils and localization pubspecs
+17. `writeToolVersion()`
 
 ---
 

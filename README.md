@@ -107,7 +107,7 @@ What it does:
 
 1. Writes `analysis_options.yaml` and runs `flutter pub get`.
 2. Creates three workspace packages under `packages/`: `clean_router`, `<app>_localization` and `<app>_utils` (see [Workspace packages](#workspace-packages)), and adds them to `workspace:` in `pubspec.yaml`.
-3. Generates the app skeleton: `main.dart`, `bootstrap.dart`, `InitService`, `MainApp`, go_router setup, get_it/injectable DI, `UseCaseBase`, and a `home` feature.
+3. Generates the app skeleton: `main.dart`, `bootstrap.dart`, `InitService`, `MainApp`, go_router setup, get_it/injectable DI, and a `home` feature.
 4. Installs dependencies, updates `.gitignore`, adds `.vscode/` config and flutter_gen setup (`build.yaml`, `assets/colors/colors.xml`).
 5. Optionally adds the network layer, auth interceptor and tools.
 6. Runs slang, then build_runner in the utils package and in the app, then `dart format`.
@@ -353,7 +353,7 @@ Any other value stops the command with an error.
 The package that `add-repo` and `add-network-module` import shared code from — `Failure`, `UseCaseBase`, `safeExecuteTask` and so on. When it's set:
 
 - Its import replaces `package:<app>_utils/<app>_utils.dart`.
-- Generated use cases don't import `lib/core/domain/use_cases/use_case_base.dart`, so the package must export `UseCaseBase`.
+- Generated use cases import `UseCaseBase` from it, so the package must export `UseCaseBase`.
 
 If only `import` is given, `name` is taken from it. If only `name` is given, the import is `package:<name>/<name>.dart`.
 
@@ -416,7 +416,6 @@ lib/
 │   └── router/                app_go_router.dart, app_go_router_redirect.dart, app_router_module.dart
 ├── core/
 │   ├── di/                    core_module.dart (PackageInfo), di_keys.dart
-│   ├── domain/use_cases/      use_case_base.dart
 │   ├── data/models/           error_model.dart
 │   └── network/               constants/, di/, interceptors/, utils/   (add-network-module)
 ├── features/home/             see add-feature
@@ -435,7 +434,7 @@ build.yaml
 |---|---|
 | `clean_router` | `CleanRouterBase` — the interface every feature router implements (`routes`, `refreshStreams`, `redirect`, `priority`) — and `CleanRouterRefresh`, which merges the routers' refresh streams for go_router |
 | `<app>_localization` | `slang.yaml`, `assets/locales/en.locale.json`, the `String.tr` extension and the generated translations |
-| `<app>_utils` | `Failure`, `ErrorEntity`, `AppLogger`, `AppBlocObserver`, `ContextUtils`, `Debouncer`, `safeCast`, `safeExecute`, `safeExecuteTask`, `listToModelList`, `getCurrentFunctionName`, `JsonDecodeFactory`, and an injectable micro-package that registers `BlocObserver` |
+| `<app>_utils` | `Failure`, `ErrorEntity`, `UseCaseBase`, `AppLogger`, `AppBlocObserver`, `ContextUtils`, `Debouncer`, `safeCast`, `safeExecute`, `safeExecuteTask`, `listToModelList`, `getCurrentFunctionName`, `JsonDecodeFactory`, and an injectable micro-package that registers `BlocObserver` |
 
 The app's `@InjectableInit` pulls in the utils micro-package through `externalPackageModulesAfter`, so build_runner has to run in `packages/<app>_utils` before the app. `init` does this for you.
 
@@ -484,6 +483,7 @@ The newer templates work with older projects, as long as you tell the tool what 
 | 1.4.4 | `RetrofitCallAdapter` / `RetrofitLogger` live in the utils package | Nothing — `add-network-module` detects them and doesn't generate copies in `lib/core/network/utils/` |
 | 1.5.0 | No `init_service.dart`; `NetworkModule` uses Chucker and `PrettyDioLogger` | Nothing required — `add-network-module` adds `DioLens.init` to `bootstrap.dart` instead, and `add-auth-interceptor` keeps the Chucker-style `noAuthDio`. To switch to Dio Lens, replace the Chucker and pretty-log interceptors in `NetworkModule` with `DioLensInterceptor(dio: dio)` and drop the Chucker observer from `AppGoRouter` |
 | 1.6.0 | The utils package has no `ContextUtils` | Nothing required — `add-feature` detects it and keeps generating navigation that takes a required `BuildContext`. To switch, copy `context_utils.dart` and `di/di_container.dart` into `packages/<app>_utils/lib/src/`, export `context_utils.dart`, and add `get_it` to its pubspec |
+| 1.7.0 | `UseCaseBase` lives in the app at `lib/core/domain/use_cases/use_case_base.dart` | Nothing required — `add-repo` detects that the utils package has no `lib/src/use_case_base.dart` and keeps importing the app copy. To switch, move the file to `packages/<app>_utils/lib/src/use_case_base.dart`, import `failure.dart` relatively, export it from the utils barrel, and update the imports in existing use cases |
 
 Then update `clean-helper.version` to silence the version warning.
 

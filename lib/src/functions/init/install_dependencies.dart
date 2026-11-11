@@ -39,26 +39,14 @@ void installDependencies(
   ]);
   runCommand([...fvmExec('flutter'), 'pub', 'add', ...deps]);
   runCommand([...fvmExec('flutter'), 'pub', 'add', '--dev', ...devDeps]);
+  // Workspace members resolve from the workspace, so no `--path` is needed.
   runCommand([
     ...fvmExec('flutter'),
     'pub',
     'add',
     'clean_router',
-    '--path=packages/clean_router',
-  ]);
-  runCommand([
-    ...fvmExec('flutter'),
-    'pub',
-    'add',
     localizationPackageName,
-    '--path=packages/$localizationPackageName',
-  ]);
-  runCommand([
-    ...fvmExec('flutter'),
-    'pub',
-    'add',
     utilsPackageName,
-    '--path=packages/$utilsPackageName',
   ]);
 
   stdout.writeln('📦 Dependencies installed');

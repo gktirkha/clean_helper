@@ -12,7 +12,6 @@ import '../functions/init/generate_home_feature.dart';
 import '../functions/init/generate_localization_files.dart';
 import '../functions/init/generate_localization_package.dart';
 import '../functions/init/generate_tools_files.dart';
-import '../functions/init/generate_utils_files.dart';
 import '../functions/init/generate_utils_package.dart';
 import '../functions/init/install_dependencies.dart';
 import '../functions/init/run_build_runner.dart';
@@ -52,7 +51,6 @@ Future<void> runInit({
   generateUtilsPackage(utilsPackageName, localizationPackageName);
   addCleanRouterWorkspace(utilsPackageName, localizationPackageName);
   generateCoreFiles(packageName, utilsPackageName);
-  generateUtilsFiles(utilsPackageName);
   generateHomeFeature(packageName, withDi: withDi);
   if (withTools) generateToolsFiles();
   installDependencies(utilsPackageName, localizationPackageName);

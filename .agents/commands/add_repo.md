@@ -22,7 +22,7 @@ Feature scope only; use `add-entity core …` for core models. Both names are lo
 | call adapter name | `retrofitCallAdapterConfig?.name` ?? `RetrofitCallAdapter` |
 | `adapterImport` | `retrofitCallAdapterConfig?.import` ?? `networkPackageConfig?.import` ?? `../../../../core/network/utils/retrofit_call_adapter.dart` if that file exists ?? null (the utils import provides it) |
 | `ignoreErrorLogger` | `networkPackageConfig != null` |
-| `importUseCaseBase` | `utilsPackageConfig == null` |
+| `importUseCaseBase` | `utilsPackageConfig == null && !utilsHasUseCaseBase('<app>_utils')` — true only for projects before 1.7.0, whose `UseCaseBase` is in `lib/core/domain/use_cases/` |
 
 ## Output
 
@@ -54,7 +54,7 @@ After generating REST files, `warnMissingRestDependencies()` warns if the app's 
 
 - Package imports go through `sortImports`. A relative adapter import goes in the relative section.
 - Multi-word repo names use `camelCase` identifiers: `HomeApiPaths.userAccount`, `userAccountRepository`.
-- With `importUseCaseBase: false`, use cases rely on the utils package exporting `UseCaseBase`.
+- With `importUseCaseBase: false`, use cases get `UseCaseBase` from the utils import.
 - With `ignoreErrorLogger`, the factory is `factory Rest<R>DataSource(Dio dio, {@ignoreParam ParseErrorLogger? errorLogger})`, with a comment explaining why.
 - Retrofit is imported as `package:retrofit/retrofit.dart`.
 

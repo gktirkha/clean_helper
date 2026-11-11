@@ -18,7 +18,7 @@ Run once, in a project fresh from `flutter create`. `--auth-interceptor` implies
 1. `fvmUse()`, `generateAnalysisOptions()`, `runFlutterPubGet()`
 2. `createDirectories()`, `generateFlutterGenFiles()`
 3. The packages: `generateCleanRouterPackage()`, `generateLocalizationPackage()`, `generateUtilsPackage()`, then `addCleanRouterWorkspace()`
-4. The app: `generateCoreFiles()`, `generateUtilsFiles()` (`UseCaseBase`), `generateHomeFeature(withDi:)`, `generateToolsFiles()` if `--tools`
+4. The app: `generateCoreFiles()`, `generateHomeFeature(withDi:)`, `generateToolsFiles()` if `--tools`
 5. `installDependencies()`, `updateGitignore()`, `addVscodeConfig()`, `addFlutterAssetsToPubSpec()`
 6. `addNetworkModule(runBuildRunnerAfter: false)` / `addAuthInterceptor(runBuildRunnerAfter: false, showNextSteps: false)` when their flags are set
 7. `runSlang()` in the localization package; `runBuildRunner()` in `packages/<app>_utils`, then in the app; `runDartFormat()`
@@ -35,15 +35,15 @@ The package generators run `flutter create --template package` and then:
 
 See `architecture.md` for the full tree. Key points:
 
-- The utils package holds `Failure`, `AppLogger`, `safeExecute`, `safeExecuteTask` and the rest, plus an injectable micro-package registering `BlocObserver`. Since 1.4.4 it no longer contains `RetrofitCallAdapter` / `RetrofitLogger`, and doesn't depend on `dio` or `retrofit`.
-- `lib/core/domain/use_cases/use_case_base.dart`: `UseCaseBase.call` returns `FutureOr<TaskEither<Failure, ReturnType>>`.
+- The utils package holds `Failure`, `UseCaseBase`, `AppLogger`, `safeExecute`, `safeExecuteTask` and the rest, plus an injectable micro-package registering `BlocObserver`. Since 1.4.4 it no longer contains `RetrofitCallAdapter` / `RetrofitLogger`, and doesn't depend on `dio` or `retrofit`.
+- `UseCaseBase` is in the utils package (`lib/src/use_case_base.dart`, exported from the barrel) since 1.7.0; `UseCaseBase.call` returns `FutureOr<TaskEither<Failure, ReturnType>>`. Earlier versions generated it in the app at `lib/core/domain/use_cases/use_case_base.dart`.
 - The home feature is generated with the same helpers as `add-feature`, plus empty `data/` and `domain/` folders from `createDirectories()`.
 
 ## Dependencies
 
 - **App runtime:** `flutter_bloc`, `go_router`, `get_it`, `injectable`, `freezed_annotation`, `fpdart`, `package_info_plus`, `flutter_svg`, `json_annotation`, `logger`, `flutter_localizations` (SDK)
 - **App dev:** `build_runner`, `injectable_generator`, `freezed`, `flutter_gen_runner`, `json_serializable`
-- **App path:** `clean_router`, `<app>_localization`, `<app>_utils`
+- **App workspace packages:** `clean_router`, `<app>_localization`, `<app>_utils` — added with `flutter pub add` and no `--path` (since 1.7.0); pub resolves them from the workspace
 - **Utils package:** `flutter_bloc`, `fpdart`, `get_it`, `injectable`, `logger`, `<app>_localization`; dev `build_runner`, `injectable_generator`
 - **Localization package:** `slang`, `slang_flutter`
 

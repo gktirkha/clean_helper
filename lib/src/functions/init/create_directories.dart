@@ -7,7 +7,6 @@ void createDirectories() {
     'lib/app/navigation',
     'lib/app/di',
     'lib/core/di',
-    'lib/core/domain/use_cases',
     // network
     'lib/core/network/constants',
     'lib/core/network/di',

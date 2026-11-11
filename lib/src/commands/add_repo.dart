@@ -12,6 +12,7 @@ import '../functions/repo/generate_response_model.dart';
 import '../functions/repo/generate_rest_data_source.dart';
 import '../functions/repo/generate_use_cases.dart';
 import '../functions/repo/uses_task_either.dart';
+import '../functions/repo/utils_has_use_case_base.dart';
 import '../functions/repo/warn_missing_rest_dependencies.dart';
 import '../functions/shared/ensure_pubspec.dart';
 import '../functions/shared/package_configs.dart';
@@ -77,7 +78,8 @@ void addRepo(
       feature,
       repoName,
       utilsImport,
-      importUseCaseBase: utilsPackage == null,
+      importUseCaseBase:
+          utilsPackage == null && !utilsHasUseCaseBase('${packageName}_utils'),
       taskEither: taskEither,
     );
     generateRequestModel(dataDir, repoName);

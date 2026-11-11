@@ -26,7 +26,6 @@ What the templates produce. Keep this in sync when a template changes shape.
 │   ├── core/
 │   │   ├── di/core_module.dart        @preResolve PackageInfo
 │   │   ├── di/di_keys.dart            DIKeys (noAuthDio after add-auth-interceptor)
-│   │   ├── domain/use_cases/use_case_base.dart
 │   │   ├── data/models/error_model.dart           add-network-module
 │   │   └── network/                               add-network-module
 │   │       ├── constants/api_paths.dart
@@ -43,7 +42,7 @@ What the templates produce. Keep this in sync when a template changes shape.
 └── build.yaml
 ```
 
-The app's `pubspec.yaml` lists all three packages under `workspace:` and as path dependencies. Each package pubspec has `resolution: workspace`.
+The app's `pubspec.yaml` lists all three packages under `workspace:` and as dependencies without a `path:` — pub resolves workspace members from the workspace. Each package pubspec has `resolution: workspace`, and the utils package depends on `<app>_localization` the same way.
 
 ---
 
@@ -74,6 +73,7 @@ lib/src/
 ├── error_entity.dart
 ├── failure.dart                     Failure({message}); Failure.leftFromError(e)
 ├── type_definitions.dart            JsonDecodeFactory<T>
+├── use_case_base.dart               UseCaseBase<ReturnType, ParameterType> (app's lib/core/domain/use_cases/ before 1.7.0)
 ├── di/<app>_utils_module.dart       @module — registers BlocObserver
 ├── di/di_initializer.dart           @InjectableInit.microPackage → <App>UtilsPackageModule
 ├── di/di_container.dart             GetIt.instance (same instance as the app's), used by ContextUtils for the navigator key

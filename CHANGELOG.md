@@ -1,3 +1,9 @@
+## 1.7.0
+
+- `UseCaseBase` moves into the utils package: `init` generates `packages/<app>_utils/lib/src/use_case_base.dart` and exports it from the barrel, instead of `lib/core/domain/use_cases/use_case_base.dart` in the app. Generated use cases get it from the utils import
+- `add-repo` keeps importing the app's `use_case_base.dart` when the utils package has no `lib/src/use_case_base.dart` (projects initialised before 1.7.0)
+- `init` adds `clean_router`, `<app>_localization` and `<app>_utils` to the app without `path:` — they're workspace members, so pub resolves them from the workspace
+
 ## 1.6.1
 
 - README examples use a generic `my_app` package prefix instead of a project-specific name

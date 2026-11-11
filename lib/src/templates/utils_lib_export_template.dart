@@ -12,4 +12,5 @@ export 'src/functions/safe_cast.dart';
 export 'src/functions/safe_execute.dart';
 export 'src/functions/safe_execute_task.dart';
 export 'src/type_definitions.dart';
+export 'src/use_case_base.dart';
 ''';

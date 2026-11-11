@@ -14,6 +14,7 @@ import '../../templates/safe_cast_template.dart';
 import '../../templates/safe_execute_task_template.dart';
 import '../../templates/safe_execute_template.dart';
 import '../../templates/type_definitions_template.dart';
+import '../../templates/use_case_base_template.dart';
 import '../../templates/utils_di_initializer_template.dart';
 import '../../templates/utils_lib_export_template.dart';
 import '../../templates/utils_module_template.dart';
@@ -90,6 +91,10 @@ void generateUtilsPackage(
   overwriteFile(
     'packages/$utilsPackageName/lib/src/type_definitions.dart',
     typeDefinitionsTemplate(),
+  );
+  overwriteFile(
+    'packages/$utilsPackageName/lib/src/use_case_base.dart',
+    useCaseBaseTemplate(),
   );
   overwriteFile(
     'packages/$utilsPackageName/lib/src/functions/get_current_function_name.dart',
