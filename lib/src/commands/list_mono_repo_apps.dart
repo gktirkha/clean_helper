@@ -67,6 +67,11 @@ void listMonoRepoApps() {
         : '  network:       ${network.name}  (${network.import})',
   );
 
+  stdout.writeln(
+    '  use_root_analysis: $useRootAnalysisConfig'
+    '${useRootAnalysisConfig ? '' : ' (default — packages include the nearest project)'}',
+  );
+
   stdout.writeln();
   stdout.writeln(
     'Result type (clean-helper.result_type): '

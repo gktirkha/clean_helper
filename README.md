@@ -385,6 +385,7 @@ clean-helper:
 | `packages.utils.module_name` | `<UtilsPascal>Module` | The utils package's `@module` class |
 | `packages.utils.call_adapter_name` | `retrofit_call_adapter.name`, else `RetrofitCallAdapter` | Call adapter class generated and used by REST datasources |
 | [`packages.localization`](#packageslocalization) `.name` / `.import` / `.create` | `<app>_localization` / `package:<name>/<name>.dart` / `true` | Localization package; other keys go to `slang.yaml` |
+| [`packages.use_root_analysis`](#analysis-options) | `false` | Apps and packages include the workspace root's `analysis_options.yaml` |
 | [`packages.router`](#packagesrouter) `.name` / `.import` / `.create` | `clean_router` / `package:<name>/<name>.dart` / `true` | Router package with `CleanRouterBase` |
 | [`packages.network`](#packagesnetwork) `.name` / `.import` | not set / `package:<name>/<name>.dart` | External network package |
 | [`retrofit_call_adapter`](#retrofit_call_adapter) `.name` / `.import` | `RetrofitCallAdapter` / see below | Call adapter used by REST datasources |
@@ -438,6 +439,18 @@ The first locale file is `<input_directory>/<base_locale><input_file_pattern>`. 
 ### `packages.router`
 
 The package with `CleanRouterBase` and `CleanRouterRefresh`, imported by `AppGoRouter` and every feature router. Defaults to `clean_router`.
+
+### Analysis options
+
+The lint rules are written once. Every other `analysis_options.yaml` only includes that file:
+
+| | Without `use_root_analysis` (default) | With `packages.use_root_analysis: true` |
+|---|---|---|
+| App (`init`) | Full rules | `include: ../../analysis_options.yaml` — the workspace root's, created there if missing |
+| Packages created by `init` | `include: ../../analysis_options.yaml` — the app's | The workspace root's, e.g. `include: ../../../../analysis_options.yaml` |
+| Packages created by `create-packages` | The current directory's file, created if missing | Same |
+
+`use_root_analysis` only changes anything in a monorepo app, where a root exists above the app. It can also sit directly under `clean-helper:`.
 
 ### `packages.network`
 

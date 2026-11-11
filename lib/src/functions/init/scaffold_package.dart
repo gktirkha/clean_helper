@@ -1,6 +1,7 @@
 import 'dart:io';
 
-import '../../templates/analysis_options_template.dart';
+import '../../templates/analysis_options_include_template.dart';
+import '../shared/analysis_options_include.dart';
 import '../shared/fvm_exec.dart';
 import '../shared/package_barrel_path.dart';
 import '../shared/package_configs.dart';
@@ -10,7 +11,8 @@ import '../shared/write_file.dart';
 /// Runs `flutter create --template package` for `<parentDir>/<name>`, removes
 /// the scaffold files clean_helper doesn't use (README, CHANGELOG, LICENSE,
 /// `.metadata`, `test/`, and `lib/<name>.dart` when the configured barrel is
-/// elsewhere) and writes `analysis_options.yaml`.
+/// elsewhere) and writes an `analysis_options.yaml` that includes the
+/// project's (or, with `use_root_analysis`, the workspace root's) file.
 void scaffoldPackage(PackageConfig package, {String parentDir = 'packages'}) {
   final dir = '$parentDir/${package.name}';
 
@@ -31,5 +33,8 @@ void scaffoldPackage(PackageConfig package, {String parentDir = 'packages'}) {
   final testDir = Directory('$dir/test');
   if (testDir.existsSync()) testDir.deleteSync(recursive: true);
 
-  overwriteFile('$dir/analysis_options.yaml', analysisOptionsTemplate());
+  overwriteFile(
+    '$dir/analysis_options.yaml',
+    analysisOptionsIncludeTemplate(analysisOptionsInclude(dir)!),
+  );
 }

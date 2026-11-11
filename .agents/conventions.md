@@ -91,6 +91,8 @@ The runner and `ensurePubspec()` fill shared globals before any command logic ru
 | `networkPackageConfig` | `loadPackageConfigs()` | `packages.network`, or null (`create` is ignored) |
 | `utilsModuleNameConfig`, `callAdapterNameConfig` | `loadPackageConfigs()` | `packages.utils.module_name` / `.call_adapter_name`, or null |
 | `slangSettingsConfig` | `loadPackageConfigs()` | every other scalar key under `packages.localization` |
+| `useRootAnalysisConfig` | `loadPackageConfigs()` | `packages.use_root_analysis` |
+| `monoRepoAppPath` | `resolveMonoRepoProject()` | the app switched into, relative to the root (`apps/shop`), or null |
 | `retrofitCallAdapterConfig` | `loadPackageConfigs()` | `(name, import?)`, or null |
 | `resultTypeConfig` | `loadPackageConfigs()` | raw `result_type` string, or null |
 
@@ -106,6 +108,7 @@ Resolution helpers turn config into decisions, so commands don't repeat the logi
 |---|---|
 | `resolveUtilsPackage()`, `resolveLocalizationPackage()`, `resolveRouterPackage()` | the configured package, or the default `<app>_utils` / `<app>_localization` / `clean_router` with `create: true` — commands never build default names themselves |
 | `resolveSlangSettings()` | the slang defaults overlaid with `slangSettingsConfig` |
+| `analysisOptionsInclude(dir)` | the `include:` path for the `analysis_options.yaml` at `dir` (`''` = the current project), or null for the full rules — `'../' × (depth(dir) + depth(monoRepoAppPath) with use_root_analysis)` |
 | `resolveUtilsModuleName(utils)` | `module_name` ?? `<UtilsPascal>Module` |
 | `resolveCallAdapterName()` | `call_adapter_name` ?? `retrofit_call_adapter.name` ?? `RetrofitCallAdapter` |
 | `packageBarrelPath(p)` / `packageBarrelPrefix(p)` | where a created package's barrel goes (from its import URI), and the `../` prefix its exports need |

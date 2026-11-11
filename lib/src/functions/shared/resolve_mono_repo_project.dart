@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'abort.dart';
+import 'package_configs.dart';
 import 'prompt_project_selection.dart';
 import 'read_mono_repo_apps.dart';
 import 'scope_option.dart';
@@ -74,5 +75,8 @@ void resolveMonoRepoProject() {
   }
 
   stdout.writeln('→ Using project: $selected');
+  monoRepoAppPath = selected
+      .replaceFirst(RegExp(r'^\./'), '')
+      .replaceFirst(RegExp(r'/+$'), '');
   Directory.current = appDir.path;
 }

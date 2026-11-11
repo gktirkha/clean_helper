@@ -16,7 +16,7 @@ Read-only. Run it from the directory other commands are run from — the monorep
 - **Doesn't call `ensurePubspec()`**, because that would trigger app selection. It checks for `pubspec.yaml` itself (and aborts without one) and calls `loadPackageConfigs()` directly.
 - Prints, in order:
   1. The `mono_repo_apps` entries (`n. <folder>  (<path>)`), or setup instructions if there are none.
-  2. `packages.utils` (plus `module_name`, `call_adapter_name`), `packages.localization` (plus every resolved slang setting, marked `(default)` when not configured), `packages.router` and `packages.network`: name, import and `— not created` for `create: false`, or their defaults.
+  2. `packages.utils` (plus `module_name`, `call_adapter_name`), `packages.localization` (plus every resolved slang setting, marked `(default)` when not configured), `packages.router`, `packages.network` and `use_root_analysis`: name, import and `— not created` for `create: false`, or their defaults.
   3. `result_type`, or `task_either (default)`.
   4. The resolved call adapter name (`resolveCallAdapterName()`) and import: `retrofit_call_adapter.import` ?? `packages.network.import` ?? `lib/core/network/utils/retrofit_call_adapter.dart`.
 

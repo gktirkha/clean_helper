@@ -62,7 +62,7 @@ clean_helper/
 | `sort_imports.dart` | `sortImports(imports)` | Join import directives alphabetically |
 | `ensure_pubspec.dart` | `ensurePubspec()` | First call of every command: config → monorepo → version check |
 | `load_package_configs.dart` | `loadPackageConfigs()` | Fill the config globals from the starting-directory pubspec |
-| `package_configs.dart` | `PackageConfig` typedef `(name, import, create)`; `packageConfigsLoaded`, `utilsPackageConfig`, `networkPackageConfig`, `localizationPackageConfig`, `routerPackageConfig`, `utilsModuleNameConfig`, `callAdapterNameConfig`, `slangSettingsConfig`, `retrofitCallAdapterConfig`, `resultTypeConfig` | Config globals |
+| `package_configs.dart` | `PackageConfig` typedef `(name, import, create)`; `packageConfigsLoaded`, `useRootAnalysisConfig`, `monoRepoAppPath`, `utilsPackageConfig`, `networkPackageConfig`, `localizationPackageConfig`, `routerPackageConfig`, `utilsModuleNameConfig`, `callAdapterNameConfig`, `slangSettingsConfig`, `retrofitCallAdapterConfig`, `resultTypeConfig` | Config globals |
 | `read_clean_helper_fields.dart` | `readCleanHelperFields(path)` | Scalar children of `clean-helper.<path…>` |
 | `read_package_config.dart` | `readPackageConfig(key)` | `packages.<key>` → `PackageConfig?` |
 | `resolve_utils_package.dart` | `resolveUtilsPackage()` | Configured utils package or `<app>_utils` |
@@ -71,6 +71,7 @@ clean_helper/
 | `resolve_slang_settings.dart` | `resolveSlangSettings()` | slang defaults + `slangSettingsConfig` |
 | `resolve_utils_module_name.dart` | `resolveUtilsModuleName(utils)` | `module_name` ?? `<UtilsPascal>Module` |
 | `resolve_call_adapter_name.dart` | `resolveCallAdapterName()` | `call_adapter_name` ?? `retrofit_call_adapter.name` ?? `RetrofitCallAdapter` |
+| `analysis_options_include.dart` | `analysisOptionsInclude(dir)` | `include:` path for a project's `analysis_options.yaml`, or null for full rules |
 | `package_barrel_path.dart` | `packageBarrelPath(package, [parentDir])` | `<parentDir>/<name>/lib/<file from import>`, `parentDir` defaulting to `packages` |
 | `package_barrel_prefix.dart` | `packageBarrelPrefix(package)` | `../` prefix from a nested barrel back to `lib/` |
 | `read_mono_repo_apps.dart` | `readMonoRepoApps()` | `mono_repo_apps` list |
@@ -91,12 +92,12 @@ clean_helper/
 
 | File | Function |
 |---|---|
-| `generate_analysis_options.dart` | `generateAnalysisOptions()` |
+| `generate_analysis_options.dart` | `generateAnalysisOptions()` — full rules, or an include of the root's (created if missing) with `use_root_analysis` in a monorepo app |
 | `run_flutter_pub_get.dart` | `runFlutterPubGet()` |
 | `create_directories.dart` | `createDirectories()` — the only place allowed to call `Directory.createSync` |
 | `generate_localization_files.dart` | `generateLocalizationFiles()` — no-op |
 | `generate_flutter_gen_files.dart` | `generateFlutterGenFiles()` |
-| `scaffold_package.dart` | `scaffoldPackage(package, {parentDir})` — `flutter create --template package`, delete unused scaffold files, write `analysis_options.yaml` |
+| `scaffold_package.dart` | `scaffoldPackage(package, {parentDir})` — `flutter create --template package`, delete unused scaffold files, write an including `analysis_options.yaml` |
 | `generate_clean_router_package.dart` | `generateCleanRouterPackage(router, {parentDir})` |
 | `generate_localization_package.dart` | `generateLocalizationPackage(localization, slangSettings, {parentDir})` |
 | `generate_utils_package.dart` | `generateUtilsPackage(utils, localization, {moduleName, translateVar, parentDir})` |
@@ -165,7 +166,7 @@ Each file is `<name>_template.dart` → `<name>Template(...)`.
 | Utils package | `utils_lib_export`, `utils_pubspec_tail`, `context_utils`, `di_container` (shared with the app), `utils_module`, `utils_di_initializer`, `app_logger`, `app_bloc_observer`, `debounce`, `error_entity`, `failure`, `type_definitions`, `get_current_function_name`, `list_to_model_list`, `safe_cast`, `safe_execute`, `safe_execute_task`, `use_case_base` |
 | Localization package | `localization_lib_export`, `localization_pubspec_tail`, `localization_slang_yaml`, `string_extension`, `en_locale` |
 | clean_router package | `clean_router_base`, `clean_router_refresh`, `clean_router_lib_export`, `clean_router_pubspec_tail` |
-| Project config | `analysis_options`, `build_yaml`, `colors_xml`, `gitignore` |
+| Project config | `analysis_options`, `analysis_options_include`, `build_yaml`, `colors_xml`, `gitignore` |
 | Tools | `tools_command_runner`, `tools_clean`, `tools_bootstrap`, `tools_write_key_properties`, `tools_build_android`, `tools_build_config` |
 | VS Code | `vscode_extensions`, `vscode_launch`, `vscode_tasks` |
 | Melos | `melos_config` |

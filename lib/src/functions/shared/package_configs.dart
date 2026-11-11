@@ -43,6 +43,15 @@ String? callAdapterNameConfig;
 /// Missing keys use the defaults in [resolveSlangSettings].
 Map<String, String> slangSettingsConfig = {};
 
+/// `clean-helper.packages.use_root_analysis` (or `clean-helper.use_root_analysis`),
+/// set by [loadPackageConfigs]. True means apps and packages include the
+/// workspace root's `analysis_options.yaml` instead of the nearest project's.
+bool useRootAnalysisConfig = false;
+
+/// The monorepo app [resolveMonoRepoProject] switched into, relative to the
+/// starting directory (e.g. `apps/shop`). Null when no switch happened.
+String? monoRepoAppPath;
+
 /// `clean-helper.retrofit_call_adapter`, set by [loadPackageConfigs].
 /// [name] is the adapter class; a null [import] means it comes from the
 /// network package, else `lib/core/network/utils/retrofit_call_adapter.dart`

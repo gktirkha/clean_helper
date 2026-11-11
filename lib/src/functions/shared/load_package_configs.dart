@@ -23,7 +23,13 @@ void loadPackageConfigs() {
     readCleanHelperFields(['packages', 'localization']),
   )..removeWhere((key, _) => const {'name', 'import', 'create'}.contains(key));
 
-  resultTypeConfig = readCleanHelperFields([])['result_type'];
+  final root = readCleanHelperFields([]);
+  resultTypeConfig = root['result_type'];
+  useRootAnalysisConfig =
+      (readCleanHelperFields(['packages'])['use_root_analysis'] ??
+              root['use_root_analysis'])
+          ?.toLowerCase() ==
+      'true';
 
   final adapter = readCleanHelperFields(['retrofit_call_adapter']);
   retrofitCallAdapterConfig = adapter.isEmpty

@@ -176,4 +176,4 @@ The REST datasource imports the call adapter from, in order: `retrofit_call_adap
 - **Serialization:** models are `@freezed sealed class … implements <Entity>` with `fromJson`. Request models are `@JsonSerializable`.
 - **Localization:** slang; `LocaleSettings.useDeviceLocale()` in `InitService`, `TranslationProvider` in `MainApp`.
 - **Assets:** flutter_gen via `build.yaml`, output in `lib/generated/flutter_gen/`, colors from `assets/colors/colors.xml`.
-- **Lints:** `analysis_options.yaml` is written by `init` for the app and each package.
+- **Lints:** `init` writes the full rules once — in the app, or, with `use_root_analysis` in a monorepo, in the workspace root (if missing) with the app including it. Each package's `analysis_options.yaml` only has `include:` pointing at the app's (or the root's) file.
