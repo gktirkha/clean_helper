@@ -14,6 +14,11 @@ void loadPackageConfigs() {
   localizationPackageConfig = readPackageConfig('localization');
   routerPackageConfig = readPackageConfig('router');
 
+  final network = readCleanHelperFields(['packages', 'network']);
+  networkModuleNameConfig = network['module_name'];
+  networkAuthInterceptorConfig =
+      network['auth_interceptor']?.toLowerCase() != 'false';
+
   final utils = readCleanHelperFields(['packages', 'utils']);
   utilsModuleNameConfig = utils['module_name'];
   callAdapterNameConfig = utils['call_adapter_name'];

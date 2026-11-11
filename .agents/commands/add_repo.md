@@ -16,11 +16,9 @@ Feature scope only; use `add-entity core …` for core models. Both names are lo
 | Value | Source |
 |---|---|
 | `utilsImport` | `resolveUtilsPackage().import` |
-| `hasNetworkModule` | `networkPackageConfig != null` or `lib/core/network/di/network_module.dart` exists |
+| `hasNetworkModule` | `lib/core/network/di/network_config_module.dart` exists (written by `add-network-module`) |
 | `generateRest` | `!noRest && hasNetworkModule` |
 | call adapter name | `resolveCallAdapterName()` — `packages.utils.call_adapter_name` ?? `RetrofitCallAdapter` |
-| `adapterImport` | `networkPackageConfig?.import` ?? `../../../../core/network/utils/retrofit_call_adapter.dart` |
-| `ignoreErrorLogger` | `networkPackageConfig != null` |
 
 ## Output
 
@@ -37,8 +35,6 @@ lib/features/<f>/data/constants/<f>_api_paths.dart                 REST — stat
 lib/features/<f>/data/datasources/rest_<r>_data_source.dart        REST — @RestApi(callAdapter: …), @Injectable(as: <R>DataSourceBase)
 ```
 
-After generating REST files, `warnMissingRestDependencies()` warns if the app's pubspec lacks `dio`, `retrofit` or `retrofit_generator`.
-
 ## Return types (`--add-sample`)
 
 | Layer | Returns |
@@ -50,15 +46,15 @@ After generating REST files, `warnMissingRestDependencies()` warns if the app's 
 
 ## Generated-code rules
 
-- Package imports go through `sortImports`. A relative adapter import goes in the relative section.
+- Package imports go through `sortImports`. The call adapter comes from the utils import.
 - Multi-word repo names use `camelCase` identifiers: `HomeApiPaths.userAccount`, `userAccountRepository`.
-- With `ignoreErrorLogger`, the factory is `factory Rest<R>DataSource(Dio dio, {@ignoreParam ParseErrorLogger? errorLogger})`, with a comment explaining why.
+- The factory is `factory Rest<R>DataSource(Dio dio, {ParseErrorLogger? errorLogger})`; the network package registers the logger.
 - Retrofit is imported as `package:retrofit/retrofit.dart`.
 
 ## Logging
 
 - `--no-rest` → `⏭  Skipping REST datasource and API paths (--no-rest).`
-- No network module → a `⚠️` line naming both detection sources.
+- No `network_config_module.dart` → a `⚠️` line pointing at `add-network-module`.
 - No `--add-sample` → `⏭  Skipping request/response models (--add-sample not set).`
 
 ## API paths

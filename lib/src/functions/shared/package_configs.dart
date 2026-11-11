@@ -17,8 +17,18 @@ bool packageConfigsLoaded = false;
 PackageConfig? utilsPackageConfig;
 
 /// `clean-helper.packages.network`, set by [loadPackageConfigs].
-/// Null means networking is detected from `lib/core/network/`.
+/// Null means the default `<app>_network` package (see [resolveNetworkPackage]).
 PackageConfig? networkPackageConfig;
+
+/// `clean-helper.packages.network.module_name`, set by [loadPackageConfigs]:
+/// the network package's `@module` class. Null means `<NetworkPascal>Module`.
+String? networkModuleNameConfig;
+
+/// `clean-helper.packages.network.auth_interceptor`, set by
+/// [loadPackageConfigs]. True (the default) gives the network package an
+/// abstract `AuthInterceptor`, a `noAuthDio` and `NetworkDIKeys`, and the app
+/// an `AppAuthInterceptor`.
+bool networkAuthInterceptorConfig = true;
 
 /// `clean-helper.packages.localization`, set by [loadPackageConfigs].
 /// Null means the default `<app>_localization` package.

@@ -1,30 +1,67 @@
-String authInterceptorTemplate() => '''
+/// The network package's abstract `AuthInterceptor`. Apps extend it (see
+/// `appAuthInterceptorTemplate`) and register the subclass in DI.
+String authInterceptorTemplate() => r'''
 import 'dart:async';
 
 import 'package:dio/dio.dart';
-import 'package:injectable/injectable.dart';
+import 'package:flutter/foundation.dart';
 
-import '../../di/di_keys.dart';
+/// Base auth interceptor: attaches the access token to every request and, on
+/// an auth failure, refreshes the token once (concurrent failures share the
+/// same refresh) and retries the original request.
+///
+/// Host apps provide the token logic by extending this class and registering
+/// it in DI as [AuthInterceptor]:
+///
+/// ```dart
+/// @lazySingleton
+/// AuthInterceptor authInterceptor(
+///   @Named(NetworkDIKeys.noAuthDio) Dio noAuthDio,
+/// ) => AppAuthInterceptor(noAuthDio: noAuthDio);
+/// ```
+abstract class AuthInterceptor extends Interceptor {
+  AuthInterceptor({required this.noAuthDio});
 
-@lazySingleton
-class AuthInterceptor extends Interceptor {
-  AuthInterceptor({@Named(DIKeys.noAuthDio) required Dio noAuthDio})
-    : _dio = noAuthDio;
+  /// [Dio] without this interceptor; use it for refresh calls and retries.
+  @protected
+  final Dio noAuthDio;
 
-  final Dio _dio;
-  final String _retryKey = 'retry';
-  final String _authHeaderKey = 'Authorization';
-  final String _bearerKey = 'Bearer';
+  static const String _retryKey = 'auth_retry';
 
-  bool _isRefreshing = false;
   Future<String?>? _refreshFuture;
+
+  /// Current access token, or `null` if the user is not authenticated.
+  @protected
+  FutureOr<String?> getAccessToken();
+
+  /// Refreshes and persists tokens, returning the new access token, or
+  /// `null` if refresh is not possible. Throwing is treated like `null`.
+  @protected
+  Future<String?> refreshAccessToken();
+
+  /// Called when refresh fails or returns `null` (e.g. clear tokens, logout).
+  @protected
+  FutureOr<void> onRefreshFailed(Object? error, StackTrace? stackTrace) {}
+
+  /// Whether [err] should trigger a token refresh. Defaults to HTTP 401.
+  @protected
+  bool shouldRefresh(DioException err) => err.response?.statusCode == 401;
+
+  /// Header name the token is sent in.
+  @protected
+  String get authHeaderKey => 'Authorization';
+
+  /// Formats the token as the header value.
+  @protected
+  String formatAuthHeader(String token) => 'Bearer $token';
 
   @override
   Future<void> onRequest(
     RequestOptions options,
     RequestInterceptorHandler handler,
   ) async {
-    options = await _addAuthHeader(options);
+    final token = await getAccessToken();
+    if (token != null) _setToken(options, token);
     handler.next(options);
   }
 
@@ -33,74 +70,42 @@ class AuthInterceptor extends Interceptor {
     DioException err,
     ErrorInterceptorHandler handler,
   ) async {
-    if (err.response?.statusCode != 401 ||
-        err.requestOptions.extra[_retryKey] == true) {
+    if (!shouldRefresh(err) || err.requestOptions.extra[_retryKey] == true) {
       handler.next(err);
       return;
     }
 
-    try {
-      final newToken = await _refreshToken();
-
-      if (newToken == null) {
-        handler.next(err);
-        return;
-      }
-
-      final options = await _addAuthHeader(err.requestOptions, newToken);
-      options.extra[_retryKey] = true;
-
-      final response = await _dio.fetch(options);
-      handler.resolve(response);
-    } catch (e) {
-      // TODO: clear stored tokens on refresh failure
-      // Example: await _tokenStorage.clearTokens();
+    final newToken = await _refreshOnce();
+    if (newToken == null) {
       handler.next(err);
+      return;
     }
-  }
 
-  Future<String?>? _refreshToken() {
-    if (_isRefreshing) return _refreshFuture;
-    _isRefreshing = true;
-    _refreshFuture = _performRefresh();
-    _refreshFuture!.then((_) => _isRefreshing = false);
-    return _refreshFuture;
-  }
+    final options = _setToken(err.requestOptions, newToken)
+      ..extra[_retryKey] = true;
 
-  Future<String?> _performRefresh() async {
     try {
-      // TODO: Handle full token refresh flow
-      // - Read refresh token from storage
-      // - Call refresh API using _dio
-      // - Extract new access + refresh tokens
-      // - Persist tokens in storage
-      // - Return new access token
+      handler.resolve(await noAuthDio.fetch<dynamic>(options));
+    } on DioException catch (e) {
+      handler.next(e);
+    }
+  }
 
-      return null;
-    } catch (e) {
-      // TODO: On refresh failure, clear tokens & handle logout if needed
+  Future<String?> _refreshOnce() =>
+      _refreshFuture ??= _refresh().whenComplete(() => _refreshFuture = null);
+
+  Future<String?> _refresh() async {
+    try {
+      final token = await refreshAccessToken();
+      if (token == null) await onRefreshFailed(null, null);
+      return token;
+    } catch (e, s) {
+      await onRefreshFailed(e, s);
       return null;
     }
   }
 
-  FutureOr<RequestOptions> _addAuthHeader(
-    RequestOptions requestOptions, [
-    String? newToken,
-  ]) async {
-    // TODO: Attach access token from storage (or use provided newToken)
-
-    if (newToken != null) {
-      requestOptions.headers[_authHeaderKey] = '\$_bearerKey \$newToken';
-      return requestOptions;
-    }
-
-    // Example:
-    // final token = await _tokenStorage.getAccessToken();
-    // if (token != null) {
-    //   requestOptions.headers[_authHeaderKey] = '\$_bearerKey \$token';
-    // }
-
-    return requestOptions;
-  }
+  RequestOptions _setToken(RequestOptions options, String token) =>
+      options..headers[authHeaderKey] = formatAuthHeader(token);
 }
 ''';

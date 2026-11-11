@@ -3,15 +3,30 @@ import 'dart:io';
 import '../shared/fvm_exec.dart';
 import '../shared/run_command.dart';
 
-void installNetworkDependencies() {
+/// Adds what the app needs to use the network package: the package itself
+/// (resolved from the workspace), Dio, Dio Lens and Retrofit, plus the
+/// generators for REST datasources.
+void installNetworkDependencies(String networkPackageName) {
   stdout.writeln('📦 Installing network dependencies...');
 
-  final deps = ['dio', 'dio_lens', 'retrofit', 'json_annotation'];
-
-  final devDeps = ['retrofit_generator', 'json_serializable'];
-
-  runCommand([...fvmExec('flutter'), 'pub', 'add', ...deps]);
-  runCommand([...fvmExec('flutter'), 'pub', 'add', '--dev', ...devDeps]);
+  runCommand([
+    ...fvmExec('flutter'),
+    'pub',
+    'add',
+    networkPackageName,
+    'dio',
+    'dio_lens',
+    'retrofit',
+    'json_annotation',
+  ]);
+  runCommand([
+    ...fvmExec('flutter'),
+    'pub',
+    'add',
+    '--dev',
+    'retrofit_generator',
+    'json_serializable',
+  ]);
 
   stdout.writeln('📦 Network dependencies installed');
 }

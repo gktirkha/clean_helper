@@ -11,10 +11,8 @@ import '../functions/repo/generate_request_model.dart';
 import '../functions/repo/generate_response_model.dart';
 import '../functions/repo/generate_rest_data_source.dart';
 import '../functions/repo/generate_use_cases.dart';
-import '../functions/repo/warn_missing_rest_dependencies.dart';
 import '../functions/shared/abort.dart';
 import '../functions/shared/ensure_pubspec.dart';
-import '../functions/shared/package_configs.dart';
 import '../functions/shared/resolve_call_adapter_name.dart';
 import '../functions/shared/resolve_utils_package.dart';
 
@@ -36,16 +34,16 @@ void addRepo(
   final feature = args[0].toLowerCase();
   final repoName = args[1].toLowerCase();
   final utils = resolveUtilsPackage();
-  final networkPackage = networkPackageConfig;
   final utilsImport = utils.import;
 
   final dataDir = 'lib/features/$feature/data';
   final domainDir = 'lib/features/$feature/domain/repositories';
   final entitiesDir = 'lib/features/$feature/domain/entities';
 
-  final hasNetworkModule =
-      networkPackage != null ||
-      File('lib/core/network/di/network_module.dart').existsSync();
+  // add-network-module wires the app to the network package.
+  final hasNetworkModule = File(
+    'lib/core/network/di/network_config_module.dart',
+  ).existsSync();
 
   final generateRest = !noRest && hasNetworkModule;
 
@@ -75,19 +73,14 @@ void addRepo(
       repoName,
       utilsImport,
       callAdapter: resolveCallAdapterName(),
-      adapterImport:
-          networkPackage?.import ??
-          '../../../../core/network/utils/retrofit_call_adapter.dart',
-      ignoreErrorLogger: networkPackage != null,
       addSample: addSample,
     );
-    warnMissingRestDependencies();
   } else if (noRest) {
     stdout.writeln('  ⏭  Skipping REST datasource and API paths (--no-rest).');
   } else {
     stdout.writeln(
-      '  ⚠️  Network module not found (no lib/core/network/di/network_module.dart '
-      'or clean-helper.packages.network) — skipping REST datasource and API paths.',
+      '  ⚠️  Network layer not set up (no lib/core/network/di/network_config_module.dart; '
+      'run add-network-module) — skipping REST datasource and API paths.',
     );
   }
 

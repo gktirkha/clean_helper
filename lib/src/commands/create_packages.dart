@@ -3,6 +3,7 @@ import 'dart:io';
 import '../functions/init/add_packages_workspace.dart';
 import '../functions/init/generate_clean_router_package.dart';
 import '../functions/init/generate_localization_package.dart';
+import '../functions/init/generate_network_package.dart';
 import '../functions/init/generate_utils_package.dart';
 import '../functions/init/run_build_runner.dart';
 import '../functions/init/run_dart_format.dart';
@@ -13,7 +14,11 @@ import '../functions/shared/abort.dart';
 import '../functions/shared/write_file.dart';
 import '../templates/analysis_options_template.dart';
 import '../functions/shared/load_package_configs.dart';
+import '../functions/shared/package_configs.dart';
+import '../functions/shared/resolve_call_adapter_name.dart';
 import '../functions/shared/resolve_localization_package.dart';
+import '../functions/shared/resolve_network_module_name.dart';
+import '../functions/shared/resolve_network_package.dart';
 import '../functions/shared/resolve_router_package.dart';
 import '../functions/shared/resolve_slang_settings.dart';
 import '../functions/shared/resolve_utils_module_name.dart';
@@ -24,7 +29,8 @@ import '../functions/shared/resolve_utils_package.dart';
 // would switch into a monorepo app first.
 
 /// Generates the utils, localization and router packages described by
-/// `clean-helper.packages` in `<dir>/<name>`, ignoring each `create` flag,
+/// `clean-helper.packages` in `<dir>/<name>` — plus the network package when
+/// `packages.network` is configured — ignoring each `create` flag,
 /// and lists them under `workspace:` in `./pubspec.yaml`. [dir] defaults to
 /// `packages`. A package whose folder already has a `pubspec.yaml` is skipped.
 void createPackages({String? dir}) {
@@ -43,6 +49,8 @@ void createPackages({String? dir}) {
   final localization = resolveLocalizationPackage();
   final router = resolveRouterPackage();
   final slang = resolveSlangSettings();
+  // Optional: only when packages.network is configured.
+  final network = networkPackageConfig == null ? null : resolveNetworkPackage();
 
   bool exists(String name) {
     if (!File('$parentDir/$name/pubspec.yaml').existsSync()) return false;
@@ -56,6 +64,7 @@ void createPackages({String? dir}) {
   final createRouter = !exists(router.name);
   final createLocalization = !exists(localization.name);
   final createUtils = !exists(utils.name);
+  final createNetwork = network != null && !exists(network.name);
 
   if (createRouter) generateCleanRouterPackage(router, parentDir: parentDir);
   if (createLocalization) {
@@ -67,6 +76,16 @@ void createPackages({String? dir}) {
       localization,
       moduleName: resolveUtilsModuleName(utils),
       translateVar: slang['translate_var']!,
+      callAdapterName: resolveCallAdapterName(),
+      parentDir: parentDir,
+    );
+  }
+  if (createNetwork) {
+    generateNetworkPackage(
+      network,
+      utils,
+      moduleName: resolveNetworkModuleName(network),
+      auth: networkAuthInterceptorConfig,
       parentDir: parentDir,
     );
   }
@@ -75,6 +94,7 @@ void createPackages({String? dir}) {
     if (createRouter) router.name,
     if (createLocalization) localization.name,
     if (createUtils) utils.name,
+    if (createNetwork) network.name,
   ];
   if (created.isEmpty) {
     stdout.writeln();
@@ -93,6 +113,10 @@ void createPackages({String? dir}) {
   if (createUtils) {
     runBuildRunner(workingDirectory: '$parentDir/${utils.name}');
     sortPubspecDeps('$parentDir/${utils.name}/pubspec.yaml');
+  }
+  if (createNetwork) {
+    runBuildRunner(workingDirectory: '$parentDir/${network.name}');
+    sortPubspecDeps('$parentDir/${network.name}/pubspec.yaml');
   }
   runDartFormat();
 

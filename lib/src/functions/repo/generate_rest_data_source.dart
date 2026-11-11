@@ -10,8 +10,6 @@ void generateRestDataSource(
   String repoName,
   String utilsImport, {
   String callAdapter = 'RetrofitCallAdapter',
-  required String adapterImport,
-  bool ignoreErrorLogger = false,
   bool addSample = false,
 }) {
   final featureClass = pascalCase(feature);
@@ -31,8 +29,6 @@ void generateRestDataSource(
       repoName,
       utilsImport,
       callAdapter: callAdapter,
-      adapterImport: adapterImport,
-      ignoreErrorLogger: ignoreErrorLogger,
       addSample: addSample,
     ),
   );

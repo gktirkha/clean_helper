@@ -3,7 +3,6 @@ import 'package:cli_completion/cli_completion.dart';
 
 import '../commands/print_version.dart';
 import '../functions/shared/scope_option.dart';
-import 'commands/add_auth_interceptor_command.dart';
 import 'commands/bootstrap_command.dart';
 import 'commands/add_entity_command.dart';
 import 'commands/add_feature_command.dart';
@@ -49,7 +48,6 @@ class CleanHelperRunner extends CompletionCommandRunner<void> {
     addCommand(RemoveFeatureCommand());
     addCommand(RegenerateRouterCommand());
     addCommand(GenerateLocalizationsCommand());
-    addCommand(AddAuthInterceptorCommand());
     addCommand(AddVscodeConfigCommand());
     addCommand(GenerateToolsCommand());
     addCommand(ListMonoRepoAppsCommand());

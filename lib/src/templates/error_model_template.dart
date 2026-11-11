@@ -1,7 +1,8 @@
+import '../functions/shared/sort_imports.dart';
+
 String errorModelTemplate(String utilsImport) =>
     '''
-import 'package:freezed_annotation/freezed_annotation.dart';
-import '$utilsImport';
+${sortImports(["import 'package:freezed_annotation/freezed_annotation.dart';", "import '$utilsImport';"])}
 
 part 'error_model.freezed.dart';
 part 'error_model.g.dart';

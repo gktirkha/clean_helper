@@ -10,34 +10,20 @@ String restDataSourceTemplate(
   String repoName,
   String utilsImport, {
   String callAdapter = 'RetrofitCallAdapter',
-  required String adapterImport,
-  bool ignoreErrorLogger = false,
   bool addSample = false,
 }) {
   final result = 'TaskEither<Failure, ${repoClass}ResponseModel>';
 
-  // [adapterImport] is a package URI or a path relative to the datasource.
-  final packageAdapter = adapterImport.startsWith('package:');
+  // The call adapter comes from the utils package, with Failure.
   final imports = sortImports([
     "import 'package:dio/dio.dart';",
     if (addSample) "import 'package:fpdart/fpdart.dart';",
     "import 'package:injectable/injectable.dart';",
     "import 'package:retrofit/retrofit.dart';",
     "import '$utilsImport';",
-    if (packageAdapter && adapterImport != utilsImport)
-      "import '$adapterImport';",
   ]);
-  final adapterRelative = !packageAdapter
-      ? ["import '$adapterImport';"]
-      : <String>[];
 
-  final factory = ignoreErrorLogger
-      ? '''
-  // The configured network package may not register a ParseErrorLogger, and
-  // resolving an unregistered one throws. Remove @ignoreParam once it does.
-  @factoryMethod
-  factory $implClass(Dio dio, {@ignoreParam ParseErrorLogger? errorLogger}) = _$implClass;'''
-      : '''
+  final factory = '''
   @factoryMethod
   factory $implClass(Dio dio, {ParseErrorLogger? errorLogger}) = _$implClass;''';
 
@@ -45,7 +31,7 @@ String restDataSourceTemplate(
       ? '''
 $imports
 
-${sortImports([...adapterRelative, "import '../constants/${feature}_api_paths.dart';", "import '../models/requests/${repoName}_request_model.dart';", "import '../models/response/${repoName}_response_model.dart';", "import '${repoName}_data_source_base.dart';"])}
+${sortImports(["import '../constants/${feature}_api_paths.dart';", "import '../models/requests/${repoName}_request_model.dart';", "import '../models/response/${repoName}_response_model.dart';", "import '${repoName}_data_source_base.dart';"])}
 
 part 'rest_${repoName}_data_source.g.dart';
 
@@ -66,7 +52,7 @@ $factory
       : '''
 $imports
 
-${sortImports([...adapterRelative, "import '${repoName}_data_source_base.dart';"])}
+import '${repoName}_data_source_base.dart';
 
 part 'rest_${repoName}_data_source.g.dart';
 

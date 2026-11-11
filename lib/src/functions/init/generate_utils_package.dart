@@ -14,7 +14,8 @@ import '../../templates/safe_execute_task_template.dart';
 import '../../templates/safe_execute_template.dart';
 import '../../templates/type_definitions_template.dart';
 import '../../templates/use_case_base_template.dart';
-import '../../templates/utils_di_initializer_template.dart';
+import '../../templates/micro_package_di_initializer_template.dart';
+import '../../templates/retrofit_call_adapter_template.dart';
 import '../../templates/utils_lib_export_template.dart';
 import '../../templates/utils_module_template.dart';
 import '../../templates/utils_pubspec_tail_template.dart';
@@ -27,13 +28,14 @@ import 'scaffold_package.dart';
 
 /// Creates `<parentDir>/<name>` from [package]. [localization] is the package
 /// it depends on (for `safeCast`'s message), [translateVar] its slang
-/// `translate_var`, and [moduleName] the `@module` class registering
-/// `BlocObserver`.
+/// `translate_var`, [moduleName] the `@module` class registering
+/// `BlocObserver`, and [callAdapterName] the Retrofit call adapter class.
 void generateUtilsPackage(
   PackageConfig package,
   PackageConfig localization, {
   required String moduleName,
   required String translateVar,
+  required String callAdapterName,
   String parentDir = 'packages',
 }) {
   final utilsPackageName = package.name;
@@ -75,6 +77,10 @@ void generateUtilsPackage(
     typeDefinitionsTemplate(),
   );
   overwriteFile(
+    '$parentDir/$utilsPackageName/lib/src/network/retrofit_call_adapter.dart',
+    retrofitCallAdapterTemplate(callAdapterName),
+  );
+  overwriteFile(
     '$parentDir/$utilsPackageName/lib/src/use_case_base.dart',
     useCaseBaseTemplate(),
   );
@@ -104,7 +110,7 @@ void generateUtilsPackage(
   );
   overwriteFile(
     '$parentDir/$utilsPackageName/lib/src/di/di_initializer.dart',
-    utilsDiInitializerTemplate(),
+    microPackageDiInitializerTemplate(),
   );
   overwriteFile(
     '$parentDir/$utilsPackageName/lib/src/di/di_container.dart',

@@ -51,7 +51,7 @@ clean-helper install-completion-files
 
 ```bash
 flutter create my_app && cd my_app
-clean-helper init --network                        # full scaffold + network layer
+clean-helper init --network                        # full scaffold + network package
 clean-helper add-feature orders                    # routing, bloc and page for a feature
 clean-helper add-repo orders order --add-sample    # data layer with sample GET/POST
 ```
@@ -80,7 +80,6 @@ Global options go **before** the command:
 | [`add-repo <feature> <name>`](#add-repo) | Data + domain layer for a repository |
 | [`add-entity <scope> <name> [folder]`](#add-entity) | Domain entity + freezed model |
 | [`add-network-module`](#add-network-module) | Dio + Retrofit network layer |
-| [`add-auth-interceptor`](#add-auth-interceptor) | Token-refreshing auth interceptor |
 | [`remove-feature <name>`](#remove-feature) | Delete a feature and unregister its router |
 | [`regenerate-router`](#regenerate-router) | Rebuild `app_router_module.dart` from the features on disk |
 | [`build-runner [build\|clean]`](#build-runner) | Run build_runner |
@@ -94,13 +93,12 @@ Global options go **before** the command:
 ### `init`
 
 ```bash
-clean-helper init [--network] [--auth-interceptor] [--di] [--tools]
+clean-helper init [--network] [--di] [--tools]
 ```
 
 | Flag | Short | Effect |
 |---|---|---|
 | `--network` | `-n` | Also run `add-network-module` |
-| `--auth-interceptor` | `-a` | Also run `add-auth-interceptor` (implies `--network`) |
 | `--di` | `-d` | Also generate a DI module for the `home` feature |
 | `--tools` | `-t` | Also generate the `tools/` scripts |
 
@@ -193,9 +191,8 @@ lib/features/orders/
 ```
 
 - The API chain returns fpdart `TaskEither<Failure, T>`; see [Using the generated code](#using-the-generated-code).
-- REST files are generated only when a network module exists — `lib/core/network/di/network_module.dart`, or a configured [`packages.network`](#packagesnetwork) — and `--no-rest` isn't passed.
-- If the app's pubspec lacks `dio`, `retrofit` or `retrofit_generator`, a warning is printed.
-- Files that already exist are never overwritten. In particular, adding a second repo to a feature doesn't add its constant to the existing `<feature>_api_paths.dart` — add it by hand.
+- REST files are generated only after [`add-network-module`](#add-network-module) has wired the app (`lib/core/network/di/network_config_module.dart` exists) and `--no-rest` isn't passed. They use the call adapter from the utils package.
+- Files that already exist are never overwritten. A second repo in the same feature adds its constant to the existing `<feature>_api_paths.dart`.
 
 ### `add-entity`
 
@@ -213,26 +210,24 @@ Generates `domain/entities/<name>_entity.dart` (an abstract class) and `data/mod
 clean-helper add-network-module
 ```
 
-Generates:
+Sets up networking as a workspace package, configured by [`packages.network`](#packagesnetwork).
+
+1. Unless `create: false` or it already exists, creates the network package in `packages/<app>_network/` and lists it under `workspace:`.
+2. Wires the app to it:
 
 | File | Contents |
 |---|---|
 | `lib/core/network/constants/api_paths.dart` | `ApiPaths.baseUrl` |
-| `lib/core/network/di/network_module.dart` | `@module` providing `Dio` (error and [Dio Lens](https://pub.dev/packages/dio_lens) interceptors) and registering `RetrofitLogger` as `ParseErrorLogger` |
-| `lib/core/network/interceptors/error_interceptor.dart` | Parses `{"errors": [...]}` responses into `ErrorModel` |
-| `lib/core/network/utils/retrofit_call_adapter.dart` | `RetrofitCallAdapter` — adapts Retrofit calls to `TaskEither<Failure, T>` |
-| `lib/core/network/utils/retrofit_logger.dart` | `RetrofitLogger` — logs Retrofit parse errors |
-| `lib/core/data/models/error_model.dart` | `@freezed` `ErrorModel` implementing `ErrorEntity` |
+| `lib/core/data/models/error_model.dart` | `@freezed` `ErrorModel` implementing `ErrorEntity` — your backend's error body |
+| `lib/core/network/interceptors/app_error_interceptor.dart` | `AppErrorInterceptor` — parses error responses into `ErrorModel` |
+| `lib/core/network/di/network_config_module.dart` | Registers the package's `NetworkConfig` (base URL, `User-Agent` from `PackageInfo`), `AppErrorInterceptor` as its `ErrorInterceptor` and, with `auth_interceptor`, `AppAuthInterceptor` as its `AuthInterceptor` |
+| `lib/core/network/interceptors/app_auth_interceptor.dart` | With `auth_interceptor`: TODOs for reading, refreshing and clearing tokens |
+| `lib/app/di/di_initializer.dart` | `.new(<Network>PackageModule)` added to `externalPackageModulesAfter` |
+| `lib/app/init_service.dart` | `DioLens.init(...)` after `Bloc.observer` |
 
-It then installs `dio`, `dio_lens`, `retrofit` and `json_annotation` (plus dev `retrofit_generator` and `json_serializable`), adds `DioLens.init(...)` to `InitService.init` right after `Bloc.observer`, formats and runs build_runner. Existing files are skipped.
+3. Installs the package, `dio`, `dio_lens`, `retrofit` and `json_annotation` (plus dev `retrofit_generator` and `json_serializable`), formats, and runs build_runner in the package and then the app.
 
-### `add-auth-interceptor`
-
-```bash
-clean-helper add-auth-interceptor
-```
-
-Run after `add-network-module`. Generates `lib/core/network/interceptors/auth_interceptor.dart`, which attaches a bearer token, refreshes it on 401 (de-duplicating concurrent refreshes) and retries the request. It also adds `DIKeys.noAuthDio` and wires into `NetworkModule` both `AuthInterceptor` and a `@Named(DIKeys.noAuthDio)` Dio without it, used for the refresh call. Fill in the TODOs for token storage and the refresh endpoint.
+Existing files are skipped.
 
 ### `remove-feature`
 
@@ -349,13 +344,11 @@ Packages (clean-helper.packages):
     output_file_name: locales.g.dart (default)
     translate_var: locales (default)
   router:        clean_router (default)
-  network:       my_app_network  (package:my_app_network/my_app_network_module.dart)
+  network:       my_app_network  (package:my_app_network/my_app_network.dart)
+    module_name:       <NetworkPascal>Module (default)
+    auth_interceptor:  true
   vs_code_configs: extensions true, tasks true, launch true
   use_root_analysis: false (default — packages include the nearest project)
-
-
-Retrofit call adapter:
-  RetrofitCallAdapter  (package:my_app_network/my_app_network_module.dart)
 ```
 
 ---
@@ -391,7 +384,7 @@ clean-helper:
       create: true
       # The @module class that registers BlocObserver. Default: <UtilsPascal>Module.
       module_name: MyAppUtilsModule
-      # The call adapter class add-network-module generates and add-repo uses
+      # The Retrofit call adapter class in the utils package, used by add-repo
       # in @RestApi(callAdapter: …). Default: RetrofitCallAdapter.
       call_adapter_name: MyAppCallAdapter
 
@@ -425,11 +418,20 @@ clean-helper:
       # Same as utils.create.
       create: true
 
-    # An external package that provides networking instead of lib/core/network/.
-    # Not set by default; init never creates it.
+    # Dio, NetworkConfig, interceptors and error model, created by
+    # add-network-module / init --network.
     network:
+      # Package name. Default: <app>_network.
       name: my_app_network
-      import: package:my_app_network/my_app_network_module.dart
+      # Barrel import. Default: package:<name>/<name>.dart.
+      import: package:my_app_network/my_app_network.dart
+      # Same as utils.create.
+      create: true
+      # The package's @module class. Default: <NetworkPascal>Module.
+      module_name: MyAppNetworkModule
+      # Token handling: abstract AuthInterceptor + noAuthDio in the package,
+      # AppAuthInterceptor in the app. Default: true.
+      auth_interceptor: true
 
     # Which .vscode/ files add-vscode-config (and init) write. Each defaults to true.
     vs_code_configs:
@@ -453,7 +455,9 @@ clean-helper:
 | `packages.vs_code_configs` `.extensions` / `.tasks` / `.launch` | `true` | Which `.vscode/` files [`add-vscode-config`](#add-vscode-config) (and `init`) write |
 | [`packages.use_root_analysis`](#analysis-options) | `false` | Apps and packages include the workspace root's `analysis_options.yaml` |
 | [`packages.router`](#packagesrouter) `.name` / `.import` / `.create` | `clean_router` / `package:<name>/<name>.dart` / `true` | Router package with `CleanRouterBase` |
-| [`packages.network`](#packagesnetwork) `.name` / `.import` | not set / `package:<name>/<name>.dart` | External network package |
+| [`packages.network`](#packagesnetwork) `.name` / `.import` / `.create` | `<app>_network` / `package:<name>/<name>.dart` / `true` | Network package |
+| `packages.network.module_name` | `<NetworkPascal>Module` | The network package's `@module` class |
+| `packages.network.auth_interceptor` | `true` | Auth interceptor and `noAuthDio` |
 
 **Which pubspec is read.** `mono_repo_apps` and `packages` are read from the `pubspec.yaml` in the directory where you run the command — the monorepo root, in a monorepo — before the tool switches into the app. `version` is checked afterwards, so in a monorepo it's each app's own `pubspec.yaml` that counts.
 
@@ -474,7 +478,7 @@ The package that `add-repo`, `add-feature` and `add-network-module` import share
 - Its import replaces `package:<app>_utils/<app>_utils.dart`.
 - When it's configured, generated use cases import `UseCaseBase` from it, so the package must export `UseCaseBase`.
 - `module_name` names the `@module` class in `lib/src/di/<name>_module.dart` that registers `BlocObserver`.
-- `call_adapter_name` names the call adapter class. `add-network-module` generates it in `lib/core/network/utils/retrofit_call_adapter.dart`, and `add-repo` uses it in `@RestApi(callAdapter: …)`. Default: `RetrofitCallAdapter`.
+- `call_adapter_name` names the Retrofit call adapter class, generated in the package's `lib/src/network/retrofit_call_adapter.dart` and used by `add-repo` in `@RestApi(callAdapter: …)`. Default: `RetrofitCallAdapter`.
 
 ### `packages.localization`
 
@@ -510,13 +514,23 @@ The lint rules are written once. Every other `analysis_options.yaml` only includ
 
 ### `packages.network`
 
-An external package that provides networking in place of `lib/core/network/`. When it's set:
+The network package that `add-network-module` (and `init --network`) create and wire the app to. Besides `name` (default `<app>_network`), `import` and `create`:
 
-- `add-repo` generates REST datasources even though the app has no `network_module.dart`.
-- REST datasources import the call adapter from it.
-- The tool can't know whether the package registers a `ParseErrorLogger`, so REST datasources mark their `errorLogger` parameter `@ignoreParam` — resolving an unregistered one would throw at runtime. Remove the annotation once the package registers one.
+- `module_name` names the package's `@module` class (default `<NetworkPascal>Module`).
+- `auth_interceptor` (default `true`) adds token handling: an abstract `AuthInterceptor` in the package, which attaches the token, refreshes it once on a 401 shared by concurrent failures, and retries the request. It also adds a `@Named(NetworkDIKeys.noAuthDio)` Dio without that interceptor for refresh calls, and an `AppAuthInterceptor` in the app that you fill in. With `false`, `Dio` only has the error and Dio Lens interceptors.
 
-REST datasources import the call adapter (`packages.utils.call_adapter_name`, default `RetrofitCallAdapter`) from `packages.network.import` when that's set, else from `lib/core/network/utils/retrofit_call_adapter.dart`, which `add-network-module` generates.
+The package is an injectable micro-package. It contains:
+
+| File | Contents |
+|---|---|
+| `lib/src/models/network_config.dart` | `@freezed` `NetworkConfig` — base URL, timeouts and headers; each app registers one |
+| `lib/src/di/<name>_module.dart` | `BaseOptions` from `NetworkConfig`, `Dio` (+ `noAuthDio`), and `RetrofitLogger` registered as `ParseErrorLogger` |
+| `lib/src/interceptors/error_interceptor.dart` | Abstract `ErrorInterceptor` — puts the `ErrorEntity` from the app's `parseError` into the response; `shouldHandle` skips 401s and errors without a response |
+| `lib/src/interceptors/auth_interceptor.dart` | Abstract `AuthInterceptor` (with `auth_interceptor`) |
+| `lib/src/network_di_keys.dart` | `NetworkDIKeys.noAuthDio` (with `auth_interceptor`) |
+| `lib/src/utils/retrofit_logger.dart` | `RetrofitLogger` — logs Retrofit parse errors through `AppLogger` |
+
+The call adapter lives in the utils package (`lib/src/network/retrofit_call_adapter.dart`), so REST datasources get it, and `Failure`, from the utils import.
 
 ---
 
@@ -560,14 +574,16 @@ lib/
 │   ├── navigation/            <feature>_navigation_impl.dart
 │   └── router/                app_go_router.dart, app_go_router_redirect.dart, app_router_module.dart
 ├── core/
-│   ├── di/                    core_module.dart (PackageInfo), di_keys.dart
-│   ├── data/models/           error_model.dart
-│   └── network/               constants/, di/, interceptors/, utils/   (add-network-module)
+│   ├── di/                    core_module.dart (PackageInfo)
+│   ├── data/models/           error_model.dart                          (add-network-module)
+│   └── network/               constants/api_paths.dart, di/network_config_module.dart,
+│                              interceptors/app_error_interceptor.dart, app_auth_interceptor.dart
 ├── features/home/             see add-feature
 └── generated/flutter_gen/     assets and colors
 packages/
 ├── clean_router/
 ├── <app>_localization/
+├── <app>_network/             add-network-module
 └── <app>_utils/
 assets/colors/colors.xml
 build.yaml
@@ -579,9 +595,10 @@ build.yaml
 |---|---|
 | `clean_router` | `CleanRouterBase` — the interface every feature router implements (`routes`, `refreshStreams`, `redirect`, `priority`) — and `CleanRouterRefresh`, which merges the routers' refresh streams for go_router |
 | `<app>_localization` | `slang.yaml`, `assets/locales/en.locale.json`, the `String.tr` extension and the generated translations |
-| `<app>_utils` | `Failure`, `ErrorEntity`, `UseCaseBase`, `AppLogger`, `AppBlocObserver`, `ContextUtils`, `Debouncer`, `safeCast`, `safeExecute`, `safeExecuteTask`, `listToModelList`, `getCurrentFunctionName`, `JsonDecodeFactory`, and an injectable micro-package that registers `BlocObserver` |
+| `<app>_utils` | `Failure`, `ErrorEntity`, `UseCaseBase`, `AppLogger`, `AppBlocObserver`, `ContextUtils`, `Debouncer`, `safeCast`, `safeExecute`, `safeExecuteTask`, `listToModelList`, `getCurrentFunctionName`, `JsonDecodeFactory`, the Retrofit call adapter, and an injectable micro-package that registers `BlocObserver` |
+| `<app>_network` | `NetworkConfig`, `Dio` (+ `noAuthDio`), `RetrofitLogger` and the abstract `ErrorInterceptor` / `AuthInterceptor`, as an injectable micro-package — see [`packages.network`](#packagesnetwork) |
 
-The app's `@InjectableInit` pulls in the utils micro-package through `externalPackageModulesAfter`, so build_runner has to run in `packages/<app>_utils` before the app. `init` does this for you.
+The app's `@InjectableInit` pulls in the utils and network micro-packages through `externalPackageModulesAfter`, so build_runner has to run in those packages before the app. `init`, `bootstrap` and `tools/bootstrap.dart` do this for you.
 
 ### Architecture
 

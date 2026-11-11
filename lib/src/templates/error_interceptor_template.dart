@@ -1,37 +1,46 @@
-String errorInterceptorTemplate() => '''
-import 'package:dio/dio.dart';
-import 'package:injectable/injectable.dart';
+import '../functions/shared/sort_imports.dart';
 
-import '../../data/models/error_model.dart';
+/// The network package's abstract `ErrorInterceptor`: apps extend it (see
+/// `appErrorInterceptorTemplate`) to parse their error body into an
+/// `ErrorEntity` from [utilsImport].
+String errorInterceptorTemplate(String utilsImport) =>
+    '''
+${sortImports(["import 'package:dio/dio.dart';", "import 'package:flutter/foundation.dart';", "import '$utilsImport';"])}
 
-@lazySingleton
-class ErrorInterceptor extends Interceptor {
+/// Base error interceptor: converts the backend's standard error body into an
+/// [ErrorEntity] and puts it in [DioException.response] `data`.
+///
+/// Host apps provide the parsing by extending this class and registering it
+/// in DI as [ErrorInterceptor]:
+///
+/// ```dart
+/// @lazySingleton
+/// ErrorInterceptor get errorInterceptor => AppErrorInterceptor();
+/// ```
+abstract class ErrorInterceptor extends Interceptor {
+  /// Parses [data] into an [ErrorEntity], or returns `null` if it is not the
+  /// backend's standard error format (the error is then passed on unchanged).
+  @protected
+  ErrorEntity? parseError(Object? data);
+
+  /// Whether [err] should be parsed. By default, skips 401 (left to
+  /// [AuthInterceptor]) and errors without a response.
+  @protected
+  bool shouldHandle(DioException err) {
+    final statusCode = err.response?.statusCode;
+    return statusCode != null && statusCode != 401;
+  }
+
   @override
   void onError(DioException err, ErrorInterceptorHandler handler) {
     final response = err.response;
-    final statusCode = response?.statusCode;
-
-    if (statusCode == null || statusCode == 401 || response == null) {
+    if (response == null || !shouldHandle(err)) {
       handler.next(err);
       return;
     }
 
-    final data = response.data;
-
-    // TODO: Add Check if it is your standard error or not and convert to your Error model
-    final isValidErrorResponse =
-        data is Map<String, dynamic> &&
-        data.containsKey('errors') &&
-        data['errors'] is List;
-
-    if (!isValidErrorResponse) {
-      handler.next(err);
-      return;
-    }
-
-    final errorModel = ErrorModel.fromJson(data);
-
-    if (errorModel.errors.isEmpty) {
+    final errorEntity = parseError(response.data);
+    if (errorEntity == null || errorEntity.errors.isEmpty) {
       handler.next(err);
       return;
     }
@@ -40,7 +49,7 @@ class ErrorInterceptor extends Interceptor {
       err.copyWith(
         response: Response(
           requestOptions: response.requestOptions,
-          data: errorModel,
+          data: errorEntity,
           statusCode: response.statusCode,
           statusMessage: response.statusMessage,
           headers: response.headers,

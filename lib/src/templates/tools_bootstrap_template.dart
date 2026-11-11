@@ -1,13 +1,19 @@
-/// [localizationDir] / [utilsDir] are the workspace packages to run slang /
-/// build_runner in first (e.g. `packages/my_app_localization`), or null when
-/// they live outside this project.
-String toolsBootstrapTemplate({String? localizationDir, String? utilsDir}) {
+/// [localizationDir] is the package to run slang in; [buildDirs] are the
+/// packages to run build_runner in before the app (e.g. `packages/my_utils`).
+/// Packages outside this project are left out.
+String toolsBootstrapTemplate({
+  String? localizationDir,
+  List<String> buildDirs = const [],
+}) {
   final slang = localizationDir == null
       ? ''
       : "\n  await fvmRunner('dart run slang', workingDirectory: '$localizationDir');";
-  final utilsBuild = utilsDir == null
-      ? ''
-      : "\n  await fvmRunner('dart run build_runner build', workingDirectory: '$utilsDir');";
+  final packageBuilds = buildDirs
+      .map(
+        (dir) =>
+            "\n  await fvmRunner('dart run build_runner build', workingDirectory: '$dir');",
+      )
+      .join();
   return '''
 import 'clean.dart';
 import 'command_runner.dart';
@@ -22,7 +28,7 @@ Future<void> bootstrap(List<String> args) async {
     await clean();
   }
   await fvmUse();
-  await fvmRunner('flutter pub get');$slang$utilsBuild
+  await fvmRunner('flutter pub get');$slang$packageBuilds
   await fvmRunner('dart run build_runner build');
 }
 ''';

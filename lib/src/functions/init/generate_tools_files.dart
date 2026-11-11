@@ -7,6 +7,7 @@ import '../../templates/tools_clean_template.dart';
 import '../../templates/tools_command_runner_template.dart';
 import '../../templates/tools_write_key_properties_template.dart';
 import '../shared/resolve_localization_package.dart';
+import '../shared/resolve_network_package.dart';
 import '../shared/resolve_utils_package.dart';
 import '../shared/write_file.dart';
 
@@ -20,7 +21,13 @@ void generateToolsFiles({bool overwrite = false}) {
     'tools/bootstrap.dart',
     toolsBootstrapTemplate(
       localizationDir: local(resolveLocalizationPackage().name),
-      utilsDir: local(resolveUtilsPackage().name),
+      buildDirs: [
+        for (final name in [
+          resolveUtilsPackage().name,
+          resolveNetworkPackage().name,
+        ])
+          ?local(name),
+      ],
     ),
   );
   write('tools/write_key_properties.dart', toolsWriteKeyPropertiesTemplate());

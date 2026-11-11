@@ -23,7 +23,9 @@ import '../functions/init/update_gitignore.dart';
 import '../functions/shared/ensure_pubspec.dart';
 import '../functions/shared/fvm_use.dart';
 import '../functions/shared/read_package_name.dart';
+import '../functions/shared/resolve_call_adapter_name.dart';
 import '../functions/shared/resolve_localization_package.dart';
+import '../functions/shared/resolve_network_package.dart';
 import '../functions/shared/resolve_router_package.dart';
 import '../functions/shared/resolve_slang_settings.dart';
 import '../functions/shared/resolve_utils_module_name.dart';
@@ -32,7 +34,6 @@ import '../functions/shared/resolve_utils_package.dart';
 Future<void> runInit({
   bool withNetwork = false,
   bool withDi = false,
-  bool withAuthInterceptor = false,
   bool withTools = false,
 }) async {
   ensurePubspec();
@@ -60,6 +61,7 @@ Future<void> runInit({
       localization,
       moduleName: resolveUtilsModuleName(utils),
       translateVar: slang['translate_var']!,
+      callAdapterName: resolveCallAdapterName(),
     );
   }
   addPackagesWorkspace([for (final p in created) 'packages/${p.name}']);
@@ -71,21 +73,21 @@ Future<void> runInit({
     router.import,
     withDi: withDi,
   );
-  if (withTools) generateToolsFiles();
   installDependencies([router.name, localization.name, utils.name]);
   updateGitignore();
   addVscodeConfig();
   addFlutterAssetsToPubSpec();
-  if (withNetwork || withAuthInterceptor) {
-    addNetworkModule(runBuildRunnerAfter: false);
-  }
-  if (withAuthInterceptor) {
-    addAuthInterceptor(runBuildRunnerAfter: false, showNextSteps: false);
-  }
+  if (withNetwork) addNetworkModule(runBuildRunnerAfter: false);
+  // After the network package, so tools/bootstrap.dart includes it.
+  if (withTools) generateToolsFiles();
   if (localization.create) runSlang(localization.name);
   stdout.writeln();
-  if (utils.create) {
-    runBuildRunner(workingDirectory: 'packages/${utils.name}');
+  // Package micro-modules first: the app's DI config references them.
+  for (final dir in [
+    if (utils.create) 'packages/${utils.name}',
+    if (withNetwork) 'packages/${resolveNetworkPackage().name}',
+  ]) {
+    if (Directory(dir).existsSync()) runBuildRunner(workingDirectory: dir);
   }
   runBuildRunner();
   runDartFormat();

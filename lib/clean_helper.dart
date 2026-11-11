@@ -1,4 +1,3 @@
-export 'src/commands/add_auth_interceptor.dart';
 export 'src/commands/bootstrap.dart';
 export 'src/commands/add_vscode_config.dart';
 export 'src/commands/add_entity.dart';

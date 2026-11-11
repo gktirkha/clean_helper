@@ -11,7 +11,6 @@ import '../../templates/bootstrap_dart_template.dart';
 import '../../templates/core_module_template.dart';
 import '../../templates/di_container_template.dart';
 import '../../templates/di_initializer_template.dart';
-import '../../templates/di_keys_template.dart';
 import '../../templates/init_service_template.dart';
 import '../../templates/main_app_dart_template.dart';
 import '../../templates/main_dart_template.dart';
@@ -48,7 +47,6 @@ void generateCoreFiles({
       '${pascalCase(utils.name)}PackageModule',
     ),
   );
-  writeFile('lib/core/di/di_keys.dart', diKeysTemplate());
   writeFile('lib/app/di/app_module.dart', appModuleTemplate());
   writeFile('lib/core/di/core_module.dart', coreModuleTemplate());
   stdout.writeln();

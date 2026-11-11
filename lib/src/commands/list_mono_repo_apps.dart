@@ -4,7 +4,6 @@ import '../functions/shared/abort.dart';
 import '../functions/shared/load_package_configs.dart';
 import '../functions/shared/package_configs.dart';
 import '../functions/shared/read_mono_repo_apps.dart';
-import '../functions/shared/resolve_call_adapter_name.dart';
 import '../functions/shared/resolve_slang_settings.dart';
 
 // Does NOT call ensurePubspec() — that would trigger project selection before
@@ -39,7 +38,6 @@ void listMonoRepoApps() {
       ? fallback
       : '${p.name}  (${p.import})${p.create ? '' : '  — not created'}';
 
-  final network = networkPackageConfig;
   stdout.writeln();
   stdout.writeln('Packages (clean-helper.packages):');
   stdout.writeln(
@@ -62,10 +60,12 @@ void listMonoRepoApps() {
     '  router:        ${describe(routerPackageConfig, 'clean_router (default)')}',
   );
   stdout.writeln(
-    network == null
-        ? '  network:       not configured (detected from lib/core/network/)'
-        : '  network:       ${network.name}  (${network.import})',
+    '  network:       ${describe(networkPackageConfig, '<app>_network (default)')}',
   );
+  stdout.writeln(
+    '    module_name:       ${networkModuleNameConfig ?? '<NetworkPascal>Module (default)'}',
+  );
+  stdout.writeln('    auth_interceptor:  $networkAuthInterceptorConfig');
 
   final vscode = vscodeConfig;
   stdout.writeln(
@@ -75,12 +75,5 @@ void listMonoRepoApps() {
   stdout.writeln(
     '  use_root_analysis: $useRootAnalysisConfig'
     '${useRootAnalysisConfig ? '' : ' (default — packages include the nearest project)'}',
-  );
-
-  stdout.writeln();
-  stdout.writeln('Retrofit call adapter:');
-  stdout.writeln(
-    '  ${resolveCallAdapterName()}  '
-    '(${network?.import ?? 'lib/core/network/utils/retrofit_call_adapter.dart'})',
   );
 }

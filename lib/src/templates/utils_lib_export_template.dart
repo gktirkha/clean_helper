@@ -13,6 +13,7 @@ export '${prefix}src/functions/list_to_model_list.dart';
 export '${prefix}src/functions/safe_cast.dart';
 export '${prefix}src/functions/safe_execute.dart';
 export '${prefix}src/functions/safe_execute_task.dart';
+export '${prefix}src/network/retrofit_call_adapter.dart';
 export '${prefix}src/type_definitions.dart';
 export '${prefix}src/use_case_base.dart';
 ''';

@@ -38,7 +38,7 @@ void generateDomainRepo(String dir, String name, String utilsImport, {...}) {
 - They return the whole file as a `String`. Use an arrow body for simple templates, and a block body when they compute pieces first (see `rest_data_source_template.dart`).
 - Escape `$` for Dart code that must appear literally in the output: `'\${packageInfo.appName}'`.
 - A multi-line `'''` string drops the newline right after the opening quotes. To start a fragment with a blank line, use `'\n\n...'`.
-- Optional output is controlled by named `bool` parameters that default to today's behaviour (`addSample`, `ignoreErrorLogger`, `withDi`).
+- Optional output is controlled by named `bool` parameters that default to today's behaviour (`addSample`, `withDi`, `auth`).
 - Imports that depend on runtime values go through `sortImports([...])`, one call per section:
 
 ```dart
@@ -88,7 +88,8 @@ The runner and `ensurePubspec()` fill shared globals before any command logic ru
 | `packageConfigsLoaded` (`package_configs.dart`) | `loadPackageConfigs()` | config already loaded — `ensurePubspec()` loads it only once per process, so nested commands (`init` → `add-network-module`) keep the root config after the monorepo `chdir` |
 | `utilsPackageConfig` | `loadPackageConfigs()` | `packages.utils` as a `PackageConfig` `(name, import, create)`, or null |
 | `localizationPackageConfig`, `routerPackageConfig` | `loadPackageConfigs()` | `packages.localization` / `packages.router`, or null |
-| `networkPackageConfig` | `loadPackageConfigs()` | `packages.network`, or null (`create` is ignored) |
+| `networkPackageConfig` | `loadPackageConfigs()` | `packages.network`, or null |
+| `networkModuleNameConfig`, `networkAuthInterceptorConfig` | `loadPackageConfigs()` | `packages.network.module_name` (or null) / `.auth_interceptor` (true unless `false`) |
 | `utilsModuleNameConfig`, `callAdapterNameConfig` | `loadPackageConfigs()` | `packages.utils.module_name` / `.call_adapter_name`, or null |
 | `slangSettingsConfig` | `loadPackageConfigs()` | every other scalar key under `packages.localization` |
 | `vscodeConfig` | `loadPackageConfigs()` | `(extensions, tasks, launch)` from `packages.vs_code_configs`; each true unless `false` |
@@ -105,9 +106,10 @@ Resolution helpers turn config into decisions, so commands don't repeat the logi
 
 | Helper | Decides |
 |---|---|
-| `resolveUtilsPackage()`, `resolveLocalizationPackage()`, `resolveRouterPackage()` | the configured package, or the default `<app>_utils` / `<app>_localization` / `clean_router` with `create: true` — commands never build default names themselves |
+| `resolveUtilsPackage()`, `resolveLocalizationPackage()`, `resolveRouterPackage()`, `resolveNetworkPackage()` | the configured package, or the default `<app>_utils` / `<app>_localization` / `clean_router` / `<app>_network` with `create: true` — commands never build default names themselves |
 | `resolveSlangSettings()` | the slang defaults overlaid with `slangSettingsConfig` |
 | `analysisOptionsInclude(dir)` | the `include:` path for the `analysis_options.yaml` at `dir` (`''` = the current project), or null for the full rules — `'../' × (depth(dir) + depth(monoRepoAppPath) with use_root_analysis)` |
+| `resolveNetworkModuleName(network)` | `module_name` ?? `<NetworkPascal>Module` |
 | `resolveUtilsModuleName(utils)` | `module_name` ?? `<UtilsPascal>Module` |
 | `resolveCallAdapterName()` | `call_adapter_name` ?? `RetrofitCallAdapter` |
 | `packageBarrelPath(p)` / `packageBarrelPrefix(p)` | where a created package's barrel goes (from its import URI), and the `../` prefix its exports need |

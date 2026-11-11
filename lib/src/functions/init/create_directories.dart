@@ -7,11 +7,6 @@ void createDirectories() {
     'lib/app/navigation',
     'lib/app/di',
     'lib/core/di',
-    // network
-    'lib/core/network/constants',
-    'lib/core/network/di',
-    'lib/core/network/interceptors',
-    'lib/core/network/models',
     'lib/core/data/models',
     'lib/core/services',
     // assets

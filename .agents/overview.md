@@ -24,8 +24,7 @@ Read next:
 | `add-feature <name>` | `addFeature(args)` | Feature routes, router, navigation, bloc, page |
 | `add-repo <feature> <name>` | `addRepo(args)` | Data + domain layer for a repository |
 | `add-entity <scope> <name> [folder]` | `addEntity(args)` | Entity + freezed model |
-| `add-network-module` | `addNetworkModule()` | Dio/Retrofit network layer |
-| `add-auth-interceptor` | `addAuthInterceptor()` | Token-refresh interceptor wired into `NetworkModule` |
+| `add-network-module` | `addNetworkModule()` | Create the network package and wire the app to it |
 | `remove-feature <name>` | `removeFeature(args)` | Delete a feature, unregister its router |
 | `regenerate-router` | `regenerateRouter()` | Rebuild `app_router_module.dart` from disk |
 | `build-runner [build\|clean]` | `runBuildRunnerCommand(args)` | Run build_runner |
@@ -57,7 +56,8 @@ Global flags, declared on `CleanHelperRunner` and handled in its `runCommand` ov
 | `packages.vs_code_configs.{extensions,tasks,launch}` (or `clean-helper.vs_code_configs`) | `loadPackageConfigs()` | `vscodeConfig` |
 | `packages.use_root_analysis` (or `clean-helper.use_root_analysis`) | `loadPackageConfigs()` | `useRootAnalysisConfig` |
 | `packages.router.{name,import,create}` | `loadPackageConfigs()` | `routerPackageConfig` |
-| `packages.network.{name,import}` | `loadPackageConfigs()` | `networkPackageConfig` |
+| `packages.network.{name,import,create}` | `loadPackageConfigs()` | `networkPackageConfig` |
+| `packages.network.module_name` / `.auth_interceptor` | `loadPackageConfigs()` | `networkModuleNameConfig` / `networkAuthInterceptorConfig` |
 
 Everything except `version` is read from the pubspec in the starting directory — the monorepo root in a monorepo — before `resolveMonoRepoProject()` changes directory. The README's Configuration section documents each key's behaviour for users.
 
@@ -91,11 +91,11 @@ bin/clean_helper.dart → CleanHelperRunner.run(args)
 6. `generateCleanRouterPackage()`, `generateLocalizationPackage()`, `generateUtilsPackage()` — each only when its `create` is true
 7. `addPackagesWorkspace(created)` — lists the created packages under `workspace:`; adds nothing when none are created
 8. `generateCoreFiles()` — main, bootstrap, init service, app, DI, router
-9. `createFeatureStructure('lib/features/home', 'home', …)`; `generateToolsFiles()` with `--tools`
+9. `createFeatureStructure('lib/features/home', 'home', …)`
 10. `installDependencies()`, `updateGitignore()`, `addVscodeConfig()`, `addFlutterAssetsToPubSpec()`
-11. `addNetworkModule(runBuildRunnerAfter: false)` with `--network` / `--auth-interceptor`; `addAuthInterceptor(...)` with `--auth-interceptor`
+11. `addNetworkModule(runBuildRunnerAfter: false)` with `--network`, then `generateToolsFiles()` with `--tools` (after the network package, so `tools/bootstrap.dart` includes it)
 12. `runSlang(<localization>)` — only if created
-13. `runBuildRunner(workingDirectory: packages/<utils>)` if created, then `runBuildRunner()` for the app
+13. `runBuildRunner` in `packages/<utils>` (if created) and `packages/<network>` (with `--network`), then `runBuildRunner()` for the app
 14. `runDartFormat()`
 15. `sortPubspecDeps()` for the app and the created utils / localization pubspecs
 16. `writeToolVersion()`
