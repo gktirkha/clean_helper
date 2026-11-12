@@ -70,7 +70,7 @@ Example: `clean-helper.foo.bar`.
 3. If the value needs interpreting or validating, add a resolver in `shared/`, like `resolve_call_adapter_name.dart`. Resolvers `abort()` on invalid values.
 4. The command reads the global or resolver. A missing key must produce exactly today's output.
 5. Print the resolved value in `listMonoRepoApps()`.
-6. Add the key to the `add-config` template (`templates/clean_helper_config_template.dart`) and the README's Configuration sample, each with a `##` comment above it. In the template, use an active default value, or a `#`-commented option if the default depends on the app.
+6. Add the key to the `add-config` template (`templates/clean_helper_config_template.dart`) and the README's Sample configuration section, each with a `##` comment above it. In the template, use an active default value, or a `#`-commented option if the default depends on the app.
 7. Document the key in the README's Configuration section and table, and in the config table in `overview.md`.
 
 ---
