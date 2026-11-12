@@ -367,92 +367,92 @@ Packages (clean-helper.packages):
 
 ## Configuration
 
-Everything lives under a `clean-helper:` key in `pubspec.yaml`. Every key is optional. The sample below shows every key, with its default noted in the comment above it. Keep comments indented inside the block.
+Everything lives under a `clean-helper:` key in `pubspec.yaml`. Every key is optional. The sample below shows every key, with its default noted in the `##` comment above it. Commented-out options use a single `#`. [`add-config`](#add-config) writes the same block with default values. Keep comments indented inside the block.
 
 ```yaml
 clean-helper:
-  # Stamped by `init`; every command warns when it differs from the running tool.
+  ## Stamped by `init`; every command warns when it differs from the running tool.
   version: 1.7.0
 
-  # Monorepo only: app folders, relative to this pubspec. Commands run from
-  # here switch into one of them (pick with --scope=<folder name>).
+  ## Monorepo only: app folders, relative to this pubspec. Commands run from
+  ## here switch into one of them (pick with --scope=<folder name>).
   mono_repo_apps:
     - apps/consumer
     - apps/organizer
 
-  # Monorepo only (read from the root pubspec). Same as packages.use_root_analysis.
+  ## Monorepo only (read from the root pubspec). Same as packages.use_root_analysis.
   # use_root_analysis: true
 
   packages:
-    # Shared code: Failure, UseCaseBase, safeExecuteTask, AppLogger, …
+    ## Shared code: Failure, UseCaseBase, safeExecuteTask, AppLogger, …
     utils:
-      # Package name. Default: <app>_utils.
+      ## Package name. Default: <app>_utils.
       name: my_app_utils
-      # Barrel import; init writes the barrel at this path.
-      # Default: package:<name>/<name>.dart.
+      ## Barrel import; init writes the barrel at this path.
+      ## Default: package:<name>/<name>.dart.
       import: package:my_app_utils/my_app_utils.dart
-      # false: init doesn't generate it; it already exists in the workspace.
-      # Default: true. create-packages ignores this.
+      ## false: init doesn't generate it; it already exists in the workspace.
+      ## Default: true. create-packages ignores this.
       create: true
-      # The @module class that registers BlocObserver. Default: <UtilsPascal>Module.
+      ## The @module class that registers BlocObserver. Default: <UtilsPascal>Module.
       module_name: MyAppUtilsModule
-      # The Retrofit call adapter class in the utils package, used by add-repo
-      # in @RestApi(callAdapter: …). Default: RetrofitCallAdapter.
+      ## The Retrofit call adapter class in the utils package, used by add-repo
+      ## in @RestApi(callAdapter: …). Default: RetrofitCallAdapter.
       call_adapter_name: MyAppCallAdapter
 
-    # slang translations, used by MainApp, InitService and safeCast.
+    ## slang translations, used by MainApp, InitService and safeCast.
     localization:
-      # Package name. Default: <app>_localization.
+      ## Package name. Default: <app>_localization.
       name: my_app_locales
-      # Barrel import. Default: package:<name>/<name>.dart.
+      ## Barrel import. Default: package:<name>/<name>.dart.
       import: package:my_app_locales/my_app_locales.dart
-      # Same as utils.create.
+      ## Same as utils.create.
       create: true
-      # Every key below is written to the package's slang.yaml.
-      # Default locale; the first locale file is <base_locale><input_file_pattern>.
+      ## Every key below is written to the package's slang.yaml.
+      ## Default locale; the first locale file is <base_locale><input_file_pattern>.
       base_locale: en
       fallback_strategy: base_locale
-      # Where the locale files live, inside the package.
+      ## Where the locale files live, inside the package.
       input_directory: assets/locales
       input_file_pattern: .locale.json
-      # Generated code; must be inside lib/. The barrel exports it.
+      ## Generated code; must be inside lib/. The barrel exports it.
       output_directory: lib/src/generated
       output_file_name: locales.g.dart
-      # Variable used for translations (locales.general.…), in String.tr and safeCast.
+      ## Variable used for translations (locales.general.…), in String.tr and safeCast.
       translate_var: locales
 
-    # <RouterPascal>Base / <RouterPascal>Refresh (CleanRouterBase by default),
-    # used by AppGoRouter and feature routers.
+    ## <RouterPascal>Base / <RouterPascal>Refresh (CleanRouterBase by default),
+    ## used by AppGoRouter and feature routers.
     router:
-      # Package name. Default: clean_router.
+      ## Package name. Default: clean_router.
       name: my_app_router
-      # Barrel import. Default: package:<name>/<name>.dart.
+      ## Barrel import. Default: package:<name>/<name>.dart.
       import: package:my_app_router/my_app_router.dart
-      # Same as utils.create.
+      ## Same as utils.create.
       create: true
 
-    # Dio, NetworkConfig, interceptors and error model, created by
-    # add-network-module / init --network.
+    ## Dio, NetworkConfig, interceptors and error model, created by
+    ## add-network-module / init --network.
     network:
-      # Package name. Default: <app>_network.
+      ## Package name. Default: <app>_network.
       name: my_app_network
-      # Barrel import. Default: package:<name>/<name>.dart.
+      ## Barrel import. Default: package:<name>/<name>.dart.
       import: package:my_app_network/my_app_network.dart
-      # Same as utils.create.
+      ## Same as utils.create.
       create: true
-      # The package's @module class. Default: <NetworkPascal>Module.
+      ## The package's @module class. Default: <NetworkPascal>Module.
       module_name: MyAppNetworkModule
-      # Token handling: abstract AuthInterceptor + noAuthDio in the package,
-      # AppAuthInterceptor in the app. Default: true.
+      ## Token handling: abstract AuthInterceptor + noAuthDio in the package,
+      ## AppAuthInterceptor in the app. Default: true.
       auth_interceptor: true
 
-    # true: init and create-packages replace existing analysis_options.yaml
-    # files with the generated ones. false: existing files are kept.
-    # Default: true.
+    ## true: init and create-packages replace existing analysis_options.yaml
+    ## files with the generated ones. false: existing files are kept.
+    ## Default: true.
     overwrite_analysis_options: true
 
-    # true: apps and packages include the workspace root's analysis_options.yaml
-    # instead of the nearest project's. Default: false.
+    ## true: apps and packages include the workspace root's analysis_options.yaml
+    ## instead of the nearest project's. Default: false.
     use_root_analysis: true
 ```
 
