@@ -1,3 +1,7 @@
+## 1.8.1
+
+- Docs: a monorepo workspace root must not have a `lib/` folder. A folder with `lib/` is treated as a single app even when its pubspec declares `mono_repo_apps`, so a root made with `flutter create` gets scaffolded as an app. The README's Monorepos section now says so.
+
 ## 1.8.0
 
 ### Breaking

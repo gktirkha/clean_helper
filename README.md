@@ -636,11 +636,13 @@ Run commands from the workspace root. If the current directory has no `lib/`, cl
   If two apps share a folder name, you're prompted between just those. If none matches, the available names are listed.
 - With no `lib/` and no `mono_repo_apps`, the command stops with setup instructions.
 
+> **The workspace root must not have a `lib/` folder.** A folder with `lib/` is always treated as a single app, even if its pubspec declares `mono_repo_apps`, and `--scope` is ignored there. A root made with `flutter create` has a `lib/` (and `android/`, `ios/`, …). Delete them, or create the root pubspec by hand, before running commands from it; otherwise `init` scaffolds the root itself as an app.
+
 [`add-config`](#add-config), [`add-melos-config`](#add-melos-config), [`add-vscode-extensions`](#add-vscode-extensions), [`create-packages`](#create-packages) and [`list-mono-repo-apps`](#list-mono-repo-apps) always work on the current directory and never switch into an app.
 
 ### Setting up shared packages
 
-1. In the root pubspec, run `clean-helper add-config`, then set the package names, and set `create: false` for the packages the apps will share.
+1. Make sure the workspace root has no `lib/` folder (see above). Then, in the root pubspec, run `clean-helper add-config`, then set the package names, and set `create: false` for the packages the apps will share.
 2. Run `clean-helper create-packages` at the root. It creates the packages in `packages/`, lists them under `workspace:` and builds them.
 3. For each app, add `resolution: workspace` to its pubspec and list it under the root's `workspace:`.
 4. Run `clean-helper --scope=<app> init` for each app. The app depends on the shared packages, and with `use_root_analysis` it includes the root's lint rules.
@@ -743,7 +745,7 @@ Every key, with what it does and its default in the `##` comment above it. Comme
 ```yaml
 clean-helper:
   ## Stamped by `init`; every command warns when it differs from the running tool.
-  version: 1.7.0
+  version: 1.8.1
 
   ## Monorepo only: app folders, relative to this pubspec. Commands run from
   ## here switch into one of them (pick with --scope=<folder name>).

@@ -79,7 +79,7 @@ clean_helper/
 | `package_barrel_prefix.dart` | `packageBarrelPrefix(package)` | `../` prefix from a nested barrel back to `lib/` |
 | `read_mono_repo_apps.dart` | `readMonoRepoApps()` | `mono_repo_apps` list |
 | `read_package_name.dart` | `readPackageName()` | `name:` from the current pubspec |
-| `resolve_mono_repo_project.dart` | `resolveMonoRepoProject()` | No `lib/`? Select an app and `chdir` into it |
+| `resolve_mono_repo_project.dart` | `resolveMonoRepoProject()` | No `lib/`? Select an app and `chdir` into it. A `lib/` means a single app, even if `mono_repo_apps` is declared — so a monorepo root must not have one |
 | `prompt_project_selection.dart` | `promptProjectSelection(apps, {title})` | Numbered stdin prompt |
 | `scope_option.dart` | `resolveScope` | `--scope` value |
 | `check_version_mismatch.dart` | `checkVersionMismatch()` | Warn if `clean-helper.version` ≠ `toolVersion` |

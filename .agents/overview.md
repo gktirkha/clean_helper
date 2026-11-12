@@ -76,6 +76,7 @@ bin/clean_helper.dart → CleanHelperRunner.run(args)
        ├─ abort unless ./pubspec.yaml exists
        ├─ loadPackageConfigs()      reads root-pubspec config into globals (first call only)
        ├─ resolveMonoRepoProject()  no lib/? pick an app, chdir into it
+       │                            (a lib/ wins: mono_repo_apps and --scope are ignored)
        └─ checkVersionMismatch()    warns if clean-helper.version ≠ toolVersion
      … generate files (writeFile / overwriteFile) …
      runDartFormat(); runBuildRunner()   (generating commands only)
