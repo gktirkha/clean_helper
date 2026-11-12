@@ -1,52 +1,56 @@
 ## 1.7.0
 
-- `UseCaseBase` moves into the utils package: `init` generates `packages/<app>_utils/lib/src/use_case_base.dart` and exports it from the barrel, instead of `lib/core/domain/use_cases/use_case_base.dart` in the app. Generated use cases get it from the utils import
-- `add-repo` keeps importing the app's `use_case_base.dart` when the utils package has no `lib/src/use_case_base.dart` (projects initialised before 1.7.0)
-- `init` adds `clean_router`, `<app>_localization` and `<app>_utils` to the app without `path:` — they're workspace members, so pub resolves them from the workspace
-- `packages.utils`, `packages.localization` and `packages.router` configure the three workspace packages `init` generates, each with `name`, `import` and `create` (default `true`):
-  - `create: false` — `init` doesn't generate the package and assumes it exists elsewhere in the workspace (e.g. a monorepo root). If no package is created, the app's `pubspec.yaml` gets no `workspace:` key
-  - `import` — the barrel is written at that path, e.g. `package:x/src/all.dart` → `lib/src/all.dart`
-  - `utils.module_name` names the utils `@module` class; `utils.call_adapter_name` names the generated call adapter class
-  - every other key under `localization` (`base_locale`, `input_directory`, `output_directory`, `translate_var`, …) goes into the package's `slang.yaml`, and the barrel, `String.tr` and `safeCast` follow `output_directory`, `output_file_name` and `translate_var`
-  - `add-feature`, `add-repo`, `add-network-module` and `bootstrap` use the configured names; `bootstrap` skips slang when the localization package isn't under `packages/`; `list-mono-repo-apps` prints the new keys
-- New `add-vscode-extensions` command: adds the recommended extensions to `.vscode/extensions.json` in the current directory, creating it or merging the missing IDs into an existing file
-- New `add-config` command: appends a `clean-helper:` block with every config key, each commented, to the current `pubspec.yaml`. Explanations are `##` comments and commented-out options a single `#`; active values are the defaults, app-dependent keys are commented out, `version` is stamped, and `mono_repo_apps` is filled from `apps/*/pubspec.yaml`
-- Fix: `packages.<key>.create: false` now applies even when the package keeps its default name (no `name`/`import`)
-- New `create-packages [--dir=<path>]` command: creates the utils, localization and router packages from `clean-helper.packages` (ignoring `create`) in `<dir>/<name>`, `packages/` by default, and lists them under `workspace:` in the current `pubspec.yaml`. It then runs pub get, slang and build_runner. Existing packages are skipped. Meant for a monorepo root whose apps use `create: false`
-- Lint rules are written once: packages' `analysis_options.yaml` is just `include:` of the app's file (or, for `create-packages`, the current directory's, created if missing). In a monorepo app, `packages.use_root_analysis` (default `true`) makes the app and its packages include the workspace root's file instead, which `init` creates if missing
-- Generated `analysis_options.yaml` excludes `build/**`, `android/**`, `ios/**` and `web/**` from analysis
-- **Breaking:** `clean-helper.retrofit_call_adapter` is removed. Set the class name with `packages.utils.call_adapter_name`. The import is `packages.network.import`, else `lib/core/network/utils/retrofit_call_adapter.dart`
-- **Breaking — the network layer is a workspace package.** `packages.network` (`name` default `<app>_network`, `import`, `create`, `module_name`, `auth_interceptor` default `true`) describes it, and `add-network-module` / `init --network` create it in `packages/<name>` unless `create: false`; `create-packages` includes it when `packages.network` is configured:
-  - the package is an injectable micro-package with a `@freezed` `NetworkConfig`, the Dio module (`BaseOptions` from `NetworkConfig`, `Dio`, `RetrofitLogger` as `ParseErrorLogger`) and an abstract `ErrorInterceptor` (`parseError` → `ErrorEntity`, `shouldHandle`); with `auth_interceptor`, also an abstract `AuthInterceptor` (token, one shared refresh on 401, one retry), a `@Named(NetworkDIKeys.noAuthDio)` Dio and `NetworkDIKeys`
-  - the app gets `ApiPaths`, its own `ErrorModel` and `AppErrorInterceptor`, a `NetworkConfigModule` registering `NetworkConfig`, `AppErrorInterceptor` (and `AppAuthInterceptor` as the `AuthInterceptor`), the package module in `di_initializer.dart`'s `externalPackageModulesAfter`, and `DioLens.init`
-  - the call adapter moves to the utils package (`lib/src/network/retrofit_call_adapter.dart`; class from `packages.utils.call_adapter_name`), which now depends on `retrofit`
-  - removed: the in-app `NetworkModule`, `lib/core/network/utils/`, the app's `DIKeys`, the `add-auth-interceptor` command and `init --auth-interceptor`
-  - `add-repo` generates REST datasources when the app has `lib/core/network/di/network_config_module.dart`; datasources no longer mark `errorLogger` `@ignoreParam`
-  - `bootstrap`, `init` and `tools/bootstrap.dart` run build_runner in the network package before the app
-- **Breaking — no backward compatibility.** Templates and commands now target only projects generated by this version. Removed:
-  - `clean-helper.result_type` / `future_either` — the API chain always returns `TaskEither`
-  - detection of utils packages that register `ParseErrorLogger` or contain `RetrofitCallAdapter` / `RetrofitLogger`; `add-network-module` always generates both in `lib/core/network/utils/` and registers the logger
-  - the Chucker / `PrettyDioLogger` variant of `noAuthDio`, and the `DioLens.init` fallback to `bootstrap.dart`
-  - required-`BuildContext` navigation for utils packages without `ContextUtils`
-  - importing `UseCaseBase` from `lib/core/domain/use_cases/`
-  - the per-command scripts in `bin/` (use `clean-helper <command>`) and the unregistered `addNetwork()` entry point
-  - the README's "Upgrading existing projects" table
-  - the `add-vscode-config` command; `init` no longer writes `.vscode/`. Use `add-vscode-extensions` for the extension recommendations
-- Fix: `generate-localizations` runs slang in the localization package instead of the app root
-- Fix: `bootstrap` and the generated `tools/bootstrap.dart` run build_runner in the utils package before the app; `tools/bootstrap.dart` runs slang in the localization package
-- Fix: a second `add-repo` in the same feature adds its constant to the existing `<feature>_api_paths.dart`
-- Usage errors from `add-feature`, `add-entity`, `add-repo`, `remove-feature` and `build-runner` exit with code 1 through the same `❌` message, using the hyphenated command names
-- `init`, `bootstrap` and the generated `tools/` scripts skip `fvm use` in a monorepo app — the Flutter version is pinned at the workspace root
-- The router package's files and classes are named after it: `lib/src/<name>_base.dart` / `<NamePascal>Base` and `lib/src/<name>_refresh.dart` / `<NamePascal>Refresh` (so `food_router` → `FoodRouterBase`, `FoodRouterRefresh`; the default stays `CleanRouterBase` / `CleanRouterRefresh`). `AppGoRouter` and feature routers use the derived names
-- `packages.overwrite_analysis_options` (default `true`): `init` and `create-packages` replace existing `analysis_options.yaml` files — the app's, the workspace root's with `use_root_analysis`, and `create-packages`' — with the generated ones; `false` keeps existing files. Previously the root file was never replaced. Both this and `use_root_analysis` also apply to packages that already exist, whose `include:` file `init`, `create-packages` and `add-network-module` rewrite
-- The app's router files and classes are named after the app: `lib/app/router/<app>_router.dart` (`<AppPascal>Router`, was `app_go_router.dart` / `AppGoRouter`), `<app>_router_redirect.dart` and `<app>_router_module.dart` (`<AppPascal>RouterModule`, was `AppRouterModule`). `add-feature` refuses a feature named after the app, whose router would clash
-- `remove-feature` formats and runs build_runner afterwards, so the generated DI config no longer references the deleted feature
-- Fix: a failing external command (`flutter create`, `pub`, build_runner, slang, `dart format`) now stops clean-helper with its output instead of continuing into a crash
-- Fix: packages are created with `flutter create --no-pub` after creating their parent folder, so `create-packages` and `init` work inside a workspace whose `workspace:` lists missing members or whose `packages/` folder doesn't exist yet; stale `workspace:` entries are reported
-- `create-packages` finishes setup (workspace entry, pub get, slang, build_runner, sorted pubspecs) for packages that already exist, so rerunning completes an interrupted run
-- Fix: commands that call other commands (`init --network` → `add-network-module`) no longer reload config from the monorepo app's pubspec after switching into it, which dropped the root `clean-helper.packages` settings
-- `add-melos-config`'s bootstrap hook activates clean_helper from pub.dev at the running tool's version (`dart pub global activate clean_helper <version>`) instead of from git
-- New `add-melos-config` command: run from the workspace root, it adds `melos` to `dev_dependencies` and appends a `melos:` block to `pubspec.yaml` — `bootstrap` / `clean` hooks and the `autogen`, `autogen_watch`, `localize`, `fluttergen`, `dependency_validator`, `generate_license`, `update_packages` and `use_fvm` scripts. Each step is skipped if already present
+### Breaking
+
+- **Network is a workspace package.** `add-network-module` and `init --network` create `packages/<app>_network` and wire the app to it. The in-app `NetworkModule`, `lib/core/network/utils/` and the app's `DIKeys` are gone.
+- **`add-auth-interceptor` and `init --auth-interceptor` are removed.** Auth is now part of the network package (`packages.network.auth_interceptor`, default `true`).
+- **The call adapter lives in the utils package** (`lib/src/network/retrofit_call_adapter.dart`). The utils package now depends on `retrofit`.
+- **`UseCaseBase` lives in the utils package** instead of `lib/core/domain/use_cases/`.
+- **App router files are named after the app:** `<app>_router.dart` (`<AppPascal>Router`), `<app>_router_redirect.dart` and `<app>_router_module.dart` (`<AppPascal>RouterModule`). They replace `app_go_router.dart` / `AppGoRouter` and `AppRouterModule`.
+- **Router package files and classes are named after the package:** `<name>_base.dart` / `<NamePascal>Base` and `<name>_refresh.dart` / `<NamePascal>Refresh`. The default `clean_router` keeps `CleanRouterBase` and `CleanRouterRefresh`.
+- **No backward compatibility.** Code that adapted output to projects from older versions is removed:
+  - `result_type` / `future_either` (always `TaskEither`)
+  - `retrofit_call_adapter` (use `packages.utils.call_adapter_name`)
+  - the Chucker variant, and required-context navigation
+- **Removed:** the per-command scripts in `bin/` (use `clean-helper <command>`), `add-vscode-config`, and `.vscode/` generation in `init`.
+
+### New commands
+
+- `create-packages [--dir=<path>]`: creates the configured workspace packages (e.g. at a monorepo root) and lists them under `workspace:`.
+- `add-config`: adds a commented `clean-helper:` block with every config key to `pubspec.yaml`.
+- `add-melos-config`: adds melos with bootstrap and clean hooks and scripts. The bootstrap hook installs clean_helper from pub.dev at the current version.
+- `add-vscode-extensions`: adds recommended extensions to `.vscode/extensions.json`, merging with an existing file.
+
+### Configuration
+
+- `packages.utils`, `localization`, `router` and `network` each take `name`, `import` and `create`.
+  - With `create: false`, the package is used from the workspace instead of being generated.
+  - When nothing is created, the app gets no `workspace:` key.
+- `packages.utils.module_name` and `call_adapter_name`, and `packages.network.module_name` and `auth_interceptor`.
+- Any other key under `packages.localization` is written to `slang.yaml`.
+- `packages.use_root_analysis` (default `true`): monorepo apps and their packages include the workspace root's `analysis_options.yaml`.
+- `packages.overwrite_analysis_options` (default `true`): generated `analysis_options.yaml` files replace existing ones.
+
+### Changes
+
+- Workspace packages are added as dependencies without `path:`.
+- Package `analysis_options.yaml` files only `include:` the shared rules. Generated rules also exclude `build/`, `android/`, `ios/` and `web/`.
+- The network package has abstract `ErrorInterceptor` and `AuthInterceptor` classes and a `@freezed` `NetworkConfig`. Each app implements `AppErrorInterceptor` (with its own `ErrorModel`) and `AppAuthInterceptor`.
+- `remove-feature` runs format and build_runner afterwards.
+- `create-packages` finishes setting up packages that already exist, so rerunning completes an interrupted run.
+- `fvm use` is skipped in monorepo apps (`init`, `bootstrap`, `tools/` scripts).
+- `add-feature` refuses a feature named after the app.
+- Usage errors share one `❌` message format and exit with code 1.
+
+### Fixes
+
+- A failing external command (`flutter create`, pub, build_runner, slang, format) now stops with its output instead of crashing later.
+- `flutter create` works inside a workspace with missing members or no `packages/` folder yet, and stale `workspace:` entries are reported.
+- `generate-localizations` and `tools/bootstrap.dart` run slang in the localization package.
+- `bootstrap` and `tools/bootstrap.dart` run build_runner in the packages before the app.
+- A second `add-repo` in a feature adds its constant to the existing `<feature>_api_paths.dart`.
+- `create: false` applies even when the package keeps its default name.
+- Nested commands (`init --network`) keep the root config in a monorepo.
 
 ## 1.6.1
 
