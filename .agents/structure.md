@@ -71,7 +71,9 @@ clean_helper/
 | `resolve_network_module_name.dart` | `resolveNetworkModuleName(network)` | `module_name` ?? `<NetworkPascal>Module` |
 | `resolve_utils_module_name.dart` | `resolveUtilsModuleName(utils)` | `module_name` ?? `<UtilsPascal>Module` |
 | `resolve_call_adapter_name.dart` | `resolveCallAdapterName()` | `call_adapter_name` ?? `RetrofitCallAdapter` |
+| `write_package_analysis_options.dart` | `writePackageAnalysisOptions(packageDirs)` | Each existing package's `include:` file (current project's or root's rules), via `writeAnalysisOptions` |
 | `write_analysis_options.dart` | `writeAnalysisOptions(path, content)` | `overwriteFile` or, with `overwrite_analysis_options: false`, `writeFile` |
+| `app_router_module_path.dart` | `appRouterModulePath()` | `lib/app/router/<app>_router_module.dart` for the current app |
 | `analysis_options_include.dart` | `analysisOptionsInclude(dir)` | `include:` path for a project's `analysis_options.yaml`, or null for full rules |
 | `package_barrel_path.dart` | `packageBarrelPath(package, [parentDir])` | `<parentDir>/<name>/lib/<file from import>`, `parentDir` defaulting to `packages` |
 | `package_barrel_prefix.dart` | `packageBarrelPrefix(package)` | `../` prefix from a nested barrel back to `lib/` |
@@ -119,7 +121,7 @@ clean_helper/
 
 ### `feature/` — `add-feature`
 
-`create_feature_structure.dart` → `createFeatureStructure(basePath, feature, utilsImport, router, {withDi})` (also used by `init` for the home feature) calls the `generateFeature*` helpers: `routes`, `navigation`, `navigation_impl`, `page`, `page_provider`, `router`, `bloc`, `module`. `patch_router_module.dart` → `patchRouterModule(feature)`. `build_router_module.dart` → `buildRouterModule(features)`, which sorts features and is the single source of `app_router_module.dart` content.
+`create_feature_structure.dart` → `createFeatureStructure(basePath, feature, utilsImport, router, {withDi})` (also used by `init` for the home feature); aborts when the feature is named after the app, since both would generate `<AppPascal>Router` calls the `generateFeature*` helpers: `routes`, `navigation`, `navigation_impl`, `page`, `page_provider`, `router`, `bloc`, `module`. `patch_router_module.dart` → `patchRouterModule(feature)`. `build_router_module.dart` → `buildRouterModule(features)`, which sorts features and is the single source of `<app>_router_module.dart` content.
 
 ### `repo/` — `add-repo`
 
@@ -186,8 +188,11 @@ Templates that take configurable input:
 | `network_pubspec_tail` | `utilsPackageName` |
 | `di_initializer` | `utilsImport`, `utilsPackageModule` |
 | `init_service` | `utilsImport`, `localizationImport` |
-| `main_app_dart` | `localizationImport` |
-| `app_go_router`, `feature_router` | `routerImport`, `routerPrefix` (`<RouterPascal>`) |
+| `app_go_router` | `appName`, `routerImport`, `routerPrefix` (`<RouterPascal>`) |
+| `feature_router` | `routerImport`, `routerPrefix` |
+| `app_go_router_redirect` | `appName`, `routerPrefix` |
+| `app_router_module_build` | `appName`, `features` |
+| `main_app_dart` | `appName`, `localizationImport` |
 | `clean_router_base`, `clean_router_refresh` | class `prefix` (`<RouterPascal>`) |
 | `utils_lib_export` | barrel `prefix` |
 | `clean_router_lib_export` | package `name` (file names), barrel `prefix` |

@@ -16,11 +16,12 @@ It's idempotent: package files are only written when the package is created, app
 1. `ensurePubspec()`
 2. `network = resolveNetworkPackage()` (default `<app>_network`), `auth = networkAuthInterceptorConfig` (default `true`)
 3. If `network.create` and `packages/<network>/pubspec.yaml` doesn't exist: `generateNetworkPackage(network, resolveUtilsPackage(), moduleName: resolveNetworkModuleName(network), auth:)`, then `addPackagesWorkspace(['packages/<network>'])`
-4. `generateNetworkAppFiles(network.import, auth:)` — app side, see below
-5. `installNetworkDependencies(network.name)` — `flutter pub add <network> dio dio_lens retrofit json_annotation` and `--dev retrofit_generator json_serializable`
-6. `patchDiInitializer(network.import, '<NetworkPascal>PackageModule')` — rewrites `externalPackageModulesAfter: [...]` in `lib/app/di/di_initializer.dart` with the module appended (one entry per line) and adds the import via `insertSortedImport`
-7. `patchDioLensInit()` — inserts `DioLens.init(...)` (`dio_lens_init` template) after `Bloc.observer = diContainer();` in `lib/app/init_service.dart` and adds the `dio_lens` import
-8. `sortPubspecDeps` for a created package, `runDartFormat()`, then (unless `runBuildRunnerAfter: false`) build_runner in `packages/<network>` if it exists, then in the app
+4. `writePackageAnalysisOptions(['packages/<network>'])` — the existing package follows `use_root_analysis` / `overwrite_analysis_options` too
+5. `generateNetworkAppFiles(network.import, utils.import, auth:)` — app side, see below
+6. `installNetworkDependencies(network.name)` — `flutter pub add <network> dio dio_lens retrofit json_annotation` and `--dev retrofit_generator json_serializable`
+7. `patchDiInitializer(network.import, '<NetworkPascal>PackageModule')` — rewrites `externalPackageModulesAfter: [...]` in `lib/app/di/di_initializer.dart` with the module appended (one entry per line) and adds the import via `insertSortedImport`
+8. `patchDioLensInit()` — inserts `DioLens.init(...)` (`dio_lens_init` template) after `Bloc.observer = diContainer();` in `lib/app/init_service.dart` and adds the `dio_lens` import
+9. `sortPubspecDeps` for a created package, `runDartFormat()`, then (unless `runBuildRunnerAfter: false`) build_runner in `packages/<network>` if it exists, then in the app
 
 ## Network package (`generateNetworkPackage`)
 

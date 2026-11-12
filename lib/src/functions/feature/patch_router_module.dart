@@ -1,11 +1,12 @@
 import 'dart:io';
 
+import '../shared/app_router_module_path.dart';
 import '../shared/pascal_case.dart';
 import '../shared/write_file.dart';
 import 'build_router_module.dart';
 
 void patchRouterModule(String feature) {
-  const path = 'lib/app/router/app_router_module.dart';
+  final path = appRouterModulePath();
   final file = File(path);
 
   if (!file.existsSync()) {

@@ -63,7 +63,7 @@ $monoRepoApps
       translate_var: locales
 
     ## <RouterPascal>Base / <RouterPascal>Refresh (CleanRouterBase by default),
-    ## used by AppGoRouter and feature routers.
+    ## used by <AppPascal>Router and feature routers.
     router:
       ## Package name. Default: clean_router.
       # name: clean_router
@@ -93,7 +93,7 @@ $monoRepoApps
     overwrite_analysis_options: true
 
     ## Monorepo only. true: apps and packages include the workspace root's
-    ## analysis_options.yaml instead of the nearest project's. Default: false.
-    use_root_analysis: false
+    ## analysis_options.yaml. false: the nearest project's. Default: true.
+    use_root_analysis: true
 ''';
 }

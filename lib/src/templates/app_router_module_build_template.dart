@@ -1,7 +1,10 @@
 import '../functions/shared/camel_case.dart';
 import '../functions/shared/pascal_case.dart';
 
-String appRouterModuleBuildTemplate(List<String> features) {
+/// `lib/app/router/<app>_router_module.dart`: `<AppPascal>RouterModule`
+/// providing `<AppPascal>Router` with every feature router, by priority.
+String appRouterModuleBuildTemplate(String appName, List<String> features) {
+  final appRouter = '${pascalCase(appName)}Router';
   final imports = features
       .map((f) => "import '../../features/$f/router/${f}_router.dart';")
       .join('\n');
@@ -20,12 +23,12 @@ String appRouterModuleBuildTemplate(List<String> features) {
 import 'package:injectable/injectable.dart';
 
 $imports
-import 'app_go_router.dart';
+import '${appName}_router.dart';
 
 @module
-abstract class AppRouterModule {
+abstract class ${appRouter}Module {
   @lazySingleton
-  AppGoRouter appGoRouter($params) => AppGoRouter(
+  $appRouter ${camelCase(appName)}Router($params) => $appRouter(
     routers: [$routerList]..sort((a, b) => a.priority.compareTo(b.priority)),
   );
 }

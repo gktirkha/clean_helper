@@ -30,6 +30,7 @@ import '../functions/shared/resolve_router_package.dart';
 import '../functions/shared/resolve_slang_settings.dart';
 import '../functions/shared/resolve_utils_module_name.dart';
 import '../functions/shared/resolve_utils_package.dart';
+import '../functions/shared/write_package_analysis_options.dart';
 
 Future<void> runInit({
   bool withNetwork = false,
@@ -77,6 +78,11 @@ Future<void> runInit({
   updateGitignore();
   addFlutterAssetsToPubSpec();
   if (withNetwork) addNetworkModule(runBuildRunnerAfter: false);
+  // Every package under packages/, created now or earlier, shares the rules.
+  writePackageAnalysisOptions([
+    for (final p in [router, localization, utils, resolveNetworkPackage()])
+      'packages/${p.name}',
+  ]);
   // After the network package, so tools/bootstrap.dart includes it.
   if (withTools) generateToolsFiles();
   if (localization.create) runSlang(localization.name);

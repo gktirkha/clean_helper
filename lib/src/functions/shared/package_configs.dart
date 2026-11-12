@@ -58,9 +58,10 @@ String? callAdapterNameConfig;
 Map<String, String> slangSettingsConfig = {};
 
 /// `clean-helper.packages.use_root_analysis` (or `clean-helper.use_root_analysis`),
-/// set by [loadPackageConfigs]. True means apps and packages include the
-/// workspace root's `analysis_options.yaml` instead of the nearest project's.
-bool useRootAnalysisConfig = false;
+/// set by [loadPackageConfigs]. True (the default) means monorepo apps and
+/// their packages include the workspace root's `analysis_options.yaml`;
+/// false, the nearest project's. No effect outside a monorepo app.
+bool useRootAnalysisConfig = true;
 
 /// `clean-helper.packages.overwrite_analysis_options` (or
 /// `clean-helper.overwrite_analysis_options`), set by [loadPackageConfigs].

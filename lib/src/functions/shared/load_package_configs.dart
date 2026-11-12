@@ -43,6 +43,6 @@ void loadPackageConfigs() {
   useRootAnalysisConfig =
       (readCleanHelperFields(['packages'])['use_root_analysis'] ??
               root['use_root_analysis'])
-          ?.toLowerCase() ==
-      'true';
+          ?.toLowerCase() !=
+      'false';
 }

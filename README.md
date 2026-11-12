@@ -81,7 +81,7 @@ Global options go **before** the command:
 | [`add-entity <scope> <name> [folder]`](#add-entity) | Domain entity + freezed model |
 | [`add-network-module`](#add-network-module) | Dio + Retrofit network layer |
 | [`remove-feature <name>`](#remove-feature) | Delete a feature and unregister its router |
-| [`regenerate-router`](#regenerate-router) | Rebuild `app_router_module.dart` from the features on disk |
+| [`regenerate-router`](#regenerate-router) | Rebuild `<app>_router_module.dart` from the features on disk |
 | [`build-runner [build\|clean]`](#build-runner) | Run build_runner |
 | [`generate-localizations`](#generate-localizations) | Run slang |
 | [`generate-tools [--overwrite]`](#generate-tools) | Generate `tools/` scripts |
@@ -156,7 +156,9 @@ lib/
         └── user_profile_router.dart             @lazySingleton, implements <RouterPascal>Base (CleanRouterBase by default)
 ```
 
-The router is registered in `lib/app/router/app_router_module.dart` automatically. That file is tool-owned: `add-feature`, `remove-feature` and `regenerate-router` regenerate it, with features in alphabetical order.
+A feature can't have the app's name, because both would generate `<AppPascal>Router`.
+
+The router is registered in `lib/app/router/<app>_router_module.dart` automatically. That file is tool-owned: `add-feature`, `remove-feature` and `regenerate-router` regenerate it, with features in alphabetical order.
 
 The bloc is `@injectable` (a new instance per page) because `BlocProvider` closes it when the page is disposed.
 
@@ -236,7 +238,7 @@ Existing files are skipped.
 clean-helper remove-feature user_profile
 ```
 
-Removes the router from `app_router_module.dart`, then deletes `lib/features/<name>/` and `lib/app/navigation/<name>_navigation_impl.dart`. It doesn't run format or build_runner.
+Removes the router from `<app>_router_module.dart`, then deletes `lib/features/<name>/` and `lib/app/navigation/<name>_navigation_impl.dart`. It doesn't run format or build_runner.
 
 ### `regenerate-router`
 
@@ -244,7 +246,7 @@ Removes the router from `app_router_module.dart`, then deletes `lib/features/<na
 clean-helper regenerate-router
 ```
 
-Rebuilds `app_router_module.dart` from every `lib/features/<name>/router/<name>_router.dart` on disk, in alphabetical order. Use it when the file has drifted from the features that exist.
+Rebuilds `<app>_router_module.dart` from every `lib/features/<name>/router/<name>_router.dart` on disk, in alphabetical order. Use it when the file has drifted from the features that exist.
 
 ### `build-runner`
 
@@ -360,7 +362,7 @@ Packages (clean-helper.packages):
     module_name:       <NetworkPascal>Module (default)
     auth_interceptor:  true
   overwrite_analysis_options: true (default)
-  use_root_analysis: false (default — packages include the nearest project)
+  use_root_analysis: true (default — monorepo apps include the root file)
 ```
 
 ---
@@ -381,7 +383,7 @@ clean-helper:
     - apps/organizer
 
   ## Monorepo only (read from the root pubspec). Same as packages.use_root_analysis.
-  # use_root_analysis: true
+  # use_root_analysis: false
 
   packages:
     ## Shared code: Failure, UseCaseBase, safeExecuteTask, AppLogger, …
@@ -422,7 +424,7 @@ clean-helper:
       translate_var: locales
 
     ## <RouterPascal>Base / <RouterPascal>Refresh (CleanRouterBase by default),
-    ## used by AppGoRouter and feature routers.
+    ## used by <AppPascal>Router and feature routers.
     router:
       ## Package name. Default: clean_router.
       name: my_app_router
@@ -451,8 +453,8 @@ clean-helper:
     ## Default: true.
     overwrite_analysis_options: true
 
-    ## true: apps and packages include the workspace root's analysis_options.yaml
-    ## instead of the nearest project's. Default: false.
+    ## Monorepo only. true: apps and packages include the workspace root's
+    ## analysis_options.yaml. false: the nearest project's. Default: true.
     use_root_analysis: true
 ```
 
@@ -465,7 +467,7 @@ clean-helper:
 | `packages.utils.call_adapter_name` | `RetrofitCallAdapter` | Call adapter class generated and used by REST datasources |
 | [`packages.localization`](#packageslocalization) `.name` / `.import` / `.create` | `<app>_localization` / `package:<name>/<name>.dart` / `true` | Localization package; other keys go to `slang.yaml` |
 | [`packages.overwrite_analysis_options`](#analysis-options) | `true` | Replace existing `analysis_options.yaml` files with the generated ones |
-| [`packages.use_root_analysis`](#analysis-options) | `false` | Apps and packages include the workspace root's `analysis_options.yaml` |
+| [`packages.use_root_analysis`](#analysis-options) | `true` | Monorepo apps and their packages include the workspace root's `analysis_options.yaml` |
 | [`packages.router`](#packagesrouter) `.name` / `.import` / `.create` | `clean_router` / `package:<name>/<name>.dart` / `true` | Router package; its classes are `<NamePascal>Base` / `<NamePascal>Refresh` |
 | [`packages.network`](#packagesnetwork) `.name` / `.import` / `.create` | `<app>_network` / `package:<name>/<name>.dart` / `true` | Network package |
 | `packages.network.module_name` | `<NetworkPascal>Module` | The network package's `@module` class |
@@ -510,26 +512,26 @@ The first locale file is `<input_directory>/<base_locale><input_file_pattern>`. 
 
 ### `packages.router`
 
-The package with the router interface and refresh notifier, imported by `AppGoRouter` and every feature router. Defaults to `clean_router`. Its files and classes are named after the package: `lib/src/<name>_base.dart` holds `<NamePascal>Base`, and `lib/src/<name>_refresh.dart` holds `<NamePascal>Refresh`. So `food_router` gives `FoodRouterBase` and `FoodRouterRefresh`, and the default gives `CleanRouterBase` and `CleanRouterRefresh`.
+The package with the router interface and refresh notifier, imported by `<AppPascal>Router` and every feature router. Defaults to `clean_router`. Its files and classes are named after the package: `lib/src/<name>_base.dart` holds `<NamePascal>Base`, and `lib/src/<name>_refresh.dart` holds `<NamePascal>Refresh`. So `food_router` gives `FoodRouterBase` and `FoodRouterRefresh`, and the default gives `CleanRouterBase` and `CleanRouterRefresh`.
 
 ### Analysis options
 
 The lint rules are written once. Every other `analysis_options.yaml` only includes that file:
 
-| | Without `use_root_analysis` (default) | With `packages.use_root_analysis: true` |
+| | `use_root_analysis: false` | `use_root_analysis: true` (default) |
 |---|---|---|
 | App (`init`) | Full rules | `include: ../../analysis_options.yaml` — the workspace root's, which gets the full rules |
-| Packages created by `init` | `include: ../../analysis_options.yaml` — the app's | The workspace root's, e.g. `include: ../../../../analysis_options.yaml` |
-| Packages created by `create-packages` | The current directory's file, which gets the full rules | Same |
+| Packages under the app's `packages/` (`init`, `add-network-module`) | `include: ../../analysis_options.yaml` — the app's | The workspace root's, e.g. `include: ../../../../analysis_options.yaml` |
+| Packages under `create-packages`' directory | The current directory's file, which gets the full rules | Same |
 
-`use_root_analysis` only changes anything in a monorepo app, where a root exists above the app. It can also sit directly under `clean-helper:`.
+`use_root_analysis` only changes anything in a monorepo app, where a root exists above the app. A single project always gets the left-hand column. The key can also sit directly under `clean-helper:`.
 
 `overwrite_analysis_options` (default `true`, also allowed directly under `clean-helper:`) controls whether existing files are replaced:
 
-- `true`: the app's file, the root file (with `use_root_analysis`) and the one `create-packages` writes in its directory are always rewritten with the generated content.
+- `true`: every file in the table is rewritten with the generated content: the app's file, the root file (with `use_root_analysis`), the one `create-packages` writes in its directory, and every workspace package's `include:` file, including packages that already existed.
 - `false`: existing files are kept, and only missing ones are created.
 
-A newly created package always gets its `include:` file, because its only existing file is `flutter create`'s default.
+A newly created package always gets its `include:` file, because its only existing file is `flutter create`'s default. Packages that already exist follow both settings each time `init`, `create-packages` or `add-network-module` runs.
 
 ### `packages.network`
 
@@ -591,7 +593,7 @@ lib/
 │   ├── main_app.dart
 │   ├── di/                    di_container.dart (GetIt), di_initializer.dart (@InjectableInit), app_module.dart
 │   ├── navigation/            <feature>_navigation_impl.dart
-│   └── router/                app_go_router.dart, app_go_router_redirect.dart, app_router_module.dart
+│   └── router/                <app>_router.dart, <app>_router_redirect.dart, <app>_router_module.dart
 ├── core/
 │   ├── di/                    core_module.dart (PackageInfo)
 │   ├── data/models/           error_model.dart                          (add-network-module)
@@ -628,7 +630,7 @@ Feature
 └── data/           models (@freezed), datasources (Retrofit), repository implementations
 ```
 
-- **Routing:** go_router. Each feature router implements the router package's `<RouterPascal>Base` (`CleanRouterBase` by default); `AppRouterModule` collects them, sorts them by `priority` (lower first) and builds `AppGoRouter`.
+- **Routing:** go_router. The app's router is `<AppPascal>Router` in `lib/app/router/<app>_router.dart`. Each feature router implements the router package's `<RouterPascal>Base` (`CleanRouterBase` by default); `<AppPascal>RouterModule` collects them, sorts them by `priority` (lower first) and builds `AppGoRouter`.
 - **DI:** get_it + injectable. `diContainer` lives in `lib/app/di/di_container.dart`.
 - **Errors:** fpdart + `Failure`. Retrofit calls go through `RetrofitCallAdapter` → `safeExecuteTask`, so failures come back as `Left(Failure)` rather than exceptions.
 - **Serialization:** freezed + json_serializable.

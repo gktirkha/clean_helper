@@ -78,6 +78,6 @@ void listMonoRepoApps() {
   );
   stdout.writeln(
     '  use_root_analysis: $useRootAnalysisConfig'
-    '${useRootAnalysisConfig ? '' : ' (default — packages include the nearest project)'}',
+    '${useRootAnalysisConfig ? ' (default — monorepo apps include the root file)' : ' (packages include the nearest project)'}',
   );
 }

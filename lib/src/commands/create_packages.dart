@@ -12,6 +12,7 @@ import '../functions/init/run_slang.dart';
 import '../functions/init/sort_pubspec_deps.dart';
 import '../functions/shared/abort.dart';
 import '../functions/shared/write_analysis_options.dart';
+import '../functions/shared/write_package_analysis_options.dart';
 import '../templates/analysis_options_template.dart';
 import '../functions/shared/load_package_configs.dart';
 import '../functions/shared/package_configs.dart';
@@ -112,6 +113,9 @@ void createPackages({String? dir}) {
 
   // The packages include this directory's analysis_options.yaml.
   writeAnalysisOptions('analysis_options.yaml', analysisOptionsTemplate());
+  writePackageAnalysisOptions([
+    for (final name in packages) '$parentDir/$name',
+  ]);
   addPackagesWorkspace([for (final name in packages) '$parentDir/$name']);
   runFlutterPubGet();
   if (present(localization.name)) {

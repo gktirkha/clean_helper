@@ -10,7 +10,7 @@ clean-helper add-feature user_profile
 clean-helper add-feature user_profile --di
 ```
 
-The name is lower-cased and should be snake_case.
+The name is lower-cased and should be snake_case. It can't be the app's name: the app's router is `<AppPascal>Router`, which the feature's router would duplicate.
 
 ## Flow
 
@@ -41,4 +41,4 @@ lib/features/<f>/di/<f>_module.dart                          --di only
 
 ## Router registration
 
-`patchRouterModule(f)` reads the feature imports already in `lib/app/router/app_router_module.dart`, adds `f`, and rewrites the file with `buildRouterModule(features)`, which sorts alphabetically. It skips a feature that's already registered, and warns if the file is missing. The file is tool-owned, and `overwriteFile` is used.
+`patchRouterModule(f)` reads the feature imports already in `lib/app/router/<app>_router_module.dart`, adds `f`, and rewrites the file with `buildRouterModule(features)`, which sorts alphabetically. It skips a feature that's already registered, and warns if the file is missing. The file is tool-owned, and `overwriteFile` is used.

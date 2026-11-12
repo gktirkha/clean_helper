@@ -1,11 +1,12 @@
+import '../functions/shared/pascal_case.dart';
 import '../functions/shared/sort_imports.dart';
 
-String mainAppDartTemplate(String localizationImport) =>
+String mainAppDartTemplate(String appName, String localizationImport) =>
     '''
 ${sortImports(["import 'package:flutter/material.dart';", "import 'package:flutter_localizations/flutter_localizations.dart';", "import '$localizationImport';"])}
 
 import 'di/di_container.dart';
-import 'router/app_go_router.dart';
+import 'router/${appName}_router.dart';
 
 class MainApp extends StatelessWidget {
   const MainApp({super.key});
@@ -26,7 +27,7 @@ class _AppView extends StatelessWidget {
       locale: TranslationProvider.of(context).flutterLocale,
       localizationsDelegates: GlobalMaterialLocalizations.delegates,
       supportedLocales: AppLocaleUtils.supportedLocales,
-      routerConfig: diContainer<AppGoRouter>().router,
+      routerConfig: diContainer<${pascalCase(appName)}Router>().router,
     );
   }
 }

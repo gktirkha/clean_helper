@@ -19,7 +19,7 @@ clean-helper add-config
 
 Every key from the README's Configuration section, each with a comment line above it — never inline, and every comment indented inside the block (a column-0 comment would end the block for `readMonoRepoApps`). Explanations start with `##`; commented-out options (`# name: …`, `# mono_repo_apps:`, `#   - apps/…`) use a single `#`, so uncommenting means removing one `#`.
 
-- Active lines hold the defaults (`create: true`, the slang settings, `auth_interceptor: true`, `overwrite_analysis_options: true`, `use_root_analysis: false`), so the block doesn't change behaviour.
+- Active lines hold the defaults (`create: true`, the slang settings, `auth_interceptor: true`, `overwrite_analysis_options: true`, `use_root_analysis: true`), so the block doesn't change behaviour.
 - App-dependent keys (`name`, `import`, `module_name`, `call_adapter_name`) are commented out. `create` is read independently of `name`/`import` (`packageCreateConfig`), so uncommenting just `create: false` works.
 - `mono_repo_apps` is filled from `findMonoRepoApps()`, or commented out when empty.
 

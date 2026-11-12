@@ -20,7 +20,7 @@ Run once, in a project fresh from `flutter create`.
 3. The packages with `create: true`: `generateCleanRouterPackage()`, `generateLocalizationPackage()`, `generateUtilsPackage()`, then `addPackagesWorkspace()` for those created — no `workspace:` key if none are
 4. The app: `generateCoreFiles()`, `createFeatureStructure()` for `home` (with `withDi`)
 5. `installDependencies()`, `updateGitignore()`, `addFlutterAssetsToPubSpec()`
-6. `addNetworkModule(runBuildRunnerAfter: false)` with `--network`; `generateToolsFiles()` with `--tools` comes after it
+6. `addNetworkModule(runBuildRunnerAfter: false)` with `--network`; then `writePackageAnalysisOptions` for every package under `packages/` (created now or earlier); `generateToolsFiles()` with `--tools` comes after it
 7. `runSlang()` in the localization package if created; `runBuildRunner()` in the utils package (if created) and the network package (with `--network`); then `runBuildRunner()` in the app and `runDartFormat()`
 8. `sortPubspecDeps()` for the app and the created utils / localization pubspecs; `writeToolVersion()`
 

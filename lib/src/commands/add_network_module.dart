@@ -15,6 +15,7 @@ import '../functions/shared/pascal_case.dart';
 import '../functions/shared/resolve_network_module_name.dart';
 import '../functions/shared/resolve_network_package.dart';
 import '../functions/shared/resolve_utils_package.dart';
+import '../functions/shared/write_package_analysis_options.dart';
 
 /// Creates the network package in `packages/<network>` (unless `create:
 /// false` or it already exists) and wires the app to it: `ApiPaths`,
@@ -44,6 +45,7 @@ void addNetworkModule({bool runBuildRunnerAfter = true}) {
     addPackagesWorkspace([packageDir]);
   }
 
+  writePackageAnalysisOptions([packageDir]);
   generateNetworkAppFiles(network.import, utils.import, auth: auth);
   installNetworkDependencies(network.name);
   patchDiInitializer(

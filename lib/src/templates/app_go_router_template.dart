@@ -1,7 +1,13 @@
+import '../functions/shared/pascal_case.dart';
 import '../functions/shared/sort_imports.dart';
 
+/// `lib/app/router/<app>_router.dart`: `<AppPascal>Router` wrapping go_router.
 /// [routerPrefix] is the router package's class prefix (`<RouterPascal>`).
-String appGoRouterTemplate(String routerImport, String routerPrefix) =>
+String appGoRouterTemplate(
+  String appName,
+  String routerImport,
+  String routerPrefix,
+) =>
     '''
 import 'dart:async';
 
@@ -10,10 +16,10 @@ ${sortImports(["import '$routerImport';", "import 'package:flutter/material.dart
 import '../di/di_container.dart';
 import '../../features/home/router/home_routes.dart';
 
-part 'app_go_router_redirect.dart';
+part '${appName}_router_redirect.dart';
 
-class AppGoRouter {
-  AppGoRouter({required this.routers});
+class ${pascalCase(appName)}Router {
+  ${pascalCase(appName)}Router({required this.routers});
 
   final List<${routerPrefix}Base> routers;
 

@@ -15,7 +15,7 @@ The name is lower-cased. It aborts if no name is given.
 
 1. `ensurePubspec()`
 2. `unpatchRouterModule(f)`:
-   - If `lib/app/router/app_router_module.dart` doesn't import the feature's router, it logs `⏭ … not registered` and moves on.
+   - If `lib/app/router/<app>_router_module.dart` doesn't import the feature's router, it logs `⏭ … not registered` and moves on.
    - Otherwise it rebuilds the file from the remaining feature imports with `buildRouterModule`, which sorts them, using `overwriteFile`.
    - It warns if the file is missing.
 3. `deleteFeatureFiles(f)`: deletes `lib/features/<f>/` recursively, and `lib/app/navigation/<f>_navigation_impl.dart`. It warns about, but doesn't abort on, missing paths.

@@ -62,7 +62,7 @@ ${sortImports([
 | Helper | Behaviour | Use for |
 |---|---|---|
 | `writeFile(path, content)` | Skips an existing file and logs the skip | Anything the user may edit — nearly everything |
-| `overwriteFile(path, content)` | Always writes | Tool-owned files: `app_router_module.dart`, `analysis_options.yaml`, package scaffolding in `init`, pubspec patches |
+| `overwriteFile(path, content)` | Always writes | Tool-owned files: `<app>_router_module.dart`, `analysis_options.yaml`, package scaffolding in `init`, pubspec patches |
 
 Both create parent directories.
 
@@ -93,8 +93,8 @@ The runner and `ensurePubspec()` fill shared globals before any command logic ru
 | `networkModuleNameConfig`, `networkAuthInterceptorConfig` | `loadPackageConfigs()` | `packages.network.module_name` (or null) / `.auth_interceptor` (true unless `false`) |
 | `utilsModuleNameConfig`, `callAdapterNameConfig` | `loadPackageConfigs()` | `packages.utils.module_name` / `.call_adapter_name`, or null |
 | `slangSettingsConfig` | `loadPackageConfigs()` | every other scalar key under `packages.localization` |
-| `overwriteAnalysisOptionsConfig` | `loadPackageConfigs()` | `packages.overwrite_analysis_options`; true unless `false`. `writeAnalysisOptions()` picks `overwriteFile` / `writeFile` from it |
-| `useRootAnalysisConfig` | `loadPackageConfigs()` | `packages.use_root_analysis` |
+| `overwriteAnalysisOptionsConfig` | `loadPackageConfigs()` | `packages.overwrite_analysis_options`; true unless `false`. `writeAnalysisOptions()` picks `overwriteFile` / `writeFile` from it, for app, root and package files alike |
+| `useRootAnalysisConfig` | `loadPackageConfigs()` | `packages.use_root_analysis`; true unless `false` |
 | `monoRepoAppPath` | `resolveMonoRepoProject()` | the app switched into, relative to the root (`apps/shop`), or null |
 
 `loadPackageConfigs()` runs **before** `resolveMonoRepoProject()` changes directory, so it reads the root pubspec. Config parsing is line-based, with no YAML dependency:
