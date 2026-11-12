@@ -45,6 +45,7 @@
 - Fix: packages are created with `flutter create --no-pub` after creating their parent folder, so `create-packages` and `init` work inside a workspace whose `workspace:` lists missing members or whose `packages/` folder doesn't exist yet; stale `workspace:` entries are reported
 - `create-packages` finishes setup (workspace entry, pub get, slang, build_runner, sorted pubspecs) for packages that already exist, so rerunning completes an interrupted run
 - Fix: commands that call other commands (`init --network` → `add-network-module`) no longer reload config from the monorepo app's pubspec after switching into it, which dropped the root `clean-helper.packages` settings
+- `add-melos-config`'s bootstrap hook activates clean_helper from pub.dev at the running tool's version (`dart pub global activate clean_helper <version>`) instead of from git
 - New `add-melos-config` command: run from the workspace root, it adds `melos` to `dev_dependencies` and appends a `melos:` block to `pubspec.yaml` — `bootstrap` / `clean` hooks and the `autogen`, `autogen_watch`, `localize`, `fluttergen`, `dependency_validator`, `generate_license`, `update_packages` and `use_fvm` scripts. Each step is skipped if already present
 
 ## 1.6.1

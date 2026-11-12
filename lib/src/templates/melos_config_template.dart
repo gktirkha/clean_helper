@@ -1,12 +1,16 @@
-String melosConfigTemplate() => r'''
+/// [version] pins the clean_helper the bootstrap hook activates from pub.dev.
+/// Raw strings keep the shell syntax (`$(...)`, `$OSS_IGNORE`) intact.
+String melosConfigTemplate(String version) =>
+    r'''
 melos:
   command:
     bootstrap:
       hooks:
         pre: |
           melos use_fvm
-          dart pub global activate --source git https://github.com/gktirkha/clean_helper.git
-          dart pub global activate slang
+          dart pub global activate clean_helper '''
+    '$version\n'
+    r'''          dart pub global activate slang
           dart pub global activate flutter_gen
           dart pub global activate dependency_validator
         post: |

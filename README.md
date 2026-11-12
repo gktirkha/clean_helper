@@ -21,8 +21,10 @@ It works in a single Flutter app and in a pub-workspace monorepo with several ap
 
 ## Installation
 
+From [pub.dev](https://pub.dev/packages/clean_helper):
+
 ```bash
-dart pub global activate --source git https://github.com/gktirkha/clean_helper
+dart pub global activate clean_helper
 ```
 
 From a local checkout:
@@ -326,7 +328,7 @@ Run from the workspace root (the monorepo root in a monorepo); it writes to the 
 
 1. Adds `melos` to `dev_dependencies`, unless it's already there.
 2. Appends a top-level `melos:` block, unless one already exists:
-   - **`bootstrap` hooks** — before: `melos use_fvm`, then globally activates clean_helper, slang, flutter_gen and dependency_validator. After: `melos localize`, `melos autogen`, `melos generate_license`.
+   - **`bootstrap` hooks** — before: `melos use_fvm`, then globally activates clean_helper from pub.dev at the running tool's version (`dart pub global activate clean_helper 1.7.0`), slang, flutter_gen and dependency_validator. After: `melos localize`, `melos autogen`, `melos generate_license`.
    - **`clean` hook** — after: `git clean -fdX`, then `melos use_fvm`.
    - **Scripts** — `autogen`, `autogen_watch` (build_runner in packages that depend on it), `localize` (slang), `fluttergen`, `dependency_validator`, `generate_license` (dart_pubspec_licenses → `lib/generated/oss/oss.dart`), `update_packages`, `use_fvm`.
 

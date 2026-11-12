@@ -15,14 +15,14 @@ Run from the workspace root. It's idempotent: each step skips work that's alread
 
 - **Doesn't call `ensurePubspec()`**: melos config belongs in the root pubspec, and `ensurePubspec()` would switch into a monorepo app first. It checks for `pubspec.yaml` itself and aborts without one.
 - `installMelos()` → `flutter pub add --dev melos`, skipped when `./pubspec.yaml` already has an indented `melos:` dependency line (`^  melos:`).
-- `addMelosToPubspec()` → appends `melosConfigTemplate()` to `./pubspec.yaml` with `overwriteFile`, skipped when a top-level `melos:` key exists.
+- `addMelosToPubspec()` → appends `melosConfigTemplate(toolVersion)` to `./pubspec.yaml` with `overwriteFile`, skipped when a top-level `melos:` key exists.
 
 It doesn't run `dart format` or build_runner.
 
 ## Template
 
-`melos_config` is a raw string (`r'''`) so the shell syntax in `generate_license` (`$(melos list …)`, `$OSS_IGNORE`) is emitted unchanged. It defines:
+`melos_config(version)` is built from raw strings (`r'''`) so the shell syntax in `generate_license` (`$(melos list …)`, `$OSS_IGNORE`) is emitted unchanged; only `version` is spliced in. It defines:
 
-- `command.bootstrap.hooks` — `pre`: `melos use_fvm` and `dart pub global activate` for clean_helper (from git), slang, flutter_gen, dependency_validator; `post`: `mkdir -p temp`, `melos localize`, `melos autogen`, `melos generate_license`.
+- `command.bootstrap.hooks` — `pre`: `melos use_fvm` and `dart pub global activate clean_helper <toolVersion>` (pub.dev, pinned to the running tool), then slang, flutter_gen, dependency_validator; `post`: `mkdir -p temp`, `melos localize`, `melos autogen`, `melos generate_license`.
 - `command.clean.hooks.post` — `git clean -fdX`, `melos use_fvm`.
 - `scripts` — `autogen`, `autogen_watch`, `dependency_validator`, `fluttergen`, `generate_license`, `localize`, `update_packages`, `use_fvm`.

@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import '../../templates/melos_config_template.dart';
+import '../shared/tool_version.dart';
 import '../shared/write_file.dart';
 
 /// Appends the `melos:` block to `./pubspec.yaml`, unless a top-level
@@ -14,6 +15,9 @@ void addMelosToPubspec() {
   }
 
   final separator = content.endsWith('\n') ? '\n' : '\n\n';
-  overwriteFile('pubspec.yaml', '$content$separator${melosConfigTemplate()}');
+  overwriteFile(
+    'pubspec.yaml',
+    '$content$separator${melosConfigTemplate(toolVersion)}',
+  );
   stdout.writeln('  📄 melos config added to pubspec.yaml');
 }

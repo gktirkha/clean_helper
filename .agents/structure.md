@@ -166,7 +166,7 @@ Each file is `<name>_template.dart` → `<name>Template(...)`.
 | clean_router package | `clean_router_base`, `clean_router_refresh`, `clean_router_lib_export`, `clean_router_pubspec_tail` |
 | Project config | `analysis_options`, `analysis_options_include`, `build_yaml`, `colors_xml`, `gitignore` |
 | Tools | `tools_command_runner`, `tools_clean`, `tools_bootstrap`, `tools_write_key_properties`, `tools_build_android`, `tools_build_config` |
-| Melos | `melos_config` |
+| Melos | `melos_config` (`version`) |
 | Config | `clean_helper_config` (`version`, `apps`) |
 | VS Code | `vscode_extensions` (`recommendations`) + the `vscodeRecommendedExtensions` list |
 
