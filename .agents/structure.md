@@ -30,10 +30,10 @@ clean_helper/
 | `add_entity.dart` | `addEntity(args, {runBuildRunnerAfter})` | `add-entity` |
 | `add_feature.dart` | `addFeature(args, {withDi, runBuildRunnerAfter})` | `add-feature` |
 | `create_packages.dart` | `createPackages({dir})` — skips `ensurePubspec()` | `create-packages` |
+| `add_config.dart` | `addConfig()` — skips `ensurePubspec()` | `add-config` |
 | `add_melos_config.dart` | `addMelosConfig()` — skips `ensurePubspec()` | `add-melos-config` |
 | `add_network_module.dart` | `addNetworkModule({runBuildRunnerAfter})` | `add-network-module` |
 | `add_repo.dart` | `addRepo(args, {runBuildRunnerAfter, noRest, addSample})` | `add-repo` |
-| `add_vscode_config.dart` | `addVscodeConfig()` | `add-vscode-config` |
 | `bootstrap.dart` | `runBootstrapCommand()` (async) | `bootstrap` |
 | `build_runner.dart` | `runBuildRunnerCommand(args)` | `build-runner` |
 | `generate_localizations.dart` | `runGenerateLocalizationsCommand()` | `generate-localizations` |
@@ -59,7 +59,7 @@ clean_helper/
 | `sort_imports.dart` | `sortImports(imports)` | Join import directives alphabetically |
 | `ensure_pubspec.dart` | `ensurePubspec()` | First call of every command: config → monorepo → version check |
 | `load_package_configs.dart` | `loadPackageConfigs()` | Fill the config globals from the starting-directory pubspec |
-| `package_configs.dart` | `PackageConfig` typedef `(name, import, create)`; `packageConfigsLoaded`, `networkModuleNameConfig`, `networkAuthInterceptorConfig`, `vscodeConfig`, `useRootAnalysisConfig`, `monoRepoAppPath`, `utilsPackageConfig`, `networkPackageConfig`, `localizationPackageConfig`, `routerPackageConfig`, `utilsModuleNameConfig`, `callAdapterNameConfig`, `slangSettingsConfig`, `resultTypeConfig` | Config globals |
+| `package_configs.dart` | `PackageConfig` typedef `(name, import, create)`; `packageConfigsLoaded`, `packageCreateConfig`, `networkModuleNameConfig`, `networkAuthInterceptorConfig`, `useRootAnalysisConfig`, `monoRepoAppPath`, `utilsPackageConfig`, `networkPackageConfig`, `localizationPackageConfig`, `routerPackageConfig`, `utilsModuleNameConfig`, `callAdapterNameConfig`, `slangSettingsConfig`, `resultTypeConfig` | Config globals |
 | `read_clean_helper_fields.dart` | `readCleanHelperFields(path)` | Scalar children of `clean-helper.<path…>` |
 | `read_package_config.dart` | `readPackageConfig(key)` | `packages.<key>` → `PackageConfig?` |
 | `resolve_utils_package.dart` | `resolveUtilsPackage()` | Configured utils package or `<app>_utils` |
@@ -138,8 +138,8 @@ clean_helper/
 | `add_network_module/` | `generateNetworkAppFiles(networkImport, utilsImport, {auth})`, `installNetworkDependencies(networkName)`, `patchDiInitializer(packageImport, packageModule)`, `patchDioLensInit()` |
 | `remove_feature/` | `deleteFeatureFiles(feature)`, `unpatchRouterModule(feature)` |
 | `build_runner/` | `runBuildRunnerBuild()`, `runBuildRunnerClean()` |
+| `config/` | `addConfigToPubspec()`, `findMonoRepoApps()` |
 | `melos/` | `installMelos()`, `addMelosToPubspec()` |
-| `vscode_config/` | `generateVscodeExtensions()`, `generateVscodeLaunch()`, `generateVscodeTasks()` |
 
 ---
 
@@ -160,8 +160,8 @@ Each file is `<name>_template.dart` → `<name>Template(...)`.
 | clean_router package | `clean_router_base`, `clean_router_refresh`, `clean_router_lib_export`, `clean_router_pubspec_tail` |
 | Project config | `analysis_options`, `analysis_options_include`, `build_yaml`, `colors_xml`, `gitignore` |
 | Tools | `tools_command_runner`, `tools_clean`, `tools_bootstrap`, `tools_write_key_properties`, `tools_build_android`, `tools_build_config` |
-| VS Code | `vscode_extensions`, `vscode_launch`, `vscode_tasks` |
 | Melos | `melos_config` |
+| Config | `clean_helper_config` (`version`, `apps`) |
 
 Templates that take configurable input:
 

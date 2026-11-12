@@ -9,6 +9,12 @@ import 'read_package_config.dart';
 /// so that the monorepo root pubspec is the one read.
 void loadPackageConfigs() {
   packageConfigsLoaded = true;
+  packageCreateConfig = {
+    for (final key in const ['utils', 'localization', 'router', 'network'])
+      key:
+          readCleanHelperFields(['packages', key])['create']?.toLowerCase() !=
+          'false',
+  };
   utilsPackageConfig = readPackageConfig('utils');
   networkPackageConfig = readPackageConfig('network');
   localizationPackageConfig = readPackageConfig('localization');
@@ -29,14 +35,6 @@ void loadPackageConfigs() {
 
   final root = readCleanHelperFields([]);
 
-  var vscode = readCleanHelperFields(['packages', 'vs_code_configs']);
-  if (vscode.isEmpty) vscode = readCleanHelperFields(['vs_code_configs']);
-  bool enabled(String key) => vscode[key]?.toLowerCase() != 'false';
-  vscodeConfig = (
-    extensions: enabled('extensions'),
-    tasks: enabled('tasks'),
-    launch: enabled('launch'),
-  );
   useRootAnalysisConfig =
       (readCleanHelperFields(['packages'])['use_root_analysis'] ??
               root['use_root_analysis'])

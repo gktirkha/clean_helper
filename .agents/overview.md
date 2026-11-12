@@ -30,9 +30,9 @@ Read next:
 | `build-runner [build\|clean]` | `runBuildRunnerCommand(args)` | Run build_runner |
 | `generate-localizations` | `runGenerateLocalizationsCommand()` | Run slang in `packages/<localization>` |
 | `generate-tools [--overwrite]` | `generateTools(overwrite:)` | `tools/` scripts |
-| `add-vscode-config` | `addVscodeConfig()` | `.vscode/` files |
 | `list-mono-repo-apps` | `listMonoRepoApps()` | Print monorepo apps and resolved config |
 | `create-packages [--dir]` | `createPackages(dir:)` | Create the configured utils / localization / router packages in `<dir>` (default `packages`), ignoring `create` |
+| `add-config` | `addConfig()` | Append the commented `clean-helper:` template to the current pubspec |
 | `add-melos-config` | `addMelosConfig()` | melos dev dependency + `melos:` hooks and scripts in the root pubspec |
 
 Global flags, declared on `CleanHelperRunner` and handled in its `runCommand` override:
@@ -53,7 +53,6 @@ Global flags, declared on `CleanHelperRunner` and handled in its `runCommand` ov
 | `packages.utils.module_name` / `.call_adapter_name` | `loadPackageConfigs()` | `utilsModuleNameConfig` / `callAdapterNameConfig` |
 | `packages.localization.{name,import,create}` | `loadPackageConfigs()` | `localizationPackageConfig` |
 | `packages.localization.<slang key>` | `loadPackageConfigs()` | `slangSettingsConfig` |
-| `packages.vs_code_configs.{extensions,tasks,launch}` (or `clean-helper.vs_code_configs`) | `loadPackageConfigs()` | `vscodeConfig` |
 | `packages.use_root_analysis` (or `clean-helper.use_root_analysis`) | `loadPackageConfigs()` | `useRootAnalysisConfig` |
 | `packages.router.{name,import,create}` | `loadPackageConfigs()` | `routerPackageConfig` |
 | `packages.network.{name,import,create}` | `loadPackageConfigs()` | `networkPackageConfig` |
@@ -92,7 +91,7 @@ bin/clean_helper.dart → CleanHelperRunner.run(args)
 7. `addPackagesWorkspace(created)` — lists the created packages under `workspace:`; adds nothing when none are created
 8. `generateCoreFiles()` — main, bootstrap, init service, app, DI, router
 9. `createFeatureStructure('lib/features/home', 'home', …)`
-10. `installDependencies()`, `updateGitignore()`, `addVscodeConfig()`, `addFlutterAssetsToPubSpec()`
+10. `installDependencies()`, `updateGitignore()`, `addFlutterAssetsToPubSpec()`
 11. `addNetworkModule(runBuildRunnerAfter: false)` with `--network`, then `generateToolsFiles()` with `--tools` (after the network package, so `tools/bootstrap.dart` includes it)
 12. `runSlang(<localization>)` — only if created
 13. `runBuildRunner` in `packages/<utils>` (if created) and `packages/<network>` (with `--network`), then `runBuildRunner()` for the app

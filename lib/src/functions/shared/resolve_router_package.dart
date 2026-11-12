@@ -7,5 +7,5 @@ PackageConfig resolveRouterPackage() =>
     (
       name: 'clean_router',
       import: 'package:clean_router/clean_router.dart',
-      create: true,
+      create: packageCreateConfig['router'] ?? true,
     );

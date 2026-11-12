@@ -4,6 +4,7 @@ import 'package:cli_completion/cli_completion.dart';
 import '../commands/print_version.dart';
 import '../functions/shared/scope_option.dart';
 import 'commands/bootstrap_command.dart';
+import 'commands/add_config_command.dart';
 import 'commands/add_entity_command.dart';
 import 'commands/add_feature_command.dart';
 import 'commands/add_melos_config_command.dart';
@@ -16,7 +17,6 @@ import 'commands/list_mono_repo_apps_command.dart';
 import 'commands/regenerate_router_command.dart';
 import 'commands/remove_feature_command.dart';
 import 'commands/generate_localizations_command.dart';
-import 'commands/add_vscode_config_command.dart';
 import 'commands/generate_tools_command.dart';
 
 class CleanHelperRunner extends CompletionCommandRunner<void> {
@@ -48,9 +48,9 @@ class CleanHelperRunner extends CompletionCommandRunner<void> {
     addCommand(RemoveFeatureCommand());
     addCommand(RegenerateRouterCommand());
     addCommand(GenerateLocalizationsCommand());
-    addCommand(AddVscodeConfigCommand());
     addCommand(GenerateToolsCommand());
     addCommand(ListMonoRepoAppsCommand());
+    addCommand(AddConfigCommand());
     addCommand(AddMelosConfigCommand());
     addCommand(CreatePackagesCommand());
   }

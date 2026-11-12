@@ -12,6 +12,11 @@ typedef PackageConfig = ({String name, String import, bool create});
 /// doesn't hold the root config.
 bool packageConfigsLoaded = false;
 
+/// `clean-helper.packages.<key>.create` for each package key, set by
+/// [loadPackageConfigs]. Read on its own so `create: false` also applies to a
+/// package that keeps its default name. Missing means true.
+Map<String, bool> packageCreateConfig = {};
+
 /// `clean-helper.packages.utils`, set by [loadPackageConfigs].
 /// Null means the default `<app>_utils` package (see [resolveUtilsPackage]).
 PackageConfig? utilsPackageConfig;
@@ -56,15 +61,6 @@ Map<String, String> slangSettingsConfig = {};
 /// set by [loadPackageConfigs]. True means apps and packages include the
 /// workspace root's `analysis_options.yaml` instead of the nearest project's.
 bool useRootAnalysisConfig = false;
-
-/// `clean-helper.packages.vs_code_configs` (or `clean-helper.vs_code_configs`),
-/// set by [loadPackageConfigs]: which `.vscode/` files `add-vscode-config`
-/// writes. A missing key means true.
-({bool extensions, bool tasks, bool launch}) vscodeConfig = (
-  extensions: true,
-  tasks: true,
-  launch: true,
-);
 
 /// The monorepo app [resolveMonoRepoProject] switched into, relative to the
 /// starting directory (e.g. `apps/shop`). Null when no switch happened.

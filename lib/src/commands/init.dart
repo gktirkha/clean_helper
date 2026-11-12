@@ -75,7 +75,6 @@ Future<void> runInit({
   );
   installDependencies([router.name, localization.name, utils.name]);
   updateGitignore();
-  addVscodeConfig();
   addFlutterAssetsToPubSpec();
   if (withNetwork) addNetworkModule(runBuildRunnerAfter: false);
   // After the network package, so tools/bootstrap.dart includes it.

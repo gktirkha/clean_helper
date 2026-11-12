@@ -9,9 +9,10 @@
   - `utils.module_name` names the utils `@module` class; `utils.call_adapter_name` names the generated call adapter class
   - every other key under `localization` (`base_locale`, `input_directory`, `output_directory`, `translate_var`, …) goes into the package's `slang.yaml`, and the barrel, `String.tr` and `safeCast` follow `output_directory`, `output_file_name` and `translate_var`
   - `add-feature`, `add-repo`, `add-network-module` and `bootstrap` use the configured names; `bootstrap` skips slang when the localization package isn't under `packages/`; `list-mono-repo-apps` prints the new keys
+- New `add-config` command: appends a `clean-helper:` block with every config key, each commented, to the current `pubspec.yaml`. Active values are the defaults, app-dependent keys are commented out, `version` is stamped, and `mono_repo_apps` is filled from `apps/*/pubspec.yaml`
+- Fix: `packages.<key>.create: false` now applies even when the package keeps its default name (no `name`/`import`)
 - New `create-packages [--dir=<path>]` command: creates the utils, localization and router packages from `clean-helper.packages` (ignoring `create`) in `<dir>/<name>`, `packages/` by default, and lists them under `workspace:` in the current `pubspec.yaml`. It then runs pub get, slang and build_runner. Existing packages are skipped. Meant for a monorepo root whose apps use `create: false`
 - Lint rules are written once: packages' `analysis_options.yaml` is just `include:` of the app's file (or, for `create-packages`, the current directory's, created if missing). With `packages.use_root_analysis: true` in a monorepo, the app and its packages include the workspace root's file instead, which `init` creates if missing
-- `packages.vs_code_configs.{extensions,tasks,launch}` (default `true`) choose which `.vscode/` files `add-vscode-config` and `init` write
 - Generated `analysis_options.yaml` excludes `build/**`, `android/**`, `ios/**` and `web/**` from analysis
 - **Breaking:** `clean-helper.retrofit_call_adapter` is removed. Set the class name with `packages.utils.call_adapter_name`. The import is `packages.network.import`, else `lib/core/network/utils/retrofit_call_adapter.dart`
 - **Breaking — the network layer is a workspace package.** `packages.network` (`name` default `<app>_network`, `import`, `create`, `module_name`, `auth_interceptor` default `true`) describes it, and `add-network-module` / `init --network` create it in `packages/<name>` unless `create: false`; `create-packages` includes it when `packages.network` is configured:
@@ -29,6 +30,7 @@
   - importing `UseCaseBase` from `lib/core/domain/use_cases/`
   - the per-command scripts in `bin/` (use `clean-helper <command>`) and the unregistered `addNetwork()` entry point
   - the README's "Upgrading existing projects" table
+  - the `add-vscode-config` command; `init` no longer writes `.vscode/`
 - Fix: `generate-localizations` runs slang in the localization package instead of the app root
 - Fix: `bootstrap` and the generated `tools/bootstrap.dart` run build_runner in the utils package before the app; `tools/bootstrap.dart` runs slang in the localization package
 - Fix: a second `add-repo` in the same feature adds its constant to the existing `<feature>_api_paths.dart`

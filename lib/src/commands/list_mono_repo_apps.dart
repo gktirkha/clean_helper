@@ -34,14 +34,19 @@ void listMonoRepoApps() {
     }
   }
 
-  String describe(PackageConfig? p, String fallback) => p == null
-      ? fallback
-      : '${p.name}  (${p.import})${p.create ? '' : '  — not created'}';
+  String describe(String key, PackageConfig? p, String fallback) {
+    final notCreated = (packageCreateConfig[key] ?? true)
+        ? ''
+        : '  — not created';
+    return p == null
+        ? '$fallback$notCreated'
+        : '${p.name}  (${p.import})$notCreated';
+  }
 
   stdout.writeln();
   stdout.writeln('Packages (clean-helper.packages):');
   stdout.writeln(
-    '  utils:         ${describe(utilsPackageConfig, '<app>_utils (default)')}',
+    '  utils:         ${describe('utils', utilsPackageConfig, '<app>_utils (default)')}',
   );
   stdout.writeln(
     '    module_name:       ${utilsModuleNameConfig ?? '<UtilsPascal>Module (default)'}',
@@ -50,28 +55,23 @@ void listMonoRepoApps() {
     '    call_adapter_name: ${callAdapterNameConfig ?? 'RetrofitCallAdapter (default)'}',
   );
   stdout.writeln(
-    '  localization:  ${describe(localizationPackageConfig, '<app>_localization (default)')}',
+    '  localization:  ${describe('localization', localizationPackageConfig, '<app>_localization (default)')}',
   );
   for (final e in resolveSlangSettings().entries) {
     final source = slangSettingsConfig.containsKey(e.key) ? '' : ' (default)';
     stdout.writeln('    ${e.key}: ${e.value}$source');
   }
   stdout.writeln(
-    '  router:        ${describe(routerPackageConfig, 'clean_router (default)')}',
+    '  router:        ${describe('router', routerPackageConfig, 'clean_router (default)')}',
   );
   stdout.writeln(
-    '  network:       ${describe(networkPackageConfig, '<app>_network (default)')}',
+    '  network:       ${describe('network', networkPackageConfig, '<app>_network (default)')}',
   );
   stdout.writeln(
     '    module_name:       ${networkModuleNameConfig ?? '<NetworkPascal>Module (default)'}',
   );
   stdout.writeln('    auth_interceptor:  $networkAuthInterceptorConfig');
 
-  final vscode = vscodeConfig;
-  stdout.writeln(
-    '  vs_code_configs: extensions ${vscode.extensions}, '
-    'tasks ${vscode.tasks}, launch ${vscode.launch}',
-  );
   stdout.writeln(
     '  use_root_analysis: $useRootAnalysisConfig'
     '${useRootAnalysisConfig ? '' : ' (default — packages include the nearest project)'}',

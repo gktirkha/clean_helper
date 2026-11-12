@@ -86,13 +86,13 @@ The runner and `ensurePubspec()` fill shared globals before any command logic ru
 |---|---|---|
 | `resolveScope` (`scope_option.dart`) | `CleanHelperRunner.runCommand` | `--scope` value |
 | `packageConfigsLoaded` (`package_configs.dart`) | `loadPackageConfigs()` | config already loaded — `ensurePubspec()` loads it only once per process, so nested commands (`init` → `add-network-module`) keep the root config after the monorepo `chdir` |
+| `packageCreateConfig` | `loadPackageConfigs()` | `packages.<key>.create` per key, read even without `name`/`import`; the `resolve*Package()` defaults use it |
 | `utilsPackageConfig` | `loadPackageConfigs()` | `packages.utils` as a `PackageConfig` `(name, import, create)`, or null |
 | `localizationPackageConfig`, `routerPackageConfig` | `loadPackageConfigs()` | `packages.localization` / `packages.router`, or null |
 | `networkPackageConfig` | `loadPackageConfigs()` | `packages.network`, or null |
 | `networkModuleNameConfig`, `networkAuthInterceptorConfig` | `loadPackageConfigs()` | `packages.network.module_name` (or null) / `.auth_interceptor` (true unless `false`) |
 | `utilsModuleNameConfig`, `callAdapterNameConfig` | `loadPackageConfigs()` | `packages.utils.module_name` / `.call_adapter_name`, or null |
 | `slangSettingsConfig` | `loadPackageConfigs()` | every other scalar key under `packages.localization` |
-| `vscodeConfig` | `loadPackageConfigs()` | `(extensions, tasks, launch)` from `packages.vs_code_configs`; each true unless `false` |
 | `useRootAnalysisConfig` | `loadPackageConfigs()` | `packages.use_root_analysis` |
 | `monoRepoAppPath` | `resolveMonoRepoProject()` | the app switched into, relative to the root (`apps/shop`), or null |
 

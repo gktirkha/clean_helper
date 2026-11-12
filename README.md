@@ -85,8 +85,8 @@ Global options go **before** the command:
 | [`build-runner [build\|clean]`](#build-runner) | Run build_runner |
 | [`generate-localizations`](#generate-localizations) | Run slang |
 | [`generate-tools [--overwrite]`](#generate-tools) | Generate `tools/` scripts |
-| [`add-vscode-config`](#add-vscode-config) | Generate `.vscode/` files |
 | [`create-packages [--dir=<path>]`](#create-packages) | Create the utils, localization and router packages from config, e.g. at a monorepo root |
+| [`add-config`](#add-config) | Add a commented `clean-helper:` block with every config key to `pubspec.yaml` |
 | [`add-melos-config`](#add-melos-config) | Add melos and its hooks and scripts to the root `pubspec.yaml` |
 | [`list-mono-repo-apps`](#list-mono-repo-apps) | Show the resolved monorepo and package config |
 
@@ -107,7 +107,7 @@ What it does:
 1. Writes `analysis_options.yaml` and runs `flutter pub get`.
 2. Creates three workspace packages under `packages/`: `clean_router`, `<app>_localization` and `<app>_utils` (see [Workspace packages](#workspace-packages)), and adds them to `workspace:` in `pubspec.yaml`. Their names, imports and whether each is created at all are [configurable](#workspace-packages-create-name-import).
 3. Generates the app skeleton: `main.dart`, `bootstrap.dart`, `InitService`, `MainApp`, go_router setup, get_it/injectable DI, and a `home` feature.
-4. Installs dependencies, updates `.gitignore`, adds `.vscode/` config and flutter_gen setup (`build.yaml`, `assets/colors/colors.xml`).
+4. Installs dependencies, updates `.gitignore`, adds flutter_gen setup (`build.yaml`, `assets/colors/colors.xml`).
 5. Optionally adds the network layer, auth interceptor and tools.
 6. Runs slang, then build_runner in the utils package and in the app, then `dart format`.
 7. Sorts dependencies in every pubspec and stamps `clean-helper.version` in `pubspec.yaml`.
@@ -268,23 +268,6 @@ clean-helper generate-tools [--overwrite | -o]
 
 Generates `tools/`: `clean.dart`, `bootstrap.dart [--clean]` (pub get, then slang and build_runner in the workspace packages and the app), `write_key_properties.dart`, `build_android.dart [aab|apk|both] [--no-clean]`, a shared `command_runner.dart`, and a git-ignored `tools/config/android_build_config.json` for signing. The environment variables `JKS_PATH`, `STORE_PASSWORD`, `KEY_PASSWORD` and `KEY_ALIAS` override the JSON.
 
-### `add-vscode-config`
-
-```bash
-clean-helper add-vscode-config
-```
-
-Writes `.vscode/extensions.json`, `launch.json` and `tasks.json`, skipping any that exist. `init` runs it automatically. To leave a file out, set it to `false` under `packages.vs_code_configs`:
-
-```yaml
-clean-helper:
-  packages:
-    vs_code_configs:
-      extensions: true
-      tasks: false
-      launch: true
-```
-
 ### `create-packages`
 
 ```bash
@@ -301,6 +284,21 @@ Creates the utils, localization and router packages described by [`clean-helper.
 Typical monorepo setup: configure `packages` in the root pubspec, run `create-packages` there, and set `create: false` so each app's `init` uses the shared packages instead of creating its own.
 
 Keep each barrel outside `lib/src/` (for example `package:x/x.dart`): importing from another package's `src/` triggers the `implementation_imports` lint.
+
+### `add-config`
+
+```bash
+clean-helper add-config
+```
+
+Appends a `clean-helper:` block to the `pubspec.yaml` in the current directory: the monorepo root in a monorepo. It never prompts for an app. The block lists every [configuration](#configuration) key with a comment above it:
+
+- Active values are the defaults, so adding the block changes nothing.
+- Keys whose default depends on the app, such as package names, imports, `module_name` and `call_adapter_name`, are commented out with the default shown. Uncomment the ones you want to change.
+- `version` is the running tool's version.
+- `mono_repo_apps` lists the `apps/*/` folders that have a `pubspec.yaml`, and is commented out if there are none.
+
+It's skipped if the pubspec already has a `clean-helper:` key.
 
 ### `add-melos-config`
 
@@ -347,7 +345,6 @@ Packages (clean-helper.packages):
   network:       my_app_network  (package:my_app_network/my_app_network.dart)
     module_name:       <NetworkPascal>Module (default)
     auth_interceptor:  true
-  vs_code_configs: extensions true, tasks true, launch true
   use_root_analysis: false (default — packages include the nearest project)
 ```
 
@@ -433,12 +430,6 @@ clean-helper:
       # AppAuthInterceptor in the app. Default: true.
       auth_interceptor: true
 
-    # Which .vscode/ files add-vscode-config (and init) write. Each defaults to true.
-    vs_code_configs:
-      extensions: true
-      tasks: true
-      launch: true
-
     # true: apps and packages include the workspace root's analysis_options.yaml
     # instead of the nearest project's. Default: false.
     use_root_analysis: true
@@ -452,7 +443,6 @@ clean-helper:
 | `packages.utils.module_name` | `<UtilsPascal>Module` | The utils package's `@module` class |
 | `packages.utils.call_adapter_name` | `RetrofitCallAdapter` | Call adapter class generated and used by REST datasources |
 | [`packages.localization`](#packageslocalization) `.name` / `.import` / `.create` | `<app>_localization` / `package:<name>/<name>.dart` / `true` | Localization package; other keys go to `slang.yaml` |
-| `packages.vs_code_configs` `.extensions` / `.tasks` / `.launch` | `true` | Which `.vscode/` files [`add-vscode-config`](#add-vscode-config) (and `init`) write |
 | [`packages.use_root_analysis`](#analysis-options) | `false` | Apps and packages include the workspace root's `analysis_options.yaml` |
 | [`packages.router`](#packagesrouter) `.name` / `.import` / `.create` | `clean_router` / `package:<name>/<name>.dart` / `true` | Router package with `CleanRouterBase` |
 | [`packages.network`](#packagesnetwork) `.name` / `.import` / `.create` | `<app>_network` / `package:<name>/<name>.dart` / `true` | Network package |
