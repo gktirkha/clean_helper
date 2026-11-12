@@ -58,7 +58,7 @@ clean-helper add-repo orders order --add-sample    # data layer with sample GET/
 
 `dart format` and `build_runner` run automatically after each generating command.
 
-If [fvm](https://fvm.app) is installed, every `dart`/`flutter` call goes through it, and `init` / `bootstrap` start with `fvm use`.
+If [fvm](https://fvm.app) is installed, every `dart`/`flutter` call goes through it, and `init` / `bootstrap` start with `fvm use`. In a monorepo app they skip it, as do the generated `tools/` scripts, because the Flutter version is pinned at the workspace root.
 
 ---
 
@@ -125,7 +125,7 @@ Dependencies installed in the app:
 clean-helper bootstrap
 ```
 
-Runs `fvm use` (if fvm is installed), `flutter pub get`, slang in the localization package, `build_runner build` in the utils package, then `build_runner build` in the app. The package steps are skipped for packages that aren't under `packages/`. Use it after a `git pull` that changed dependencies or generated inputs.
+Runs `fvm use` (if fvm is installed, and not in a monorepo app), `flutter pub get`, slang in the localization package, `build_runner build` in the utils package, then `build_runner build` in the app. The package steps are skipped for packages that aren't under `packages/`. Use it after a `git pull` that changed dependencies or generated inputs.
 
 ### `add-feature`
 

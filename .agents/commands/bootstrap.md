@@ -12,7 +12,7 @@ clean-helper bootstrap
 ## Flow
 
 1. `ensurePubspec()`
-2. `fvmUse()` — interactive `fvm use`, a no-op without fvm
+2. `fvmUse()` — interactive `fvm use`; a no-op without fvm or in a monorepo app
 3. `runFlutterPubGet()`
 4. `runSlang(<localization>)` — runs slang inside `packages/<localization>` (`resolveLocalizationPackage()`); skipped with a note when that folder doesn't exist, i.e. the package lives elsewhere in the workspace
 5. `runBuildRunner` in `packages/<utils>` and `packages/<network>`, each if the folder exists — the app's DI config needs their micro-package modules — then `runBuildRunner()` in the app

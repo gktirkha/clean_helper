@@ -86,7 +86,7 @@ clean_helper/
 | `run_command.dart` | `runCommand(cmd, {workingDirectory})` | Run a process, abort on failure |
 | `run_command_streamed.dart` | `runCommandStreamed(cmd)` | Same, streaming output |
 | `fvm_exec.dart` | `fvmExec(exe)` | `['fvm', exe]` or `[exe]` |
-| `fvm_use.dart` | `fvmUse()` (async) | Interactive `fvm use` |
+| `fvm_use.dart` | `fvmUse()` (async) | Interactive `fvm use`; skipped when `monoRepoAppPath` is set |
 
 ### `init/` — `runInit()` and helpers reused by other commands
 

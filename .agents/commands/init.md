@@ -15,7 +15,7 @@ Run once, in a project fresh from `flutter create`.
 
 `ensurePubspec()` runs first. `resolveUtilsPackage()`, `resolveLocalizationPackage()` and `resolveRouterPackage()` then give each package's name, import and `create` flag (defaults: `<app>_utils`, `<app>_localization`, `clean_router`, all created), and `resolveSlangSettings()` the slang settings. The rest is in `overview.md` → "`init` sequence". In brief:
 
-1. `fvmUse()`, `generateAnalysisOptions()`, `runFlutterPubGet()`
+1. `fvmUse()` (skipped in a monorepo app), `generateAnalysisOptions()`, `runFlutterPubGet()`
 2. `createDirectories()`, `generateFlutterGenFiles()`
 3. The packages with `create: true`: `generateCleanRouterPackage()`, `generateLocalizationPackage()`, `generateUtilsPackage()`, then `addPackagesWorkspace()` for those created — no `workspace:` key if none are
 4. The app: `generateCoreFiles()`, `createFeatureStructure()` for `home` (with `withDi`)

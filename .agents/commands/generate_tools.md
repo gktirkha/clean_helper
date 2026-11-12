@@ -27,3 +27,5 @@ tools/
 Templates: `tools_command_runner`, `tools_clean`, `tools_bootstrap`, `tools_write_key_properties`, `tools_build_android`, `tools_build_config`.
 
 The slang and package build_runner steps are only included for packages under `packages/` when the tools are generated; `commandRunner` / `fvmRunner` take a `workingDirectory`.
+
+In a monorepo app, `tools/command_runner.dart` is generated with a no-op `fvmUse()` (`toolsCommandRunnerTemplate(fvmUse: false)`), so `clean.dart` and `bootstrap.dart` don't run `fvm use` there.

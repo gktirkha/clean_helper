@@ -8,7 +8,7 @@ class BootstrapCommand extends Command<void> {
 
   @override
   String get description =>
-      'Run fvm use, flutter pub get, slang, and build_runner in the current project.';
+      'Run fvm use (not in monorepo apps), flutter pub get, slang, and build_runner in the current project.';
 
   @override
   Future<void> run() => runBootstrapCommand();

@@ -36,6 +36,7 @@
 - Fix: `bootstrap` and the generated `tools/bootstrap.dart` run build_runner in the utils package before the app; `tools/bootstrap.dart` runs slang in the localization package
 - Fix: a second `add-repo` in the same feature adds its constant to the existing `<feature>_api_paths.dart`
 - Usage errors from `add-feature`, `add-entity`, `add-repo`, `remove-feature` and `build-runner` exit with code 1 through the same `❌` message, using the hyphenated command names
+- `init`, `bootstrap` and the generated `tools/` scripts skip `fvm use` in a monorepo app — the Flutter version is pinned at the workspace root
 - Fix: commands that call other commands (`init --network` → `add-network-module`) no longer reload config from the monorepo app's pubspec after switching into it, which dropped the root `clean-helper.packages` settings
 - New `add-melos-config` command: run from the workspace root, it adds `melos` to `dev_dependencies` and appends a `melos:` block to `pubspec.yaml` — `bootstrap` / `clean` hooks and the `autogen`, `autogen_watch`, `localize`, `fluttergen`, `dependency_validator`, `generate_license`, `update_packages` and `use_fvm` scripts. Each step is skipped if already present
 

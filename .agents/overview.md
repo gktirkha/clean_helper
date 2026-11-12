@@ -84,7 +84,7 @@ bin/clean_helper.dart → CleanHelperRunner.run(args)
 ## `init` sequence
 
 1. `ensurePubspec()`; `resolveUtilsPackage()`, `resolveLocalizationPackage()`, `resolveRouterPackage()`, `resolveSlangSettings()`
-2. `fvmUse()`
+2. `fvmUse()` — skipped in a monorepo app
 3. `generateAnalysisOptions()`, `runFlutterPubGet()`
 4. `createDirectories()` — empty app folders, including the home feature's
 5. `generateFlutterGenFiles()` — `build.yaml`, `assets/colors/colors.xml`
