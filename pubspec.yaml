@@ -10,10 +10,9 @@ executables:
   clean-helper: clean_helper
 
 dependencies:
-  args: ^2.5.0
-  cli_completion: ^0.5.0
+  args: ^2.7.0
+  cli_completion: ^0.6.0
 
 dev_dependencies:
   flutter_lints: ^6.0.0
-  lints: ^6.0.0
-  test: ^1.25.6
+  lints: ^6.1.0
