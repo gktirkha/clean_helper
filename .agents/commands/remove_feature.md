@@ -1,6 +1,6 @@
 # Command: remove-feature
 
-**Entry point:** `lib/src/commands/remove_feature.dart` → `removeFeature(args)`
+**Entry point:** `lib/src/commands/remove_feature.dart` → `removeFeature(args, {runBuildRunnerAfter})`
 **Runner:** `RemoveFeatureCommand`
 
 ## Usage
@@ -20,4 +20,4 @@ The name is lower-cased. It aborts if no name is given.
    - It warns if the file is missing.
 3. `deleteFeatureFiles(f)`: deletes `lib/features/<f>/` recursively, and `lib/app/navigation/<f>_navigation_impl.dart`. It warns about, but doesn't abort on, missing paths.
 
-It doesn't run `dart format` or build_runner. Stale DI registrations disappear the next time build_runner runs.
+4. `runDartFormat()`, then `runBuildRunner()` (unless `runBuildRunnerAfter: false`), so `di_initializer.config.dart` stops referencing the deleted files.

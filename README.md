@@ -238,7 +238,7 @@ Existing files are skipped.
 clean-helper remove-feature user_profile
 ```
 
-Removes the router from `<app>_router_module.dart`, then deletes `lib/features/<name>/` and `lib/app/navigation/<name>_navigation_impl.dart`. It doesn't run format or build_runner.
+Removes the router from `<app>_router_module.dart`, then deletes `lib/features/<name>/` and `lib/app/navigation/<name>_navigation_impl.dart`. It then formats and runs build_runner, so the generated DI config drops the feature's registrations.
 
 ### `regenerate-router`
 

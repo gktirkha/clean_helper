@@ -43,7 +43,7 @@ clean_helper/
 | `list_mono_repo_apps.dart` | `listMonoRepoApps()` — skips `ensurePubspec()` | `list-mono-repo-apps` |
 | `print_version.dart` | `printVersion()` | global `--version` |
 | `regenerate_router.dart` | `regenerateRouter()` | `regenerate-router` |
-| `remove_feature.dart` | `removeFeature(args)` | `remove-feature` |
+| `remove_feature.dart` | `removeFeature(args, {runBuildRunnerAfter})` | `remove-feature` |
 
 ---
 

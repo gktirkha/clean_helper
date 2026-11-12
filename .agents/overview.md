@@ -25,7 +25,7 @@ Read next:
 | `add-repo <feature> <name>` | `addRepo(args)` | Data + domain layer for a repository |
 | `add-entity <scope> <name> [folder]` | `addEntity(args)` | Entity + freezed model |
 | `add-network-module` | `addNetworkModule()` | Create the network package and wire the app to it |
-| `remove-feature <name>` | `removeFeature(args)` | Delete a feature, unregister its router |
+| `remove-feature <name>` | `removeFeature(args, {runBuildRunnerAfter})` | Delete a feature, unregister its router |
 | `regenerate-router` | `regenerateRouter()` | Rebuild `<app>_router_module.dart` from disk |
 | `build-runner [build\|clean]` | `runBuildRunnerCommand(args)` | Run build_runner |
 | `generate-localizations` | `runGenerateLocalizationsCommand()` | Run slang in `packages/<localization>` |
