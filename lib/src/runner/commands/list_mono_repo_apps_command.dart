@@ -8,7 +8,8 @@ class ListMonoRepoAppsCommand extends Command<void> {
 
   @override
   String get description =>
-      'List all mono-repo apps declared in pubspec.yaml under clean-helper.mono_repo_apps.';
+      'List the mono-repo apps and show how every clean-helper config key '
+      'resolves.';
 
   @override
   void run() => listMonoRepoApps();

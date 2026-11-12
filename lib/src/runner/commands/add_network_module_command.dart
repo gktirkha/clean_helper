@@ -8,8 +8,8 @@ class AddNetworkModuleCommand extends Command<void> {
 
   @override
   String get description =>
-      'Set up the network layer: installs Dio, Retrofit, and related dependencies, '
-      'and generates the network module files.';
+      'Create the network package (Dio, NetworkConfig, interceptors) and '
+      'wire the app to it.';
 
   @override
   void run() => addNetworkModule();
