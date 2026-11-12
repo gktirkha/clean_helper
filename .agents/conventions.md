@@ -139,4 +139,4 @@ The command output uses emoji-prefixed lines: `🚀` start, `📄` file written,
 
 ## fvm
 
-`fvmExec('dart' | 'flutter')` returns `['fvm', exe]` when fvm is installed, otherwise `[exe]`; the check is cached. `fvmUse()` (async) runs `fvm use` interactively at the start of `init` and `bootstrap`. It does nothing in a monorepo app (`monoRepoAppPath` set): the Flutter version is pinned at the workspace root. For the same reason `generateToolsFiles()` passes `fvmUse: false` to `tools_command_runner` there, which makes the generated `fvmUse()` a no-op.
+`fvmExec('dart' | 'flutter')` returns `['fvm', exe]` when fvm is installed, otherwise `[exe]`; the check is cached. `fvmUse()` (async) runs `fvm use` interactively at the start of `init` and `bootstrap`. It does nothing in a monorepo app (`monoRepoAppPath` set): the Flutter version is pinned at the workspace root. For the same reason `generateToolsFiles()` writes nothing in a monorepo app.

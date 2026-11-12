@@ -1,7 +1,4 @@
-/// [fvmUse] is false for a monorepo app, whose Flutter version is pinned at
-/// the workspace root: the generated `fvmUse()` then does nothing.
-String toolsCommandRunnerTemplate({bool fvmUse = true}) =>
-    '''
+String toolsCommandRunnerTemplate() => '''
 import 'dart:io';
 
 Future<void> commandRunner(String command, {String? workingDirectory}) async {
@@ -42,10 +39,9 @@ Future<void> fvmRunner(String command, {String? workingDirectory}) async {
   await commandRunner('\$prefix\$command', workingDirectory: workingDirectory);
 }
 
-${fvmUse ? '''Future<void> fvmUse() async {
+Future<void> fvmUse() async {
   if (await _checkFvm()) await commandRunner('fvm use --skip-pub-get');
-}''' : '''/// Monorepo app: the Flutter version is pinned at the workspace root.
-Future<void> fvmUse() async {}'''}
+}
 
 void ensureProjectRoot() {
   if (!File('pubspec.yaml').existsSync()) {

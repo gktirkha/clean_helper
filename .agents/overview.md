@@ -19,7 +19,7 @@ Read next:
 
 | Command | Entry point | Summary |
 |---|---|---|
-| `init` | `runInit()` (async) | Full scaffold of a new Flutter project |
+| `init` | `runInit({withNetwork, withDi, withTools})` (async; network and home DI by default) | Full scaffold of a new Flutter project; `-n` / `-d` skip network / home DI, `-t` adds `tools/` |
 | `bootstrap` | `runBootstrapCommand()` (async) | `fvm use` → pub get → slang → build_runner |
 | `add-feature <name>` | `addFeature(args, {withDi, runBuildRunnerAfter})` | Feature routes, router, navigation, bloc, page |
 | `add-repo <feature> <name>` | `addRepo(args, {runBuildRunnerAfter, noRest, addSample})` | Data + domain layer for a repository |
@@ -97,9 +97,9 @@ bin/clean_helper.dart → CleanHelperRunner.run(args)
 8. `generateCoreFiles()` — main, bootstrap, init service, app, DI, router
 9. `createFeatureStructure('lib/features/home', 'home', …)`
 10. `installDependencies()`, `updateGitignore()`, `addFlutterAssetsToPubSpec()`
-11. `addNetworkModule(runBuildRunnerAfter: false)` with `--network`; `writePackageAnalysisOptions` for every package under `packages/`; then `generateToolsFiles()` with `--tools` (after the network package, so `tools/bootstrap.dart` includes it)
+11. `addNetworkModule(runBuildRunnerAfter: false)` unless `--skip-network`; `writePackageAnalysisOptions` for every package under `packages/`; then `generateToolsFiles()` with `--tools` (after the network package, so `tools/bootstrap.dart` includes it)
 12. `runSlang(<localization>)` — only if created
-13. `runBuildRunner` in `packages/<utils>` (if created) and `packages/<network>` (with `--network`), then `runBuildRunner()` for the app
+13. `runBuildRunner` in `packages/<utils>` (if created) and `packages/<network>` (unless `--skip-network`), then `runBuildRunner()` for the app
 14. `runDartFormat()`
 15. `sortPubspecDeps()` for the app and the created utils / localization pubspecs
 16. `writeToolVersion()`

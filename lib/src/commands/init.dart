@@ -32,9 +32,12 @@ import '../functions/shared/resolve_utils_module_name.dart';
 import '../functions/shared/resolve_utils_package.dart';
 import '../functions/shared/write_package_analysis_options.dart';
 
+/// Scaffolds the project. The network package and home DI module are
+/// generated unless switched off (`--skip-network`, `--skip-di`); `tools/`
+/// only with `--tools`.
 Future<void> runInit({
-  bool withNetwork = false,
-  bool withDi = false,
+  bool withNetwork = true,
+  bool withDi = true,
   bool withTools = false,
 }) async {
   ensurePubspec();

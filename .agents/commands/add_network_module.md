@@ -1,7 +1,7 @@
 # Command: add-network-module
 
 **Entry point:** `lib/src/commands/add_network_module.dart` → `addNetworkModule({runBuildRunnerAfter})`
-**Runner:** `AddNetworkModuleCommand`. Also called by `init --network` (with `runBuildRunnerAfter: false`; `init` runs build_runner itself).
+**Runner:** `AddNetworkModuleCommand`. Also called by `init` unless `--skip-network` (with `runBuildRunnerAfter: false`; `init` runs build_runner itself).
 
 ## Usage
 

@@ -1,3 +1,10 @@
+## 1.8.0
+
+### Breaking
+
+- `init` generates the network package and the home feature's DI module by default. `--skip-network` (`-n`) and `--skip-di` (`-d`) turn them off; the old `--network` and `--di` flags are gone. `--tools` (`-t`) still adds `tools/`, off by default.
+- `tools/` is never generated in a monorepo app (by `init` or `generate-tools`); the workspace root runs those jobs.
+
 ## 1.7.0
 
 ### Breaking

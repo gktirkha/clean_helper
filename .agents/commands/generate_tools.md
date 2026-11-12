@@ -28,4 +28,4 @@ Templates: `tools_command_runner`, `tools_clean`, `tools_bootstrap`, `tools_writ
 
 The slang and package build_runner steps are only included for packages under `packages/` when the tools are generated; `commandRunner` / `fvmRunner` take a `workingDirectory`.
 
-In a monorepo app, `tools/command_runner.dart` is generated with a no-op `fvmUse()` (`toolsCommandRunnerTemplate(fvmUse: false)`), so `clean.dart` and `bootstrap.dart` don't run `fvm use` there.
+In a monorepo app (`monoRepoAppPath` set), `generateToolsFiles()` writes nothing and logs a skip: the workspace root runs these jobs (melos), and the Flutter version is pinned there. That covers both `generate-tools` and `init`.

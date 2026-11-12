@@ -39,7 +39,7 @@ clean_helper/
 | `build_runner.dart` | `runBuildRunnerCommand(args)` | `build-runner` |
 | `generate_localizations.dart` | `runGenerateLocalizationsCommand()` | `generate-localizations` |
 | `generate_tools.dart` | `generateTools({overwrite})` | `generate-tools` |
-| `init.dart` | `runInit({withNetwork, withDi, withTools})` (async) | `init` |
+| `init.dart` | `runInit({withNetwork, withDi, withTools})` (async; `withNetwork` / `withDi` default `true`, turned off by `--skip-network` / `--skip-di`; `withTools` defaults `false`, on with `--tools`) | `init` |
 | `list_mono_repo_apps.dart` | `listMonoRepoApps()` — skips `ensurePubspec()` | `list-mono-repo-apps` |
 | `print_version.dart` | `printVersion()` | global `--version` |
 | `regenerate_router.dart` | `regenerateRouter()` | `regenerate-router` |
@@ -108,7 +108,7 @@ clean_helper/
 | `add_packages_workspace.dart` | `addPackagesWorkspace(packagePaths)` — no-op for an empty list; then `warnStaleWorkspaceEntries` |
 | `warn_stale_workspace_entries.dart` | `warnStaleWorkspaceEntries(pubspec)` — warns about `workspace:` paths without a `pubspec.yaml` |
 | `generate_core_files.dart` | `generateCoreFiles({utils, localization, router})` — app skeleton, `<app>_router*.dart` |
-| `generate_tools_files.dart` | `generateToolsFiles({overwrite})` |
+| `generate_tools_files.dart` | `generateToolsFiles({overwrite})` — no-op in a monorepo app |
 | `install_dependencies.dart` | `installDependencies(workspacePackages)` |
 | `update_gitignore.dart` | `updateGitignore()` |
 | `add_flutter_assets_to_pubspec.dart` | `addFlutterAssetsToPubSpec()` |

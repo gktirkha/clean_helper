@@ -12,14 +12,21 @@ import '../shared/resolve_network_package.dart';
 import '../shared/resolve_utils_package.dart';
 import '../shared/write_file.dart';
 
+/// Writes `tools/`. Skipped in a monorepo app: the workspace root runs those
+/// jobs (e.g. through melos), and the Flutter version is pinned there.
 void generateToolsFiles({bool overwrite = false}) {
+  if (monoRepoAppPath != null) {
+    stdout.writeln(
+      '  ⏭  Monorepo app — tools/ not generated '
+      '(run these jobs from the workspace root, e.g. add-melos-config)',
+    );
+    return;
+  }
+
   final write = overwrite ? overwriteFile : writeFile;
   String? local(String name) =>
       Directory('packages/$name').existsSync() ? 'packages/$name' : null;
-  write(
-    'tools/command_runner.dart',
-    toolsCommandRunnerTemplate(fvmUse: monoRepoAppPath == null),
-  );
+  write('tools/command_runner.dart', toolsCommandRunnerTemplate());
   write('tools/clean.dart', toolsCleanTemplate());
   write(
     'tools/bootstrap.dart',

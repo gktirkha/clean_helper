@@ -1,15 +1,15 @@
 # Command: init
 
-**Entry point:** `lib/src/commands/init.dart` → `runInit({withNetwork, withDi, withTools})` (async)
+**Entry point:** `lib/src/commands/init.dart` → `runInit({withNetwork, withDi, withTools})` (async; `withNetwork` / `withDi` default `true`, `withTools` `false`)
 **Runner:** `InitCommand` — `clean-helper init`
 
 ## Usage
 
 ```bash
-clean-helper init [--network|-n] [--di|-d] [--tools|-t]
+clean-helper init [--skip-network|-n] [--skip-di|-d] [--tools|-t]
 ```
 
-Run once, in a project fresh from `flutter create`.
+Run once, in a project fresh from `flutter create`. The network package and home DI module are generated unless `--skip-network` / `--skip-di`; `tools/` only with `--tools` (and never in a monorepo app). `InitCommand` maps `--skip-x` to `withX: false` and `--tools` to `withTools: true`.
 
 ## Sequence
 
@@ -20,8 +20,8 @@ Run once, in a project fresh from `flutter create`.
 3. The packages with `create: true`: `generateCleanRouterPackage()`, `generateLocalizationPackage()`, `generateUtilsPackage()`, then `addPackagesWorkspace()` for those created — no `workspace:` key if none are
 4. The app: `generateCoreFiles()`, `createFeatureStructure()` for `home` (with `withDi`)
 5. `installDependencies()`, `updateGitignore()`, `addFlutterAssetsToPubSpec()`
-6. `addNetworkModule(runBuildRunnerAfter: false)` with `--network`; then `writePackageAnalysisOptions` for every package under `packages/` (created now or earlier); `generateToolsFiles()` with `--tools` comes after it
-7. `runSlang()` in the localization package if created; `runBuildRunner()` in the utils package (if created) and the network package (with `--network`); then `runBuildRunner()` in the app and `runDartFormat()`
+6. `addNetworkModule(runBuildRunnerAfter: false)` unless `--skip-network`; then `writePackageAnalysisOptions` for every package under `packages/` (created now or earlier); `generateToolsFiles()` with `--tools` comes after it (it writes nothing in a monorepo app)
+7. `runSlang()` in the localization package if created; `runBuildRunner()` in the utils package (if created) and the network package (unless `--skip-network`); then `runBuildRunner()` in the app and `runDartFormat()`
 8. `sortPubspecDeps()` for the app and the created utils / localization pubspecs; `writeToolVersion()`
 
 The package generators call `scaffoldPackage()` — create the parent folder, `flutter create --template package --no-pub` (pub get runs later, once the packages are in `workspace:`), delete the scaffold files (README, CHANGELOG, LICENSE, `.metadata`, `test/`, and `lib/<name>.dart` when the configured barrel is elsewhere), write an `analysis_options.yaml` that only includes the app's (or, with `use_root_analysis`, the root's) — and then:
@@ -41,11 +41,11 @@ See `architecture.md` for the full tree. Key points:
 
 - **App runtime:** `flutter_bloc`, `go_router`, `get_it`, `injectable`, `freezed_annotation`, `fpdart`, `package_info_plus`, `flutter_svg`, `json_annotation`, `logger`, `flutter_localizations` (SDK)
 - **App dev:** `build_runner`, `injectable_generator`, `freezed`, `flutter_gen_runner`, `json_serializable`
-- **App workspace packages:** the router, localization and utils packages — added with `flutter pub add` and no `--path`; pub resolves them from the workspace (the network package comes with `--network`)
+- **App workspace packages:** the router, localization and utils packages — added with `flutter pub add` and no `--path`; pub resolves them from the workspace (the network package comes from `addNetworkModule`)
 - **Utils package:** `flutter_bloc`, `fpdart`, `get_it`, `injectable`, `logger`, `retrofit`, `<localization>`; dev `build_runner`, `injectable_generator`
 - **Localization package:** `slang`, `slang_flutter`
 
 ## Notes
 
-- `init` reads `clean-helper.packages.{utils,localization,router}` (and `network` with `--network`): names, barrel imports (the barrel is written at the import's path), `create`, `utils.module_name` (the `@module` class), `utils.call_adapter_name` (the call adapter generated in the utils package) and the slang keys under `localization`, which become `slang.yaml` and set the generated file and `translate_var` used by the barrel, `String.tr` and `safeCast`.
+- `init` reads `clean-helper.packages.{utils,localization,router}` (and `network` unless `--skip-network`): names, barrel imports (the barrel is written at the import's path), `create`, `utils.module_name` (the `@module` class), `utils.call_adapter_name` (the call adapter generated in the utils package) and the slang keys under `localization`, which become `slang.yaml` and set the generated file and `translate_var` used by the barrel, `String.tr` and `safeCast`.
 - Workspace packages are always added with `flutter pub add <name>` (no `--path`), created or not.

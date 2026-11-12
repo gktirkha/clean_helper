@@ -73,7 +73,7 @@ $monoRepoApps
       create: true
 
     ## Dio, NetworkConfig and the error / auth interceptors, created by
-    ## add-network-module and init --network.
+    ## add-network-module and init.
     network:
       ## Package name. Default: <app>_network.
       # name: my_app_network

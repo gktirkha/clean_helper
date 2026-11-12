@@ -4,7 +4,7 @@ What the templates produce. Keep this in sync when a template changes shape.
 
 ---
 
-## Layout after `init --network`
+## Layout after `init`
 
 ```
 <app>/
