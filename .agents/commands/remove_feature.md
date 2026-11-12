@@ -19,5 +19,4 @@ The name is lower-cased. It aborts if no name is given.
    - Otherwise it rebuilds the file from the remaining feature imports with `buildRouterModule`, which sorts them, using `overwriteFile`.
    - It warns if the file is missing.
 3. `deleteFeatureFiles(f)`: deletes `lib/features/<f>/` recursively, and `lib/app/navigation/<f>_navigation_impl.dart`. It warns about, but doesn't abort on, missing paths.
-
 4. `runDartFormat()`, then `runBuildRunner()` (unless `runBuildRunnerAfter: false`), so `di_initializer.config.dart` stops referencing the deleted files.

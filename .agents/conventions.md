@@ -7,7 +7,7 @@ The reasoning behind the rules in `agent_rules.md`.
 ## Layers
 
 ```
-bin/                    thin entry points → command functions
+bin/clean_helper.dart   the only entry point: CleanHelperRunner().run(args)
 lib/src/runner/         args + cli_completion wiring (CleanHelperRunner, one Command class per command)
 lib/src/commands/       one entry-point function per command
 lib/src/functions/      helpers, grouped by command (init/, feature/, repo/, …) plus shared/
@@ -48,8 +48,8 @@ ${sortImports([
 ])}
 
 ${sortImports([
-  ...adapterRelative,                // relative, so it goes in the relative section
-  "import '${repoName}_data_source_base.dart';",
+  "import '../constants/api_paths.dart';",
+  if (auth) "import '../interceptors/app_auth_interceptor.dart';",  // conditional, so sort
 ])}
 ```
 
@@ -62,7 +62,8 @@ ${sortImports([
 | Helper | Behaviour | Use for |
 |---|---|---|
 | `writeFile(path, content)` | Skips an existing file and logs the skip | Anything the user may edit — nearly everything |
-| `overwriteFile(path, content)` | Always writes | Tool-owned files: `<app>_router_module.dart`, `analysis_options.yaml`, package scaffolding in `init`, pubspec patches |
+| `overwriteFile(path, content)` | Always writes | Tool-owned files: `<app>_router_module.dart`, package scaffolding, pubspec patches |
+| `writeAnalysisOptions(path, content)` | `overwriteFile`, or `writeFile` with `overwrite_analysis_options: false` | Every `analysis_options.yaml` |
 
 Both create parent directories.
 
@@ -119,8 +120,14 @@ Resolution helpers turn config into decisions, so commands don't repeat the logi
 
 ## `ensurePubspec()` and `abort()`
 
-- `ensurePubspec()` is the first statement of every command.
+- `ensurePubspec()` is the first statement of every command, except those that work on the current directory (`add-config`, `add-melos-config`, `add-vscode-extensions`, `create-packages`, `list-mono-repo-apps`).
 - `abort(message)` returns `Never`: it prints `❌ message` to stderr and exits with code 1. Use it for unrecoverable input or config errors. Use `stderr.writeln('⚠️ …')` for warnings that shouldn't stop the command.
+
+---
+
+## External commands
+
+`runCommand(cmd, {workingDirectory})` runs a process and, on a non-zero exit, prints its output and aborts. `runCommandStreamed(cmd)` prints the output as-is and aborts the same way. Later steps (patching a pubspec, running build_runner) assume earlier ones succeeded, so a failure must stop the run.
 
 ---
 

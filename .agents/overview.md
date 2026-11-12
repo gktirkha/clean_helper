@@ -21,17 +21,17 @@ Read next:
 |---|---|---|
 | `init` | `runInit()` (async) | Full scaffold of a new Flutter project |
 | `bootstrap` | `runBootstrapCommand()` (async) | `fvm use` → pub get → slang → build_runner |
-| `add-feature <name>` | `addFeature(args)` | Feature routes, router, navigation, bloc, page |
-| `add-repo <feature> <name>` | `addRepo(args)` | Data + domain layer for a repository |
-| `add-entity <scope> <name> [folder]` | `addEntity(args)` | Entity + freezed model |
-| `add-network-module` | `addNetworkModule()` | Create the network package and wire the app to it |
+| `add-feature <name>` | `addFeature(args, {withDi, runBuildRunnerAfter})` | Feature routes, router, navigation, bloc, page |
+| `add-repo <feature> <name>` | `addRepo(args, {runBuildRunnerAfter, noRest, addSample})` | Data + domain layer for a repository |
+| `add-entity <scope> <name> [folder]` | `addEntity(args, {runBuildRunnerAfter})` | Entity + freezed model |
+| `add-network-module` | `addNetworkModule({runBuildRunnerAfter})` | Create the network package and wire the app to it |
 | `remove-feature <name>` | `removeFeature(args, {runBuildRunnerAfter})` | Delete a feature, unregister its router |
 | `regenerate-router` | `regenerateRouter()` | Rebuild `<app>_router_module.dart` from disk |
 | `build-runner [build\|clean]` | `runBuildRunnerCommand(args)` | Run build_runner |
 | `generate-localizations` | `runGenerateLocalizationsCommand()` | Run slang in `packages/<localization>` |
 | `generate-tools [--overwrite]` | `generateTools(overwrite:)` | `tools/` scripts |
 | `list-mono-repo-apps` | `listMonoRepoApps()` | Print monorepo apps and resolved config |
-| `create-packages [--dir]` | `createPackages(dir:)` | Create the configured utils / localization / router packages in `<dir>` (default `packages`), ignoring `create` |
+| `create-packages [--dir]` | `createPackages(dir:)` | Create the configured utils / localization / router packages (+ network when `packages.network` is configured) in `<dir>` (default `packages`), ignoring `create` |
 | `add-vscode-extensions` | `addVscodeExtensions()` | Add recommended extensions to `.vscode/extensions.json` (merges) |
 | `add-config` | `addConfig()` | Append the commented `clean-helper:` template to the current pubspec |
 | `add-melos-config` | `addMelosConfig()` | melos dev dependency + `melos:` hooks and scripts in the root pubspec |
@@ -50,6 +50,7 @@ Global flags, declared on `CleanHelperRunner` and handled in its `runCommand` ov
 |---|---|---|
 | `version` | `checkVersionMismatch()` — **after** the monorepo directory change | — |
 | `mono_repo_apps` | `readMonoRepoApps()` | — |
+| `packages.<key>.create` (each package) | `loadPackageConfigs()` | `packageCreateConfig` (also in the `PackageConfig` when `name`/`import` is set) |
 | `packages.utils.{name,import,create}` | `loadPackageConfigs()` | `utilsPackageConfig` |
 | `packages.utils.module_name` / `.call_adapter_name` | `loadPackageConfigs()` | `utilsModuleNameConfig` / `callAdapterNameConfig` |
 | `packages.localization.{name,import,create}` | `loadPackageConfigs()` | `localizationPackageConfig` |
@@ -73,12 +74,14 @@ bin/clean_helper.dart → CleanHelperRunner.run(args)
   <Command>.run() → command function
      ensurePubspec()
        ├─ abort unless ./pubspec.yaml exists
-       ├─ loadPackageConfigs()      reads root-pubspec config into globals
+       ├─ loadPackageConfigs()      reads root-pubspec config into globals (first call only)
        ├─ resolveMonoRepoProject()  no lib/? pick an app, chdir into it
        └─ checkVersionMismatch()    warns if clean-helper.version ≠ toolVersion
      … generate files (writeFile / overwriteFile) …
      runDartFormat(); runBuildRunner()   (generating commands only)
 ```
+
+`add-config`, `add-melos-config`, `add-vscode-extensions`, `create-packages` and `list-mono-repo-apps` skip `ensurePubspec()`: they work on the current directory and never switch into an app.
 
 ---
 
@@ -94,7 +97,7 @@ bin/clean_helper.dart → CleanHelperRunner.run(args)
 8. `generateCoreFiles()` — main, bootstrap, init service, app, DI, router
 9. `createFeatureStructure('lib/features/home', 'home', …)`
 10. `installDependencies()`, `updateGitignore()`, `addFlutterAssetsToPubSpec()`
-11. `addNetworkModule(runBuildRunnerAfter: false)` with `--network`, then `generateToolsFiles()` with `--tools` (after the network package, so `tools/bootstrap.dart` includes it)
+11. `addNetworkModule(runBuildRunnerAfter: false)` with `--network`; `writePackageAnalysisOptions` for every package under `packages/`; then `generateToolsFiles()` with `--tools` (after the network package, so `tools/bootstrap.dart` includes it)
 12. `runSlang(<localization>)` — only if created
 13. `runBuildRunner` in `packages/<utils>` (if created) and `packages/<network>` (with `--network`), then `runBuildRunner()` for the app
 14. `runDartFormat()`

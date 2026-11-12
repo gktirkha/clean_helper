@@ -6,17 +6,20 @@ Hard constraints for changing clean_helper. `conventions.md` explains the reason
 
 ## File structure
 
-- **One public function per file** under `lib/src/`, named after the file (`sort_imports.dart` → `sortImports`). Two long-standing exceptions: `shared/write_file.dart` defines both `writeFile` and `overwriteFile`, and shared state files (`scope_option.dart`, `package_configs.dart`, `tool_version.dart`) hold variables or typedefs rather than a function.
+- **One public function per file** under `lib/src/`, named after the file (`sort_imports.dart` → `sortImports`). The exceptions:
+  - `shared/write_file.dart` defines both `writeFile` and `overwriteFile`.
+  - Shared state files (`scope_option.dart`, `package_configs.dart`, `tool_version.dart`) hold variables or typedefs rather than a function.
+  - A template file may also hold a constant tied to its template: `gitignoreMarker`, `vscodeRecommendedExtensions`.
 - **Command files** (`lib/src/commands/`) contain exactly one function, the command entry point. Put helpers in `lib/src/functions/<group>/`.
 - **New helpers get a new file.** Never add a second function to an existing file.
 - **Templates** live in `lib/src/templates/`, one `…Template` function per file, returning `String`. Generator functions never contain inline template strings.
 - `lib/clean_helper.dart` exports command files only — never functions or templates.
-- `bin/` files only call a command function.
+- `bin/clean_helper.dart` is the only entry point and only runs `CleanHelperRunner`. Commands are registered in the runner, not added to `bin/`.
 
 ## Writing files in the target project
 
 - Use `writeFile(path, content)` for files the user may edit. It skips files that already exist.
-- Use `overwriteFile(path, content)` only for tool-owned files, such as `<app>_router_module.dart`, `analysis_options.yaml` or package scaffolding during `init`.
+- Use `overwriteFile(path, content)` only for tool-owned files, such as `<app>_router_module.dart` or package scaffolding. Write `analysis_options.yaml` files through `writeAnalysisOptions()`, which follows `overwrite_analysis_options`.
 - Never call `File(...).writeAsStringSync` directly.
 - Both helpers create parent directories, so never create directories before writing. `Directory.createSync` is allowed only in `init/create_directories.dart`, for empty folders `init` scaffolds, and in `init/scaffold_package.dart`, because `flutter create` fails inside a workspace when the package's parent folder doesn't exist.
 - A command with an overwrite flag picks its writer once: `final write = overwrite ? overwriteFile : writeFile`.
@@ -49,6 +52,7 @@ Hard constraints for changing clean_helper. `conventions.md` explains the reason
 ## Toolchain
 
 - Run every `dart`/`flutter` command through `fvmExec('dart')` / `fvmExec('flutter')`.
+- Run external processes through `runCommand` (or `runCommandStreamed` when the output is the point). Both abort on a non-zero exit, so later steps never run on a half-finished state. Never swallow a failure with a warning.
 - Add dependencies with `flutter pub add`, never `dart pub add`.
 - Only command functions call `runDartFormat()` and `runBuildRunner()`, never helpers.
 

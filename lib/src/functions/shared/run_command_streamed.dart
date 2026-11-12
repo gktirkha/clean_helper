@@ -1,5 +1,9 @@
 import 'dart:io';
 
+import 'abort.dart';
+
+/// Runs [cmd], printing its output as-is (for commands whose output is the
+/// point, like `build-runner`). Aborts on a non-zero exit, like `runCommand`.
 void runCommandStreamed(List<String> cmd) {
   final result = Process.runSync(cmd.first, cmd.sublist(1), runInShell: true);
 
@@ -11,6 +15,6 @@ void runCommandStreamed(List<String> cmd) {
   }
 
   if (result.exitCode != 0) {
-    stderr.writeln('⚠️  Command failed: ${cmd.join(' ')}');
+    abort('Command failed with exit code ${result.exitCode}: ${cmd.join(' ')}');
   }
 }

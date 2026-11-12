@@ -1,6 +1,6 @@
 # Repository Structure
 
-Each file under `lib/src/` holds one public symbol, named after the file. Update this list whenever you add, rename or remove a file.
+Each file under `lib/src/` holds one public symbol, named after the file (exceptions in `agent_rules.md`). Update this list whenever you add, rename or remove a file.
 
 ```
 clean_helper/
@@ -60,7 +60,7 @@ clean_helper/
 | `sort_imports.dart` | `sortImports(imports)` | Join import directives alphabetically |
 | `ensure_pubspec.dart` | `ensurePubspec()` | First call of every command: config → monorepo → version check |
 | `load_package_configs.dart` | `loadPackageConfigs()` | Fill the config globals from the starting-directory pubspec |
-| `package_configs.dart` | `PackageConfig` typedef `(name, import, create)`; `packageConfigsLoaded`, `packageCreateConfig`, `overwriteAnalysisOptionsConfig`, `networkModuleNameConfig`, `networkAuthInterceptorConfig`, `useRootAnalysisConfig`, `monoRepoAppPath`, `utilsPackageConfig`, `networkPackageConfig`, `localizationPackageConfig`, `routerPackageConfig`, `utilsModuleNameConfig`, `callAdapterNameConfig`, `slangSettingsConfig`, `resultTypeConfig` | Config globals |
+| `package_configs.dart` | `PackageConfig` typedef `(name, import, create)`; `packageConfigsLoaded`, `packageCreateConfig`, `overwriteAnalysisOptionsConfig`, `networkModuleNameConfig`, `networkAuthInterceptorConfig`, `useRootAnalysisConfig`, `monoRepoAppPath`, `utilsPackageConfig`, `networkPackageConfig`, `localizationPackageConfig`, `routerPackageConfig`, `utilsModuleNameConfig`, `callAdapterNameConfig`, `slangSettingsConfig` | Config globals |
 | `read_clean_helper_fields.dart` | `readCleanHelperFields(path)` | Scalar children of `clean-helper.<path…>` |
 | `read_package_config.dart` | `readPackageConfig(key)` | `packages.<key>` → `PackageConfig?` |
 | `resolve_utils_package.dart` | `resolveUtilsPackage()` | Configured utils package or `<app>_utils` |
@@ -87,7 +87,7 @@ clean_helper/
 | `write_file.dart` | `writeFile`, `overwriteFile` | The only way to write target files |
 | `insert_sorted_import.dart` | `insertSortedImport(content, line)` | Patch helper — adds an import at its sorted place within its `dart:` / `package:` / relative section |
 | `run_command.dart` | `runCommand(cmd, {workingDirectory})` | Run a process; on failure print its output and abort |
-| `run_command_streamed.dart` | `runCommandStreamed(cmd)` | Same, streaming output |
+| `run_command_streamed.dart` | `runCommandStreamed(cmd)` | Same, printing the output as-is; aborts on failure |
 | `fvm_exec.dart` | `fvmExec(exe)` | `['fvm', exe]` or `[exe]` |
 | `fvm_use.dart` | `fvmUse()` (async) | Interactive `fvm use`; skipped when `monoRepoAppPath` is set |
 
@@ -97,7 +97,7 @@ clean_helper/
 |---|---|
 | `generate_analysis_options.dart` | `generateAnalysisOptions()` — full rules, or an include of the root's with `use_root_analysis` in a monorepo app; via `writeAnalysisOptions` |
 | `run_flutter_pub_get.dart` | `runFlutterPubGet()` |
-| `create_directories.dart` | `createDirectories()` — the only place allowed to call `Directory.createSync` |
+| `create_directories.dart` | `createDirectories()` — empty app folders; with `scaffold_package.dart`, the only places allowed to call `Directory.createSync` |
 | `generate_flutter_gen_files.dart` | `generateFlutterGenFiles()` |
 | `scaffold_package.dart` | `scaffoldPackage(package, {parentDir})` — creates `parentDir`, `flutter create --template package --no-pub`, delete unused scaffold files, write an including `analysis_options.yaml` |
 | `generate_clean_router_package.dart` | `generateCleanRouterPackage(router, {parentDir})` — `lib/src/<name>_base.dart`, `<name>_refresh.dart` |
@@ -107,12 +107,11 @@ clean_helper/
 | `patch_package_pubspec.dart` | `patchPackagePubspec(packagePath, pubspecTail)` |
 | `add_packages_workspace.dart` | `addPackagesWorkspace(packagePaths)` — no-op for an empty list; then `warnStaleWorkspaceEntries` |
 | `warn_stale_workspace_entries.dart` | `warnStaleWorkspaceEntries(pubspec)` — warns about `workspace:` paths without a `pubspec.yaml` |
-| `generate_core_files.dart` | `generateCoreFiles(packageName, {utils, localization, router})` |
+| `generate_core_files.dart` | `generateCoreFiles({utils, localization, router})` — app skeleton, `<app>_router*.dart` |
 | `generate_tools_files.dart` | `generateToolsFiles({overwrite})` |
 | `install_dependencies.dart` | `installDependencies(workspacePackages)` |
 | `update_gitignore.dart` | `updateGitignore()` |
 | `add_flutter_assets_to_pubspec.dart` | `addFlutterAssetsToPubSpec()` |
-| `generate_network_files.dart` | `generateNetworkFiles(utilsImport, {callAdapterName})` |
 | `run_slang.dart` | `runSlang(localizationPackageName, {parentDir})` |
 | `run_build_runner.dart` | `runBuildRunner({workingDirectory})` |
 | `run_dart_format.dart` | `runDartFormat()` |
@@ -121,7 +120,7 @@ clean_helper/
 
 ### `feature/` — `add-feature`
 
-`create_feature_structure.dart` → `createFeatureStructure(basePath, feature, utilsImport, router, {withDi})` (also used by `init` for the home feature); aborts when the feature is named after the app, since both would generate `<AppPascal>Router` calls the `generateFeature*` helpers: `routes`, `navigation`, `navigation_impl`, `page`, `page_provider`, `router`, `bloc`, `module`. `patch_router_module.dart` → `patchRouterModule(feature)`. `build_router_module.dart` → `buildRouterModule(features)`, which sorts features and is the single source of `<app>_router_module.dart` content.
+`create_feature_structure.dart` → `createFeatureStructure(basePath, feature, utilsImport, router, {withDi})` (also used by `init` for the home feature); aborts when the feature is named after the app, since both would generate `<AppPascal>Router`. It calls the `generateFeature*` helpers: `routes`, `navigation`, `navigation_impl`, `page`, `page_provider`, `router`, `bloc`, `module`. `patch_router_module.dart` → `patchRouterModule(feature)`. `build_router_module.dart` → `buildRouterModule(features)`, which sorts features and is the single source of `<app>_router_module.dart` content.
 
 ### `repo/` — `add-repo`
 

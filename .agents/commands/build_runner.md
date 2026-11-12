@@ -13,8 +13,8 @@ clean-helper build-runner clean
 
 | Action | Helper | Runs |
 |---|---|---|
-| `build` | `functions/build_runner/run_build_runner_build.dart` → `runBuildRunnerBuild()` | `[fvm] dart run build_runner build` (streamed) |
-| `clean` | `functions/build_runner/run_build_runner_clean.dart` → `runBuildRunnerClean()` | `[fvm] dart run build_runner clean` (streamed) |
+| `build` | `functions/build_runner/run_build_runner_build.dart` → `runBuildRunnerBuild()` | `[fvm] dart run build_runner build` via `runCommandStreamed` (aborts on failure) |
+| `clean` | `functions/build_runner/run_build_runner_clean.dart` → `runBuildRunnerClean()` | `[fvm] dart run build_runner clean` via `runCommandStreamed` (aborts on failure) |
 
 An unknown action prints an error and exits with code 1. `ensurePubspec()` runs first, so `--scope` works.
 

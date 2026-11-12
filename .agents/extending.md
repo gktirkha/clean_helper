@@ -57,7 +57,7 @@ Example: an `add-use-case <feature> <name>` command.
    - the new files in `structure.md`;
    - a CHANGELOG entry.
 
-Monorepo support comes free with `ensurePubspec()`, so don't add any app-selection logic.
+Monorepo support comes free with `ensurePubspec()`, so don't add any app-selection logic. A command that works on the current directory instead (like `add-config`) skips `ensurePubspec()`: check for `pubspec.yaml` itself, call `loadPackageConfigs()` if it needs config, and add it to the exception list in `agent_rules.md`.
 
 ---
 
@@ -114,6 +114,6 @@ The expected infos are:
 
 To compare against the previous release, generate the same project with a `git worktree` of the last tag and `diff -r` the `lib/` trees.
 
-For monorepo behaviour, create a root `pubspec.yaml` with no `lib/`, declaring `mono_repo_apps` (and `packages:` if needed). Move the scratch app under `apps/`, then run commands from the root with `--scope`.
+For monorepo behaviour, create a root `pubspec.yaml` with no `lib/`, declaring `mono_repo_apps` (and `packages:` if needed) and listing the app under `workspace:`. Move the scratch app under `apps/` and give it `resolution: workspace`, then run commands from the root with `--scope`. To test shared packages, run `create-packages` at the root and set `create: false` for them.
 
 After changing the source, re-run `dart pub global activate --source path .` if you test through the global `clean-helper` command.

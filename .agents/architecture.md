@@ -60,9 +60,9 @@ Files and classes are named after the package (`<name>` / `<NamePascal>`; defaul
 
 ### `<app>_localization`
 
-- `slang.yaml`, with output in `lib/src/generated`
-- `assets/locales/en.locale.json`
-- the `String.tr` extension
+- `slang.yaml`, from the slang keys under `packages.localization` (defaults: output in `lib/src/generated`, `translate_var: locales`)
+- the first locale file, `<input_directory>/<base_locale><input_file_pattern>` (default `assets/locales/en.locale.json`)
+- the `String.tr` extension, and a barrel exporting the generated file
 
 Slang runs inside this package.
 
@@ -112,6 +112,7 @@ lib/src/
 ```
 
 The app supplies what the package can't, all from `lib/core/network/di/network_config_module.dart`: `NetworkConfig` (base URL, `User-Agent`), an `ErrorInterceptor` subclass that parses into its own `ErrorModel`, and, with `auth_interceptor`, an `AuthInterceptor` subclass.
+
 ---
 
 ## Feature layout
@@ -190,6 +191,7 @@ retrofit_generator still emits `_setStreamType<Either<Failure, T>>` in `.g.dart`
 | `<F>ApiPaths` | `features/<f>/data/constants/` | `static const <camelRepo> = '/api/<kebab-feature>/'` |
 
 The REST datasource gets the call adapter and `Failure` from the utils import.
+
 ---
 
 ## Other generated pieces
