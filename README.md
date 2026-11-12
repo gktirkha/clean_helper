@@ -292,7 +292,7 @@ Keep each barrel outside `lib/src/` (for example `package:x/x.dart`): importing 
 clean-helper add-vscode-extensions
 ```
 
-Adds clean_helper's recommended extensions to `.vscode/extensions.json` in the current directory: the folder you open in VS Code, which is the monorepo root in a monorepo. The extensions are Dart, Flutter, Bloc, Flutter Helper, Dart Data Class Generator, Pubspec Assist, Remove Comments, XML, YAML, Code Spell Checker and Error Lens.
+Adds clean_helper's recommended extensions to `.vscode/extensions.json` in the current directory: the folder you open in VS Code, which is the monorepo root in a monorepo. The extensions are Dart, Flutter, Bloc, Flutter Helper, Dart Data Class Generator, Flutter Freezed Helper, Pubspec Assist, Remove Comments, XML, YAML, Code Spell Checker and Error Lens.
 
 - It creates the file if it's missing.
 - Otherwise it adds only the missing IDs, comparing case-insensitively, and keeps your entries and other keys such as `unwantedRecommendations`.

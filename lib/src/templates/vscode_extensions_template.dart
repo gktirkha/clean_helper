@@ -8,6 +8,7 @@ const vscodeRecommendedExtensions = [
   'aksharpatel47.vscode-flutter-helper',
   'hzgood.dart-data-class-generator',
   'jeroen-meijer.pubspec-assist',
+  'mthuong.vscode-flutter-freezed-helper',
   'plibither8.remove-comments',
   'redhat.vscode-xml',
   'redhat.vscode-yaml',
