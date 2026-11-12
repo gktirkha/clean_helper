@@ -5,6 +5,7 @@ String featureRouterTemplate(
   String feature,
   String className,
   String routerImport,
+  String routerPrefix,
 ) =>
     '''
 import 'dart:async';
@@ -15,7 +16,7 @@ import '../presentation/page_providers/${feature}_page_provider.dart';
 import '${feature}_routes.dart';
 
 @lazySingleton
-class ${className}Router implements CleanRouterBase {
+class ${className}Router implements ${routerPrefix}Base {
   @override
   List<RouteBase> get routes => [
     GoRoute(

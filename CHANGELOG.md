@@ -37,6 +37,10 @@
 - Fix: a second `add-repo` in the same feature adds its constant to the existing `<feature>_api_paths.dart`
 - Usage errors from `add-feature`, `add-entity`, `add-repo`, `remove-feature` and `build-runner` exit with code 1 through the same `❌` message, using the hyphenated command names
 - `init`, `bootstrap` and the generated `tools/` scripts skip `fvm use` in a monorepo app — the Flutter version is pinned at the workspace root
+- The router package's files and classes are named after it: `lib/src/<name>_base.dart` / `<NamePascal>Base` and `lib/src/<name>_refresh.dart` / `<NamePascal>Refresh` (so `food_router` → `FoodRouterBase`, `FoodRouterRefresh`; the default stays `CleanRouterBase` / `CleanRouterRefresh`). `AppGoRouter` and feature routers use the derived names
+- Fix: a failing external command (`flutter create`, `pub`, build_runner, slang, `dart format`) now stops clean-helper with its output instead of continuing into a crash
+- Fix: packages are created with `flutter create --no-pub` after creating their parent folder, so `create-packages` and `init` work inside a workspace whose `workspace:` lists missing members or whose `packages/` folder doesn't exist yet; stale `workspace:` entries are reported
+- `create-packages` finishes setup (workspace entry, pub get, slang, build_runner, sorted pubspecs) for packages that already exist, so rerunning completes an interrupted run
 - Fix: commands that call other commands (`init --network` → `add-network-module`) no longer reload config from the monorepo app's pubspec after switching into it, which dropped the root `clean-helper.packages` settings
 - New `add-melos-config` command: run from the workspace root, it adds `melos` to `dev_dependencies` and appends a `melos:` block to `pubspec.yaml` — `bootstrap` / `clean` hooks and the `autogen`, `autogen_watch`, `localize`, `fluttergen`, `dependency_validator`, `generate_license`, `update_packages` and `use_fvm` scripts. Each step is skipped if already present
 

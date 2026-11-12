@@ -15,8 +15,8 @@ The name is lower-cased and should be snake_case.
 ## Flow
 
 1. `ensurePubspec()`
-2. `resolveUtilsPackage()` and `resolveRouterPackage()` give the utils and router imports
-3. `createFeatureStructure('lib/features/<f>', f, utilsImport, routerImport, withDi:)`, which calls `generateFeatureRoutes`, `…Navigation`, `…NavigationImpl`, `…Page`, `…PageProvider`, `…Router` and `…Bloc`, plus `…Module` with `--di`
+2. `resolveUtilsPackage()` and `resolveRouterPackage()` give the utils import and the router package (its import and `<RouterPascal>Base`)
+3. `createFeatureStructure('lib/features/<f>', f, utilsImport, router, withDi:)`, which calls `generateFeatureRoutes`, `…Navigation`, `…NavigationImpl`, `…Page`, `…PageProvider`, `…Router` and `…Bloc`, plus `…Module` with `--di`
 4. `patchRouterModule(f)`
 5. `runDartFormat()`, `runBuildRunner()`
 
@@ -26,7 +26,7 @@ The name is lower-cased and should be snake_case.
 lib/app/navigation/<f>_navigation_impl.dart                 @LazySingleton(as: <F>Navigation); (context ?? ContextUtils.currentContext).go(<F>Routes.<camel>)
 lib/features/<f>/router/<f>_routes.dart                      sealed class <F>Routes { static const String <camel> = '/<kebab>'; }
 lib/features/<f>/router/<f>_navigation.dart                  abstract class <F>Navigation { void goTo<F>([BuildContext?]) }
-lib/features/<f>/router/<f>_router.dart                      @lazySingleton, implements CleanRouterBase, priority 10
+lib/features/<f>/router/<f>_router.dart                      @lazySingleton, implements <RouterPascal>Base, priority 10
 lib/features/<f>/presentation/pages/<f>_page.dart            pure UI, takes `navigation`
 lib/features/<f>/presentation/page_providers/<f>_page_provider.dart   BlocProvider(create: (_) => diContainer()), <F>Page(navigation: diContainer())
 lib/features/<f>/presentation/bloc/<f>/<f>_bloc.dart         @injectable; part '<f>_event.dart', '<f>_state.dart', '<f>_bloc.freezed.dart'

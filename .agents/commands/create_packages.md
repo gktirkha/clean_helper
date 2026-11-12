@@ -10,7 +10,7 @@ clean-helper create-packages
 clean-helper create-packages --dir=shared/libs
 ```
 
-Run from the workspace root. It's idempotent: a package whose folder already has a `pubspec.yaml` is skipped.
+Run from the workspace root. It's idempotent: a package whose folder already has a `pubspec.yaml` isn't regenerated.
 
 ## Behaviour
 
@@ -19,5 +19,5 @@ Run from the workspace root. It's idempotent: a package whose folder already has
 - Resolves the packages with `resolveUtilsPackage()`, `resolveLocalizationPackage()`, `resolveRouterPackage()` and `resolveSlangSettings()`. Defaults use the current pubspec's `name`. **`create` is ignored.**
 - Also creates the network package (`generateNetworkPackage`) when `packages.network` is configured.
 - Generates the missing packages with the same helpers as `init`, each with `parentDir: dir`: `generateCleanRouterPackage`, `generateLocalizationPackage`, `generateUtilsPackage` (`moduleName: resolveUtilsModuleName(utils)`).
-- Then, if anything was created: `writeFile('analysis_options.yaml', full rules)` in the current directory (skipped if it exists; the packages include it); `addPackagesWorkspace(['<dir>/<name>', …])`, which adds `workspace:` at the end of the pubspec when it has no `dependencies:`; `runFlutterPubGet()`; `runSlang(localization, parentDir: dir)`; `runBuildRunner` in the utils and network packages; `sortPubspecDeps` for the localization and utils pubspecs; `runDartFormat()`.
+- Then, for every package found under `dir` (created now or by an earlier, possibly interrupted run): `writeFile('analysis_options.yaml', full rules)` (the packages include it); `addPackagesWorkspace(['<dir>/<name>', …])`, which also warns about stale `workspace:` entries; `runFlutterPubGet()`; `runSlang(localization, parentDir: dir)`; `runBuildRunner` in the utils and network packages; `sortPubspecDeps` for all but the router; `runDartFormat()`. So rerunning after a failure finishes the setup.
 - It doesn't add the packages as dependencies of any app. `init` does that, without `path:`.

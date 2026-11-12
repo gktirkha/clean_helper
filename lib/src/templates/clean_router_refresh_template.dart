@@ -1,10 +1,12 @@
-String cleanRouterRefreshTemplate() => '''
+/// `<prefix>Refresh`: merges the routers' refresh streams for go_router.
+String cleanRouterRefreshTemplate(String prefix) =>
+    '''
 import 'dart:async';
 
 import 'package:flutter/foundation.dart';
 
-class CleanRouterRefresh extends ChangeNotifier {
-  CleanRouterRefresh(List<Stream<dynamic>> streams) {
+class ${prefix}Refresh extends ChangeNotifier {
+  ${prefix}Refresh(List<Stream<dynamic>> streams) {
     _subscription = streams
         .map((stream) => stream.listen((_) => notifyListeners()))
         .toList();

@@ -24,7 +24,7 @@ Run once, in a project fresh from `flutter create`.
 7. `runSlang()` in the localization package if created; `runBuildRunner()` in the utils package (if created) and the network package (with `--network`); then `runBuildRunner()` in the app and `runDartFormat()`
 8. `sortPubspecDeps()` for the app and the created utils / localization pubspecs; `writeToolVersion()`
 
-The package generators call `scaffoldPackage()` — `flutter create --template package`, delete the scaffold files (README, CHANGELOG, LICENSE, `.metadata`, `test/`, and `lib/<name>.dart` when the configured barrel is elsewhere), write an `analysis_options.yaml` that only includes the app's (or, with `use_root_analysis`, the root's) — and then:
+The package generators call `scaffoldPackage()` — create the parent folder, `flutter create --template package --no-pub` (pub get runs later, once the packages are in `workspace:`), delete the scaffold files (README, CHANGELOG, LICENSE, `.metadata`, `test/`, and `lib/<name>.dart` when the configured barrel is elsewhere), write an `analysis_options.yaml` that only includes the app's (or, with `use_root_analysis`, the root's) — and then:
 
 - patch the pubspec tail (`resolution: workspace`, dependencies) via `patchPackagePubspec()`;
 - write their sources with `overwriteFile`.

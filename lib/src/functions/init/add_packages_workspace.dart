@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import '../shared/write_file.dart';
+import 'warn_stale_workspace_entries.dart';
 
 /// Lists each of [packagePaths] (e.g. `packages/my_utils`) under
 /// `workspace:` in `pubspec.yaml`. A missing key is added before
@@ -42,6 +43,7 @@ void addPackagesWorkspace(List<String> packagePaths) {
       : '${content.trimRight()}\n\nworkspace:\n$entries';
 
   overwriteFile('pubspec.yaml', updated);
+  warnStaleWorkspaceEntries(updated);
   stdout.writeln(
     '📋 Workspace entries added to pubspec.yaml (${missing.join(', ')})',
   );

@@ -153,7 +153,7 @@ lib/
     └── router/
         ├── user_profile_routes.dart             route path constants
         ├── user_profile_navigation.dart         navigation interface
-        └── user_profile_router.dart             @lazySingleton, implements CleanRouterBase
+        └── user_profile_router.dart             @lazySingleton, implements <RouterPascal>Base (CleanRouterBase by default)
 ```
 
 The router is registered in `lib/app/router/app_router_module.dart` automatically. That file is tool-owned: `add-feature`, `remove-feature` and `regenerate-router` regenerate it, with features in alphabetical order.
@@ -279,7 +279,7 @@ clean-helper create-packages --dir=shared/libs  # into shared/libs/
 Creates the utils, localization and router packages described by [`clean-helper.packages`](#workspace-packages-create-name-import), using their names, imports, `module_name` and slang settings, in `<dir>/<name>`. `--dir` defaults to `packages`. `create` is ignored: all three packages are created.
 
 - Run it from the workspace root. It reads and writes the `pubspec.yaml` in the current directory and never prompts for an app. Unconfigured packages get their default names (`<name>_utils`, `<name>_localization`, `clean_router`) from that pubspec's `name`.
-- A package whose folder already has a `pubspec.yaml` is skipped, so it's safe to re-run.
+- A package whose folder already has a `pubspec.yaml` isn't regenerated. Every package found there still gets its workspace entry, `pub get`, slang and build_runner, so rerunning finishes a run that stopped part-way.
 - Created packages are listed under `workspace:` in that `pubspec.yaml`. If it has no `workspace:` key, the key is added. It then runs `flutter pub get`, slang in the localization package and build_runner in the utils package, and formats the code.
 
 Typical monorepo setup: configure `packages` in the root pubspec, run `create-packages` there, and set `create: false` so each app's `init` uses the shared packages instead of creating its own.
@@ -419,7 +419,8 @@ clean-helper:
       # Variable used for translations (locales.general.…), in String.tr and safeCast.
       translate_var: locales
 
-    # CleanRouterBase / CleanRouterRefresh, used by AppGoRouter and feature routers.
+    # <RouterPascal>Base / <RouterPascal>Refresh (CleanRouterBase by default),
+    # used by AppGoRouter and feature routers.
     router:
       # Package name. Default: clean_router.
       name: my_app_router
@@ -457,7 +458,7 @@ clean-helper:
 | `packages.utils.call_adapter_name` | `RetrofitCallAdapter` | Call adapter class generated and used by REST datasources |
 | [`packages.localization`](#packageslocalization) `.name` / `.import` / `.create` | `<app>_localization` / `package:<name>/<name>.dart` / `true` | Localization package; other keys go to `slang.yaml` |
 | [`packages.use_root_analysis`](#analysis-options) | `false` | Apps and packages include the workspace root's `analysis_options.yaml` |
-| [`packages.router`](#packagesrouter) `.name` / `.import` / `.create` | `clean_router` / `package:<name>/<name>.dart` / `true` | Router package with `CleanRouterBase` |
+| [`packages.router`](#packagesrouter) `.name` / `.import` / `.create` | `clean_router` / `package:<name>/<name>.dart` / `true` | Router package; its classes are `<NamePascal>Base` / `<NamePascal>Refresh` |
 | [`packages.network`](#packagesnetwork) `.name` / `.import` / `.create` | `<app>_network` / `package:<name>/<name>.dart` / `true` | Network package |
 | `packages.network.module_name` | `<NetworkPascal>Module` | The network package's `@module` class |
 | `packages.network.auth_interceptor` | `true` | Auth interceptor and `noAuthDio` |
@@ -501,7 +502,7 @@ The first locale file is `<input_directory>/<base_locale><input_file_pattern>`. 
 
 ### `packages.router`
 
-The package with `CleanRouterBase` and `CleanRouterRefresh`, imported by `AppGoRouter` and every feature router. Defaults to `clean_router`.
+The package with the router interface and refresh notifier, imported by `AppGoRouter` and every feature router. Defaults to `clean_router`. Its files and classes are named after the package: `lib/src/<name>_base.dart` holds `<NamePascal>Base`, and `lib/src/<name>_refresh.dart` holds `<NamePascal>Refresh`. So `food_router` gives `FoodRouterBase` and `FoodRouterRefresh`, and the default gives `CleanRouterBase` and `CleanRouterRefresh`.
 
 ### Analysis options
 
@@ -596,7 +597,7 @@ build.yaml
 
 | Package | Contents |
 |---|---|
-| `clean_router` | `CleanRouterBase` — the interface every feature router implements (`routes`, `refreshStreams`, `redirect`, `priority`) — and `CleanRouterRefresh`, which merges the routers' refresh streams for go_router |
+| `clean_router` | `CleanRouterBase` — the interface every feature router implements (`routes`, `refreshStreams`, `redirect`, `priority`) — and `CleanRouterRefresh`, which merges the routers' refresh streams for go_router. Named after the package: `food_router` → `FoodRouterBase` / `FoodRouterRefresh` |
 | `<app>_localization` | `slang.yaml`, `assets/locales/en.locale.json`, the `String.tr` extension and the generated translations |
 | `<app>_utils` | `Failure`, `ErrorEntity`, `UseCaseBase`, `AppLogger`, `AppBlocObserver`, `ContextUtils`, `Debouncer`, `safeCast`, `safeExecute`, `safeExecuteTask`, `listToModelList`, `getCurrentFunctionName`, `JsonDecodeFactory`, the Retrofit call adapter, and an injectable micro-package that registers `BlocObserver` |
 | `<app>_network` | `NetworkConfig`, `Dio` (+ `noAuthDio`), `RetrofitLogger` and the abstract `ErrorInterceptor` / `AuthInterceptor`, as an injectable micro-package — see [`packages.network`](#packagesnetwork) |
@@ -612,7 +613,7 @@ Feature
 └── data/           models (@freezed), datasources (Retrofit), repository implementations
 ```
 
-- **Routing:** go_router. Each feature router implements `CleanRouterBase`; `AppRouterModule` collects them, sorts them by `priority` (lower first) and builds `AppGoRouter`.
+- **Routing:** go_router. Each feature router implements the router package's `<RouterPascal>Base` (`CleanRouterBase` by default); `AppRouterModule` collects them, sorts them by `priority` (lower first) and builds `AppGoRouter`.
 - **DI:** get_it + injectable. `diContainer` lives in `lib/app/di/di_container.dart`.
 - **Errors:** fpdart + `Failure`. Retrofit calls go through `RetrofitCallAdapter` → `safeExecuteTask`, so failures come back as `Left(Failure)` rather than exceptions.
 - **Serialization:** freezed + json_serializable.

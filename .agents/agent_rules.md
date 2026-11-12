@@ -18,7 +18,7 @@ Hard constraints for changing clean_helper. `conventions.md` explains the reason
 - Use `writeFile(path, content)` for files the user may edit. It skips files that already exist.
 - Use `overwriteFile(path, content)` only for tool-owned files, such as `app_router_module.dart`, `analysis_options.yaml` or package scaffolding during `init`.
 - Never call `File(...).writeAsStringSync` directly.
-- Both helpers create parent directories, so never create directories before writing. `Directory.createSync` is allowed only in `init/create_directories.dart`, for empty folders `init` scaffolds.
+- Both helpers create parent directories, so never create directories before writing. `Directory.createSync` is allowed only in `init/create_directories.dart`, for empty folders `init` scaffolds, and in `init/scaffold_package.dart`, because `flutter create` fails inside a workspace when the package's parent folder doesn't exist.
 - A command with an overwrite flag picks its writer once: `final write = overwrite ? overwriteFile : writeFile`.
 
 ## Paths and imports

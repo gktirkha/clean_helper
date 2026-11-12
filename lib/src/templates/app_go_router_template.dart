@@ -1,6 +1,7 @@
 import '../functions/shared/sort_imports.dart';
 
-String appGoRouterTemplate(String routerImport) =>
+/// [routerPrefix] is the router package's class prefix (`<RouterPascal>`).
+String appGoRouterTemplate(String routerImport, String routerPrefix) =>
     '''
 import 'dart:async';
 
@@ -14,7 +15,7 @@ part 'app_go_router_redirect.dart';
 class AppGoRouter {
   AppGoRouter({required this.routers});
 
-  final List<CleanRouterBase> routers;
+  final List<${routerPrefix}Base> routers;
 
   late final router = GoRouter(
     navigatorKey: diContainer<GlobalKey<NavigatorState>>(),
@@ -22,7 +23,7 @@ class AppGoRouter {
     initialLocation: HomeRoutes.home,
     routes: [...routers.expand((r) => r.routes)],
     redirect: (context, state) => _handleRedirect(context, state, routers),
-    refreshListenable: CleanRouterRefresh(
+    refreshListenable: ${routerPrefix}Refresh(
       routers.expand((r) => r.refreshStreams).toList(),
     ),
   );

@@ -1,3 +1,4 @@
+import '../shared/package_configs.dart';
 import 'generate_feature_bloc.dart';
 import 'generate_feature_module.dart';
 import 'generate_feature_navigation.dart';
@@ -11,7 +12,7 @@ void createFeatureStructure(
   String basePath,
   String featureName,
   String utilsImport,
-  String routerImport, {
+  PackageConfig router, {
   bool withDi = false,
 }) {
   generateFeatureRoutes(featureName, basePath);
@@ -19,7 +20,7 @@ void createFeatureStructure(
   generateFeatureNavigationImpl(featureName, utilsImport);
   generateFeaturePage(featureName, basePath);
   generateFeaturePageProvider(featureName, basePath);
-  generateFeatureRouter(featureName, basePath, routerImport);
+  generateFeatureRouter(featureName, basePath, router);
   generateFeatureBloc(featureName, basePath);
   if (withDi) generateFeatureModule(featureName, basePath);
 }

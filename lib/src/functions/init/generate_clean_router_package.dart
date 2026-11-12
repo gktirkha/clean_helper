@@ -7,12 +7,14 @@ import '../../templates/clean_router_refresh_template.dart';
 import '../shared/package_barrel_path.dart';
 import '../shared/package_barrel_prefix.dart';
 import '../shared/package_configs.dart';
+import '../shared/pascal_case.dart';
 import '../shared/write_file.dart';
 import 'patch_package_pubspec.dart';
 import 'scaffold_package.dart';
 
 /// Creates the router package (`clean_router` by default) from [package]
-/// in `<parentDir>/<name>`.
+/// in `<parentDir>/<name>`: `lib/src/<name>_base.dart` (`<NamePascal>Base`)
+/// and `lib/src/<name>_refresh.dart` (`<NamePascal>Refresh`).
 void generateCleanRouterPackage(
   PackageConfig package, {
   String parentDir = 'packages',
@@ -25,14 +27,15 @@ void generateCleanRouterPackage(
 
   overwriteFile(
     packageBarrelPath(package, parentDir),
-    cleanRouterLibExportTemplate(packageBarrelPrefix(package)),
+    cleanRouterLibExportTemplate(package.name, packageBarrelPrefix(package)),
+  );
+  final prefix = pascalCase(package.name);
+  overwriteFile(
+    '$dir/lib/src/${package.name}_base.dart',
+    cleanRouterBaseTemplate(prefix),
   );
   overwriteFile(
-    '$dir/lib/src/clean_router_base.dart',
-    cleanRouterBaseTemplate(),
-  );
-  overwriteFile(
-    '$dir/lib/src/clean_router_refresh.dart',
-    cleanRouterRefreshTemplate(),
+    '$dir/lib/src/${package.name}_refresh.dart',
+    cleanRouterRefreshTemplate(prefix),
   );
 }

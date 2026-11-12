@@ -29,7 +29,7 @@ void generateCoreFiles({
   writeFile('lib/app/main_app.dart', mainAppDartTemplate(localization.import));
   writeFile(
     'lib/app/router/app_go_router.dart',
-    appGoRouterTemplate(router.import),
+    appGoRouterTemplate(router.import, pascalCase(router.name)),
   );
   writeFile(
     'lib/app/router/app_go_router_redirect.dart',

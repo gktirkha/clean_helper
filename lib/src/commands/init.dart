@@ -70,7 +70,7 @@ Future<void> runInit({
     'lib/features/home',
     'home',
     utils.import,
-    router.import,
+    router,
     withDi: withDi,
   );
   installDependencies([router.name, localization.name, utils.name]);

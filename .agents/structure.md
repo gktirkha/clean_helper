@@ -83,7 +83,7 @@ clean_helper/
 | `tool_version.dart` | `toolVersion` | Must equal pubspec `version:` |
 | `write_file.dart` | `writeFile`, `overwriteFile` | The only way to write target files |
 | `insert_sorted_import.dart` | `insertSortedImport(content, line)` | Patch helper — adds an import at its sorted place within its `dart:` / `package:` / relative section |
-| `run_command.dart` | `runCommand(cmd, {workingDirectory})` | Run a process, abort on failure |
+| `run_command.dart` | `runCommand(cmd, {workingDirectory})` | Run a process; on failure print its output and abort |
 | `run_command_streamed.dart` | `runCommandStreamed(cmd)` | Same, streaming output |
 | `fvm_exec.dart` | `fvmExec(exe)` | `['fvm', exe]` or `[exe]` |
 | `fvm_use.dart` | `fvmUse()` (async) | Interactive `fvm use`; skipped when `monoRepoAppPath` is set |
@@ -96,13 +96,14 @@ clean_helper/
 | `run_flutter_pub_get.dart` | `runFlutterPubGet()` |
 | `create_directories.dart` | `createDirectories()` — the only place allowed to call `Directory.createSync` |
 | `generate_flutter_gen_files.dart` | `generateFlutterGenFiles()` |
-| `scaffold_package.dart` | `scaffoldPackage(package, {parentDir})` — `flutter create --template package`, delete unused scaffold files, write an including `analysis_options.yaml` |
-| `generate_clean_router_package.dart` | `generateCleanRouterPackage(router, {parentDir})` |
+| `scaffold_package.dart` | `scaffoldPackage(package, {parentDir})` — creates `parentDir`, `flutter create --template package --no-pub`, delete unused scaffold files, write an including `analysis_options.yaml` |
+| `generate_clean_router_package.dart` | `generateCleanRouterPackage(router, {parentDir})` — `lib/src/<name>_base.dart`, `<name>_refresh.dart` |
 | `generate_localization_package.dart` | `generateLocalizationPackage(localization, slangSettings, {parentDir})` |
 | `generate_utils_package.dart` | `generateUtilsPackage(utils, localization, {moduleName, translateVar, callAdapterName, parentDir})` |
 | `generate_network_package.dart` | `generateNetworkPackage(network, utils, {moduleName, auth, parentDir})` |
 | `patch_package_pubspec.dart` | `patchPackagePubspec(packagePath, pubspecTail)` |
-| `add_packages_workspace.dart` | `addPackagesWorkspace(packagePaths)` — no-op for an empty list |
+| `add_packages_workspace.dart` | `addPackagesWorkspace(packagePaths)` — no-op for an empty list; then `warnStaleWorkspaceEntries` |
+| `warn_stale_workspace_entries.dart` | `warnStaleWorkspaceEntries(pubspec)` — warns about `workspace:` paths without a `pubspec.yaml` |
 | `generate_core_files.dart` | `generateCoreFiles(packageName, {utils, localization, router})` |
 | `generate_tools_files.dart` | `generateToolsFiles({overwrite})` |
 | `install_dependencies.dart` | `installDependencies(workspacePackages)` |
@@ -117,7 +118,7 @@ clean_helper/
 
 ### `feature/` — `add-feature`
 
-`create_feature_structure.dart` → `createFeatureStructure(basePath, feature, utilsImport, routerImport, {withDi})` (also used by `init` for the home feature) calls the `generateFeature*` helpers: `routes`, `navigation`, `navigation_impl`, `page`, `page_provider`, `router`, `bloc`, `module`. `patch_router_module.dart` → `patchRouterModule(feature)`. `build_router_module.dart` → `buildRouterModule(features)`, which sorts features and is the single source of `app_router_module.dart` content.
+`create_feature_structure.dart` → `createFeatureStructure(basePath, feature, utilsImport, router, {withDi})` (also used by `init` for the home feature) calls the `generateFeature*` helpers: `routes`, `navigation`, `navigation_impl`, `page`, `page_provider`, `router`, `bloc`, `module`. `patch_router_module.dart` → `patchRouterModule(feature)`. `build_router_module.dart` → `buildRouterModule(features)`, which sorts features and is the single source of `app_router_module.dart` content.
 
 ### `repo/` — `add-repo`
 
@@ -185,8 +186,10 @@ Templates that take configurable input:
 | `di_initializer` | `utilsImport`, `utilsPackageModule` |
 | `init_service` | `utilsImport`, `localizationImport` |
 | `main_app_dart` | `localizationImport` |
-| `app_go_router`, `feature_router` | `routerImport` |
-| `utils_lib_export`, `clean_router_lib_export` | barrel `prefix` |
+| `app_go_router`, `feature_router` | `routerImport`, `routerPrefix` (`<RouterPascal>`) |
+| `clean_router_base`, `clean_router_refresh` | class `prefix` (`<RouterPascal>`) |
+| `utils_lib_export` | barrel `prefix` |
+| `clean_router_lib_export` | package `name` (file names), barrel `prefix` |
 | `localization_lib_export` | `generatedFile`, barrel `prefix` |
 | `localization_slang_yaml` | slang settings map |
 | `string_extension` | `generatedFile`, `translateVar` |

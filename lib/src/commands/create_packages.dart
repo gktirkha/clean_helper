@@ -32,7 +32,10 @@ import '../functions/shared/resolve_utils_package.dart';
 /// `clean-helper.packages` in `<dir>/<name>` — plus the network package when
 /// `packages.network` is configured — ignoring each `create` flag,
 /// and lists them under `workspace:` in `./pubspec.yaml`. [dir] defaults to
-/// `packages`. A package whose folder already has a `pubspec.yaml` is skipped.
+/// `packages`. A package whose folder already has a `pubspec.yaml` isn't
+/// regenerated, but every package found there still gets the workspace
+/// entry, pub get, slang and build_runner, so a rerun finishes a run that
+/// stopped part-way.
 void createPackages({String? dir}) {
   if (!File('pubspec.yaml').existsSync()) {
     abort('pubspec.yaml not found. Run this tool from the workspace root.');
@@ -96,32 +99,38 @@ void createPackages({String? dir}) {
     if (createUtils) utils.name,
     if (createNetwork) network.name,
   ];
-  if (created.isEmpty) {
-    stdout.writeln();
-    stdout.writeln('✅ Nothing to create — every package already exists.');
-    return;
-  }
+  // Packages under parentDir, created now or by an earlier (possibly
+  // interrupted) run: list them and finish their setup either way.
+  bool present(String name) =>
+      File('$parentDir/$name/pubspec.yaml').existsSync();
+  final packages = [
+    router,
+    localization,
+    utils,
+    ?network,
+  ].map((p) => p.name).where(present).toList();
 
   // The packages include this directory's analysis_options.yaml.
   writeFile('analysis_options.yaml', analysisOptionsTemplate());
-  addPackagesWorkspace([for (final name in created) '$parentDir/$name']);
+  addPackagesWorkspace([for (final name in packages) '$parentDir/$name']);
   runFlutterPubGet();
-  if (createLocalization) {
+  if (present(localization.name)) {
     runSlang(localization.name, parentDir: parentDir);
-    sortPubspecDeps('$parentDir/${localization.name}/pubspec.yaml');
   }
-  if (createUtils) {
-    runBuildRunner(workingDirectory: '$parentDir/${utils.name}');
-    sortPubspecDeps('$parentDir/${utils.name}/pubspec.yaml');
+  for (final name in [utils.name, ?network?.name]) {
+    if (present(name)) runBuildRunner(workingDirectory: '$parentDir/$name');
   }
-  if (createNetwork) {
-    runBuildRunner(workingDirectory: '$parentDir/${network.name}');
-    sortPubspecDeps('$parentDir/${network.name}/pubspec.yaml');
+  for (final name in packages) {
+    if (name != router.name) sortPubspecDeps('$parentDir/$name/pubspec.yaml');
   }
   runDartFormat();
 
   stdout.writeln();
-  stdout.writeln('✅ Created ${created.join(', ')} in $parentDir/.');
+  stdout.writeln(
+    created.isEmpty
+        ? '✅ Every package already existed in $parentDir/ — set up again.'
+        : '✅ Created ${created.join(', ')} in $parentDir/.',
+  );
   stdout.writeln(
     '   Set `create: false` for them in clean-helper.packages so `init` '
     "doesn't generate them again.",

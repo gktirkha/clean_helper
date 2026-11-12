@@ -30,7 +30,7 @@ void addFeature(
     basePath,
     featureName,
     utils.import,
-    resolveRouterPackage().import,
+    resolveRouterPackage(),
     withDi: withDi,
   );
   patchRouterModule(featureName);
