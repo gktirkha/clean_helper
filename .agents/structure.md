@@ -60,7 +60,7 @@ clean_helper/
 | `sort_imports.dart` | `sortImports(imports)` | Join import directives alphabetically |
 | `ensure_pubspec.dart` | `ensurePubspec()` | First call of every command: config → monorepo → version check |
 | `load_package_configs.dart` | `loadPackageConfigs()` | Fill the config globals from the starting-directory pubspec |
-| `package_configs.dart` | `PackageConfig` typedef `(name, import, create)`; `packageConfigsLoaded`, `packageCreateConfig`, `networkModuleNameConfig`, `networkAuthInterceptorConfig`, `useRootAnalysisConfig`, `monoRepoAppPath`, `utilsPackageConfig`, `networkPackageConfig`, `localizationPackageConfig`, `routerPackageConfig`, `utilsModuleNameConfig`, `callAdapterNameConfig`, `slangSettingsConfig`, `resultTypeConfig` | Config globals |
+| `package_configs.dart` | `PackageConfig` typedef `(name, import, create)`; `packageConfigsLoaded`, `packageCreateConfig`, `overwriteAnalysisOptionsConfig`, `networkModuleNameConfig`, `networkAuthInterceptorConfig`, `useRootAnalysisConfig`, `monoRepoAppPath`, `utilsPackageConfig`, `networkPackageConfig`, `localizationPackageConfig`, `routerPackageConfig`, `utilsModuleNameConfig`, `callAdapterNameConfig`, `slangSettingsConfig`, `resultTypeConfig` | Config globals |
 | `read_clean_helper_fields.dart` | `readCleanHelperFields(path)` | Scalar children of `clean-helper.<path…>` |
 | `read_package_config.dart` | `readPackageConfig(key)` | `packages.<key>` → `PackageConfig?` |
 | `resolve_utils_package.dart` | `resolveUtilsPackage()` | Configured utils package or `<app>_utils` |
@@ -71,6 +71,7 @@ clean_helper/
 | `resolve_network_module_name.dart` | `resolveNetworkModuleName(network)` | `module_name` ?? `<NetworkPascal>Module` |
 | `resolve_utils_module_name.dart` | `resolveUtilsModuleName(utils)` | `module_name` ?? `<UtilsPascal>Module` |
 | `resolve_call_adapter_name.dart` | `resolveCallAdapterName()` | `call_adapter_name` ?? `RetrofitCallAdapter` |
+| `write_analysis_options.dart` | `writeAnalysisOptions(path, content)` | `overwriteFile` or, with `overwrite_analysis_options: false`, `writeFile` |
 | `analysis_options_include.dart` | `analysisOptionsInclude(dir)` | `include:` path for a project's `analysis_options.yaml`, or null for full rules |
 | `package_barrel_path.dart` | `packageBarrelPath(package, [parentDir])` | `<parentDir>/<name>/lib/<file from import>`, `parentDir` defaulting to `packages` |
 | `package_barrel_prefix.dart` | `packageBarrelPrefix(package)` | `../` prefix from a nested barrel back to `lib/` |
@@ -92,7 +93,7 @@ clean_helper/
 
 | File | Function |
 |---|---|
-| `generate_analysis_options.dart` | `generateAnalysisOptions()` — full rules, or an include of the root's (created if missing) with `use_root_analysis` in a monorepo app |
+| `generate_analysis_options.dart` | `generateAnalysisOptions()` — full rules, or an include of the root's with `use_root_analysis` in a monorepo app; via `writeAnalysisOptions` |
 | `run_flutter_pub_get.dart` | `runFlutterPubGet()` |
 | `create_directories.dart` | `createDirectories()` — the only place allowed to call `Directory.createSync` |
 | `generate_flutter_gen_files.dart` | `generateFlutterGenFiles()` |

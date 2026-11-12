@@ -12,7 +12,8 @@ import '../shared/write_file.dart';
 /// the scaffold files clean_helper doesn't use (README, CHANGELOG, LICENSE,
 /// `.metadata`, `test/`, and `lib/<name>.dart` when the configured barrel is
 /// elsewhere) and writes an `analysis_options.yaml` that includes the
-/// project's (or, with `use_root_analysis`, the workspace root's) file.
+/// project's (or, with `use_root_analysis`, the workspace root's) file. That
+/// one is always written: the only existing file is flutter create's default.
 void scaffoldPackage(PackageConfig package, {String parentDir = 'packages'}) {
   final dir = '$parentDir/${package.name}';
 

@@ -306,6 +306,7 @@ clean-helper add-config
 
 Appends a `clean-helper:` block to the `pubspec.yaml` in the current directory: the monorepo root in a monorepo. It never prompts for an app. The block lists every [configuration](#configuration) key with a comment above it:
 
+- Explanations use `##` comments. Commented-out options use a single `#`, so you can uncomment one by removing a single `#`.
 - Active values are the defaults, so adding the block changes nothing.
 - Keys whose default depends on the app, such as package names, imports, `module_name` and `call_adapter_name`, are commented out with the default shown. Uncomment the ones you want to change.
 - `version` is the running tool's version.
@@ -358,6 +359,7 @@ Packages (clean-helper.packages):
   network:       my_app_network  (package:my_app_network/my_app_network.dart)
     module_name:       <NetworkPascal>Module (default)
     auth_interceptor:  true
+  overwrite_analysis_options: true (default)
   use_root_analysis: false (default — packages include the nearest project)
 ```
 
@@ -444,6 +446,11 @@ clean-helper:
       # AppAuthInterceptor in the app. Default: true.
       auth_interceptor: true
 
+    # true: init and create-packages replace existing analysis_options.yaml
+    # files with the generated ones. false: existing files are kept.
+    # Default: true.
+    overwrite_analysis_options: true
+
     # true: apps and packages include the workspace root's analysis_options.yaml
     # instead of the nearest project's. Default: false.
     use_root_analysis: true
@@ -457,6 +464,7 @@ clean-helper:
 | `packages.utils.module_name` | `<UtilsPascal>Module` | The utils package's `@module` class |
 | `packages.utils.call_adapter_name` | `RetrofitCallAdapter` | Call adapter class generated and used by REST datasources |
 | [`packages.localization`](#packageslocalization) `.name` / `.import` / `.create` | `<app>_localization` / `package:<name>/<name>.dart` / `true` | Localization package; other keys go to `slang.yaml` |
+| [`packages.overwrite_analysis_options`](#analysis-options) | `true` | Replace existing `analysis_options.yaml` files with the generated ones |
 | [`packages.use_root_analysis`](#analysis-options) | `false` | Apps and packages include the workspace root's `analysis_options.yaml` |
 | [`packages.router`](#packagesrouter) `.name` / `.import` / `.create` | `clean_router` / `package:<name>/<name>.dart` / `true` | Router package; its classes are `<NamePascal>Base` / `<NamePascal>Refresh` |
 | [`packages.network`](#packagesnetwork) `.name` / `.import` / `.create` | `<app>_network` / `package:<name>/<name>.dart` / `true` | Network package |
@@ -510,11 +518,18 @@ The lint rules are written once. Every other `analysis_options.yaml` only includ
 
 | | Without `use_root_analysis` (default) | With `packages.use_root_analysis: true` |
 |---|---|---|
-| App (`init`) | Full rules | `include: ../../analysis_options.yaml` — the workspace root's, created there if missing |
+| App (`init`) | Full rules | `include: ../../analysis_options.yaml` — the workspace root's, which gets the full rules |
 | Packages created by `init` | `include: ../../analysis_options.yaml` — the app's | The workspace root's, e.g. `include: ../../../../analysis_options.yaml` |
-| Packages created by `create-packages` | The current directory's file, created if missing | Same |
+| Packages created by `create-packages` | The current directory's file, which gets the full rules | Same |
 
 `use_root_analysis` only changes anything in a monorepo app, where a root exists above the app. It can also sit directly under `clean-helper:`.
+
+`overwrite_analysis_options` (default `true`, also allowed directly under `clean-helper:`) controls whether existing files are replaced:
+
+- `true`: the app's file, the root file (with `use_root_analysis`) and the one `create-packages` writes in its directory are always rewritten with the generated content.
+- `false`: existing files are kept, and only missing ones are created.
+
+A newly created package always gets its `include:` file, because its only existing file is `flutter create`'s default.
 
 ### `packages.network`
 

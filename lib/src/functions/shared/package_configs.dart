@@ -62,6 +62,13 @@ Map<String, String> slangSettingsConfig = {};
 /// workspace root's `analysis_options.yaml` instead of the nearest project's.
 bool useRootAnalysisConfig = false;
 
+/// `clean-helper.packages.overwrite_analysis_options` (or
+/// `clean-helper.overwrite_analysis_options`), set by [loadPackageConfigs].
+/// True (the default): the `analysis_options.yaml` files clean_helper writes
+/// for the app, the workspace root and `create-packages` replace existing
+/// ones. False: existing files are kept.
+bool overwriteAnalysisOptionsConfig = true;
+
 /// The monorepo app [resolveMonoRepoProject] switched into, relative to the
 /// starting directory (e.g. `apps/shop`). Null when no switch happened.
 String? monoRepoAppPath;

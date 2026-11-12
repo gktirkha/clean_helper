@@ -54,6 +54,7 @@ Global flags, declared on `CleanHelperRunner` and handled in its `runCommand` ov
 | `packages.utils.module_name` / `.call_adapter_name` | `loadPackageConfigs()` | `utilsModuleNameConfig` / `callAdapterNameConfig` |
 | `packages.localization.{name,import,create}` | `loadPackageConfigs()` | `localizationPackageConfig` |
 | `packages.localization.<slang key>` | `loadPackageConfigs()` | `slangSettingsConfig` |
+| `packages.overwrite_analysis_options` (or `clean-helper.overwrite_analysis_options`) | `loadPackageConfigs()` | `overwriteAnalysisOptionsConfig` |
 | `packages.use_root_analysis` (or `clean-helper.use_root_analysis`) | `loadPackageConfigs()` | `useRootAnalysisConfig` |
 | `packages.router.{name,import,create}` | `loadPackageConfigs()` | `routerPackageConfig` |
 | `packages.network.{name,import,create}` | `loadPackageConfigs()` | `networkPackageConfig` |

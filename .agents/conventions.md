@@ -93,6 +93,7 @@ The runner and `ensurePubspec()` fill shared globals before any command logic ru
 | `networkModuleNameConfig`, `networkAuthInterceptorConfig` | `loadPackageConfigs()` | `packages.network.module_name` (or null) / `.auth_interceptor` (true unless `false`) |
 | `utilsModuleNameConfig`, `callAdapterNameConfig` | `loadPackageConfigs()` | `packages.utils.module_name` / `.call_adapter_name`, or null |
 | `slangSettingsConfig` | `loadPackageConfigs()` | every other scalar key under `packages.localization` |
+| `overwriteAnalysisOptionsConfig` | `loadPackageConfigs()` | `packages.overwrite_analysis_options`; true unless `false`. `writeAnalysisOptions()` picks `overwriteFile` / `writeFile` from it |
 | `useRootAnalysisConfig` | `loadPackageConfigs()` | `packages.use_root_analysis` |
 | `monoRepoAppPath` | `resolveMonoRepoProject()` | the app switched into, relative to the root (`apps/shop`), or null |
 

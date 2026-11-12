@@ -35,6 +35,11 @@ void loadPackageConfigs() {
 
   final root = readCleanHelperFields([]);
 
+  overwriteAnalysisOptionsConfig =
+      (readCleanHelperFields(['packages'])['overwrite_analysis_options'] ??
+              root['overwrite_analysis_options'])
+          ?.toLowerCase() !=
+      'false';
   useRootAnalysisConfig =
       (readCleanHelperFields(['packages'])['use_root_analysis'] ??
               root['use_root_analysis'])

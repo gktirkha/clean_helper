@@ -73,6 +73,10 @@ void listMonoRepoApps() {
   stdout.writeln('    auth_interceptor:  $networkAuthInterceptorConfig');
 
   stdout.writeln(
+    '  overwrite_analysis_options: $overwriteAnalysisOptionsConfig'
+    '${overwriteAnalysisOptionsConfig ? ' (default)' : ''}',
+  );
+  stdout.writeln(
     '  use_root_analysis: $useRootAnalysisConfig'
     '${useRootAnalysisConfig ? '' : ' (default — packages include the nearest project)'}',
   );

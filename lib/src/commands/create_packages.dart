@@ -11,7 +11,7 @@ import '../functions/init/run_flutter_pub_get.dart';
 import '../functions/init/run_slang.dart';
 import '../functions/init/sort_pubspec_deps.dart';
 import '../functions/shared/abort.dart';
-import '../functions/shared/write_file.dart';
+import '../functions/shared/write_analysis_options.dart';
 import '../templates/analysis_options_template.dart';
 import '../functions/shared/load_package_configs.dart';
 import '../functions/shared/package_configs.dart';
@@ -111,7 +111,7 @@ void createPackages({String? dir}) {
   ].map((p) => p.name).where(present).toList();
 
   // The packages include this directory's analysis_options.yaml.
-  writeFile('analysis_options.yaml', analysisOptionsTemplate());
+  writeAnalysisOptions('analysis_options.yaml', analysisOptionsTemplate());
   addPackagesWorkspace([for (final name in packages) '$parentDir/$name']);
   runFlutterPubGet();
   if (present(localization.name)) {
