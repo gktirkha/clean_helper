@@ -10,6 +10,7 @@ import 'commands/add_feature_command.dart';
 import 'commands/add_melos_config_command.dart';
 import 'commands/add_network_module_command.dart';
 import 'commands/add_repo_command.dart';
+import 'commands/add_vscode_extensions_command.dart';
 import 'commands/build_runner_command.dart';
 import 'commands/create_packages_command.dart';
 import 'commands/init_command.dart';
@@ -51,6 +52,7 @@ class CleanHelperRunner extends CompletionCommandRunner<void> {
     addCommand(GenerateToolsCommand());
     addCommand(ListMonoRepoAppsCommand());
     addCommand(AddConfigCommand());
+    addCommand(AddVscodeExtensionsCommand());
     addCommand(AddMelosConfigCommand());
     addCommand(CreatePackagesCommand());
   }

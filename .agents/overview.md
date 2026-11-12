@@ -32,6 +32,7 @@ Read next:
 | `generate-tools [--overwrite]` | `generateTools(overwrite:)` | `tools/` scripts |
 | `list-mono-repo-apps` | `listMonoRepoApps()` | Print monorepo apps and resolved config |
 | `create-packages [--dir]` | `createPackages(dir:)` | Create the configured utils / localization / router packages in `<dir>` (default `packages`), ignoring `create` |
+| `add-vscode-extensions` | `addVscodeExtensions()` | Add recommended extensions to `.vscode/extensions.json` (merges) |
 | `add-config` | `addConfig()` | Append the commented `clean-helper:` template to the current pubspec |
 | `add-melos-config` | `addMelosConfig()` | melos dev dependency + `melos:` hooks and scripts in the root pubspec |
 

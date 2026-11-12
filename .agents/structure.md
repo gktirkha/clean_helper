@@ -31,6 +31,7 @@ clean_helper/
 | `add_feature.dart` | `addFeature(args, {withDi, runBuildRunnerAfter})` | `add-feature` |
 | `create_packages.dart` | `createPackages({dir})` — skips `ensurePubspec()` | `create-packages` |
 | `add_config.dart` | `addConfig()` — skips `ensurePubspec()` | `add-config` |
+| `add_vscode_extensions.dart` | `addVscodeExtensions()` — skips `ensurePubspec()` | `add-vscode-extensions` |
 | `add_melos_config.dart` | `addMelosConfig()` — skips `ensurePubspec()` | `add-melos-config` |
 | `add_network_module.dart` | `addNetworkModule({runBuildRunnerAfter})` | `add-network-module` |
 | `add_repo.dart` | `addRepo(args, {runBuildRunnerAfter, noRest, addSample})` | `add-repo` |
@@ -139,6 +140,7 @@ clean_helper/
 | `remove_feature/` | `deleteFeatureFiles(feature)`, `unpatchRouterModule(feature)` |
 | `build_runner/` | `runBuildRunnerBuild()`, `runBuildRunnerClean()` |
 | `config/` | `addConfigToPubspec()`, `findMonoRepoApps()` |
+| `vscode/` | `writeVscodeExtensions()` |
 | `melos/` | `installMelos()`, `addMelosToPubspec()` |
 
 ---
@@ -162,6 +164,7 @@ Each file is `<name>_template.dart` → `<name>Template(...)`.
 | Tools | `tools_command_runner`, `tools_clean`, `tools_bootstrap`, `tools_write_key_properties`, `tools_build_android`, `tools_build_config` |
 | Melos | `melos_config` |
 | Config | `clean_helper_config` (`version`, `apps`) |
+| VS Code | `vscode_extensions` (`recommendations`) + the `vscodeRecommendedExtensions` list |
 
 Templates that take configurable input:
 

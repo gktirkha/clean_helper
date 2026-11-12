@@ -86,6 +86,7 @@ Global options go **before** the command:
 | [`generate-localizations`](#generate-localizations) | Run slang |
 | [`generate-tools [--overwrite]`](#generate-tools) | Generate `tools/` scripts |
 | [`create-packages [--dir=<path>]`](#create-packages) | Create the utils, localization and router packages from config, e.g. at a monorepo root |
+| [`add-vscode-extensions`](#add-vscode-extensions) | Add recommended VS Code extensions to `.vscode/extensions.json` |
 | [`add-config`](#add-config) | Add a commented `clean-helper:` block with every config key to `pubspec.yaml` |
 | [`add-melos-config`](#add-melos-config) | Add melos and its hooks and scripts to the root `pubspec.yaml` |
 | [`list-mono-repo-apps`](#list-mono-repo-apps) | Show the resolved monorepo and package config |
@@ -284,6 +285,18 @@ Creates the utils, localization and router packages described by [`clean-helper.
 Typical monorepo setup: configure `packages` in the root pubspec, run `create-packages` there, and set `create: false` so each app's `init` uses the shared packages instead of creating its own.
 
 Keep each barrel outside `lib/src/` (for example `package:x/x.dart`): importing from another package's `src/` triggers the `implementation_imports` lint.
+
+### `add-vscode-extensions`
+
+```bash
+clean-helper add-vscode-extensions
+```
+
+Adds clean_helper's recommended extensions to `.vscode/extensions.json` in the current directory: the folder you open in VS Code, which is the monorepo root in a monorepo. The extensions are Dart, Flutter, Bloc, Flutter Helper, Dart Data Class Generator, Pubspec Assist, Remove Comments, XML, YAML, Code Spell Checker and Error Lens.
+
+- It creates the file if it's missing.
+- Otherwise it adds only the missing IDs, comparing case-insensitively, and keeps your entries and other keys such as `unwantedRecommendations`.
+- A file with comments isn't plain JSON, so it's left alone and the IDs are printed for you to add.
 
 ### `add-config`
 
