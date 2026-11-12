@@ -23,7 +23,6 @@ import '../functions/init/update_gitignore.dart';
 import '../functions/shared/ensure_pubspec.dart';
 import '../functions/shared/fvm_use.dart';
 import '../functions/shared/read_package_name.dart';
-import '../functions/shared/resolve_call_adapter_name.dart';
 import '../functions/shared/resolve_localization_package.dart';
 import '../functions/shared/resolve_network_package.dart';
 import '../functions/shared/resolve_router_package.dart';
@@ -64,8 +63,6 @@ Future<void> runInit({
       utils,
       localization,
       moduleName: resolveUtilsModuleName(utils),
-      translateVar: slang['translate_var']!,
-      callAdapterName: resolveCallAdapterName(),
     );
   }
   addPackagesWorkspace([for (final p in created) 'packages/${p.name}']);

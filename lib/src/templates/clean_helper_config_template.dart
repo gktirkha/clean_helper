@@ -24,8 +24,7 @@ clean-helper:
 $monoRepoApps
 
   packages:
-    ## Shared code: Failure, UseCaseBase, safeExecuteTask, AppLogger, the call
-    ## adapter, …
+    ## Shared code: Failure, UseCaseBase, safeExecuteTask, AppLogger, …
     utils:
       ## Package name. Default: <app>_utils.
       # name: my_app_utils
@@ -37,11 +36,8 @@ $monoRepoApps
       create: true
       ## The @module class that registers BlocObserver. Default: <UtilsPascal>Module.
       # module_name: MyAppUtilsModule
-      ## The Retrofit call adapter class in the utils package, used by add-repo
-      ## in @RestApi(callAdapter: …). Default: RetrofitCallAdapter.
-      # call_adapter_name: RetrofitCallAdapter
 
-    ## slang translations, used by MainApp, InitService and safeCast.
+    ## slang translations, used by MainApp and InitService.
     localization:
       ## Package name. Default: <app>_localization.
       # name: my_app_localization
@@ -59,7 +55,7 @@ $monoRepoApps
       ## Generated code; must be inside lib/. The barrel exports it.
       output_directory: lib/src/generated
       output_file_name: locales.g.dart
-      ## Variable used for translations (locales.general.…), in String.tr and safeCast.
+      ## Variable used for translations (locales.general.…), in String.tr.
       translate_var: locales
 
     ## <RouterPascal>Base / <RouterPascal>Refresh (CleanRouterBase by default),
@@ -72,7 +68,7 @@ $monoRepoApps
       ## Same as utils.create.
       create: true
 
-    ## Dio, NetworkConfig and the error / auth interceptors, created by
+    ## Dio, NetworkConfig and the auth interceptor, created by
     ## add-network-module and init.
     network:
       ## Package name. Default: <app>_network.
@@ -83,6 +79,10 @@ $monoRepoApps
       create: true
       ## The package's @module class. Default: <NetworkPascal>Module.
       # module_name: MyAppNetworkModule
+      ## The app's Retrofit call adapter (lib/core/network/adapters/), which
+      ## turns errors into ApiFailure; used by add-repo in
+      ## @RestApi(callAdapter: …). Default: AppCallAdapter.
+      # call_adapter_name: AppCallAdapter
       ## Token handling: abstract AuthInterceptor + noAuthDio in the package,
       ## AppAuthInterceptor in the app. Default: true.
       auth_interceptor: true

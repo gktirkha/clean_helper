@@ -1,7 +1,6 @@
 import 'dart:io';
 
 import '../../templates/auth_interceptor_template.dart';
-import '../../templates/error_interceptor_template.dart';
 import '../../templates/micro_package_di_initializer_template.dart';
 import '../../templates/network_config_template.dart';
 import '../../templates/network_di_keys_template.dart';
@@ -18,12 +17,12 @@ import 'scaffold_package.dart';
 
 /// Creates the network package in `<parentDir>/<name>`: an injectable
 /// micro-package with the freezed `NetworkConfig`, the Dio module
-/// ([moduleName]), the abstract `ErrorInterceptor` and `RetrofitLogger`, plus
-/// the abstract `AuthInterceptor`, `noAuthDio` and `NetworkDIKeys` when [auth]
-/// is true. [utils] provides `ErrorEntity` and `AppLogger`.
+/// ([moduleName]) and `RetrofitLogger`, plus the abstract `AuthInterceptor`,
+/// `noAuthDio` and `NetworkDIKeys` when [auth] is true. It depends on nothing
+/// in the workspace; turning errors into failures is the app's call adapter's
+/// job.
 void generateNetworkPackage(
-  PackageConfig package,
-  PackageConfig utils, {
+  PackageConfig package, {
   required String moduleName,
   required bool auth,
   String parentDir = 'packages',
@@ -32,7 +31,7 @@ void generateNetworkPackage(
   stdout.writeln('📦 Creating ${package.name} package...');
 
   scaffoldPackage(package, parentDir: parentDir);
-  patchPackagePubspec(dir, networkPubspecTailTemplate(utils.name));
+  patchPackagePubspec(dir, networkPubspecTailTemplate());
 
   overwriteFile(
     packageBarrelPath(package, parentDir),
@@ -47,16 +46,12 @@ void generateNetworkPackage(
     networkPackageModuleTemplate(moduleName, auth: auth),
   );
   overwriteFile(
-    '$dir/lib/src/interceptors/error_interceptor.dart',
-    errorInterceptorTemplate(utils.import),
-  );
-  overwriteFile(
     '$dir/lib/src/models/network_config.dart',
     networkConfigTemplate(),
   );
   overwriteFile(
     '$dir/lib/src/utils/retrofit_logger.dart',
-    retrofitLoggerTemplate(utils.import),
+    retrofitLoggerTemplate(package.name),
   );
   if (auth) {
     overwriteFile(

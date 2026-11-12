@@ -16,7 +16,6 @@ import '../functions/shared/write_package_analysis_options.dart';
 import '../templates/analysis_options_template.dart';
 import '../functions/shared/load_package_configs.dart';
 import '../functions/shared/package_configs.dart';
-import '../functions/shared/resolve_call_adapter_name.dart';
 import '../functions/shared/resolve_localization_package.dart';
 import '../functions/shared/resolve_network_module_name.dart';
 import '../functions/shared/resolve_network_package.dart';
@@ -79,15 +78,12 @@ void createPackages({String? dir}) {
       utils,
       localization,
       moduleName: resolveUtilsModuleName(utils),
-      translateVar: slang['translate_var']!,
-      callAdapterName: resolveCallAdapterName(),
       parentDir: parentDir,
     );
   }
   if (createNetwork) {
     generateNetworkPackage(
       network,
-      utils,
       moduleName: resolveNetworkModuleName(network),
       auth: networkAuthInterceptorConfig,
       parentDir: parentDir,

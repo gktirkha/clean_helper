@@ -1,6 +1,16 @@
+## 1.9.0
+
+### Breaking: API errors are handled by the app's call adapter
+
+- The app gets `AppCallAdapter` (`lib/core/network/adapters/`), which turns every Retrofit call into `TaskEither<Failure, T>`. HTTP errors become `ApiFailure` (`lib/core/network/failures/`), carrying the status code and the backend's `ErrorModel`. `ErrorModel` has `tryParse`, and no longer implements `ErrorEntity`.
+- Removed `ErrorInterceptor`, `AppErrorInterceptor`, `ErrorEntity` and the utils package's call adapter. The utils package no longer depends on `retrofit`, and `safeCast` no longer handles error bodies.
+- The network package no longer depends on the utils package. `RetrofitLogger` logs through `dart:developer`.
+- `call_adapter_name` moves from `packages.utils` to `packages.network`, default `AppCallAdapter`.
+- Generated use cases take `{required this._<name>Repository}`.
+
 ## 1.8.1
 
-- Docs: a monorepo workspace root must not have a `lib/` folder. A folder with `lib/` is treated as a single app even when its pubspec declares `mono_repo_apps`, so a root made with `flutter create` gets scaffolded as an app. The README's Monorepos section now says so.
+- A monorepo workspace root must not have a `lib/` folder. A folder with `lib/` is treated as a single app even when its pubspec declares `mono_repo_apps`, so a root made with `flutter create` gets scaffolded as an app. The README's Monorepos section now says so.
 
 ## 1.8.0
 

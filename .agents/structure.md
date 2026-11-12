@@ -70,7 +70,7 @@ clean_helper/
 | `resolve_network_package.dart` | `resolveNetworkPackage()` | Configured network package or `<app>_network` |
 | `resolve_network_module_name.dart` | `resolveNetworkModuleName(network)` | `module_name` ?? `<NetworkPascal>Module` |
 | `resolve_utils_module_name.dart` | `resolveUtilsModuleName(utils)` | `module_name` ?? `<UtilsPascal>Module` |
-| `resolve_call_adapter_name.dart` | `resolveCallAdapterName()` | `call_adapter_name` ?? `RetrofitCallAdapter` |
+| `resolve_call_adapter_name.dart` | `resolveCallAdapterName()` | `packages.network.call_adapter_name` ?? `AppCallAdapter` |
 | `write_package_analysis_options.dart` | `writePackageAnalysisOptions(packageDirs)` | Each existing package's `include:` file (current project's or root's rules), via `writeAnalysisOptions` |
 | `write_analysis_options.dart` | `writeAnalysisOptions(path, content)` | `overwriteFile` or, with `overwrite_analysis_options: false`, `writeFile` |
 | `app_router_module_path.dart` | `appRouterModulePath()` | `lib/app/router/<app>_router_module.dart` for the current app |
@@ -102,8 +102,8 @@ clean_helper/
 | `scaffold_package.dart` | `scaffoldPackage(package, {parentDir})` — creates `parentDir`, `flutter create --template package --no-pub`, delete unused scaffold files, write an including `analysis_options.yaml` |
 | `generate_clean_router_package.dart` | `generateCleanRouterPackage(router, {parentDir})` — `lib/src/<name>_base.dart`, `<name>_refresh.dart` |
 | `generate_localization_package.dart` | `generateLocalizationPackage(localization, slangSettings, {parentDir})` |
-| `generate_utils_package.dart` | `generateUtilsPackage(utils, localization, {moduleName, translateVar, callAdapterName, parentDir})` |
-| `generate_network_package.dart` | `generateNetworkPackage(network, utils, {moduleName, auth, parentDir})` |
+| `generate_utils_package.dart` | `generateUtilsPackage(utils, localization, {moduleName, parentDir})` |
+| `generate_network_package.dart` | `generateNetworkPackage(network, {moduleName, auth, parentDir})` |
 | `patch_package_pubspec.dart` | `patchPackagePubspec(packagePath, pubspecTail)` |
 | `add_packages_workspace.dart` | `addPackagesWorkspace(packagePaths)` — no-op for an empty list; then `warnStaleWorkspaceEntries` |
 | `warn_stale_workspace_entries.dart` | `warnStaleWorkspaceEntries(pubspec)` — warns about `workspace:` paths without a `pubspec.yaml` |
@@ -139,7 +139,7 @@ clean_helper/
 | Folder | Files → functions |
 |---|---|
 | `entity/` | `generateEntityFile(dir, name)`, `generateModelFile(dir, name, entityImport)` |
-| `add_network_module/` | `generateNetworkAppFiles(networkImport, utilsImport, {auth})`, `installNetworkDependencies(networkName)`, `patchDiInitializer(packageImport, packageModule)`, `patchDioLensInit()` |
+| `add_network_module/` | `generateNetworkAppFiles(networkImport, utilsImport, {callAdapterName, auth})`, `installNetworkDependencies(networkName)`, `patchDiInitializer(packageImport, packageModule)`, `patchDioLensInit()` |
 | `remove_feature/` | `deleteFeatureFiles(feature)`, `unpatchRouterModule(feature)` |
 | `build_runner/` | `runBuildRunnerBuild()`, `runBuildRunnerClean()` |
 | `config/` | `addConfigToPubspec()`, `findMonoRepoApps()` |
@@ -158,9 +158,9 @@ Each file is `<name>_template.dart` → `<name>Template(...)`.
 | Feature | `feature_routes`, `feature_navigation`, `feature_navigation_impl`, `feature_router`, `feature_page`, `feature_page_provider`, `feature_bloc`, `feature_event`, `feature_state`, `feature_module` |
 | Repo | `domain_repo`, `data_source_base`, `data_repo`, `rest_data_source`, `feature_api_paths`, `request_model`, `response_model`, `get_use_case`, `post_use_case`, `get_use_case_params`, `post_use_case_params` |
 | Entity | `entity`, `model` |
-| Network package | `network_lib_export`, `network_pubspec_tail`, `network_package_module`, `network_config`, `network_di_keys`, `error_interceptor`, `retrofit_logger`, `auth_interceptor` |
-| App network files | `core_api_paths`, `error_model`, `app_error_interceptor`, `network_config_module`, `app_auth_interceptor`, `dio_lens_init` |
-| Utils package | `utils_lib_export`, `utils_pubspec_tail`, `context_utils`, `di_container` (shared with the app), `utils_module`, `micro_package_di_initializer` (shared with the network package), `retrofit_call_adapter`, `app_logger`, `app_bloc_observer`, `debounce`, `error_entity`, `failure`, `type_definitions`, `get_current_function_name`, `list_to_model_list`, `safe_cast`, `safe_execute`, `safe_execute_task`, `use_case_base` |
+| Network package | `network_lib_export`, `network_pubspec_tail`, `network_package_module`, `network_config`, `network_di_keys`, `retrofit_logger`, `auth_interceptor` |
+| App network files | `core_api_paths`, `error_model`, `api_failure`, `app_call_adapter`, `network_config_module`, `app_auth_interceptor`, `dio_lens_init` |
+| Utils package | `utils_lib_export`, `utils_pubspec_tail`, `context_utils`, `di_container` (shared with the app), `utils_module`, `micro_package_di_initializer` (shared with the network package), `app_logger`, `app_bloc_observer`, `debounce`, `failure`, `type_definitions`, `get_current_function_name`, `list_to_model_list`, `safe_cast`, `safe_execute`, `safe_execute_task`, `use_case_base` |
 | Localization package | `localization_lib_export`, `localization_pubspec_tail`, `localization_slang_yaml`, `string_extension`, `en_locale` |
 | clean_router package | `clean_router_base`, `clean_router_refresh`, `clean_router_lib_export`, `clean_router_pubspec_tail` |
 | Project config | `analysis_options`, `analysis_options_include`, `build_yaml`, `colors_xml`, `gitignore` |
@@ -174,17 +174,16 @@ Templates that take configurable input:
 | Template | Parameters beyond names |
 |---|---|
 | `domain_repo`, `data_source_base`, `data_repo` | `utilsImport`, `addSample` |
-| `rest_data_source` | `utilsImport`, `callAdapter`, `addSample` |
+| `rest_data_source` | `utilsImport`, `callAdapter`, `addSample` (imports the app's `adapters/app_call_adapter.dart`) |
 | `get_use_case`, `post_use_case` | `utilsImport` |
 | `dio_lens_init` | `indent` |
-| `retrofit_call_adapter` | `className` |
-| `retrofit_logger`, `error_model`, `error_interceptor` | `utilsImport` |
-| `app_error_interceptor` | `networkImport`, `utilsImport` |
+| `app_call_adapter` | `className`, `utilsImport` |
+| `api_failure` | `utilsImport` |
+| `retrofit_logger` | `packageName` (the `dart:developer` log name) |
 | `network_package_module` | `moduleName`, `auth` |
 | `network_lib_export` | barrel `prefix`, `auth` |
 | `network_config_module` | `networkImport`, `auth` |
 | `app_auth_interceptor` | `networkImport` |
-| `network_pubspec_tail` | `utilsPackageName` |
 | `di_initializer` | `utilsImport`, `utilsPackageModule` |
 | `init_service` | `utilsImport`, `localizationImport` |
 | `app_go_router` | `appName`, `routerImport`, `routerPrefix` (`<RouterPascal>`) |
@@ -198,7 +197,6 @@ Templates that take configurable input:
 | `localization_lib_export` | `generatedFile`, barrel `prefix` |
 | `localization_slang_yaml` | slang settings map |
 | `string_extension` | `generatedFile`, `translateVar` |
-| `safe_cast` | `localizationImport`, `translateVar` |
 | `utils_module` | full `moduleName` |
 | `feature_navigation_impl` | `utilsImport` |
 | `tools_bootstrap` | `localizationDir`, `buildDirs` (only packages under `packages/`) |

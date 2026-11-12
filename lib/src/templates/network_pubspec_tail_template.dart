@@ -1,5 +1,5 @@
-String networkPubspecTailTemplate(String utilsPackageName) =>
-    '''
+/// The network package depends on nothing in the workspace.
+String networkPubspecTailTemplate() => '''
 resolution: workspace
 
 dependencies:
@@ -10,7 +10,6 @@ dependencies:
   freezed_annotation:
   injectable:
   retrofit:
-  $utilsPackageName:
 
 dev_dependencies:
   build_runner:

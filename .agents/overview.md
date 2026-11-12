@@ -52,14 +52,14 @@ Global flags, declared on `CleanHelperRunner` and handled in its `runCommand` ov
 | `mono_repo_apps` | `readMonoRepoApps()` | — |
 | `packages.<key>.create` (each package) | `loadPackageConfigs()` | `packageCreateConfig` (also in the `PackageConfig` when `name`/`import` is set) |
 | `packages.utils.{name,import,create}` | `loadPackageConfigs()` | `utilsPackageConfig` |
-| `packages.utils.module_name` / `.call_adapter_name` | `loadPackageConfigs()` | `utilsModuleNameConfig` / `callAdapterNameConfig` |
+| `packages.utils.module_name` | `loadPackageConfigs()` | `utilsModuleNameConfig` |
 | `packages.localization.{name,import,create}` | `loadPackageConfigs()` | `localizationPackageConfig` |
 | `packages.localization.<slang key>` | `loadPackageConfigs()` | `slangSettingsConfig` |
 | `packages.overwrite_analysis_options` (or `clean-helper.overwrite_analysis_options`) | `loadPackageConfigs()` | `overwriteAnalysisOptionsConfig` |
 | `packages.use_root_analysis` (or `clean-helper.use_root_analysis`) | `loadPackageConfigs()` | `useRootAnalysisConfig` |
 | `packages.router.{name,import,create}` | `loadPackageConfigs()` | `routerPackageConfig` |
 | `packages.network.{name,import,create}` | `loadPackageConfigs()` | `networkPackageConfig` |
-| `packages.network.module_name` / `.auth_interceptor` | `loadPackageConfigs()` | `networkModuleNameConfig` / `networkAuthInterceptorConfig` |
+| `packages.network.module_name` / `.call_adapter_name` / `.auth_interceptor` | `loadPackageConfigs()` | `networkModuleNameConfig` / `callAdapterNameConfig` / `networkAuthInterceptorConfig` |
 
 Everything except `version` is read from the pubspec in the starting directory — the monorepo root in a monorepo — before `resolveMonoRepoProject()` changes directory. The README's Configuration section documents each key's behaviour for users.
 

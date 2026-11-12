@@ -14,7 +14,8 @@ String restDataSourceTemplate(
 }) {
   final result = 'TaskEither<Failure, ${repoClass}ResponseModel>';
 
-  // The call adapter comes from the utils package, with Failure.
+  // The call adapter is the app's (lib/core/network/adapters/); Failure
+  // comes from the utils package.
   final imports = sortImports([
     "import 'package:dio/dio.dart';",
     if (addSample) "import 'package:fpdart/fpdart.dart';",
@@ -31,7 +32,7 @@ String restDataSourceTemplate(
       ? '''
 $imports
 
-${sortImports(["import '../constants/${feature}_api_paths.dart';", "import '../models/requests/${repoName}_request_model.dart';", "import '../models/response/${repoName}_response_model.dart';", "import '${repoName}_data_source_base.dart';"])}
+${sortImports(["import '../../../../core/network/adapters/app_call_adapter.dart';", "import '../constants/${feature}_api_paths.dart';", "import '../models/requests/${repoName}_request_model.dart';", "import '../models/response/${repoName}_response_model.dart';", "import '${repoName}_data_source_base.dart';"])}
 
 part 'rest_${repoName}_data_source.g.dart';
 
@@ -52,6 +53,7 @@ $factory
       : '''
 $imports
 
+import '../../../../core/network/adapters/app_call_adapter.dart';
 import '${repoName}_data_source_base.dart';
 
 part 'rest_${repoName}_data_source.g.dart';

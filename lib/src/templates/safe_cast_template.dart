@@ -1,29 +1,15 @@
-import '../functions/shared/sort_imports.dart';
-
-/// [localizationImport] is the localization package's barrel URI;
-/// [translateVar] is its slang `translate_var`.
-String safeCastTemplate(String localizationImport, String translateVar) =>
-    '''
+String safeCastTemplate() => '''
 import 'dart:convert';
 
-${sortImports(["import '$localizationImport';", "import 'package:fpdart/fpdart.dart';"])}
+import 'package:fpdart/fpdart.dart';
 
 import '../app_logger.dart';
-import '../error_entity.dart';
 import '../failure.dart';
 import '../type_definitions.dart';
 
 Either<Failure, T> safeCast<T>(dynamic data, JsonDecodeFactory<T> decoder) {
   try {
     if (data == null) throw Failure(message: 'Data Is Null');
-    if (data is ErrorEntity) {
-      return Left(
-        Failure(
-          message:
-              data.errors.firstOrNull ?? $translateVar.general.somethingWentWrong,
-        ),
-      );
-    }
     if (data is T) {
       return Right(data);
     }

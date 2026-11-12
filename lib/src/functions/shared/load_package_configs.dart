@@ -22,12 +22,12 @@ void loadPackageConfigs() {
 
   final network = readCleanHelperFields(['packages', 'network']);
   networkModuleNameConfig = network['module_name'];
+  callAdapterNameConfig = network['call_adapter_name'];
   networkAuthInterceptorConfig =
       network['auth_interceptor']?.toLowerCase() != 'false';
 
   final utils = readCleanHelperFields(['packages', 'utils']);
   utilsModuleNameConfig = utils['module_name'];
-  callAdapterNameConfig = utils['call_adapter_name'];
 
   slangSettingsConfig = Map.of(
     readCleanHelperFields(['packages', 'localization']),

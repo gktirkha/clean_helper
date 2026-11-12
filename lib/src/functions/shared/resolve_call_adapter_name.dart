@@ -1,6 +1,5 @@
 import 'package_configs.dart';
 
-/// The call adapter class name: `packages.utils.call_adapter_name`, else
-/// `RetrofitCallAdapter`.
-String resolveCallAdapterName() =>
-    callAdapterNameConfig ?? 'RetrofitCallAdapter';
+/// The app's Retrofit call adapter class: `packages.network.call_adapter_name`,
+/// else `AppCallAdapter`.
+String resolveCallAdapterName() => callAdapterNameConfig ?? 'AppCallAdapter';

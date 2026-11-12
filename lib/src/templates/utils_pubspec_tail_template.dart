@@ -10,7 +10,6 @@ dependencies:
   get_it:
   injectable:
   logger:
-  retrofit:
   $localizationPackageName:
 
 dev_dependencies:

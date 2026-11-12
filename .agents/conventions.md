@@ -92,7 +92,8 @@ The runner and `ensurePubspec()` fill shared globals before any command logic ru
 | `localizationPackageConfig`, `routerPackageConfig` | `loadPackageConfigs()` | `packages.localization` / `packages.router`, or null |
 | `networkPackageConfig` | `loadPackageConfigs()` | `packages.network`, or null |
 | `networkModuleNameConfig`, `networkAuthInterceptorConfig` | `loadPackageConfigs()` | `packages.network.module_name` (or null) / `.auth_interceptor` (true unless `false`) |
-| `utilsModuleNameConfig`, `callAdapterNameConfig` | `loadPackageConfigs()` | `packages.utils.module_name` / `.call_adapter_name`, or null |
+| `utilsModuleNameConfig` | `loadPackageConfigs()` | `packages.utils.module_name`, or null |
+| `callAdapterNameConfig` | `loadPackageConfigs()` | `packages.network.call_adapter_name`, or null |
 | `slangSettingsConfig` | `loadPackageConfigs()` | every other scalar key under `packages.localization` |
 | `overwriteAnalysisOptionsConfig` | `loadPackageConfigs()` | `packages.overwrite_analysis_options`; true unless `false`. `writeAnalysisOptions()` picks `overwriteFile` / `writeFile` from it, for app, root and package files alike |
 | `useRootAnalysisConfig` | `loadPackageConfigs()` | `packages.use_root_analysis`; true unless `false` |
@@ -113,7 +114,7 @@ Resolution helpers turn config into decisions, so commands don't repeat the logi
 | `analysisOptionsInclude(dir)` | the `include:` path for the `analysis_options.yaml` at `dir` (`''` = the current project), or null for the full rules — `'../' × (depth(dir) + depth(monoRepoAppPath) with use_root_analysis)` |
 | `resolveNetworkModuleName(network)` | `module_name` ?? `<NetworkPascal>Module` |
 | `resolveUtilsModuleName(utils)` | `module_name` ?? `<UtilsPascal>Module` |
-| `resolveCallAdapterName()` | `call_adapter_name` ?? `RetrofitCallAdapter` |
+| `resolveCallAdapterName()` | `packages.network.call_adapter_name` ?? `AppCallAdapter` |
 | `packageBarrelPath(p)` / `packageBarrelPrefix(p)` | where a created package's barrel goes (from its import URI), and the `../` prefix its exports need |
 
 ---

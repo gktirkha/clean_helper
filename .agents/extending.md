@@ -105,10 +105,7 @@ fvm dart run /path/to/clean_helper/bin/clean_helper.dart add-repo x x --add-samp
 fvm dart analyze lib packages     # expect no errors or warnings
 ```
 
-The expected infos are:
-
-- `prefer_initializing_formals` in the generated use cases;
-- `prefer_const_constructors` in the model `.g.dart` files.
+The only expected info is `prefer_const_constructors` in the model `.g.dart` files.
 
 `test/widget_test.dart` from `flutter create` fails to compile because it references `MyApp`, which `init` removes. Leave it out of analysis.
 

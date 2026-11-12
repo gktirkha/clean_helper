@@ -52,9 +52,6 @@ void listMonoRepoApps() {
     '    module_name:       ${utilsModuleNameConfig ?? '<UtilsPascal>Module (default)'}',
   );
   stdout.writeln(
-    '    call_adapter_name: ${callAdapterNameConfig ?? 'RetrofitCallAdapter (default)'}',
-  );
-  stdout.writeln(
     '  localization:  ${describe('localization', localizationPackageConfig, '<app>_localization (default)')}',
   );
   for (final e in resolveSlangSettings().entries) {
@@ -69,6 +66,9 @@ void listMonoRepoApps() {
   );
   stdout.writeln(
     '    module_name:       ${networkModuleNameConfig ?? '<NetworkPascal>Module (default)'}',
+  );
+  stdout.writeln(
+    '    call_adapter_name: ${callAdapterNameConfig ?? 'AppCallAdapter (default)'}',
   );
   stdout.writeln('    auth_interceptor:  $networkAuthInterceptorConfig');
 

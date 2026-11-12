@@ -12,6 +12,7 @@ import '../functions/init/sort_pubspec_deps.dart';
 import '../functions/shared/ensure_pubspec.dart';
 import '../functions/shared/package_configs.dart';
 import '../functions/shared/pascal_case.dart';
+import '../functions/shared/resolve_call_adapter_name.dart';
 import '../functions/shared/resolve_network_module_name.dart';
 import '../functions/shared/resolve_network_package.dart';
 import '../functions/shared/resolve_utils_package.dart';
@@ -19,7 +20,7 @@ import '../functions/shared/write_package_analysis_options.dart';
 
 /// Creates the network package in `packages/<network>` (unless `create:
 /// false` or it already exists) and wires the app to it: `ApiPaths`,
-/// `ErrorModel`, `AppErrorInterceptor`, `AppAuthInterceptor` (with
+/// `ErrorModel`, `ApiFailure`, the call adapter, `AppAuthInterceptor` (with
 /// `auth_interceptor`), `NetworkConfigModule`, the package module in
 /// `di_initializer.dart`, and `DioLens.init`.
 void addNetworkModule({bool runBuildRunnerAfter = true}) {
@@ -38,7 +39,6 @@ void addNetworkModule({bool runBuildRunnerAfter = true}) {
   if (createPackage) {
     generateNetworkPackage(
       network,
-      utils,
       moduleName: resolveNetworkModuleName(network),
       auth: auth,
     );
@@ -46,7 +46,12 @@ void addNetworkModule({bool runBuildRunnerAfter = true}) {
   }
 
   writePackageAnalysisOptions([packageDir]);
-  generateNetworkAppFiles(network.import, utils.import, auth: auth);
+  generateNetworkAppFiles(
+    network.import,
+    utils.import,
+    callAdapterName: resolveCallAdapterName(),
+    auth: auth,
+  );
   installNetworkDependencies(network.name);
   patchDiInitializer(
     network.import,

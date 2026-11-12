@@ -18,7 +18,7 @@ Feature scope only; use `add-entity core …` for core models. Both names are lo
 | `utilsImport` | `resolveUtilsPackage().import` |
 | `hasNetworkModule` | `lib/core/network/di/network_config_module.dart` exists (written by `add-network-module`) |
 | `generateRest` | `!noRest && hasNetworkModule` |
-| call adapter name | `resolveCallAdapterName()` — `packages.utils.call_adapter_name` ?? `RetrofitCallAdapter` |
+| call adapter name | `resolveCallAdapterName()` — `packages.network.call_adapter_name` ?? `AppCallAdapter` |
 
 ## Output
 
@@ -42,11 +42,11 @@ lib/features/<f>/data/datasources/rest_<r>_data_source.dart        REST — @Res
 | datasource base / REST | `TaskEither<Failure, <R>ResponseModel>` |
 | domain repo | `TaskEither<Failure, <R>Entity>` |
 | repo impl | same, **not** `async`; returns the datasource's value directly (covariant) |
-| use cases | `TaskEither<…>`; `import 'package:fpdart/fpdart.dart' show TaskEither;`, `UseCaseBase` from the utils import |
+| use cases | `TaskEither<…>`; `import 'package:fpdart/fpdart.dart' show TaskEither;`, `UseCaseBase` from the utils import; constructor `({required this._<camel>Repository})` |
 
 ## Generated-code rules
 
-- Package imports go through `sortImports`. The call adapter comes from the utils import.
+- Package imports go through `sortImports`. The call adapter is imported relatively from `../../../../core/network/adapters/app_call_adapter.dart`; `Failure` comes from the utils import.
 - Multi-word repo names use `camelCase` identifiers: `HomeApiPaths.userAccount`, `userAccountRepository`.
 - The factory is `factory Rest<R>DataSource(Dio dio, {ParseErrorLogger? errorLogger})`; the network package registers the logger.
 - Retrofit is imported as `package:retrofit/retrofit.dart`.

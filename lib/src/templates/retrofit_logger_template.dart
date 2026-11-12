@@ -1,8 +1,11 @@
-import '../functions/shared/sort_imports.dart';
-
-String retrofitLoggerTemplate(String utilsImport) =>
+/// The network package's `ParseErrorLogger`. Logs through `dart:developer`
+/// under [packageName], so the package doesn't depend on the utils package.
+String retrofitLoggerTemplate(String packageName) =>
     '''
-${sortImports(["import 'package:dio/dio.dart';", "import 'package:retrofit/retrofit.dart';", "import '$utilsImport';"])}
+import 'dart:developer' as developer;
+
+import 'package:dio/dio.dart';
+import 'package:retrofit/retrofit.dart';
 
 class RetrofitLogger implements ParseErrorLogger {
   @override
@@ -12,11 +15,12 @@ class RetrofitLogger implements ParseErrorLogger {
     RequestOptions options, {
     Response<dynamic>? response,
   }) {
-    AppLogger.error(
+    developer.log(
       'Error While Parsing Response with data \${response?.data ?? "N/A"}',
-      stackTrace: stackTrace,
+      name: '$packageName',
       error: error,
-      time: DateTime.now(),
+      stackTrace: stackTrace,
+      level: 1000,
     );
   }
 }

@@ -1,7 +1,9 @@
 /// `lib/src/di/<network>_module.dart`: [moduleName] registers `BaseOptions`
 /// from the app's `NetworkConfig`, `RetrofitLogger` as `ParseErrorLogger`,
-/// and `Dio`. With [auth], `Dio` gets the app's `AuthInterceptor` and a
-/// `@Named(NetworkDIKeys.noAuthDio)` Dio without it is added.
+/// and `Dio` with Dio Lens. With [auth], `Dio` gets the app's
+/// `AuthInterceptor` and a `@Named(NetworkDIKeys.noAuthDio)` Dio without it
+/// is added. Error responses are turned into failures by the app's call
+/// adapter, not by an interceptor.
 String networkPackageModuleTemplate(String moduleName, {required bool auth}) {
   final imports = [
     "import 'package:dio/dio.dart';",
@@ -10,7 +12,6 @@ String networkPackageModuleTemplate(String moduleName, {required bool auth}) {
     "import 'package:retrofit/retrofit.dart';",
     '',
     if (auth) "import '../interceptors/auth_interceptor.dart';",
-    "import '../interceptors/error_interceptor.dart';",
     "import '../models/network_config.dart';",
     if (auth) "import '../network_di_keys.dart';",
     "import '../utils/retrofit_logger.dart';",
@@ -19,15 +20,10 @@ String networkPackageModuleTemplate(String moduleName, {required bool auth}) {
   final dio = auth
       ? '''
   @lazySingleton
-  Dio dio(
-    AuthInterceptor authInterceptor,
-    BaseOptions baseOptions,
-    ErrorInterceptor errorInterceptor,
-  ) {
+  Dio dio(AuthInterceptor authInterceptor, BaseOptions baseOptions) {
     final dio = Dio(baseOptions);
     dio.interceptors.addAll([
       authInterceptor,
-      errorInterceptor,
       DioLensInterceptor(dio: dio, name: 'api'),
     ]);
     return dio;
@@ -35,22 +31,16 @@ String networkPackageModuleTemplate(String moduleName, {required bool auth}) {
 
   @lazySingleton
   @Named(NetworkDIKeys.noAuthDio)
-  Dio noAuthDio(BaseOptions baseOptions, ErrorInterceptor errorInterceptor) {
+  Dio noAuthDio(BaseOptions baseOptions) {
     final dio = Dio(baseOptions);
-    dio.interceptors.addAll([
-      DioLensInterceptor(dio: dio, name: 'no-auth'),
-      errorInterceptor,
-    ]);
+    dio.interceptors.add(DioLensInterceptor(dio: dio, name: 'no-auth'));
     return dio;
   }'''
       : '''
   @lazySingleton
-  Dio dio(BaseOptions baseOptions, ErrorInterceptor errorInterceptor) {
+  Dio dio(BaseOptions baseOptions) {
     final dio = Dio(baseOptions);
-    dio.interceptors.addAll([
-      errorInterceptor,
-      DioLensInterceptor(dio: dio, name: 'api'),
-    ]);
+    dio.interceptors.add(DioLensInterceptor(dio: dio, name: 'api'));
     return dio;
   }''';
 

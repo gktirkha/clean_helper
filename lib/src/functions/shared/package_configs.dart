@@ -47,9 +47,9 @@ PackageConfig? routerPackageConfig;
 /// the utils package's `@module` class. Null means `<UtilsPascal>Module`.
 String? utilsModuleNameConfig;
 
-/// `clean-helper.packages.utils.call_adapter_name`, set by
-/// [loadPackageConfigs]: the call adapter class `add-network-module`
-/// generates and `add-repo` uses. Null means `RetrofitCallAdapter`.
+/// `clean-helper.packages.network.call_adapter_name`, set by
+/// [loadPackageConfigs]: the Retrofit call adapter class `add-network-module`
+/// generates in the app and `add-repo` uses. Null means `AppCallAdapter`.
 String? callAdapterNameConfig;
 
 /// Slang settings under `clean-helper.packages.localization` (every scalar
