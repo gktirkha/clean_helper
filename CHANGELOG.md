@@ -1,3 +1,9 @@
+## 1.9.1
+
+- The network package's `BaseOptions` is registered as `@Named(NetworkDIKeys.baseOptions)` (`'<networkCamel>BaseOptions'`), so apps can register their own unnamed `BaseOptions`.
+- New `@Named(NetworkDIKeys.noBaseOptionsDio)` Dio without `BaseOptions`, generated with or without `auth_interceptor`. `NetworkDIKeys` is now always generated and exported.
+- Dio Lens names the extra Dios after their DI keys (`noAuthDio`, `noBaseOptionsDio`) instead of `no-auth`.
+
 ## 1.9.0
 
 ### Breaking: API errors are handled by the app's call adapter

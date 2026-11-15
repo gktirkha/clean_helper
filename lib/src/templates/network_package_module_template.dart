@@ -1,8 +1,10 @@
-/// `lib/src/di/<network>_module.dart`: [moduleName] registers `BaseOptions`
-/// from the app's `NetworkConfig`, `RetrofitLogger` as `ParseErrorLogger`,
+/// `lib/src/di/<network>_module.dart`: [moduleName] registers
+/// `@Named(NetworkDIKeys.baseOptions)` `BaseOptions` from the app's
+/// `NetworkConfig`, `RetrofitLogger` as `ParseErrorLogger`,
 /// and `Dio` with Dio Lens. With [auth], `Dio` gets the app's
 /// `AuthInterceptor` and a `@Named(NetworkDIKeys.noAuthDio)` Dio without it
-/// is added. Error responses are turned into failures by the app's call
+/// is added. A `@Named(NetworkDIKeys.noBaseOptionsDio)` Dio without
+/// `BaseOptions` is always added. Error responses are turned into failures by the app's call
 /// adapter, not by an interceptor.
 String networkPackageModuleTemplate(String moduleName, {required bool auth}) {
   final imports = [
@@ -13,14 +15,17 @@ String networkPackageModuleTemplate(String moduleName, {required bool auth}) {
     '',
     if (auth) "import '../interceptors/auth_interceptor.dart';",
     "import '../models/network_config.dart';",
-    if (auth) "import '../network_di_keys.dart';",
+    "import '../network_di_keys.dart';",
     "import '../utils/retrofit_logger.dart';",
   ].join('\n');
 
   final dio = auth
       ? '''
   @lazySingleton
-  Dio dio(AuthInterceptor authInterceptor, BaseOptions baseOptions) {
+  Dio dio(
+    AuthInterceptor authInterceptor,
+    @Named(NetworkDIKeys.baseOptions) BaseOptions baseOptions,
+  ) {
     final dio = Dio(baseOptions);
     dio.interceptors.addAll([
       authInterceptor,
@@ -31,16 +36,32 @@ String networkPackageModuleTemplate(String moduleName, {required bool auth}) {
 
   @lazySingleton
   @Named(NetworkDIKeys.noAuthDio)
-  Dio noAuthDio(BaseOptions baseOptions) {
+  Dio noAuthDio(@Named(NetworkDIKeys.baseOptions) BaseOptions baseOptions) {
     final dio = Dio(baseOptions);
-    dio.interceptors.add(DioLensInterceptor(dio: dio, name: 'no-auth'));
+    dio.interceptors.add(
+      DioLensInterceptor(dio: dio, name: NetworkDIKeys.noAuthDio),
+    );
     return dio;
   }'''
       : '''
   @lazySingleton
-  Dio dio(BaseOptions baseOptions) {
+  Dio dio(@Named(NetworkDIKeys.baseOptions) BaseOptions baseOptions) {
     final dio = Dio(baseOptions);
     dio.interceptors.add(DioLensInterceptor(dio: dio, name: 'api'));
+    return dio;
+  }''';
+
+  // Every package gets a Dio without BaseOptions, e.g. for absolute URLs on
+  // other hosts.
+  const noBaseOptionsDio = '''
+
+  @lazySingleton
+  @Named(NetworkDIKeys.noBaseOptionsDio)
+  Dio noBaseOptionsDio() {
+    final dio = Dio();
+    dio.interceptors.add(
+      DioLensInterceptor(dio: dio, name: NetworkDIKeys.noBaseOptionsDio),
+    );
     return dio;
   }''';
 
@@ -51,6 +72,7 @@ $imports
 @module
 abstract class $moduleName {
   @lazySingleton
+  @Named(NetworkDIKeys.baseOptions)
   BaseOptions baseOptions(NetworkConfig config) => BaseOptions(
     baseUrl: config.baseUrl,
     connectTimeout: config.connectTimeout,
@@ -62,7 +84,7 @@ abstract class $moduleName {
   @LazySingleton(as: ParseErrorLogger)
   RetrofitLogger get retrofitLogger => RetrofitLogger();
 
-$dio
+$dio$noBaseOptionsDio
 }
 ''';
 }

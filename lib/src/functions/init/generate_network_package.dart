@@ -46,6 +46,10 @@ void generateNetworkPackage(
     networkPackageModuleTemplate(moduleName, auth: auth),
   );
   overwriteFile(
+    '$dir/lib/src/network_di_keys.dart',
+    networkDiKeysTemplate(package.name, auth: auth),
+  );
+  overwriteFile(
     '$dir/lib/src/models/network_config.dart',
     networkConfigTemplate(),
   );
@@ -58,7 +62,6 @@ void generateNetworkPackage(
       '$dir/lib/src/interceptors/auth_interceptor.dart',
       authInterceptorTemplate(),
     );
-    overwriteFile('$dir/lib/src/network_di_keys.dart', networkDiKeysTemplate());
   }
 
   stdout.writeln('📦 ${package.name} package created');

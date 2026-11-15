@@ -592,15 +592,18 @@ The network package that [`add-network-module`](#add-network-module) creates. It
 | File | Contents |
 |---|---|
 | `lib/src/models/network_config.dart` | `@freezed` `NetworkConfig`: base URL, timeouts and headers; each app registers one |
-| `lib/src/di/<name>_module.dart` | `BaseOptions` from `NetworkConfig`, `Dio` (+ `noAuthDio`), and `RetrofitLogger` registered as `ParseErrorLogger` |
+| `lib/src/di/<name>_module.dart` | `@Named(NetworkDIKeys.baseOptions)` `BaseOptions` from `NetworkConfig`, `Dio` (+ `noAuthDio`), `noBaseOptionsDio`, and `RetrofitLogger` registered as `ParseErrorLogger` |
 | `lib/src/interceptors/auth_interceptor.dart` | Abstract `AuthInterceptor` (with `auth_interceptor`) |
-| `lib/src/network_di_keys.dart` | `NetworkDIKeys.noAuthDio` (with `auth_interceptor`) |
+| `lib/src/network_di_keys.dart` | `NetworkDIKeys`: `baseOptions` (`<networkCamel>BaseOptions`), `noBaseOptionsDio`, and `noAuthDio` (with `auth_interceptor`) |
 | `lib/src/utils/retrofit_logger.dart` | `RetrofitLogger`, which logs Retrofit parse errors through `dart:developer` |
 
 - **`module_name`** names the `@module` class.
 - **`auth_interceptor: true`** (the default) adds token handling: the abstract `AuthInterceptor` attaches the token, refreshes it once on a 401 (concurrent failures share one refresh) and retries the request. It also adds a `@Named(NetworkDIKeys.noAuthDio)` Dio without that interceptor, used for the refresh call. The app implements `AppAuthInterceptor`.
 - **`auth_interceptor: false`** gives `Dio` only the Dio Lens interceptor.
 - **`call_adapter_name`** names the app's call adapter (default `AppCallAdapter`).
+
+- **`noBaseOptionsDio`** (always): a `@Named(NetworkDIKeys.noBaseOptionsDio)` Dio without `BaseOptions` (no base URL, timeouts or headers), e.g. for absolute URLs on other hosts.
+- **Named `BaseOptions`:** the package's `BaseOptions` is registered as `@Named(NetworkDIKeys.baseOptions)`, so the app can register its own unnamed `BaseOptions` without a clash. Each Dio's Dio Lens name is its DI key (`api` for the main one).
 
 The package depends on nothing else in the workspace. Error handling lives in the app: `AppCallAdapter` turns failed calls into `ApiFailure`, using `ErrorModel.tryParse` on the response body.
 
@@ -692,7 +695,7 @@ build.yaml
 | Router (`clean_router`) | `<NamePascal>Base`, the interface every feature router implements, and `<NamePascal>Refresh` |
 | Localization (`<app>_localization`) | `slang.yaml`, the first locale file, the `String.tr` extension and the generated translations |
 | Utils (`<app>_utils`) | `Failure`, `UseCaseBase`, `AppLogger`, `AppBlocObserver`, `ContextUtils`, `Debouncer`, `safeCast`, `safeExecute`, `safeExecuteTask`, `listToModelList`, `getCurrentFunctionName`, `JsonDecodeFactory`, and an injectable micro-package that registers `BlocObserver` |
-| Network (`<app>_network`) | `NetworkConfig`, `Dio` (+ `noAuthDio`), `RetrofitLogger` and the abstract `AuthInterceptor`, as an injectable micro-package |
+| Network (`<app>_network`) | `NetworkConfig`, `Dio` (+ `noAuthDio`, `noBaseOptionsDio`), `RetrofitLogger` and the abstract `AuthInterceptor`, as an injectable micro-package |
 
 The app's `@InjectableInit` pulls in the utils and network micro-packages through `externalPackageModulesAfter`, so build_runner must run in those packages before the app. `init`, `bootstrap`, `create-packages` and `tools/bootstrap.dart` do this in that order.
 

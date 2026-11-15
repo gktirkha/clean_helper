@@ -29,13 +29,13 @@ It's idempotent: package files are only written when the package is created, app
 
 | File | Template | Notes |
 |---|---|---|
-| barrel (from `import`) | `network_lib_export(prefix, auth:)` | exports the micro-package module and `NetworkConfig`; with auth also `AuthInterceptor`, `NetworkDIKeys` |
+| barrel (from `import`) | `network_lib_export(prefix, auth:)` | exports the micro-package module, `NetworkConfig` and `NetworkDIKeys`; with auth also `AuthInterceptor` |
 | `lib/src/di/di_initializer.dart` | `micro_package_di_initializer` | → `<NetworkPascal>PackageModule` |
-| `lib/src/di/<network>_module.dart` | `network_package_module(moduleName, auth:)` | `BaseOptions` from `NetworkConfig`; `RetrofitLogger` as `ParseErrorLogger`; `Dio` (auth, Dio Lens `'api'`); with auth a `@Named(NetworkDIKeys.noAuthDio)` Dio (Dio Lens `'no-auth'`) |
+| `lib/src/di/<network>_module.dart` | `network_package_module(moduleName, auth:)` | `@Named(NetworkDIKeys.baseOptions)` `BaseOptions` from `NetworkConfig`, injected by name into the Dios; `RetrofitLogger` as `ParseErrorLogger`; `Dio` (auth, Dio Lens `'api'`); with auth a `@Named(NetworkDIKeys.noAuthDio)` Dio (Dio Lens `NetworkDIKeys.noAuthDio`); always a `@Named(NetworkDIKeys.noBaseOptionsDio)` `Dio()` without `BaseOptions` |
 | `lib/src/models/network_config.dart` | `network_config` | `@freezed`; the app registers one |
 | `lib/src/utils/retrofit_logger.dart` | `retrofit_logger(packageName)` | logs via `dart:developer` |
 | `lib/src/interceptors/auth_interceptor.dart` | `auth_interceptor` | auth only — abstract; `getAccessToken`, `refreshAccessToken`, `onRefreshFailed`, `shouldRefresh`, header hooks; one shared refresh, one retry via `noAuthDio` |
-| `lib/src/network_di_keys.dart` | `network_di_keys` | auth only |
+| `lib/src/network_di_keys.dart` | `network_di_keys(packageName, auth:)` | always: `baseOptions` = `'<networkCamel>BaseOptions'`, `noBaseOptionsDio`; with auth `noAuthDio` |
 
 ## App side (`generateNetworkAppFiles`)
 

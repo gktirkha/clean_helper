@@ -181,6 +181,7 @@ Templates that take configurable input:
 | `api_failure` | `utilsImport` |
 | `retrofit_logger` | `packageName` (the `dart:developer` log name) |
 | `network_package_module` | `moduleName`, `auth` |
+| `network_di_keys` | `packageName` (→ `<networkCamel>BaseOptions`), `auth` |
 | `network_lib_export` | barrel `prefix`, `auth` |
 | `network_config_module` | `networkImport`, `auth` |
 | `app_auth_interceptor` | `networkImport` |

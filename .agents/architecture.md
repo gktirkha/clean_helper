@@ -102,10 +102,11 @@ An injectable micro-package (`<App>NetworkPackageModule`). It depends on nothing
 lib/<app>_network.dart               barrel
 lib/src/
 ├── models/network_config.dart       @freezed NetworkConfig — the app registers one
-├── network_di_keys.dart             NetworkDIKeys.noAuthDio            (auth_interceptor)
+├── network_di_keys.dart             NetworkDIKeys: baseOptions ('<networkCamel>BaseOptions'), noBaseOptionsDio, noAuthDio (auth_interceptor)
 ├── di/di_initializer.dart           @InjectableInit.microPackage
-├── di/<app>_network_module.dart     @module: BaseOptions(NetworkConfig), RetrofitLogger as ParseErrorLogger,
-│                                    Dio [AuthInterceptor, DioLens 'api'] + noAuthDio [DioLens 'no-auth'] (auth_interceptor)
+├── di/<app>_network_module.dart     @module: @Named(baseOptions) BaseOptions(NetworkConfig), RetrofitLogger as ParseErrorLogger,
+│                                    Dio [AuthInterceptor, DioLens 'api'] + noAuthDio [DioLens 'noAuthDio'] (auth_interceptor),
+│                                    noBaseOptionsDio: Dio() without BaseOptions [DioLens 'noBaseOptionsDio']
 ├── interceptors/auth_interceptor.dart   abstract AuthInterceptor        (auth_interceptor)
 └── utils/retrofit_logger.dart       logs parse errors via dart:developer (name: <app>_network)
 ```
