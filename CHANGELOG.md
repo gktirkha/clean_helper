@@ -1,3 +1,12 @@
+## 2.0.0
+
+### Breaking: environment-aware DI
+
+- `diInitializer(GetIt instance, {required String environment})` calls `init(environment:)`. `InitService.init({environment})` defaults to `Environment.prod` in release builds and `Environment.dev` otherwise.
+- `CoreModule.packageInfo` and `NetworkConfigModule.networkConfig` are tagged `@dev` / `@prod`.
+- New `@test` stand-ins: `lib/core/di/test_environment_core_module.dart` (a fixed `PackageInfo`) and, with the network package, `lib/core/network/di/test_environment_network_config_module.dart` (`NetworkConfig` with base URL `http://localhost/`).
+- Existing projects must pass an environment to `diInitializer`, for example by regenerating `init_service.dart`.
+
 ## 1.9.1
 
 - The network package's `BaseOptions` is registered as `@Named(NetworkDIKeys.baseOptions)` (`'<networkCamel>BaseOptions'`), so apps can register their own unnamed `BaseOptions`.

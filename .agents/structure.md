@@ -154,12 +154,12 @@ Each file is `<name>_template.dart` → `<name>Template(...)`.
 
 | Area | Templates |
 |---|---|
-| App skeleton | `main_dart`, `main_app_dart`, `bootstrap_dart`, `init_service`, `di_container`, `di_initializer`, `app_module`, `core_module`, `app_go_router`, `app_go_router_redirect`, `app_router_module_build` (via `buildRouterModule`) |
+| App skeleton | `main_dart`, `main_app_dart`, `bootstrap_dart`, `init_service`, `di_container`, `di_initializer`, `app_module`, `core_module`, `test_environment_core_module`, `app_go_router`, `app_go_router_redirect`, `app_router_module_build` (via `buildRouterModule`) |
 | Feature | `feature_routes`, `feature_navigation`, `feature_navigation_impl`, `feature_router`, `feature_page`, `feature_page_provider`, `feature_bloc`, `feature_event`, `feature_state`, `feature_module` |
 | Repo | `domain_repo`, `data_source_base`, `data_repo`, `rest_data_source`, `feature_api_paths`, `request_model`, `response_model`, `get_use_case`, `post_use_case`, `get_use_case_params`, `post_use_case_params` |
 | Entity | `entity`, `model` |
 | Network package | `network_lib_export`, `network_pubspec_tail`, `network_package_module`, `network_config`, `network_di_keys`, `retrofit_logger`, `auth_interceptor` |
-| App network files | `core_api_paths`, `error_model`, `api_failure`, `app_call_adapter`, `network_config_module`, `app_auth_interceptor`, `dio_lens_init` |
+| App network files | `core_api_paths`, `error_model`, `api_failure`, `app_call_adapter`, `network_config_module`, `test_environment_network_config_module`, `app_auth_interceptor`, `dio_lens_init` |
 | Utils package | `utils_lib_export`, `utils_pubspec_tail`, `context_utils`, `di_container` (shared with the app), `utils_module`, `micro_package_di_initializer` (shared with the network package), `app_logger`, `app_bloc_observer`, `debounce`, `failure`, `type_definitions`, `get_current_function_name`, `list_to_model_list`, `safe_cast`, `safe_execute`, `safe_execute_task`, `use_case_base` |
 | Localization package | `localization_lib_export`, `localization_pubspec_tail`, `localization_slang_yaml`, `string_extension`, `en_locale` |
 | clean_router package | `clean_router_base`, `clean_router_refresh`, `clean_router_lib_export`, `clean_router_pubspec_tail` |
@@ -186,7 +186,9 @@ Templates that take configurable input:
 | `network_config_module` | `networkImport`, `auth` |
 | `app_auth_interceptor` | `networkImport` |
 | `di_initializer` | `utilsImport`, `utilsPackageModule` |
-| `init_service` | `utilsImport`, `localizationImport` |
+| `init_service` | `utilsImport`, `localizationImport` (`init({environment})`) |
+| `test_environment_core_module` | `appName` |
+| `test_environment_network_config_module` | `networkImport` |
 | `app_go_router` | `appName`, `routerImport`, `routerPrefix` (`<RouterPascal>`) |
 | `feature_router` | `routerImport`, `routerPrefix` |
 | `app_go_router_redirect` | `appName`, `routerPrefix` |

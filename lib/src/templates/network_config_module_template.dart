@@ -23,6 +23,8 @@ ${sortImports(["import '../constants/api_paths.dart';", if (auth) "import '../in
 
 @module
 abstract class NetworkConfigModule {
+  @dev
+  @prod
   @lazySingleton
   NetworkConfig networkConfig(PackageInfo packageInfo) => NetworkConfig(
     baseUrl: ApiPaths.baseUrl,

@@ -95,7 +95,7 @@ bin/clean_helper.dart → CleanHelperRunner.run(args)
 5. `generateFlutterGenFiles()` — `build.yaml`, `assets/colors/colors.xml`
 6. `generateCleanRouterPackage()`, `generateLocalizationPackage()`, `generateUtilsPackage()` — each only when its `create` is true
 7. `addPackagesWorkspace(created)` — lists the created packages under `workspace:`; adds nothing when none are created
-8. `generateCoreFiles()` — main, bootstrap, init service, app, DI, router
+8. `generateCoreFiles()` — main, bootstrap, init service, app, DI (environment-aware, with `@test` modules), router
 9. `createFeatureStructure('lib/features/home', 'home', …)`
 10. `installDependencies()`, `updateGitignore()`, `addFlutterAssetsToPubSpec()`
 11. `addNetworkModule(runBuildRunnerAfter: false)` unless `--skip-network`; `writePackageAnalysisOptions` for every package under `packages/`; then `generateToolsFiles()` with `--tools` (after the network package, so `tools/bootstrap.dart` includes it)

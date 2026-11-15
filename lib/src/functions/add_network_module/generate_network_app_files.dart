@@ -6,6 +6,7 @@ import '../../templates/app_call_adapter_template.dart';
 import '../../templates/core_api_paths_template.dart';
 import '../../templates/error_model_template.dart';
 import '../../templates/network_config_module_template.dart';
+import '../../templates/test_environment_network_config_module_template.dart';
 import '../shared/write_file.dart';
 
 /// The app's side of the network package: `ApiPaths`, the backend's
@@ -41,6 +42,10 @@ void generateNetworkAppFiles(
   writeFile(
     'lib/core/network/di/network_config_module.dart',
     networkConfigModuleTemplate(networkImport, auth: auth),
+  );
+  writeFile(
+    'lib/core/network/di/test_environment_network_config_module.dart',
+    testEnvironmentNetworkConfigModuleTemplate(networkImport),
   );
   stdout.writeln('🌐 App network files generated');
 }

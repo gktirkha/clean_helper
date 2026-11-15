@@ -45,8 +45,9 @@ It's idempotent: package files are only written when the package is created, app
 | `lib/core/data/models/error_model.dart` | `error_model` — `@freezed`, `static ErrorModel? tryParse(Object? data)` |
 | `lib/core/network/failures/api_failure.dart` | `api_failure(utilsImport)` — `ApiFailure extends Failure` (`statusCode`, `error`) |
 | `lib/core/network/adapters/app_call_adapter.dart` | `app_call_adapter(callAdapterName, utilsImport)` — `TaskEither.tryCatch`; `DioException` → `ApiFailure` |
-| `lib/core/network/di/network_config_module.dart` | `network_config_module(networkImport, auth:)` — `NetworkConfig` (base URL, `User-Agent` from `PackageInfo`); with auth `AppAuthInterceptor` as `AuthInterceptor` |
+| `lib/core/network/di/network_config_module.dart` | `network_config_module(networkImport, auth:)` — `@dev @prod` `NetworkConfig` (base URL, `User-Agent` from `PackageInfo`); with auth `AppAuthInterceptor` as `AuthInterceptor` |
 | `lib/core/network/interceptors/app_auth_interceptor.dart` | `app_auth_interceptor(networkImport)` — auth only |
+| `lib/core/network/di/test_environment_network_config_module.dart` | `test_environment_network_config_module(networkImport)` — `@test` `NetworkConfig` |
 
 `add-repo` treats `network_config_module.dart` as the sign that the app is wired, and only then generates REST datasources.
 

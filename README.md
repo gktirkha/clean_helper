@@ -232,7 +232,8 @@ clean-helper add-network-module
    | `lib/core/network/failures/api_failure.dart` | `ApiFailure extends Failure`, with the status code and parsed `ErrorModel` |
    | `lib/core/network/adapters/app_call_adapter.dart` | `AppCallAdapter` (`call_adapter_name`): turns every Retrofit call into `TaskEither<Failure, T>`, and HTTP errors into `ApiFailure` |
    | `lib/core/network/interceptors/app_auth_interceptor.dart` | `AppAuthInterceptor`, with TODOs for reading, refreshing and clearing tokens (only with `auth_interceptor`) |
-   | `lib/core/network/di/network_config_module.dart` | Registers the package's `NetworkConfig` (base URL, `User-Agent` from `PackageInfo`) and `AppAuthInterceptor` |
+   | `lib/core/network/di/test_environment_network_config_module.dart` | `@test` `NetworkConfig` (`http://localhost/`) for DI started with `Environment.test` |
+   | `lib/core/network/di/network_config_module.dart` | Registers (for `@dev` / `@prod`) the package's `NetworkConfig` (base URL, `User-Agent` from `PackageInfo`) and `AppAuthInterceptor` |
    | `lib/app/di/di_initializer.dart` | `.new(<Network>PackageModule)` added to `externalPackageModulesAfter` |
    | `lib/app/init_service.dart` | `DioLens.init(...)` after `Bloc.observer` |
 
@@ -672,9 +673,10 @@ lib/
 │   ├── navigation/            <feature>_navigation_impl.dart
 │   └── router/                <app>_router.dart, <app>_router_redirect.dart, <app>_router_module.dart
 ├── core/
-│   ├── di/                    core_module.dart (PackageInfo)
+│   ├── di/                    core_module.dart (PackageInfo), test_environment_core_module.dart
 │   ├── data/models/           error_model.dart
 │   └── network/               constants/api_paths.dart, di/network_config_module.dart,
+│                              di/test_environment_network_config_module.dart,
 │                              adapters/app_call_adapter.dart, failures/api_failure.dart,
 │                              interceptors/app_auth_interceptor.dart
 ├── features/home/             see add-feature
@@ -709,7 +711,7 @@ Feature
 ```
 
 - **Routing:** go_router. `<AppPascal>Router` in `lib/app/router/<app>_router.dart` builds the `GoRouter`. Each feature router implements the router package's `<RouterPascal>Base`, and `<AppPascal>RouterModule` collects them, sorted by `priority` (lower first).
-- **DI:** get_it and injectable. `diContainer` lives in `lib/app/di/di_container.dart`, and the packages register themselves as micro-packages.
+- **DI:** get_it and injectable. `diContainer` lives in `lib/app/di/di_container.dart`, and the packages register themselves as micro-packages. DI runs in an injectable environment (`dev`, `prod` or `test`); see [Environments](#environments).
 - **Errors:** fpdart and `Failure`. Retrofit calls go through the app's call adapter, so failures come back as `Left(Failure)` (an `ApiFailure` for HTTP errors) rather than exceptions.
 - **Serialization:** freezed and json_serializable.
 - **Localization:** slang, in the localization package.
@@ -728,6 +730,23 @@ result.fold(
   (order) => emit(.loaded(order)),
 );
 ```
+
+### Environments
+
+`diInitializer` takes an `environment`, and only registrations that are untagged or tagged with it are registered. `InitService.init` uses `Environment.prod` in release builds and `Environment.dev` otherwise. Pass another one to override that: `InitService().init(environment: Environment.test)`.
+
+Registrations that need a real device or backend are tagged `@dev` and `@prod`, and `@test` modules provide stand-ins:
+
+| `@dev` / `@prod` | `@test` stand-in |
+|---|---|
+| `CoreModule.packageInfo` (`PackageInfo.fromPlatform()`) | `TestEnvironmentCoreModule`: a fixed `PackageInfo` (`<app>_test`) |
+| `NetworkConfigModule.networkConfig` (`ApiPaths.baseUrl`) | `TestEnvironmentNetworkConfigModule`: `NetworkConfig(baseUrl: 'http://localhost/')` |
+
+To add your own, tag the real registration `@dev` / `@prod` and the stand-in `@test`. Tag each member: a tag on a module class doesn't apply to its members.
+
+In tests, start DI with `await diInitializer(diContainer, environment: Environment.test)`. Import injectable with `show Environment`, because its `@test` annotation clashes with `flutter_test`'s `test()`.
+
+### Use cases
 
 `UseCaseBase.call` is declared as `FutureOr<TaskEither<Failure, T>>`, so a use case can do async work before building its `TaskEither`. Generated use cases return `TaskEither` directly. When you call through the `UseCaseBase` type, await it first: `await (await useCase(params)).run()`.
 
@@ -751,7 +770,7 @@ Every key, with what it does and its default in the `##` comment above it. Comme
 ```yaml
 clean-helper:
   ## Stamped by `init`; every command warns when it differs from the running tool.
-  version: 1.9.0
+  version: 2.0.0
 
   ## Monorepo only: app folders, relative to this pubspec. Commands run from
   ## here switch into one of them (pick with --scope=<folder name>).

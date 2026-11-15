@@ -1,1 +1,1 @@
-const toolVersion = '1.9.1';
+const toolVersion = '2.0.0';

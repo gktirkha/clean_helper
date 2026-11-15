@@ -15,7 +15,12 @@ import 'di_initializer.config.dart';
     .new($utilsPackageModule),
   ],
 )
-Future<void> diInitializer(GetIt instance) async {
-  await instance.init();
+/// Only registrations that are untagged or tagged with [environment]
+/// (`Environment.dev` / `prod` / `test`) are registered.
+Future<void> diInitializer(
+  GetIt instance, {
+  required String environment,
+}) async {
+  await instance.init(environment: environment);
 }
 ''';

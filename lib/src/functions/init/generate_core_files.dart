@@ -16,6 +16,7 @@ import '../../templates/di_initializer_template.dart';
 import '../../templates/init_service_template.dart';
 import '../../templates/main_app_dart_template.dart';
 import '../../templates/main_dart_template.dart';
+import '../../templates/test_environment_core_module_template.dart';
 
 void generateCoreFiles({
   required PackageConfig utils,
@@ -53,6 +54,10 @@ void generateCoreFiles({
   );
   writeFile('lib/app/di/app_module.dart', appModuleTemplate());
   writeFile('lib/core/di/core_module.dart', coreModuleTemplate());
+  writeFile(
+    'lib/core/di/test_environment_core_module.dart',
+    testEnvironmentCoreModuleTemplate(appName),
+  );
   stdout.writeln();
   stdout.writeln('⚙️  Core files generated');
   stdout.writeln();
