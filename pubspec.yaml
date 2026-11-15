@@ -4,7 +4,7 @@ version: 2.0.0
 repository: https://github.com/gktirkha/clean_helper
 
 environment:
-  sdk: ^3.13.4
+  sdk: ^3.14.0
 
 executables:
   clean-helper: clean_helper
