@@ -1,4 +1,4 @@
-String safeExecuteTaskTemplate() => '''
+String safeExecuteTaskTemplate() => r'''
 import 'package:fpdart/fpdart.dart';
 
 import '../app_logger.dart';
@@ -14,6 +14,6 @@ TaskEither<Failure, T> safeExecuteTask<T>(Future<T> Function() exec) =>
         error: e,
         time: DateTime.now(),
       );
-      return e is Failure ? e : Failure(message: e.toString());
+      return .fromError(e);
     });
 ''';

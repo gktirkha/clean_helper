@@ -1,4 +1,4 @@
-String safeCastTemplate() => '''
+String safeCastTemplate() => r'''
 import 'dart:convert';
 
 import 'package:fpdart/fpdart.dart';
@@ -27,8 +27,7 @@ Either<Failure, T> safeCast<T>(dynamic data, JsonDecodeFactory<T> decoder) {
       stackTrace: s,
       time: DateTime.now(),
     );
-    if (e is Failure) return Left(e);
-    return Left(Failure(message: e.toString()));
+    return Failure.leftFromError(e);
   }
 }
 ''';

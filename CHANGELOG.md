@@ -7,6 +7,7 @@
 - The network package no longer depends on the utils package. `RetrofitLogger` logs through `dart:developer`.
 - `call_adapter_name` moves from `packages.utils` to `packages.network`, default `AppCallAdapter`.
 - Generated use cases take `{required this._<name>Repository}`.
+- `Failure.fromError(e)` keeps a `Failure` as-is and wraps anything else. `leftFromError`, `safeCast` and `safeExecuteTask` use it instead of repeating the check.
 
 ## 1.8.1
 

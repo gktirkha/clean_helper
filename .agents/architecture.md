@@ -77,7 +77,7 @@ lib/src/
 ├── bloc_observer.dart               AppBlocObserver
 ├── context_utils.dart               ContextUtils — root navigator/context, theme, media query, focus, snackbar, dialog, bottom sheet, clipboard, haptics, system UI
 ├── debouncer.dart
-├── failure.dart                     Failure({message}); Failure.leftFromError(e)
+├── failure.dart                     Failure({message}); Failure.fromError(e) (keeps a Failure, wraps anything else); Failure.leftFromError(e)
 ├── type_definitions.dart            JsonDecodeFactory<T>
 ├── use_case_base.dart               UseCaseBase<ReturnType, ParameterType>
 ├── di/<app>_utils_module.dart       @module — registers BlocObserver
