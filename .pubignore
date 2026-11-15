@@ -13,3 +13,6 @@ pubspec.lock
 .agents/
 CLAUDE.md
 structure.md
+
+# Maintainer tooling
+tool/

@@ -111,4 +111,5 @@ bin/clean_helper.dart → CleanHelperRunner.run(args)
 
 - `toolVersion` (`shared/tool_version.dart`) must match `version:` in `pubspec.yaml`.
 - Every release gets a `CHANGELOG.md` section. Released versions aren't amended — later changes go in a new patch version.
+- Release with `fvm dart run tool/release.dart` (`--dry-run` first). It checks that you're on `master` with a clean tree and up to date with `origin`, that `toolVersion` matches the pubspec, that the CHANGELOG has the section, and that format and `analyze --fatal-infos` are clean. It then tags `HEAD` with the plain version (`2.0.0`, no `v`), pushes `master` and the tag if `origin` lacks them, and runs `dart pub publish` unless pub.dev already has the version. `--force` skips pub's confirmation.
 - Older projects aren't supported: templates only target what the current `init` generates. Breaking changes are called out in the CHANGELOG.

@@ -15,6 +15,7 @@ clean_helper/
 │       ├── commands/                  one entry-point function per command
 │       ├── functions/                 helpers, grouped by command
 │       └── templates/                 generated file contents
+├── tool/release.dart                  maintainer release script (tag, push, publish); excluded by .pubignore
 ├── .agents/                           these docs
 ├── CHANGELOG.md
 ├── README.md                          user-facing docs
