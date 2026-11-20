@@ -47,7 +47,7 @@ What the templates produce. Keep this in sync when a template changes shape.
 └── build.yaml
 ```
 
-The app's `pubspec.yaml` lists the packages `init` created under `workspace:`, and all of them as dependencies without a `path:` — pub resolves workspace members from the workspace. Each package pubspec has `resolution: workspace`, and the utils package depends on `<app>_localization` the same way.
+The app's `pubspec.yaml` lists the packages `init` created under `workspace:`, and all of them as dependencies without a `path:` — pub resolves workspace members from the workspace. Each package pubspec has `resolution: workspace` No package depends on another workspace package.
 
 Names, barrel imports and whether each package is created come from `clean-helper.packages.{utils,localization,router,network}` (the defaults are shown here). Packages with `create: false` aren't generated; when none are created, the app pubspec gets no `workspace:` key, because the packages live in an enclosing workspace.
 
@@ -95,7 +95,7 @@ lib/src/
     └── safe_execute_task.dart       safeExecuteTask(Future<T> Function()) → TaskEither<Failure, T> (lazy)
 ```
 
-Dependencies: `flutter_bloc`, `fpdart`, `get_it`, `injectable`, `logger`, `<app>_localization`; dev `build_runner`, `injectable_generator`. Build_runner must run here before it runs in the app, so that `<App>UtilsPackageModule` exists.
+Dependencies: `flutter_bloc`, `fpdart`, `get_it`, `injectable`, `logger`, `material_ui` (no workspace packages); dev `build_runner`, `injectable_generator`. Build_runner must run here before it runs in the app, so that `<App>UtilsPackageModule` exists.
 
 
 ### `<app>_theme` (`packages.theme`)

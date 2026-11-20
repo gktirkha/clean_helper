@@ -1,12 +1,12 @@
 import 'package_configs.dart';
 import 'read_clean_helper_fields.dart';
 
-/// Reads `clean-helper.packages.<key>` from `pubspec.yaml` in the current
+/// Reads `clean-helper.foundation.<key>` from `pubspec.yaml` in the current
 /// directory:
 ///
 /// ```yaml
 /// clean-helper:
-///   packages:
+///   foundation:
 ///     utils:
 ///       name: my_utils
 ///       import: package:my_utils/my_utils.dart
@@ -17,7 +17,7 @@ import 'read_clean_helper_fields.dart';
 /// package named in `import`; `create` defaults to true. Returns null if
 /// neither `name` nor `import` is set.
 PackageConfig? readPackageConfig(String key) {
-  final fields = readCleanHelperFields(['packages', key]);
+  final fields = readCleanHelperFields(['foundation', key]);
   final import = fields['import'];
   final name =
       fields['name'] ??

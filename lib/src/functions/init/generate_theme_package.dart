@@ -20,10 +20,7 @@ import 'scaffold_package.dart';
 /// design tokens (`<Base>ThemeData`, `AdaptiveColor`), `<Base>Theme` above
 /// `MaterialApp`, the `ThemeResolver` and the mapping to Material
 /// `ThemeData`. `<Base>` comes from the package name without `_theme`.
-void generateThemePackage(
-  PackageConfig package, {
-  String parentDir = 'packages',
-}) {
+void generateThemePackage(PackageConfig package, {required String parentDir}) {
   final dir = '$parentDir/${package.name}';
   final base = themeBase(package);
   stdout.writeln('📦 Creating ${package.name} package...');

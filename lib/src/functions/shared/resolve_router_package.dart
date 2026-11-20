@@ -1,6 +1,6 @@
 import 'package_configs.dart';
 
-/// `clean-helper.packages.router`, or the default `clean_router` package
+/// `clean-helper.foundation.router`, or the default `clean_router` package
 /// (created by `init`).
 PackageConfig resolveRouterPackage() =>
     routerPackageConfig ??

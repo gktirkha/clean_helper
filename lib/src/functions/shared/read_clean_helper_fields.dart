@@ -1,7 +1,7 @@
 import 'dart:io';
 
 /// Reads the scalar children of `clean-helper.<path...>` from `pubspec.yaml`
-/// in the current directory, e.g. `['packages', 'utils']` →
+/// in the current directory, e.g. `['foundation', 'utils']` →
 /// `{'name': 'my_utils', 'import': 'package:my_utils/my_utils.dart'}`.
 ///
 /// Comments and surrounding quotes are stripped. Returns an empty map if the

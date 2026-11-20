@@ -1,7 +1,7 @@
 import 'package_configs.dart';
 
 /// The localization package's slang settings: the defaults below, overridden
-/// and extended by the slang keys under `clean-helper.packages.localization`.
+/// and extended by the slang keys under `clean-helper.foundation.localization`.
 /// Key order is kept so `slang.yaml` reads the same as before.
 Map<String, String> resolveSlangSettings() => {
   'base_locale': 'en',

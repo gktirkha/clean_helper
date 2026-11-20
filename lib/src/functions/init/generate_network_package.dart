@@ -25,7 +25,7 @@ void generateNetworkPackage(
   PackageConfig package, {
   required String moduleName,
   required bool auth,
-  String parentDir = 'packages',
+  required String parentDir,
 }) {
   final dir = '$parentDir/${package.name}';
   stdout.writeln('📦 Creating ${package.name} package...');

@@ -15,6 +15,7 @@ import '../functions/shared/pascal_case.dart';
 import '../functions/shared/resolve_call_adapter_name.dart';
 import '../functions/shared/resolve_network_module_name.dart';
 import '../functions/shared/resolve_network_package.dart';
+import '../functions/shared/resolve_packages_dir.dart';
 import '../functions/shared/resolve_utils_package.dart';
 import '../functions/shared/write_package_analysis_options.dart';
 
@@ -30,7 +31,8 @@ void addNetworkModule({bool runBuildRunnerAfter = true}) {
 
   final network = resolveNetworkPackage();
   final auth = networkAuthInterceptorConfig;
-  final packageDir = 'packages/${network.name}';
+  final packagesDir = resolvePackagesDir();
+  final packageDir = '$packagesDir/${network.name}';
 
   final utils = resolveUtilsPackage();
 
@@ -41,6 +43,7 @@ void addNetworkModule({bool runBuildRunnerAfter = true}) {
       network,
       moduleName: resolveNetworkModuleName(network),
       auth: auth,
+      parentDir: packagesDir,
     );
     addPackagesWorkspace([packageDir]);
   }

@@ -12,7 +12,7 @@ class InitCommand extends Command<void> {
       negatable: false,
       help:
           "Don't create the network package or wire the app to it "
-          '(see clean-helper.packages.network).',
+          '(see clean-helper.foundation.network).',
     );
     argParser.addFlag(
       'skip-di',

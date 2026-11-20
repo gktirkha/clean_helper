@@ -18,14 +18,14 @@ import 'scaffold_package.dart';
 void generateLocalizationPackage(
   PackageConfig package,
   Map<String, String> settings, {
-  String parentDir = 'packages',
+  required String parentDir,
 }) {
   final dir = '$parentDir/${package.name}';
 
   final outputDir = settings['output_directory']!;
   if (!outputDir.startsWith('lib/')) {
     abort(
-      'packages.localization.output_directory must be inside lib/ '
+      'foundation.localization.output_directory must be inside lib/ '
       '(got "$outputDir").',
     );
   }

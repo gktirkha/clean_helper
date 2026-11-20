@@ -105,7 +105,7 @@ clean_helper/
 | `scaffold_package.dart` | `scaffoldPackage(package, {parentDir})` — creates `parentDir`, `flutter create --template package --no-pub`, delete unused scaffold files, write an including `analysis_options.yaml` |
 | `generate_clean_router_package.dart` | `generateCleanRouterPackage(router, {parentDir})` — `lib/src/<name>_base.dart`, `<name>_refresh.dart` |
 | `generate_localization_package.dart` | `generateLocalizationPackage(localization, slangSettings, {parentDir})` |
-| `generate_utils_package.dart` | `generateUtilsPackage(utils, localization, {moduleName, parentDir})` |
+| `generate_utils_package.dart` | `generateUtilsPackage(utils, {moduleName, parentDir})` |
 | `generate_theme_package.dart` | `generateThemePackage(theme, {parentDir})` |
 | `generate_network_package.dart` | `generateNetworkPackage(network, {moduleName, auth, parentDir})` |
 | `patch_package_pubspec.dart` | `patchPackagePubspec(packagePath, pubspecTail)` |

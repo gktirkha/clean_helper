@@ -4,6 +4,7 @@ import '../functions/shared/abort.dart';
 import '../functions/shared/load_package_configs.dart';
 import '../functions/shared/package_configs.dart';
 import '../functions/shared/read_mono_repo_apps.dart';
+import '../functions/shared/resolve_packages_dir.dart';
 import '../functions/shared/resolve_slang_settings.dart';
 
 // Does NOT call ensurePubspec() — that would trigger project selection before
@@ -44,7 +45,10 @@ void listMonoRepoApps() {
   }
 
   stdout.writeln();
-  stdout.writeln('Packages (clean-helper.packages):');
+  stdout.writeln('Foundation packages (clean-helper.foundation):');
+  stdout.writeln(
+    '  dir:           ${resolvePackagesDir()}${packagesDirConfig == null ? ' (default)' : ''}',
+  );
   stdout.writeln(
     '  utils:         ${describe('utils', utilsPackageConfig, '<app>_utils (default)')}',
   );

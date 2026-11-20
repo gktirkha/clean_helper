@@ -24,13 +24,12 @@ import '../shared/write_file.dart';
 import 'patch_package_pubspec.dart';
 import 'scaffold_package.dart';
 
-/// Creates `<parentDir>/<name>` from [package]. [localization] is listed as a
-/// dependency; [moduleName] is the `@module` class registering `BlocObserver`.
+/// Creates `<parentDir>/<name>` from [package]. [moduleName] is the
+/// `@module` class registering `BlocObserver`.
 void generateUtilsPackage(
-  PackageConfig package,
-  PackageConfig localization, {
+  PackageConfig package, {
   required String moduleName,
-  String parentDir = 'packages',
+  required String parentDir,
 }) {
   final utilsPackageName = package.name;
   stdout.writeln('📦 Creating $utilsPackageName package...');
@@ -39,7 +38,7 @@ void generateUtilsPackage(
 
   patchPackagePubspec(
     '$parentDir/$utilsPackageName',
-    utilsPubspecTailTemplate(localization.name),
+    utilsPubspecTailTemplate(),
   );
 
   overwriteFile(

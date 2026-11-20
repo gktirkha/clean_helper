@@ -4,10 +4,7 @@ import 'package_configs.dart';
 /// `package:my_utils/src/all.dart` → `packages/my_utils/lib/src/all.dart`.
 /// Falls back to `lib/<name>.dart` when the import isn't a URI into the
 /// package itself.
-String packageBarrelPath(
-  PackageConfig package, [
-  String parentDir = 'packages',
-]) {
+String packageBarrelPath(PackageConfig package, String parentDir) {
   final prefix = 'package:${package.name}/';
   final file = package.import.startsWith(prefix)
       ? package.import.substring(prefix.length)

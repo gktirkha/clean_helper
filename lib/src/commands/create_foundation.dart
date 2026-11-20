@@ -20,6 +20,7 @@ import '../functions/shared/package_configs.dart';
 import '../functions/shared/resolve_localization_package.dart';
 import '../functions/shared/resolve_network_module_name.dart';
 import '../functions/shared/resolve_network_package.dart';
+import '../functions/shared/resolve_packages_dir.dart';
 import '../functions/shared/resolve_router_package.dart';
 import '../functions/shared/resolve_slang_settings.dart';
 import '../functions/shared/resolve_theme_package.dart';
@@ -31,21 +32,21 @@ import '../functions/shared/resolve_utils_package.dart';
 // would switch into a monorepo app first.
 
 /// Generates the utils, localization, router and theme packages described by
-/// `clean-helper.packages` in `<dir>/<name>` — plus the network package when
-/// `packages.network` is configured — ignoring each `create` flag,
+/// `clean-helper.foundation` in `<dir>/<name>` — plus the network package when
+/// `foundation.network` is configured — ignoring each `create` flag,
 /// and lists them under `workspace:` in `./pubspec.yaml`. [dir] defaults to
-/// `packages`. A package whose folder already has a `pubspec.yaml` isn't
+/// `foundation.dir` (default `foundation`). A package whose folder already has a `pubspec.yaml` isn't
 /// regenerated, but every package found there still gets the workspace
 /// entry, pub get, slang and build_runner, so a rerun finishes a run that
 /// stopped part-way.
-void createPackages({String? dir}) {
+void createFoundation({String? dir}) {
   if (!File('pubspec.yaml').existsSync()) {
     abort('pubspec.yaml not found. Run this tool from the workspace root.');
   }
   loadPackageConfigs();
 
   final parentDir = (dir == null || dir.trim().isEmpty)
-      ? 'packages'
+      ? resolvePackagesDir()
       : dir
             .trim()
             .replaceFirst(RegExp(r'^\./'), '')
@@ -55,7 +56,7 @@ void createPackages({String? dir}) {
   final router = resolveRouterPackage();
   final theme = resolveThemePackage();
   final slang = resolveSlangSettings();
-  // Optional: only when packages.network is configured.
+  // Optional: only when foundation.network is configured.
   final network = networkPackageConfig == null ? null : resolveNetworkPackage();
 
   bool exists(String name) {
@@ -81,7 +82,6 @@ void createPackages({String? dir}) {
   if (createUtils) {
     generateUtilsPackage(
       utils,
-      localization,
       moduleName: resolveUtilsModuleName(utils),
       parentDir: parentDir,
     );
@@ -139,7 +139,7 @@ void createPackages({String? dir}) {
         : '✅ Created ${created.join(', ')} in $parentDir/.',
   );
   stdout.writeln(
-    '   Set `create: false` for them in clean-helper.packages so `init` '
+    '   Set `create: false` for them in clean-helper.foundation so `init` '
     "doesn't generate them again.",
   );
 }

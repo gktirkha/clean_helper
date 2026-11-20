@@ -1,5 +1,5 @@
-String utilsPubspecTailTemplate(String localizationPackageName) =>
-    '''
+/// The utils package depends on no other workspace package.
+String utilsPubspecTailTemplate() => '''
 resolution: workspace
 
 dependencies:
@@ -11,7 +11,6 @@ dependencies:
   injectable:
   logger:
   material_ui:
-  $localizationPackageName:
 
 dev_dependencies:
   build_runner:

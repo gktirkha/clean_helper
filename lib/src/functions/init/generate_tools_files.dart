@@ -9,6 +9,7 @@ import '../../templates/tools_write_key_properties_template.dart';
 import '../shared/package_configs.dart';
 import '../shared/resolve_localization_package.dart';
 import '../shared/resolve_network_package.dart';
+import '../shared/resolve_packages_dir.dart';
 import '../shared/resolve_utils_package.dart';
 import '../shared/write_file.dart';
 
@@ -24,8 +25,10 @@ void generateToolsFiles({bool overwrite = false}) {
   }
 
   final write = overwrite ? overwriteFile : writeFile;
-  String? local(String name) =>
-      Directory('packages/$name').existsSync() ? 'packages/$name' : null;
+  final packagesDir = resolvePackagesDir();
+  String? local(String name) => Directory('$packagesDir/$name').existsSync()
+      ? '$packagesDir/$name'
+      : null;
   write('tools/command_runner.dart', toolsCommandRunnerTemplate());
   write('tools/clean.dart', toolsCleanTemplate());
   write(

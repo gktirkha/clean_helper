@@ -14,7 +14,7 @@ import '../shared/write_file.dart';
 /// elsewhere) and writes an `analysis_options.yaml` that includes the
 /// project's (or, with `use_root_analysis`, the workspace root's) file. That
 /// one is always written: the only existing file is flutter create's default.
-void scaffoldPackage(PackageConfig package, {String parentDir = 'packages'}) {
+void scaffoldPackage(PackageConfig package, {required String parentDir}) {
   final dir = '$parentDir/${package.name}';
 
   // Inside a workspace, flutter create fails when the parent folder doesn't

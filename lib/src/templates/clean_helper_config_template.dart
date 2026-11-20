@@ -23,7 +23,12 @@ clean-helper:
   ## here switch into one of them (pick with --scope=<folder name>).
 $monoRepoApps
 
-  packages:
+  ## Workspace packages and the folder they live in.
+  foundation:
+    ## Folder the packages are created in and looked up from, relative to the
+    ## project (create-foundation: the current directory). Default: foundation.
+    dir: foundation
+
     ## Shared code: Failure, UseCaseBase, safeExecuteTask, AppLogger, …
     utils:
       ## Package name. Default: <app>_utils.
@@ -32,7 +37,7 @@ $monoRepoApps
       ## Default: package:<name>/<name>.dart.
       # import: package:my_app_utils/my_app_utils.dart
       ## false: init doesn't generate it; it already exists in the workspace.
-      ## create-packages ignores this. Default: true.
+      ## create-foundation ignores this. Default: true.
       create: true
       ## The @module class that registers BlocObserver. Default: <UtilsPascal>Module.
       # module_name: MyAppUtilsModule
@@ -97,7 +102,7 @@ $monoRepoApps
       ## AppAuthInterceptor in the app. Default: true.
       auth_interceptor: true
 
-    ## true: init and create-packages replace existing analysis_options.yaml
+    ## true: init and create-foundation replace existing analysis_options.yaml
     ## files with the generated ones. false: existing files are kept.
     ## Default: true.
     overwrite_analysis_options: true

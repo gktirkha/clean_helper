@@ -24,6 +24,7 @@ import '../functions/init/update_gitignore.dart';
 import '../functions/shared/ensure_pubspec.dart';
 import '../functions/shared/fvm_use.dart';
 import '../functions/shared/read_package_name.dart';
+import '../functions/shared/resolve_packages_dir.dart';
 import '../functions/shared/resolve_localization_package.dart';
 import '../functions/shared/resolve_network_package.dart';
 import '../functions/shared/resolve_router_package.dart';
@@ -49,6 +50,7 @@ Future<void> runInit({
   final router = resolveRouterPackage();
   final theme = resolveThemePackage();
   final slang = resolveSlangSettings();
+  final packagesDir = resolvePackagesDir();
   final created = [router, localization, utils, theme].where((p) => p.create);
 
   stdout.writeln('Initializing architecture for: $packageName');
@@ -59,17 +61,21 @@ Future<void> runInit({
   runFlutterPubGet();
   createDirectories();
   generateFlutterGenFiles();
-  if (router.create) generateCleanRouterPackage(router);
-  if (theme.create) generateThemePackage(theme);
-  if (localization.create) generateLocalizationPackage(localization, slang);
+  if (router.create) {
+    generateCleanRouterPackage(router, parentDir: packagesDir);
+  }
+  if (theme.create) generateThemePackage(theme, parentDir: packagesDir);
+  if (localization.create) {
+    generateLocalizationPackage(localization, slang, parentDir: packagesDir);
+  }
   if (utils.create) {
     generateUtilsPackage(
       utils,
-      localization,
       moduleName: resolveUtilsModuleName(utils),
+      parentDir: packagesDir,
     );
   }
-  addPackagesWorkspace([for (final p in created) 'packages/${p.name}']);
+  addPackagesWorkspace([for (final p in created) '$packagesDir/${p.name}']);
   generateCoreFiles(
     utils: utils,
     localization: localization,
@@ -96,16 +102,18 @@ Future<void> runInit({
       theme,
       resolveNetworkPackage(),
     ])
-      'packages/${p.name}',
+      '$packagesDir/${p.name}',
   ]);
   // After the network package, so tools/bootstrap.dart includes it.
   if (withTools) generateToolsFiles();
-  if (localization.create) runSlang(localization.name);
+  if (localization.create) {
+    runSlang(localization.name, parentDir: packagesDir);
+  }
   stdout.writeln();
   // Package micro-modules first: the app's DI config references them.
   for (final dir in [
-    if (utils.create) 'packages/${utils.name}',
-    if (withNetwork) 'packages/${resolveNetworkPackage().name}',
+    if (utils.create) '$packagesDir/${utils.name}',
+    if (withNetwork) '$packagesDir/${resolveNetworkPackage().name}',
   ]) {
     if (Directory(dir).existsSync()) runBuildRunner(workingDirectory: dir);
   }
@@ -113,7 +121,7 @@ Future<void> runInit({
   runDartFormat();
   sortPubspecDeps();
   for (final p in created) {
-    if (p != router) sortPubspecDeps('packages/${p.name}/pubspec.yaml');
+    if (p != router) sortPubspecDeps('$packagesDir/${p.name}/pubspec.yaml');
   }
   writeToolVersion();
 

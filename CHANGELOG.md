@@ -5,6 +5,7 @@
   - The app gets `lib/core/theme/app_theme.dart` (`appTheme()`). `MainApp` wraps the app in `<Base>Theme` and passes `theme`, `darkTheme` and `themeMode` to `MaterialApp`.
 - **`material_ui` instead of `package:flutter/material.dart`** in every generated file, to avoid deprecated Material APIs. The app, router, utils and theme packages depend on `material_ui`.
 - Feature routes use `pageBuilder` with a `MaterialPage` (`key: state.pageKey`).
+- The utils package no longer depends on the localization package; nothing in it used localization.
 
 ## 2.0.0
 

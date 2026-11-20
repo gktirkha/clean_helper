@@ -2,7 +2,7 @@ export 'src/commands/bootstrap.dart';
 export 'src/commands/add_config.dart';
 export 'src/commands/add_entity.dart';
 export 'src/commands/build_runner.dart';
-export 'src/commands/create_packages.dart';
+export 'src/commands/create_foundation.dart';
 export 'src/commands/add_feature.dart';
 export 'src/commands/add_melos_config.dart';
 export 'src/commands/add_network_module.dart';

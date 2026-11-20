@@ -1,7 +1,7 @@
 import 'package_configs.dart';
 import 'read_package_name.dart';
 
-/// `clean-helper.packages.localization`, or the default `<app>_localization`
+/// `clean-helper.foundation.localization`, or the default `<app>_localization`
 /// package (created by `init`). Reads the app name from the current directory.
 PackageConfig resolveLocalizationPackage() {
   final configured = localizationPackageConfig;

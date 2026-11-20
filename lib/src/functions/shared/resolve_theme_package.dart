@@ -1,7 +1,7 @@
 import 'package_configs.dart';
 import 'read_package_name.dart';
 
-/// `clean-helper.packages.theme`, or the default `<app>_theme` package
+/// `clean-helper.foundation.theme`, or the default `<app>_theme` package
 /// (created by `init`). Reads the app name from the current directory.
 PackageConfig resolveThemePackage() {
   final configured = themePackageConfig;

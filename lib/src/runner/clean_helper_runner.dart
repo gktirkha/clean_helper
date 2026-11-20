@@ -12,7 +12,7 @@ import 'commands/add_network_module_command.dart';
 import 'commands/add_repo_command.dart';
 import 'commands/add_vscode_extensions_command.dart';
 import 'commands/build_runner_command.dart';
-import 'commands/create_packages_command.dart';
+import 'commands/create_foundation_command.dart';
 import 'commands/init_command.dart';
 import 'commands/list_mono_repo_apps_command.dart';
 import 'commands/regenerate_router_command.dart';
@@ -54,7 +54,7 @@ class CleanHelperRunner extends CompletionCommandRunner<void> {
     addCommand(AddConfigCommand());
     addCommand(AddVscodeExtensionsCommand());
     addCommand(AddMelosConfigCommand());
-    addCommand(CreatePackagesCommand());
+    addCommand(CreateFoundationCommand());
   }
 
   @override

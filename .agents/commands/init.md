@@ -42,7 +42,7 @@ See `architecture.md` for the full tree. Key points:
 - **App runtime:** `flutter_bloc`, `go_router`, `get_it`, `injectable`, `freezed_annotation`, `fpdart`, `package_info_plus`, `flutter_svg`, `json_annotation`, `logger`, `material_ui`, `flutter_localizations` (SDK)
 - **App dev:** `build_runner`, `injectable_generator`, `freezed`, `flutter_gen_runner`, `json_serializable`
 - **App workspace packages:** the router, localization, utils and theme packages — added with `flutter pub add` and no `--path`; pub resolves them from the workspace (the network package comes from `addNetworkModule`)
-- **Utils package:** `flutter_bloc`, `fpdart`, `get_it`, `injectable`, `logger`, `material_ui`, `<localization>`; dev `build_runner`, `injectable_generator`
+- **Utils package:** `flutter_bloc`, `fpdart`, `get_it`, `injectable`, `logger`, `material_ui` (no workspace packages); dev `build_runner`, `injectable_generator`
 - **Localization package:** `slang`, `slang_flutter`
 - **Router package:** `go_router`, `material_ui`
 - **Theme package:** `material_ui`

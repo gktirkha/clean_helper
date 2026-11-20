@@ -3,7 +3,7 @@ import '../functions/shared/sort_imports.dart';
 /// `lib/core/network/adapters/app_call_adapter.dart`: turns every Retrofit
 /// call into a lazy `TaskEither<Failure, T>`. HTTP errors become `ApiFailure`
 /// carrying the backend's `ErrorModel`. [className] comes from
-/// `packages.network.call_adapter_name`.
+/// `foundation.network.call_adapter_name`.
 String appCallAdapterTemplate(String className, String utilsImport) =>
     '''
 ${sortImports(["import 'package:dio/dio.dart';", "import '$utilsImport';", "import 'package:fpdart/fpdart.dart';", "import 'package:retrofit/retrofit.dart';"])}

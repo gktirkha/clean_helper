@@ -17,7 +17,7 @@ import 'scaffold_package.dart';
 /// and `lib/src/<name>_refresh.dart` (`<NamePascal>Refresh`).
 void generateCleanRouterPackage(
   PackageConfig package, {
-  String parentDir = 'packages',
+  required String parentDir,
 }) {
   final dir = '$parentDir/${package.name}';
   stdout.writeln('📦 Creating ${package.name} package...');

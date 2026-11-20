@@ -1,4 +1,4 @@
-/// A workspace package declared under `clean-helper.packages.<key>` in the
+/// A workspace package declared under `clean-helper.foundation.<key>` in the
 /// pubspec the command was started from.
 ///
 /// [import] is the barrel import URI, e.g. `package:my_utils/my_utils.dart`.
@@ -12,65 +12,70 @@ typedef PackageConfig = ({String name, String import, bool create});
 /// doesn't hold the root config.
 bool packageConfigsLoaded = false;
 
-/// `clean-helper.packages.<key>.create` for each package key, set by
+/// `clean-helper.foundation.<key>.create` for each package key, set by
 /// [loadPackageConfigs]. Read on its own so `create: false` also applies to a
 /// package that keeps its default name. Missing means true.
 Map<String, bool> packageCreateConfig = {};
 
-/// `clean-helper.packages.utils`, set by [loadPackageConfigs].
+/// `clean-helper.foundation.dir`, set by [loadPackageConfigs]: the folder,
+/// relative to the project, that workspace packages are created in and
+/// looked up from. Null means `foundation` (see [resolvePackagesDir]).
+String? packagesDirConfig;
+
+/// `clean-helper.foundation.utils`, set by [loadPackageConfigs].
 /// Null means the default `<app>_utils` package (see [resolveUtilsPackage]).
 PackageConfig? utilsPackageConfig;
 
-/// `clean-helper.packages.network`, set by [loadPackageConfigs].
+/// `clean-helper.foundation.network`, set by [loadPackageConfigs].
 /// Null means the default `<app>_network` package (see [resolveNetworkPackage]).
 PackageConfig? networkPackageConfig;
 
-/// `clean-helper.packages.network.module_name`, set by [loadPackageConfigs]:
+/// `clean-helper.foundation.network.module_name`, set by [loadPackageConfigs]:
 /// the network package's `@module` class. Null means `<NetworkPascal>Module`.
 String? networkModuleNameConfig;
 
-/// `clean-helper.packages.network.auth_interceptor`, set by
+/// `clean-helper.foundation.network.auth_interceptor`, set by
 /// [loadPackageConfigs]. True (the default) gives the network package an
 /// abstract `AuthInterceptor`, a `noAuthDio` and `NetworkDIKeys`, and the app
 /// an `AppAuthInterceptor`.
 bool networkAuthInterceptorConfig = true;
 
-/// `clean-helper.packages.localization`, set by [loadPackageConfigs].
+/// `clean-helper.foundation.localization`, set by [loadPackageConfigs].
 /// Null means the default `<app>_localization` package.
 PackageConfig? localizationPackageConfig;
 
-/// `clean-helper.packages.theme`, set by [loadPackageConfigs].
+/// `clean-helper.foundation.theme`, set by [loadPackageConfigs].
 /// Null means the default `<app>_theme` package (see [resolveThemePackage]).
 PackageConfig? themePackageConfig;
 
-/// `clean-helper.packages.router`, set by [loadPackageConfigs].
+/// `clean-helper.foundation.router`, set by [loadPackageConfigs].
 /// Null means the default `clean_router` package.
 PackageConfig? routerPackageConfig;
 
-/// `clean-helper.packages.utils.module_name`, set by [loadPackageConfigs]:
+/// `clean-helper.foundation.utils.module_name`, set by [loadPackageConfigs]:
 /// the utils package's `@module` class. Null means `<UtilsPascal>Module`.
 String? utilsModuleNameConfig;
 
-/// `clean-helper.packages.network.call_adapter_name`, set by
+/// `clean-helper.foundation.network.call_adapter_name`, set by
 /// [loadPackageConfigs]: the Retrofit call adapter class `add-network-module`
 /// generates in the app and `add-repo` uses. Null means `AppCallAdapter`.
 String? callAdapterNameConfig;
 
-/// Slang settings under `clean-helper.packages.localization` (every scalar
+/// Slang settings under `clean-helper.foundation.localization` (every scalar
 /// key except `name`, `import` and `create`), set by [loadPackageConfigs].
 /// Missing keys use the defaults in [resolveSlangSettings].
 Map<String, String> slangSettingsConfig = {};
 
-/// `clean-helper.packages.use_root_analysis` (or `clean-helper.use_root_analysis`),
+/// `clean-helper.foundation.use_root_analysis` (or `clean-helper.use_root_analysis`),
 /// set by [loadPackageConfigs]. True (the default) means monorepo apps and
 /// their packages include the workspace root's `analysis_options.yaml`;
 /// false, the nearest project's. No effect outside a monorepo app.
 bool useRootAnalysisConfig = true;
 
-/// `clean-helper.packages.overwrite_analysis_options` (or
+/// `clean-helper.foundation.overwrite_analysis_options` (or
 /// `clean-helper.overwrite_analysis_options`), set by [loadPackageConfigs].
 /// True (the default): the `analysis_options.yaml` files clean_helper writes
-/// for the app, the workspace root and `create-packages` replace existing
+/// for the app, the workspace root and `create-foundation` replace existing
 /// ones. False: existing files are kept.
 bool overwriteAnalysisOptionsConfig = true;
 

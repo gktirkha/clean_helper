@@ -1,7 +1,7 @@
 import 'package_configs.dart';
 import 'read_package_name.dart';
 
-/// `clean-helper.packages.utils`, or the default `<app>_utils` package
+/// `clean-helper.foundation.utils`, or the default `<app>_utils` package
 /// (created by `init`). Reads the app name from the current directory.
 PackageConfig resolveUtilsPackage() {
   final configured = utilsPackageConfig;

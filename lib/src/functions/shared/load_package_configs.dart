@@ -18,37 +18,38 @@ void loadPackageConfigs() {
       'network',
     ])
       key:
-          readCleanHelperFields(['packages', key])['create']?.toLowerCase() !=
+          readCleanHelperFields(['foundation', key])['create']?.toLowerCase() !=
           'false',
   };
+  packagesDirConfig = readCleanHelperFields(['foundation'])['dir'];
   utilsPackageConfig = readPackageConfig('utils');
   networkPackageConfig = readPackageConfig('network');
   localizationPackageConfig = readPackageConfig('localization');
   routerPackageConfig = readPackageConfig('router');
   themePackageConfig = readPackageConfig('theme');
 
-  final network = readCleanHelperFields(['packages', 'network']);
+  final network = readCleanHelperFields(['foundation', 'network']);
   networkModuleNameConfig = network['module_name'];
   callAdapterNameConfig = network['call_adapter_name'];
   networkAuthInterceptorConfig =
       network['auth_interceptor']?.toLowerCase() != 'false';
 
-  final utils = readCleanHelperFields(['packages', 'utils']);
+  final utils = readCleanHelperFields(['foundation', 'utils']);
   utilsModuleNameConfig = utils['module_name'];
 
   slangSettingsConfig = Map.of(
-    readCleanHelperFields(['packages', 'localization']),
+    readCleanHelperFields(['foundation', 'localization']),
   )..removeWhere((key, _) => const {'name', 'import', 'create'}.contains(key));
 
   final root = readCleanHelperFields([]);
 
   overwriteAnalysisOptionsConfig =
-      (readCleanHelperFields(['packages'])['overwrite_analysis_options'] ??
+      (readCleanHelperFields(['foundation'])['overwrite_analysis_options'] ??
               root['overwrite_analysis_options'])
           ?.toLowerCase() !=
       'false';
   useRootAnalysisConfig =
-      (readCleanHelperFields(['packages'])['use_root_analysis'] ??
+      (readCleanHelperFields(['foundation'])['use_root_analysis'] ??
               root['use_root_analysis'])
           ?.toLowerCase() !=
       'false';
