@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import '../../clean_helper.dart';
+import '../functions/agent_context/generate_agent_context.dart';
 import '../functions/feature/create_feature_structure.dart';
 import '../functions/init/add_packages_workspace.dart';
 import '../functions/init/add_flutter_assets_to_pubspec.dart';
@@ -23,6 +24,7 @@ import '../functions/init/sort_pubspec_deps.dart';
 import '../functions/init/update_gitignore.dart';
 import '../functions/shared/ensure_pubspec.dart';
 import '../functions/shared/fvm_use.dart';
+import '../functions/shared/package_configs.dart';
 import '../functions/shared/read_package_name.dart';
 import '../functions/shared/resolve_packages_dir.dart';
 import '../functions/shared/resolve_localization_package.dart';
@@ -36,11 +38,12 @@ import '../functions/shared/write_package_analysis_options.dart';
 
 /// Scaffolds the project. The network package and home DI module are
 /// generated unless switched off (`--skip-network`, `--skip-di`); `tools/`
-/// only with `--tools`.
+/// only with `--tools`; `.agents/` AI context only with `--agent-context`.
 Future<void> runInit({
   bool withNetwork = true,
   bool withDi = true,
   bool withTools = false,
+  bool withAgentContext = false,
 }) async {
   ensurePubspec();
 
@@ -124,10 +127,24 @@ Future<void> runInit({
     if (p != router) sortPubspecDeps('$packagesDir/${p.name}/pubspec.yaml');
   }
   writeToolVersion();
+  if (withAgentContext) _generateAgentContextAtRoot();
 
   stdout.writeln();
   stdout.writeln('✅ Done! Project is ready.');
   stdout.writeln();
   stdout.writeln('Next steps:');
   stdout.writeln('  • Add a feature:     clean-helper add-feature <name>');
+}
+
+/// The AI context describes the whole project, so in a monorepo app it is
+/// written at the workspace root, not in the app.
+void _generateAgentContextAtRoot() {
+  final appDir = Directory.current;
+  final app = monoRepoAppPath;
+  if (app != null) {
+    Directory.current = List.filled(app.split('/').length, '..').join('/');
+  }
+  stdout.writeln();
+  generateAgentContext();
+  Directory.current = appDir;
 }

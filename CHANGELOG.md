@@ -8,6 +8,7 @@
 
 ### Changes
 
+- **New `add-agent-context` command** (and `init --agent-context` / `-a`, off by default) writes context for AI coding tools at the project or workspace root: `.agents/` (rules, architecture with your configured package names, and one file per clean-helper command) plus `AGENTS.md` / `CLAUDE.md` pointers. Existing `AGENTS.md` / `CLAUDE.md` files only get a pointer line appended.
 - The utils package no longer depends on the localization package; nothing in it used localization.
 
 ## 2.1.0

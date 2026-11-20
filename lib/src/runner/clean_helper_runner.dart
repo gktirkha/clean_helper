@@ -4,6 +4,7 @@ import 'package:cli_completion/cli_completion.dart';
 import '../commands/print_version.dart';
 import '../functions/shared/scope_option.dart';
 import 'commands/bootstrap_command.dart';
+import 'commands/add_agent_context_command.dart';
 import 'commands/add_config_command.dart';
 import 'commands/add_entity_command.dart';
 import 'commands/add_feature_command.dart';
@@ -52,6 +53,7 @@ class CleanHelperRunner extends CompletionCommandRunner<void> {
     addCommand(GenerateToolsCommand());
     addCommand(ListMonoRepoAppsCommand());
     addCommand(AddConfigCommand());
+    addCommand(AddAgentContextCommand());
     addCommand(AddVscodeExtensionsCommand());
     addCommand(AddMelosConfigCommand());
     addCommand(CreateFoundationCommand());

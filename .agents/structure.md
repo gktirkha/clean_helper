@@ -34,13 +34,14 @@ clean_helper/
 | `add_config.dart` | `addConfig()` — skips `ensurePubspec()` | `add-config` |
 | `add_vscode_extensions.dart` | `addVscodeExtensions()` — skips `ensurePubspec()` | `add-vscode-extensions` |
 | `add_melos_config.dart` | `addMelosConfig()` — skips `ensurePubspec()` | `add-melos-config` |
+| `add_agent_context.dart` | `addAgentContext()` — skips `ensurePubspec()` | `add-agent-context` |
 | `add_network_module.dart` | `addNetworkModule({runBuildRunnerAfter})` | `add-network-module` |
 | `add_repo.dart` | `addRepo(args, {runBuildRunnerAfter, noRest, addSample})` | `add-repo` |
 | `bootstrap.dart` | `runBootstrapCommand()` (async) | `bootstrap` |
 | `build_runner.dart` | `runBuildRunnerCommand(args)` | `build-runner` |
 | `generate_localizations.dart` | `runGenerateLocalizationsCommand()` | `generate-localizations` |
 | `generate_tools.dart` | `generateTools({overwrite})` | `generate-tools` |
-| `init.dart` | `runInit({withNetwork, withDi, withTools})` (async; `withNetwork` / `withDi` default `true`, turned off by `--skip-network` / `--skip-di`; `withTools` defaults `false`, on with `--tools`) | `init` |
+| `init.dart` | `runInit({withNetwork, withDi, withTools, withAgentContext})` (async; `withNetwork` / `withDi` default `true`, turned off by `--skip-network` / `--skip-di`; `withTools` / `withAgentContext` default `false`, on with `--tools` / `--agent-context`) | `init` |
 | `list_mono_repo_apps.dart` | `listMonoRepoApps()` — skips `ensurePubspec()` | `list-mono-repo-apps` |
 | `print_version.dart` | `printVersion()` | global `--version` |
 | `regenerate_router.dart` | `regenerateRouter()` | `regenerate-router` |
@@ -150,6 +151,7 @@ clean_helper/
 | `config/` | `addConfigToPubspec()`, `findMonoRepoApps()` |
 | `vscode/` | `writeVscodeExtensions()` |
 | `melos/` | `installMelos()`, `addMelosToPubspec()` |
+| `agent_context/` | `generateAgentContext()`, `resolveAgentContextInfo()` → `AgentContextInfo`, `writeAgentPointer(path)`, `agentCommandDocs` (`AgentCommandDoc` records) |
 
 ---
 
@@ -173,6 +175,7 @@ Each file is `<name>_template.dart` → `<name>Template(...)`.
 | Tools | `tools_command_runner`, `tools_clean`, `tools_bootstrap`, `tools_write_key_properties`, `tools_build_android`, `tools_build_config` |
 | Melos | `melos_config` (`version`) |
 | Config | `clean_helper_config` (`version`, `apps`) |
+| AI context | `agent_context_readme` (`info`, `version`), `agent_context_rules`, `agent_context_architecture`, `agent_context_command` (`AgentCommandDoc`), `agents_md` (+ `agentsMdPointerLine`) |
 | VS Code | `vscode_extensions` (`recommendations`) + the `vscodeRecommendedExtensions` list |
 
 Templates that take configurable input:

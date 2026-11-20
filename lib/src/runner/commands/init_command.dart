@@ -3,7 +3,8 @@ import 'package:args/command_runner.dart';
 import '../../commands/init.dart';
 
 /// `init` generates the network package and the home DI module unless
-/// skipped; `tools/` only with `--tools`.
+/// skipped; `tools/` only with `--tools`, `.agents/` only with
+/// `--agent-context`.
 class InitCommand extends Command<void> {
   InitCommand() {
     argParser.addFlag(
@@ -26,6 +27,14 @@ class InitCommand extends Command<void> {
       negatable: false,
       help: 'Also generate the tools/ scripts (not in a monorepo app).',
     );
+    argParser.addFlag(
+      'agent-context',
+      abbr: 'a',
+      negatable: false,
+      help:
+          'Also write .agents/ and AGENTS.md / CLAUDE.md for AI coding tools '
+          '(at the workspace root in a monorepo; see add-agent-context).',
+    );
   }
 
   @override
@@ -41,5 +50,6 @@ class InitCommand extends Command<void> {
     withNetwork: !(argResults!['skip-network'] as bool),
     withDi: !(argResults!['skip-di'] as bool),
     withTools: argResults!['tools'] as bool,
+    withAgentContext: argResults!['agent-context'] as bool,
   );
 }

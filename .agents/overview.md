@@ -35,6 +35,7 @@ Read next:
 | `add-vscode-extensions` | `addVscodeExtensions()` | Add recommended extensions to `.vscode/extensions.json` (merges) |
 | `add-config` | `addConfig()` | Append the commented `clean-helper:` template to the current pubspec |
 | `add-melos-config` | `addMelosConfig()` | melos dev dependency + `melos:` hooks and scripts in the root pubspec |
+| `add-agent-context` | `addAgentContext()` | `.agents/` AI context + `AGENTS.md` / `CLAUDE.md` pointers in the current directory |
 
 Global flags, declared on `CleanHelperRunner` and handled in its `runCommand` override:
 
@@ -84,7 +85,7 @@ bin/clean_helper.dart → CleanHelperRunner.run(args)
      runDartFormat(); runBuildRunner()   (generating commands only)
 ```
 
-`add-config`, `add-melos-config`, `add-vscode-extensions`, `create-foundation` and `list-mono-repo-apps` skip `ensurePubspec()`: they work on the current directory and never switch into an app.
+`add-config`, `add-melos-config`, `add-vscode-extensions`, `add-agent-context`, `create-foundation` and `list-mono-repo-apps` skip `ensurePubspec()`: they work on the current directory and never switch into an app.
 
 ---
 

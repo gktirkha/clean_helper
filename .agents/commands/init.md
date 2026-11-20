@@ -1,12 +1,12 @@
 # Command: init
 
-**Entry point:** `lib/src/commands/init.dart` → `runInit({withNetwork, withDi, withTools})` (async; `withNetwork` / `withDi` default `true`, `withTools` `false`)
+**Entry point:** `lib/src/commands/init.dart` → `runInit({withNetwork, withDi, withTools, withAgentContext})` (async; `withNetwork` / `withDi` default `true`, `withTools` / `withAgentContext` `false`)
 **Runner:** `InitCommand` — `clean-helper init`
 
 ## Usage
 
 ```bash
-clean-helper init [--skip-network|-n] [--skip-di|-d] [--tools|-t]
+clean-helper init [--skip-network|-n] [--skip-di|-d] [--tools|-t] [--agent-context|-a]
 ```
 
 Run once, in a project fresh from `flutter create`. The network package and home DI module are generated unless `--skip-network` / `--skip-di`; `tools/` only with `--tools` (and never in a monorepo app). `InitCommand` maps `--skip-x` to `withX: false` and `--tools` to `withTools: true`.
@@ -23,6 +23,7 @@ Run once, in a project fresh from `flutter create`. The network package and home
 6. `addNetworkModule(runBuildRunnerAfter: false)` unless `--skip-network`; then `writePackageAnalysisOptions` for every package under `foundation/` (created now or earlier); `generateToolsFiles()` with `--tools` comes after it (it writes nothing in a monorepo app)
 7. `runSlang()` in the localization package if created; `runBuildRunner()` in the utils package (if created) and the network package (unless `--skip-network`); then `runBuildRunner()` in the app and `runDartFormat()`
 8. `sortPubspecDeps()` for the app and the created utils / localization pubspecs; `writeToolVersion()`
+9. With `--agent-context`: `generateAgentContext()` at the workspace root (see `add_agent_context.md`)
 
 The package generators call `scaffoldPackage()` — create the parent folder, `flutter create --template package --no-pub` (pub get runs later, once the packages are in `workspace:`), delete the scaffold files (README, CHANGELOG, LICENSE, `.metadata`, `test/`, and `lib/<name>.dart` when the configured barrel is elsewhere), write an `analysis_options.yaml` that only includes the app's (or, with `use_root_analysis`, the root's) — and then:
 

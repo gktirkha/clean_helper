@@ -37,7 +37,7 @@ Hard constraints for changing clean_helper. `conventions.md` explains the reason
 
 ## Commands and monorepos
 
-- **Every command calls `ensurePubspec()` first.** It loads the root-pubspec config, handles monorepo app selection (which changes `Directory.current`) and checks the version stamp. The only exceptions are `list-mono-repo-apps`, which must not trigger selection, `add-config`, `add-melos-config`, `add-vscode-extensions` and `create-foundation`, which work on the current (root) directory, and the global `--version` flag, which is handled in the runner.
+- **Every command calls `ensurePubspec()` first.** It loads the root-pubspec config, handles monorepo app selection (which changes `Directory.current`) and checks the version stamp. The only exceptions are `list-mono-repo-apps`, which must not trigger selection, `add-config`, `add-melos-config`, `add-vscode-extensions`, `add-agent-context` and `create-foundation`, which work on the current (root) directory, and the global `--version` flag, which is handled in the runner.
 - Never add monorepo detection anywhere except `shared/resolve_mono_repo_project.dart`.
 - Anything read from the **root** pubspec must be read in `loadPackageConfigs()` — which `ensurePubspec()` calls before the directory change — and stored in a shared global in `shared/package_configs.dart`. Commands read the global; they never re-read the root pubspec.
 - New `clean-helper:` keys are parsed with `readCleanHelperFields(path)`. A missing key means the default behaviour.
@@ -63,3 +63,4 @@ Hard constraints for changing clean_helper. `conventions.md` explains the reason
 - Never edit `clean-helper.version` in a target project; only `writeToolVersion()` writes it.
 - A behaviour change updates `README.md`, the matching `.agents/commands/<command>.md`, and `structure.md` for new or renamed files.
 - After changing the source, `dart analyze` must report no issues and `dart format` must leave nothing to change.
+- **Keep the generated AI context current.** When a user-facing command, the generated layout or a rule for generated code changes, update `functions/agent_context/agent_command_docs.dart` and the `agent_context_*` templates in the same change (see `commands/add_agent_context.md`).

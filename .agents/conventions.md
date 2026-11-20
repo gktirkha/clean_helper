@@ -122,7 +122,7 @@ Resolution helpers turn config into decisions, so commands don't repeat the logi
 
 ## `ensurePubspec()` and `abort()`
 
-- `ensurePubspec()` is the first statement of every command, except those that work on the current directory (`add-config`, `add-melos-config`, `add-vscode-extensions`, `create-foundation`, `list-mono-repo-apps`).
+- `ensurePubspec()` is the first statement of every command, except those that work on the current directory (`add-config`, `add-melos-config`, `add-vscode-extensions`, `add-agent-context`, `create-foundation`, `list-mono-repo-apps`).
 - `abort(message)` returns `Never`: it prints `❌ message` to stderr and exits with code 1. Use it for unrecoverable input or config errors. Use `stderr.writeln('⚠️ …')` for warnings that shouldn't stop the command.
 
 ---
