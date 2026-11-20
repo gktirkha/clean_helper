@@ -132,6 +132,21 @@ The app supplies what the package can't: `NetworkConfig` (base URL, `User-Agent`
 
 ---
 
+## Recommended monorepo layering (guidance only)
+
+A recommendation for users with several apps. clean_helper does **not** create or enforce these folders. It generates only `foundation/` (via `create-foundation` / `foundation.dir`) and the apps, and features live inside each app's `lib/features/`. Use this when advising users or writing docs, not as a target for generated code.
+
+| Layer | Level | May depend on | Examples |
+|---|---|---|---|
+| `foundation/` | 1 | Primitives only: no other `<app>_*` / workspace packages | `food_theme`, `food_utils`, `food_network`, `food_localization`, `food_router` |
+| `core/` | 2 | `foundation/` only, no siblings in `core/` | `food_ui` (theme + l10n), `food_data` (network + utils) |
+| `features/` | 3 | Anything below, plus other features | `feature_menu`, `feature_cart`, `feature_auth` |
+| `apps/` | 4 | Anything below; no app → app | `consumer` (later `restaurant`, `rider`, …) |
+
+Dependencies only point down the levels. The generated foundation packages already follow level 1: none depends on another workspace package.
+
+---
+
 ## Feature layout
 
 ```
