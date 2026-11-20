@@ -30,7 +30,7 @@ clean_helper/
 |---|---|---|
 | `add_entity.dart` | `addEntity(args, {runBuildRunnerAfter})` | `add-entity` |
 | `add_feature.dart` | `addFeature(args, {withDi, runBuildRunnerAfter})` | `add-feature` |
-| `create_packages.dart` | `createPackages({dir})` — skips `ensurePubspec()` | `create-packages` |
+| `create_foundation.dart` | `createFoundation({dir})` — skips `ensurePubspec()` | `create-foundation` |
 | `add_config.dart` | `addConfig()` — skips `ensurePubspec()` | `add-config` |
 | `add_vscode_extensions.dart` | `addVscodeExtensions()` — skips `ensurePubspec()` | `add-vscode-extensions` |
 | `add_melos_config.dart` | `addMelosConfig()` — skips `ensurePubspec()` | `add-melos-config` |
@@ -61,9 +61,9 @@ clean_helper/
 | `sort_imports.dart` | `sortImports(imports)` | Join import directives alphabetically |
 | `ensure_pubspec.dart` | `ensurePubspec()` | First call of every command: config → monorepo → version check |
 | `load_package_configs.dart` | `loadPackageConfigs()` | Fill the config globals from the starting-directory pubspec |
-| `package_configs.dart` | `PackageConfig` typedef `(name, import, create)`; `packageConfigsLoaded`, `packageCreateConfig`, `overwriteAnalysisOptionsConfig`, `networkModuleNameConfig`, `networkAuthInterceptorConfig`, `useRootAnalysisConfig`, `monoRepoAppPath`, `utilsPackageConfig`, `networkPackageConfig`, `localizationPackageConfig`, `routerPackageConfig`, `utilsModuleNameConfig`, `callAdapterNameConfig`, `themePackageConfig`, `slangSettingsConfig` | Config globals |
+| `package_configs.dart` | `PackageConfig` typedef `(name, import, create)`; `packageConfigsLoaded`, `packagesDirConfig`, `packageCreateConfig`, `overwriteAnalysisOptionsConfig`, `networkModuleNameConfig`, `networkAuthInterceptorConfig`, `useRootAnalysisConfig`, `monoRepoAppPath`, `utilsPackageConfig`, `networkPackageConfig`, `localizationPackageConfig`, `routerPackageConfig`, `utilsModuleNameConfig`, `callAdapterNameConfig`, `themePackageConfig`, `slangSettingsConfig` | Config globals |
 | `read_clean_helper_fields.dart` | `readCleanHelperFields(path)` | Scalar children of `clean-helper.<path…>` |
-| `read_package_config.dart` | `readPackageConfig(key)` | `packages.<key>` → `PackageConfig?` |
+| `read_package_config.dart` | `readPackageConfig(key)` | `foundation.<key>` → `PackageConfig?` |
 | `resolve_utils_package.dart` | `resolveUtilsPackage()` | Configured utils package or `<app>_utils` |
 | `resolve_localization_package.dart` | `resolveLocalizationPackage()` | Configured localization package or `<app>_localization` |
 | `resolve_router_package.dart` | `resolveRouterPackage()` | Configured router package or `clean_router` |
@@ -73,12 +73,13 @@ clean_helper/
 | `resolve_network_package.dart` | `resolveNetworkPackage()` | Configured network package or `<app>_network` |
 | `resolve_network_module_name.dart` | `resolveNetworkModuleName(network)` | `module_name` ?? `<NetworkPascal>Module` |
 | `resolve_utils_module_name.dart` | `resolveUtilsModuleName(utils)` | `module_name` ?? `<UtilsPascal>Module` |
-| `resolve_call_adapter_name.dart` | `resolveCallAdapterName()` | `packages.network.call_adapter_name` ?? `AppCallAdapter` |
+| `resolve_call_adapter_name.dart` | `resolveCallAdapterName()` | `foundation.network.call_adapter_name` ?? `AppCallAdapter` |
 | `write_package_analysis_options.dart` | `writePackageAnalysisOptions(packageDirs)` | Each existing package's `include:` file (current project's or root's rules), via `writeAnalysisOptions` |
 | `write_analysis_options.dart` | `writeAnalysisOptions(path, content)` | `overwriteFile` or, with `overwrite_analysis_options: false`, `writeFile` |
 | `app_router_module_path.dart` | `appRouterModulePath()` | `lib/app/router/<app>_router_module.dart` for the current app |
 | `analysis_options_include.dart` | `analysisOptionsInclude(dir)` | `include:` path for a project's `analysis_options.yaml`, or null for full rules |
-| `package_barrel_path.dart` | `packageBarrelPath(package, [parentDir])` | `<parentDir>/<name>/lib/<file from import>`, `parentDir` defaulting to `packages` |
+| `package_barrel_path.dart` | `packageBarrelPath(package, parentDir)` | `<parentDir>/<name>/lib/<file from import>` |
+| `resolve_packages_dir.dart` | `resolvePackagesDir()` | `foundation.dir`, else `foundation` — the folder every command creates and finds workspace packages in |
 | `package_barrel_prefix.dart` | `packageBarrelPrefix(package)` | `../` prefix from a nested barrel back to `lib/` |
 | `read_mono_repo_apps.dart` | `readMonoRepoApps()` | `mono_repo_apps` list |
 | `read_package_name.dart` | `readPackageName()` | `name:` from the current pubspec |
@@ -102,11 +103,11 @@ clean_helper/
 | `run_flutter_pub_get.dart` | `runFlutterPubGet()` |
 | `create_directories.dart` | `createDirectories()` — empty app folders; with `scaffold_package.dart`, the only places allowed to call `Directory.createSync` |
 | `generate_flutter_gen_files.dart` | `generateFlutterGenFiles()` |
-| `scaffold_package.dart` | `scaffoldPackage(package, {parentDir})` — creates `parentDir`, `flutter create --template package --no-pub`, delete unused scaffold files, write an including `analysis_options.yaml` |
-| `generate_clean_router_package.dart` | `generateCleanRouterPackage(router, {parentDir})` — `lib/src/<name>_base.dart`, `<name>_refresh.dart` |
-| `generate_localization_package.dart` | `generateLocalizationPackage(localization, slangSettings, {parentDir})` |
-| `generate_utils_package.dart` | `generateUtilsPackage(utils, {moduleName, parentDir})` |
-| `generate_theme_package.dart` | `generateThemePackage(theme, {parentDir})` |
+| `scaffold_package.dart` | `scaffoldPackage(package, {required parentDir})` — creates `parentDir`, `flutter create --template package --no-pub`, delete unused scaffold files, write an including `analysis_options.yaml` |
+| `generate_clean_router_package.dart` | `generateCleanRouterPackage(router, {required parentDir})` — `lib/src/<name>_base.dart`, `<name>_refresh.dart` |
+| `generate_localization_package.dart` | `generateLocalizationPackage(localization, slangSettings, {required parentDir})` |
+| `generate_utils_package.dart` | `generateUtilsPackage(utils, {moduleName, required parentDir})` |
+| `generate_theme_package.dart` | `generateThemePackage(theme, {required parentDir})` |
 | `generate_network_package.dart` | `generateNetworkPackage(network, {moduleName, auth, parentDir})` |
 | `patch_package_pubspec.dart` | `patchPackagePubspec(packagePath, pubspecTail)` |
 | `add_packages_workspace.dart` | `addPackagesWorkspace(packagePaths)` — no-op for an empty list; then `warnStaleWorkspaceEntries` |
@@ -116,7 +117,7 @@ clean_helper/
 | `install_dependencies.dart` | `installDependencies(workspacePackages)` |
 | `update_gitignore.dart` | `updateGitignore()` |
 | `add_flutter_assets_to_pubspec.dart` | `addFlutterAssetsToPubSpec()` |
-| `run_slang.dart` | `runSlang(localizationPackageName, {parentDir})` |
+| `run_slang.dart` | `runSlang(localizationPackageName, {required parentDir})` |
 | `run_build_runner.dart` | `runBuildRunner({workingDirectory})` |
 | `run_dart_format.dart` | `runDartFormat()` |
 | `sort_pubspec_deps.dart` | `sortPubspecDeps([path])` |
@@ -210,4 +211,4 @@ Templates that take configurable input:
 | `string_extension` | `generatedFile`, `translateVar` |
 | `utils_module` | full `moduleName` |
 | `feature_navigation_impl` | `utilsImport` |
-| `tools_bootstrap` | `localizationDir`, `buildDirs` (only packages under `packages/`) |
+| `tools_bootstrap` | `localizationDir`, `buildDirs` (only packages under `foundation/`) |

@@ -18,7 +18,7 @@ Feature scope only; use `add-entity core …` for core models. Both names are lo
 | `utilsImport` | `resolveUtilsPackage().import` |
 | `hasNetworkModule` | `lib/core/network/di/network_config_module.dart` exists (written by `add-network-module`) |
 | `generateRest` | `!noRest && hasNetworkModule` |
-| call adapter name | `resolveCallAdapterName()` — `packages.network.call_adapter_name` ?? `AppCallAdapter` |
+| call adapter name | `resolveCallAdapterName()` — `foundation.network.call_adapter_name` ?? `AppCallAdapter` |
 
 ## Output
 

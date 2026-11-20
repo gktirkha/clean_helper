@@ -37,11 +37,12 @@ Hard constraints for changing clean_helper. `conventions.md` explains the reason
 
 ## Commands and monorepos
 
-- **Every command calls `ensurePubspec()` first.** It loads the root-pubspec config, handles monorepo app selection (which changes `Directory.current`) and checks the version stamp. The only exceptions are `list-mono-repo-apps`, which must not trigger selection, `add-config`, `add-melos-config`, `add-vscode-extensions` and `create-packages`, which work on the current (root) directory, and the global `--version` flag, which is handled in the runner.
+- **Every command calls `ensurePubspec()` first.** It loads the root-pubspec config, handles monorepo app selection (which changes `Directory.current`) and checks the version stamp. The only exceptions are `list-mono-repo-apps`, which must not trigger selection, `add-config`, `add-melos-config`, `add-vscode-extensions` and `create-foundation`, which work on the current (root) directory, and the global `--version` flag, which is handled in the runner.
 - Never add monorepo detection anywhere except `shared/resolve_mono_repo_project.dart`.
 - Anything read from the **root** pubspec must be read in `loadPackageConfigs()` — which `ensurePubspec()` calls before the directory change — and stored in a shared global in `shared/package_configs.dart`. Commands read the global; they never re-read the root pubspec.
 - New `clean-helper:` keys are parsed with `readCleanHelperFields(path)`. A missing key means the default behaviour.
 - Get workspace package names and imports from `resolveUtilsPackage()`, `resolveLocalizationPackage()`, `resolveRouterPackage()`, `resolveThemePackage()` and `resolveNetworkPackage()`. Never build `<app>_utils`, `<app>_localization`, `<app>_theme`, `<app>_network` or `clean_router` by hand, and never hard-code `package:clean_router/…` in a template — take the import as a parameter.
+- Get the packages folder from `resolvePackagesDir()` (`foundation.dir`, default `foundation`). Never hard-code `foundation/` or `packages/` paths.
 - `loadPackageConfigs()` runs once per process (`packageConfigsLoaded`). Don't call it again after the monorepo `chdir`.
 - **Every config key is in the `add-config` template and the README sample.** Whenever you add, rename or remove a `clean-helper:` key, update `templates/clean_helper_config_template.dart` and the README's Sample configuration section in the same change. In both, every key gets a `##` comment above it saying what it does and its default. In the template, keys with a fixed default are active with that value, and app-dependent keys (names, imports, class names) are commented out with a single `#`. Never use inline comments, and keep every comment indented inside the block.
 

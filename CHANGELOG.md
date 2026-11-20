@@ -1,3 +1,15 @@
+## 3.0.0
+
+### Breaking
+
+- The `clean-helper.packages:` config key is now **`clean-helper.foundation:`** (`foundation.utils`, `foundation.network.module_name`, `foundation.use_root_analysis`, …). `list-mono-repo-apps` and `add-config` use the new key.
+- `create-packages` is now **`create-foundation`**.
+- Workspace packages live in **`foundation/`** instead of `packages/`. The new `foundation.dir` key sets the folder, relative to the project (for `create-foundation`, the current directory); `create-foundation --dir` overrides it for one run. `init`, `add-network-module`, `bootstrap`, `generate-localizations` and `tools/bootstrap.dart` all use it.
+
+### Changes
+
+- The utils package no longer depends on the localization package; nothing in it used localization.
+
 ## 2.1.0
 
 - **New theme package.** `init` (and `create-packages`) generate `packages/<app>_theme`, configured by `packages.theme` (`name`, `import`, `create`), with adaptive light/dark design tokens:
@@ -5,7 +17,6 @@
   - The app gets `lib/core/theme/app_theme.dart` (`appTheme()`). `MainApp` wraps the app in `<Base>Theme` and passes `theme`, `darkTheme` and `themeMode` to `MaterialApp`.
 - **`material_ui` instead of `package:flutter/material.dart`** in every generated file, to avoid deprecated Material APIs. The app, router, utils and theme packages depend on `material_ui`.
 - Feature routes use `pageBuilder` with a `MaterialPage` (`key: state.pageKey`).
-- The utils package no longer depends on the localization package; nothing in it used localization.
 
 ## 2.0.0
 

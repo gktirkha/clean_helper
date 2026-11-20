@@ -53,7 +53,7 @@ ${sortImports([
 ])}
 ```
 
-- Templates take the **full import URI** (`utilsImport`), not a package name. That lets a configured barrel (`packages.utils.import`) work unchanged.
+- Templates take the **full import URI** (`utilsImport`), not a package name. That lets a configured barrel (`foundation.utils.import`) work unchanged.
 
 ---
 
@@ -87,22 +87,23 @@ The runner and `ensurePubspec()` fill shared globals before any command logic ru
 |---|---|---|
 | `resolveScope` (`scope_option.dart`) | `CleanHelperRunner.runCommand` | `--scope` value |
 | `packageConfigsLoaded` (`package_configs.dart`) | `loadPackageConfigs()` | config already loaded — `ensurePubspec()` loads it only once per process, so nested commands (`init` → `add-network-module`) keep the root config after the monorepo `chdir` |
-| `packageCreateConfig` | `loadPackageConfigs()` | `packages.<key>.create` per key, read even without `name`/`import`; the `resolve*Package()` defaults use it |
-| `utilsPackageConfig` | `loadPackageConfigs()` | `packages.utils` as a `PackageConfig` `(name, import, create)`, or null |
-| `localizationPackageConfig`, `routerPackageConfig`, `themePackageConfig` | `loadPackageConfigs()` | `packages.localization` / `packages.router` / `packages.theme`, or null |
-| `networkPackageConfig` | `loadPackageConfigs()` | `packages.network`, or null |
-| `networkModuleNameConfig`, `networkAuthInterceptorConfig` | `loadPackageConfigs()` | `packages.network.module_name` (or null) / `.auth_interceptor` (true unless `false`) |
-| `utilsModuleNameConfig` | `loadPackageConfigs()` | `packages.utils.module_name`, or null |
-| `callAdapterNameConfig` | `loadPackageConfigs()` | `packages.network.call_adapter_name`, or null |
-| `slangSettingsConfig` | `loadPackageConfigs()` | every other scalar key under `packages.localization` |
-| `overwriteAnalysisOptionsConfig` | `loadPackageConfigs()` | `packages.overwrite_analysis_options`; true unless `false`. `writeAnalysisOptions()` picks `overwriteFile` / `writeFile` from it, for app, root and package files alike |
-| `useRootAnalysisConfig` | `loadPackageConfigs()` | `packages.use_root_analysis`; true unless `false` |
+| `packageCreateConfig` | `loadPackageConfigs()` | `foundation.<key>.create` per key, read even without `name`/`import`; the `resolve*Package()` defaults use it |
+| `packagesDirConfig` | `loadPackageConfigs()` | `foundation.dir`, or null; `resolvePackagesDir()` turns it into the folder (default `foundation`) |
+| `utilsPackageConfig` | `loadPackageConfigs()` | `foundation.utils` as a `PackageConfig` `(name, import, create)`, or null |
+| `localizationPackageConfig`, `routerPackageConfig`, `themePackageConfig` | `loadPackageConfigs()` | `foundation.localization` / `foundation.router` / `foundation.theme`, or null |
+| `networkPackageConfig` | `loadPackageConfigs()` | `foundation.network`, or null |
+| `networkModuleNameConfig`, `networkAuthInterceptorConfig` | `loadPackageConfigs()` | `foundation.network.module_name` (or null) / `.auth_interceptor` (true unless `false`) |
+| `utilsModuleNameConfig` | `loadPackageConfigs()` | `foundation.utils.module_name`, or null |
+| `callAdapterNameConfig` | `loadPackageConfigs()` | `foundation.network.call_adapter_name`, or null |
+| `slangSettingsConfig` | `loadPackageConfigs()` | every other scalar key under `foundation.localization` |
+| `overwriteAnalysisOptionsConfig` | `loadPackageConfigs()` | `foundation.overwrite_analysis_options`; true unless `false`. `writeAnalysisOptions()` picks `overwriteFile` / `writeFile` from it, for app, root and package files alike |
+| `useRootAnalysisConfig` | `loadPackageConfigs()` | `foundation.use_root_analysis`; true unless `false` |
 | `monoRepoAppPath` | `resolveMonoRepoProject()` | the app switched into, relative to the root (`apps/shop`), or null |
 
 `loadPackageConfigs()` runs **before** `resolveMonoRepoProject()` changes directory, so it reads the root pubspec. Config parsing is line-based, with no YAML dependency:
 
 - `readCleanHelperFields(path)` returns the scalar children of `clean-helper.<path…>`. It tracks indentation, strips comments and quotes, and ignores list items.
-- `readPackageConfig(key)` builds on it for `packages.<key>`: the name comes from the import, or the import defaults to `package:<name>/<name>.dart`; `create` is true unless it's `false`.
+- `readPackageConfig(key)` builds on it for `foundation.<key>`: the name comes from the import, or the import defaults to `package:<name>/<name>.dart`; `create` is true unless it's `false`.
 - `readMonoRepoApps()` is a hand-written parser for the `mono_repo_apps` list, which `readCleanHelperFields` (scalars only) can't read. `checkVersionMismatch()` reads `version` through `readCleanHelperFields([])`.
 
 Resolution helpers turn config into decisions, so commands don't repeat the logic:
@@ -114,14 +115,14 @@ Resolution helpers turn config into decisions, so commands don't repeat the logi
 | `analysisOptionsInclude(dir)` | the `include:` path for the `analysis_options.yaml` at `dir` (`''` = the current project), or null for the full rules — `'../' × (depth(dir) + depth(monoRepoAppPath) with use_root_analysis)` |
 | `resolveNetworkModuleName(network)` | `module_name` ?? `<NetworkPascal>Module` |
 | `resolveUtilsModuleName(utils)` | `module_name` ?? `<UtilsPascal>Module` |
-| `resolveCallAdapterName()` | `packages.network.call_adapter_name` ?? `AppCallAdapter` |
+| `resolveCallAdapterName()` | `foundation.network.call_adapter_name` ?? `AppCallAdapter` |
 | `packageBarrelPath(p)` / `packageBarrelPrefix(p)` | where a created package's barrel goes (from its import URI), and the `../` prefix its exports need |
 
 ---
 
 ## `ensurePubspec()` and `abort()`
 
-- `ensurePubspec()` is the first statement of every command, except those that work on the current directory (`add-config`, `add-melos-config`, `add-vscode-extensions`, `create-packages`, `list-mono-repo-apps`).
+- `ensurePubspec()` is the first statement of every command, except those that work on the current directory (`add-config`, `add-melos-config`, `add-vscode-extensions`, `create-foundation`, `list-mono-repo-apps`).
 - `abort(message)` returns `Never`: it prints `❌ message` to stderr and exits with code 1. Use it for unrecoverable input or config errors. Use `stderr.writeln('⚠️ …')` for warnings that shouldn't stop the command.
 
 ---

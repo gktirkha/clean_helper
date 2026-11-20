@@ -28,10 +28,10 @@ Read next:
 | `remove-feature <name>` | `removeFeature(args, {runBuildRunnerAfter})` | Delete a feature, unregister its router |
 | `regenerate-router` | `regenerateRouter()` | Rebuild `<app>_router_module.dart` from disk |
 | `build-runner [build\|clean]` | `runBuildRunnerCommand(args)` | Run build_runner |
-| `generate-localizations` | `runGenerateLocalizationsCommand()` | Run slang in `packages/<localization>` |
+| `generate-localizations` | `runGenerateLocalizationsCommand()` | Run slang in `foundation/<localization>` |
 | `generate-tools [--overwrite]` | `generateTools(overwrite:)` | `tools/` scripts |
 | `list-mono-repo-apps` | `listMonoRepoApps()` | Print monorepo apps and resolved config |
-| `create-packages [--dir]` | `createPackages(dir:)` | Create the configured utils / localization / router / theme packages (+ network when `packages.network` is configured) in `<dir>` (default `packages`), ignoring `create` |
+| `create-foundation [--dir]` | `createFoundation(dir:)` | Create the configured utils / localization / router / theme packages (+ network when `foundation.network` is configured) in `<dir>` (default `foundation.dir`, else `foundation`), ignoring `create` |
 | `add-vscode-extensions` | `addVscodeExtensions()` | Add recommended extensions to `.vscode/extensions.json` (merges) |
 | `add-config` | `addConfig()` | Append the commented `clean-helper:` template to the current pubspec |
 | `add-melos-config` | `addMelosConfig()` | melos dev dependency + `melos:` hooks and scripts in the root pubspec |
@@ -50,17 +50,18 @@ Global flags, declared on `CleanHelperRunner` and handled in its `runCommand` ov
 |---|---|---|
 | `version` | `checkVersionMismatch()` — **after** the monorepo directory change | — |
 | `mono_repo_apps` | `readMonoRepoApps()` | — |
-| `packages.<key>.create` (each package) | `loadPackageConfigs()` | `packageCreateConfig` (also in the `PackageConfig` when `name`/`import` is set) |
-| `packages.utils.{name,import,create}` | `loadPackageConfigs()` | `utilsPackageConfig` |
-| `packages.utils.module_name` | `loadPackageConfigs()` | `utilsModuleNameConfig` |
-| `packages.localization.{name,import,create}` | `loadPackageConfigs()` | `localizationPackageConfig` |
-| `packages.localization.<slang key>` | `loadPackageConfigs()` | `slangSettingsConfig` |
-| `packages.overwrite_analysis_options` (or `clean-helper.overwrite_analysis_options`) | `loadPackageConfigs()` | `overwriteAnalysisOptionsConfig` |
-| `packages.use_root_analysis` (or `clean-helper.use_root_analysis`) | `loadPackageConfigs()` | `useRootAnalysisConfig` |
-| `packages.router.{name,import,create}` | `loadPackageConfigs()` | `routerPackageConfig` |
-| `packages.theme.{name,import,create}` | `loadPackageConfigs()` | `themePackageConfig` |
-| `packages.network.{name,import,create}` | `loadPackageConfigs()` | `networkPackageConfig` |
-| `packages.network.module_name` / `.call_adapter_name` / `.auth_interceptor` | `loadPackageConfigs()` | `networkModuleNameConfig` / `callAdapterNameConfig` / `networkAuthInterceptorConfig` |
+| `foundation.dir` | `loadPackageConfigs()` | `packagesDirConfig` (resolved by `resolvePackagesDir()`, default `foundation`) |
+| `foundation.<key>.create` (each package) | `loadPackageConfigs()` | `packageCreateConfig` (also in the `PackageConfig` when `name`/`import` is set) |
+| `foundation.utils.{name,import,create}` | `loadPackageConfigs()` | `utilsPackageConfig` |
+| `foundation.utils.module_name` | `loadPackageConfigs()` | `utilsModuleNameConfig` |
+| `foundation.localization.{name,import,create}` | `loadPackageConfigs()` | `localizationPackageConfig` |
+| `foundation.localization.<slang key>` | `loadPackageConfigs()` | `slangSettingsConfig` |
+| `foundation.overwrite_analysis_options` (or `clean-helper.overwrite_analysis_options`) | `loadPackageConfigs()` | `overwriteAnalysisOptionsConfig` |
+| `foundation.use_root_analysis` (or `clean-helper.use_root_analysis`) | `loadPackageConfigs()` | `useRootAnalysisConfig` |
+| `foundation.router.{name,import,create}` | `loadPackageConfigs()` | `routerPackageConfig` |
+| `foundation.theme.{name,import,create}` | `loadPackageConfigs()` | `themePackageConfig` |
+| `foundation.network.{name,import,create}` | `loadPackageConfigs()` | `networkPackageConfig` |
+| `foundation.network.module_name` / `.call_adapter_name` / `.auth_interceptor` | `loadPackageConfigs()` | `networkModuleNameConfig` / `callAdapterNameConfig` / `networkAuthInterceptorConfig` |
 
 Everything except `version` is read from the pubspec in the starting directory — the monorepo root in a monorepo — before `resolveMonoRepoProject()` changes directory. The README's Configuration section documents each key's behaviour for users.
 
@@ -83,7 +84,7 @@ bin/clean_helper.dart → CleanHelperRunner.run(args)
      runDartFormat(); runBuildRunner()   (generating commands only)
 ```
 
-`add-config`, `add-melos-config`, `add-vscode-extensions`, `create-packages` and `list-mono-repo-apps` skip `ensurePubspec()`: they work on the current directory and never switch into an app.
+`add-config`, `add-melos-config`, `add-vscode-extensions`, `create-foundation` and `list-mono-repo-apps` skip `ensurePubspec()`: they work on the current directory and never switch into an app.
 
 ---
 
@@ -99,9 +100,9 @@ bin/clean_helper.dart → CleanHelperRunner.run(args)
 8. `generateCoreFiles()` — main, bootstrap, init service, app, DI (environment-aware, with `@test` modules), router
 9. `createFeatureStructure('lib/features/home', 'home', …)`
 10. `installDependencies()`, `updateGitignore()`, `addFlutterAssetsToPubSpec()`
-11. `addNetworkModule(runBuildRunnerAfter: false)` unless `--skip-network`; `writePackageAnalysisOptions` for every package under `packages/`; then `generateToolsFiles()` with `--tools` (after the network package, so `tools/bootstrap.dart` includes it)
+11. `addNetworkModule(runBuildRunnerAfter: false)` unless `--skip-network`; `writePackageAnalysisOptions` for every package under `foundation/`; then `generateToolsFiles()` with `--tools` (after the network package, so `tools/bootstrap.dart` includes it)
 12. `runSlang(<localization>)` — only if created
-13. `runBuildRunner` in `packages/<utils>` (if created) and `packages/<network>` (unless `--skip-network`), then `runBuildRunner()` for the app
+13. `runBuildRunner` in `foundation/<utils>` (if created) and `foundation/<network>` (unless `--skip-network`), then `runBuildRunner()` for the app
 14. `runDartFormat()`
 15. `sortPubspecDeps()` for the app and the created utils / localization pubspecs
 16. `writeToolVersion()`

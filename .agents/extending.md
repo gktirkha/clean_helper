@@ -66,7 +66,7 @@ Monorepo support comes free with `ensurePubspec()`, so don't add any app-selecti
 Example: `clean-helper.foo.bar`.
 
 1. Add a global to `functions/shared/package_configs.dart`, with a doc comment saying what null means.
-2. Set it in `loadPackageConfigs()` with `readCleanHelperFields(['foo'])['bar']` (or `readPackageConfig(key)` for a `packages.<key>` entry). Workspace packages get a `resolve<Name>Package()` in `shared/` that fills in the default when the key is missing.
+2. Set it in `loadPackageConfigs()` with `readCleanHelperFields(['foo'])['bar']` (or `readPackageConfig(key)` for a `foundation.<key>` entry). Workspace packages get a `resolve<Name>Package()` in `shared/` that fills in the default when the key is missing.
 3. If the value needs interpreting or validating, add a resolver in `shared/`, like `resolve_call_adapter_name.dart`. Resolvers `abort()` on invalid values.
 4. The command reads the global or resolver. A missing key must produce exactly today's output.
 5. Print the resolved value in `listMonoRepoApps()`.
@@ -111,6 +111,6 @@ The only expected info is `prefer_const_constructors` in the model `.g.dart` fil
 
 To compare against the previous release, generate the same project with a `git worktree` of the last tag and `diff -r` the `lib/` trees.
 
-For monorepo behaviour, create a root `pubspec.yaml` with no `lib/`, declaring `mono_repo_apps` (and `packages:` if needed) and listing the app under `workspace:`. Move the scratch app under `apps/` and give it `resolution: workspace`, then run commands from the root with `--scope`. To test shared packages, run `create-packages` at the root and set `create: false` for them.
+For monorepo behaviour, create a root `pubspec.yaml` with no `lib/`, declaring `mono_repo_apps` (and `foundation:` if needed) and listing the app under `workspace:`. Move the scratch app under `apps/` and give it `resolution: workspace`, then run commands from the root with `--scope`. To test shared packages, run `create-foundation` at the root and set `create: false` for them.
 
 After changing the source, re-run `dart pub global activate --source path .` if you test through the global `clean-helper` command.

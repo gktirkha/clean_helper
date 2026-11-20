@@ -20,7 +20,7 @@ Run once, in a project fresh from `flutter create`. The network package and home
 3. The packages with `create: true`: `generateCleanRouterPackage()`, `generateThemePackage()`, `generateLocalizationPackage()`, `generateUtilsPackage()`, then `addPackagesWorkspace()` for those created — no `workspace:` key if none are
 4. The app: `generateCoreFiles()`, `createFeatureStructure()` for `home` (with `withDi`)
 5. `installDependencies()`, `updateGitignore()`, `addFlutterAssetsToPubSpec()`
-6. `addNetworkModule(runBuildRunnerAfter: false)` unless `--skip-network`; then `writePackageAnalysisOptions` for every package under `packages/` (created now or earlier); `generateToolsFiles()` with `--tools` comes after it (it writes nothing in a monorepo app)
+6. `addNetworkModule(runBuildRunnerAfter: false)` unless `--skip-network`; then `writePackageAnalysisOptions` for every package under `foundation/` (created now or earlier); `generateToolsFiles()` with `--tools` comes after it (it writes nothing in a monorepo app)
 7. `runSlang()` in the localization package if created; `runBuildRunner()` in the utils package (if created) and the network package (unless `--skip-network`); then `runBuildRunner()` in the app and `runDartFormat()`
 8. `sortPubspecDeps()` for the app and the created utils / localization pubspecs; `writeToolVersion()`
 
@@ -49,5 +49,5 @@ See `architecture.md` for the full tree. Key points:
 
 ## Notes
 
-- `init` reads `clean-helper.packages.{utils,localization,router,theme}` (and `network` unless `--skip-network`): names, barrel imports (the barrel is written at the import's path), `create`, `utils.module_name` (the `@module` class) and the slang keys under `localization`, which become `slang.yaml` and set the generated file and `translate_var` used by the barrel and `String.tr`.
+- `init` reads `clean-helper.foundation.{utils,localization,router,theme}` (and `network` unless `--skip-network`): names, barrel imports (the barrel is written at the import's path), `create`, `utils.module_name` (the `@module` class) and the slang keys under `localization`, which become `slang.yaml` and set the generated file and `translate_var` used by the barrel and `String.tr`.
 - Workspace packages are always added with `flutter pub add <name>` (no `--path`), created or not.

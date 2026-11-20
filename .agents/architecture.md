@@ -37,7 +37,7 @@ What the templates produce. Keep this in sync when a template changes shape.
 │   │       └── interceptors/app_auth_interceptor.dart   auth_interceptor only
 │   ├── features/<feature>/
 │   └── generated/flutter_gen/
-├── packages/
+├── foundation/
 │   ├── clean_router/
 │   ├── <app>_localization/
 │   ├── <app>_theme/                               <Base>Theme, <Base>ThemeData, AdaptiveColor, ThemeResolver
@@ -49,13 +49,13 @@ What the templates produce. Keep this in sync when a template changes shape.
 
 The app's `pubspec.yaml` lists the packages `init` created under `workspace:`, and all of them as dependencies without a `path:` — pub resolves workspace members from the workspace. Each package pubspec has `resolution: workspace` No package depends on another workspace package.
 
-Names, barrel imports and whether each package is created come from `clean-helper.packages.{utils,localization,router,network}` (the defaults are shown here). Packages with `create: false` aren't generated; when none are created, the app pubspec gets no `workspace:` key, because the packages live in an enclosing workspace.
+Names, barrel imports and whether each package is created come from `clean-helper.foundation.{utils,localization,router,network}` (the defaults are shown here). Packages with `create: false` aren't generated; when none are created, the app pubspec gets no `workspace:` key, because the packages live in an enclosing workspace.
 
 ---
 
 ## Workspace packages
 
-### `clean_router` (`packages.router`)
+### `clean_router` (`foundation.router`)
 
 Files and classes are named after the package (`<name>` / `<NamePascal>`; defaults shown):
 
@@ -66,7 +66,7 @@ Files and classes are named after the package (`<name>` / `<NamePascal>`; defaul
 
 ### `<app>_localization`
 
-- `slang.yaml`, from the slang keys under `packages.localization` (defaults: output in `lib/src/generated`, `translate_var: locales`)
+- `slang.yaml`, from the slang keys under `foundation.localization` (defaults: output in `lib/src/generated`, `translate_var: locales`)
 - the first locale file, `<input_directory>/<base_locale><input_file_pattern>` (default `assets/locales/en.locale.json`)
 - the `String.tr` extension, and a barrel exporting the generated file
 
@@ -98,7 +98,7 @@ lib/src/
 Dependencies: `flutter_bloc`, `fpdart`, `get_it`, `injectable`, `logger`, `material_ui` (no workspace packages); dev `build_runner`, `injectable_generator`. Build_runner must run here before it runs in the app, so that `<App>UtilsPackageModule` exists.
 
 
-### `<app>_theme` (`packages.theme`)
+### `<app>_theme` (`foundation.theme`)
 
 No workspace dependencies (Flutter + `material_ui`). `<Base>` = package name without `_theme`:
 
@@ -209,7 +209,7 @@ retrofit_generator still emits `_setStreamType<Either<Failure, T>>` in `.g.dart`
 | `ApiFailure` | `core/network/failures/` | `Failure` with `statusCode` and the parsed `ErrorModel` |
 | `Dio`, `RetrofitLogger` | network package | see `<app>_network` above |
 | `DioLens.init` | `app/init_service.dart` | Added by `add-network-module` after `Bloc.observer`, with the DI navigator key and `themeMode: .system` |
-| call adapter | app, `core/network/adapters/app_call_adapter.dart` | class from `packages.network.call_adapter_name` (default `AppCallAdapter`); logs the error, returns the `Failure` as-is, wraps other errors, turns `DioException` into `ApiFailure` with the message from `ErrorModel` |
+| call adapter | app, `core/network/adapters/app_call_adapter.dart` | class from `foundation.network.call_adapter_name` (default `AppCallAdapter`); logs the error, returns the `Failure` as-is, wraps other errors, turns `DioException` into `ApiFailure` with the message from `ErrorModel` |
 | `<F>ApiPaths` | `features/<f>/data/constants/` | `static const <camelRepo> = '/api/<kebab-feature>/'` |
 
 The REST datasource imports the call adapter from `../../../../core/network/adapters/app_call_adapter.dart`, and `Failure` from the utils import.
