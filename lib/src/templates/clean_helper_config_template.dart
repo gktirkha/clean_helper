@@ -68,6 +68,16 @@ $monoRepoApps
       ## Same as utils.create.
       create: true
 
+    ## Adaptive light/dark design tokens (<Base>ThemeData, AdaptiveColor) and
+    ## <Base>Theme above MaterialApp; <Base> is the name without `_theme`.
+    theme:
+      ## Package name. Default: <app>_theme.
+      # name: my_app_theme
+      ## Barrel import. Default: package:<name>/<name>.dart.
+      # import: package:my_app_theme/my_app_theme.dart
+      ## Same as utils.create.
+      create: true
+
     ## Dio, NetworkConfig and the auth interceptor, created by
     ## add-network-module and init.
     network:

@@ -19,7 +19,7 @@ class CreatePackagesCommand extends Command<void> {
 
   @override
   String get description =>
-      'Create the utils, localization, router and (if configured) network '
+      'Create the utils, localization, router, theme and (if configured) network '
       'packages from clean-helper.packages, ignoring create:, and add them '
       'to workspace:.';
 

@@ -10,7 +10,13 @@ import 'read_package_config.dart';
 void loadPackageConfigs() {
   packageConfigsLoaded = true;
   packageCreateConfig = {
-    for (final key in const ['utils', 'localization', 'router', 'network'])
+    for (final key in const [
+      'utils',
+      'localization',
+      'router',
+      'theme',
+      'network',
+    ])
       key:
           readCleanHelperFields(['packages', key])['create']?.toLowerCase() !=
           'false',
@@ -19,6 +25,7 @@ void loadPackageConfigs() {
   networkPackageConfig = readPackageConfig('network');
   localizationPackageConfig = readPackageConfig('localization');
   routerPackageConfig = readPackageConfig('router');
+  themePackageConfig = readPackageConfig('theme');
 
   final network = readCleanHelperFields(['packages', 'network']);
   networkModuleNameConfig = network['module_name'];

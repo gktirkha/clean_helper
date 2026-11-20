@@ -1,6 +1,6 @@
 String featurePageTemplate(String feature, String className) =>
     '''
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 import '../../router/${feature}_navigation.dart';
 

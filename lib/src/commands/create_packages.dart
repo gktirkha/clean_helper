@@ -4,6 +4,7 @@ import '../functions/init/add_packages_workspace.dart';
 import '../functions/init/generate_clean_router_package.dart';
 import '../functions/init/generate_localization_package.dart';
 import '../functions/init/generate_network_package.dart';
+import '../functions/init/generate_theme_package.dart';
 import '../functions/init/generate_utils_package.dart';
 import '../functions/init/run_build_runner.dart';
 import '../functions/init/run_dart_format.dart';
@@ -21,6 +22,7 @@ import '../functions/shared/resolve_network_module_name.dart';
 import '../functions/shared/resolve_network_package.dart';
 import '../functions/shared/resolve_router_package.dart';
 import '../functions/shared/resolve_slang_settings.dart';
+import '../functions/shared/resolve_theme_package.dart';
 import '../functions/shared/resolve_utils_module_name.dart';
 import '../functions/shared/resolve_utils_package.dart';
 
@@ -28,7 +30,7 @@ import '../functions/shared/resolve_utils_package.dart';
 // current directory (typically the workspace root), and ensurePubspec()
 // would switch into a monorepo app first.
 
-/// Generates the utils, localization and router packages described by
+/// Generates the utils, localization, router and theme packages described by
 /// `clean-helper.packages` in `<dir>/<name>` — plus the network package when
 /// `packages.network` is configured — ignoring each `create` flag,
 /// and lists them under `workspace:` in `./pubspec.yaml`. [dir] defaults to
@@ -51,6 +53,7 @@ void createPackages({String? dir}) {
   final utils = resolveUtilsPackage();
   final localization = resolveLocalizationPackage();
   final router = resolveRouterPackage();
+  final theme = resolveThemePackage();
   final slang = resolveSlangSettings();
   // Optional: only when packages.network is configured.
   final network = networkPackageConfig == null ? null : resolveNetworkPackage();
@@ -67,9 +70,11 @@ void createPackages({String? dir}) {
   final createRouter = !exists(router.name);
   final createLocalization = !exists(localization.name);
   final createUtils = !exists(utils.name);
+  final createTheme = !exists(theme.name);
   final createNetwork = network != null && !exists(network.name);
 
   if (createRouter) generateCleanRouterPackage(router, parentDir: parentDir);
+  if (createTheme) generateThemePackage(theme, parentDir: parentDir);
   if (createLocalization) {
     generateLocalizationPackage(localization, slang, parentDir: parentDir);
   }
@@ -94,6 +99,7 @@ void createPackages({String? dir}) {
     if (createRouter) router.name,
     if (createLocalization) localization.name,
     if (createUtils) utils.name,
+    if (createTheme) theme.name,
     if (createNetwork) network.name,
   ];
   // Packages under parentDir, created now or by an earlier (possibly
@@ -104,6 +110,7 @@ void createPackages({String? dir}) {
     router,
     localization,
     utils,
+    theme,
     ?network,
   ].map((p) => p.name).where(present).toList();
 

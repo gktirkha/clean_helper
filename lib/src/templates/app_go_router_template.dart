@@ -11,7 +11,7 @@ String appGoRouterTemplate(
     '''
 import 'dart:async';
 
-${sortImports(["import '$routerImport';", "import 'package:flutter/material.dart';", "import 'package:go_router/go_router.dart';"])}
+${sortImports(["import '$routerImport';", "import 'package:material_ui/material_ui.dart';", "import 'package:go_router/go_router.dart';"])}
 
 import '../di/di_container.dart';
 import '../../features/home/router/home_routes.dart';

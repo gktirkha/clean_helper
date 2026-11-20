@@ -10,7 +10,7 @@ String featureRouterTemplate(
     '''
 import 'dart:async';
 
-${sortImports(["import '$routerImport';", "import 'package:flutter/material.dart';", "import 'package:go_router/go_router.dart';", "import 'package:injectable/injectable.dart';"])}
+${sortImports(["import '$routerImport';", "import 'package:material_ui/material_ui.dart';", "import 'package:go_router/go_router.dart';", "import 'package:injectable/injectable.dart';"])}
 
 import '../presentation/page_providers/${feature}_page_provider.dart';
 import '${feature}_routes.dart';
@@ -21,7 +21,8 @@ class ${className}Router implements ${routerPrefix}Base {
   List<RouteBase> get routes => [
     GoRoute(
       path: ${className}Routes.${camelCase(feature)},
-      builder: (context, state) => const ${className}PageProvider(),
+      pageBuilder: (context, state) =>
+          MaterialPage(key: state.pageKey, child: const ${className}PageProvider()),
     ),
   ];
 

@@ -12,7 +12,7 @@ String featureNavigationImplTemplate(
   final packageUtils = utilsImport.startsWith('package:');
 
   return '''
-${sortImports(["import 'package:flutter/material.dart';", "import 'package:go_router/go_router.dart';", "import 'package:injectable/injectable.dart';", if (packageUtils) "import '$utilsImport';"])}
+${sortImports(["import 'package:material_ui/material_ui.dart';", "import 'package:go_router/go_router.dart';", "import 'package:injectable/injectable.dart';", if (packageUtils) "import '$utilsImport';"])}
 
 ${sortImports(["import '../../features/$feature/router/${feature}_navigation.dart';", "import '../../features/$feature/router/${feature}_routes.dart';", if (!packageUtils) "import '$utilsImport';"])}
 

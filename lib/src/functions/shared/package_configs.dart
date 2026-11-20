@@ -39,6 +39,10 @@ bool networkAuthInterceptorConfig = true;
 /// Null means the default `<app>_localization` package.
 PackageConfig? localizationPackageConfig;
 
+/// `clean-helper.packages.theme`, set by [loadPackageConfigs].
+/// Null means the default `<app>_theme` package (see [resolveThemePackage]).
+PackageConfig? themePackageConfig;
+
 /// `clean-helper.packages.router`, set by [loadPackageConfigs].
 /// Null means the default `clean_router` package.
 PackageConfig? routerPackageConfig;

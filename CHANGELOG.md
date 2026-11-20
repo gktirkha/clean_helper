@@ -1,3 +1,11 @@
+## 2.1.0
+
+- **New theme package.** `init` (and `create-packages`) generate `packages/<app>_theme`, configured by `packages.theme` (`name`, `import`, `create`), with adaptive light/dark design tokens:
+  - `<Base>ThemeData`, `AdaptiveColor`, the `<Base>Theme` widget and its scope, `ThemeResolver` (system or in-app `ThemeMode`), and `<base>MaterialThemeData` for Material `ThemeData`. `<Base>` is the package name without `_theme`.
+  - The app gets `lib/core/theme/app_theme.dart` (`appTheme()`). `MainApp` wraps the app in `<Base>Theme` and passes `theme`, `darkTheme` and `themeMode` to `MaterialApp`.
+- **`material_ui` instead of `package:flutter/material.dart`** in every generated file, to avoid deprecated Material APIs. The app, router, utils and theme packages depend on `material_ui`.
+- Feature routes use `pageBuilder` with a `MaterialPage` (`key: state.pageKey`).
+
 ## 2.0.0
 
 ### Breaking: environment-aware DI

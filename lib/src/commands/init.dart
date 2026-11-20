@@ -10,6 +10,7 @@ import '../functions/init/generate_clean_router_package.dart';
 import '../functions/init/generate_core_files.dart';
 import '../functions/init/generate_flutter_gen_files.dart';
 import '../functions/init/generate_localization_package.dart';
+import '../functions/init/generate_theme_package.dart';
 import '../functions/init/generate_tools_files.dart';
 import '../functions/init/generate_utils_package.dart';
 import '../functions/init/install_dependencies.dart';
@@ -27,6 +28,7 @@ import '../functions/shared/resolve_localization_package.dart';
 import '../functions/shared/resolve_network_package.dart';
 import '../functions/shared/resolve_router_package.dart';
 import '../functions/shared/resolve_slang_settings.dart';
+import '../functions/shared/resolve_theme_package.dart';
 import '../functions/shared/resolve_utils_module_name.dart';
 import '../functions/shared/resolve_utils_package.dart';
 import '../functions/shared/write_package_analysis_options.dart';
@@ -45,8 +47,9 @@ Future<void> runInit({
   final utils = resolveUtilsPackage();
   final localization = resolveLocalizationPackage();
   final router = resolveRouterPackage();
+  final theme = resolveThemePackage();
   final slang = resolveSlangSettings();
-  final created = [router, localization, utils].where((p) => p.create);
+  final created = [router, localization, utils, theme].where((p) => p.create);
 
   stdout.writeln('Initializing architecture for: $packageName');
   stdout.writeln();
@@ -57,6 +60,7 @@ Future<void> runInit({
   createDirectories();
   generateFlutterGenFiles();
   if (router.create) generateCleanRouterPackage(router);
+  if (theme.create) generateThemePackage(theme);
   if (localization.create) generateLocalizationPackage(localization, slang);
   if (utils.create) {
     generateUtilsPackage(
@@ -66,7 +70,12 @@ Future<void> runInit({
     );
   }
   addPackagesWorkspace([for (final p in created) 'packages/${p.name}']);
-  generateCoreFiles(utils: utils, localization: localization, router: router);
+  generateCoreFiles(
+    utils: utils,
+    localization: localization,
+    router: router,
+    theme: theme,
+  );
   createFeatureStructure(
     'lib/features/home',
     'home',
@@ -74,13 +83,19 @@ Future<void> runInit({
     router,
     withDi: withDi,
   );
-  installDependencies([router.name, localization.name, utils.name]);
+  installDependencies([router.name, localization.name, utils.name, theme.name]);
   updateGitignore();
   addFlutterAssetsToPubSpec();
   if (withNetwork) addNetworkModule(runBuildRunnerAfter: false);
   // Every package under packages/, created now or earlier, shares the rules.
   writePackageAnalysisOptions([
-    for (final p in [router, localization, utils, resolveNetworkPackage()])
+    for (final p in [
+      router,
+      localization,
+      utils,
+      theme,
+      resolveNetworkPackage(),
+    ])
       'packages/${p.name}',
   ]);
   // After the network package, so tools/bootstrap.dart includes it.

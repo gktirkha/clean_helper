@@ -1,5 +1,5 @@
 String bootstrapDartTemplate() => '''
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 import 'init_service.dart';
 import 'main_app.dart';

@@ -10,6 +10,7 @@ dependencies:
   get_it:
   injectable:
   logger:
+  material_ui:
   $localizationPackageName:
 
 dev_dependencies:

@@ -94,11 +94,11 @@ fvm dart format lib bin
 fvm dart analyze                  # must print "No issues found!"
 ```
 
-End-to-end, in a scratch directory outside the repo, using Flutter 3.47.8 via fvm:
+End-to-end, in a scratch directory outside the repo, using Flutter 3.50.1 via fvm:
 
 ```bash
-fvm spawn 3.47.8 create --project-name demo --platforms android demo && cd demo
-fvm use 3.47.8 --force
+fvm spawn 3.50.1 create --project-name demo --platforms android demo && cd demo
+fvm use 3.50.1 --force
 fvm dart run /path/to/clean_helper/bin/clean_helper.dart init
 fvm dart run /path/to/clean_helper/bin/clean_helper.dart add-feature x
 fvm dart run /path/to/clean_helper/bin/clean_helper.dart add-repo x x --add-sample

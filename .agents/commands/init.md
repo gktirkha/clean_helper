@@ -13,11 +13,11 @@ Run once, in a project fresh from `flutter create`. The network package and home
 
 ## Sequence
 
-`ensurePubspec()` runs first. `resolveUtilsPackage()`, `resolveLocalizationPackage()` and `resolveRouterPackage()` then give each package's name, import and `create` flag (defaults: `<app>_utils`, `<app>_localization`, `clean_router`, all created), and `resolveSlangSettings()` the slang settings. The rest is in `overview.md` → "`init` sequence". In brief:
+`ensurePubspec()` runs first. `resolveUtilsPackage()`, `resolveLocalizationPackage()` and `resolveRouterPackage()` then give each package's name, import and `create` flag (defaults: `<app>_utils`, `<app>_localization`, `clean_router`, `<app>_theme`, all created), and `resolveSlangSettings()` the slang settings. The rest is in `overview.md` → "`init` sequence". In brief:
 
 1. `fvmUse()` (skipped in a monorepo app), `generateAnalysisOptions()`, `runFlutterPubGet()`
 2. `createDirectories()`, `generateFlutterGenFiles()`
-3. The packages with `create: true`: `generateCleanRouterPackage()`, `generateLocalizationPackage()`, `generateUtilsPackage()`, then `addPackagesWorkspace()` for those created — no `workspace:` key if none are
+3. The packages with `create: true`: `generateCleanRouterPackage()`, `generateThemePackage()`, `generateLocalizationPackage()`, `generateUtilsPackage()`, then `addPackagesWorkspace()` for those created — no `workspace:` key if none are
 4. The app: `generateCoreFiles()`, `createFeatureStructure()` for `home` (with `withDi`)
 5. `installDependencies()`, `updateGitignore()`, `addFlutterAssetsToPubSpec()`
 6. `addNetworkModule(runBuildRunnerAfter: false)` unless `--skip-network`; then `writePackageAnalysisOptions` for every package under `packages/` (created now or earlier); `generateToolsFiles()` with `--tools` comes after it (it writes nothing in a monorepo app)
@@ -39,13 +39,15 @@ See `architecture.md` for the full tree. Key points:
 
 ## Dependencies
 
-- **App runtime:** `flutter_bloc`, `go_router`, `get_it`, `injectable`, `freezed_annotation`, `fpdart`, `package_info_plus`, `flutter_svg`, `json_annotation`, `logger`, `flutter_localizations` (SDK)
+- **App runtime:** `flutter_bloc`, `go_router`, `get_it`, `injectable`, `freezed_annotation`, `fpdart`, `package_info_plus`, `flutter_svg`, `json_annotation`, `logger`, `material_ui`, `flutter_localizations` (SDK)
 - **App dev:** `build_runner`, `injectable_generator`, `freezed`, `flutter_gen_runner`, `json_serializable`
-- **App workspace packages:** the router, localization and utils packages — added with `flutter pub add` and no `--path`; pub resolves them from the workspace (the network package comes from `addNetworkModule`)
-- **Utils package:** `flutter_bloc`, `fpdart`, `get_it`, `injectable`, `logger`, `<localization>`; dev `build_runner`, `injectable_generator`
+- **App workspace packages:** the router, localization, utils and theme packages — added with `flutter pub add` and no `--path`; pub resolves them from the workspace (the network package comes from `addNetworkModule`)
+- **Utils package:** `flutter_bloc`, `fpdart`, `get_it`, `injectable`, `logger`, `material_ui`, `<localization>`; dev `build_runner`, `injectable_generator`
 - **Localization package:** `slang`, `slang_flutter`
+- **Router package:** `go_router`, `material_ui`
+- **Theme package:** `material_ui`
 
 ## Notes
 
-- `init` reads `clean-helper.packages.{utils,localization,router}` (and `network` unless `--skip-network`): names, barrel imports (the barrel is written at the import's path), `create`, `utils.module_name` (the `@module` class) and the slang keys under `localization`, which become `slang.yaml` and set the generated file and `translate_var` used by the barrel and `String.tr`.
+- `init` reads `clean-helper.packages.{utils,localization,router,theme}` (and `network` unless `--skip-network`): names, barrel imports (the barrel is written at the import's path), `create`, `utils.module_name` (the `@module` class) and the slang keys under `localization`, which become `slang.yaml` and set the generated file and `translate_var` used by the barrel and `String.tr`.
 - Workspace packages are always added with `flutter pub add <name>` (no `--path`), created or not.

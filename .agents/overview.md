@@ -31,7 +31,7 @@ Read next:
 | `generate-localizations` | `runGenerateLocalizationsCommand()` | Run slang in `packages/<localization>` |
 | `generate-tools [--overwrite]` | `generateTools(overwrite:)` | `tools/` scripts |
 | `list-mono-repo-apps` | `listMonoRepoApps()` | Print monorepo apps and resolved config |
-| `create-packages [--dir]` | `createPackages(dir:)` | Create the configured utils / localization / router packages (+ network when `packages.network` is configured) in `<dir>` (default `packages`), ignoring `create` |
+| `create-packages [--dir]` | `createPackages(dir:)` | Create the configured utils / localization / router / theme packages (+ network when `packages.network` is configured) in `<dir>` (default `packages`), ignoring `create` |
 | `add-vscode-extensions` | `addVscodeExtensions()` | Add recommended extensions to `.vscode/extensions.json` (merges) |
 | `add-config` | `addConfig()` | Append the commented `clean-helper:` template to the current pubspec |
 | `add-melos-config` | `addMelosConfig()` | melos dev dependency + `melos:` hooks and scripts in the root pubspec |
@@ -58,6 +58,7 @@ Global flags, declared on `CleanHelperRunner` and handled in its `runCommand` ov
 | `packages.overwrite_analysis_options` (or `clean-helper.overwrite_analysis_options`) | `loadPackageConfigs()` | `overwriteAnalysisOptionsConfig` |
 | `packages.use_root_analysis` (or `clean-helper.use_root_analysis`) | `loadPackageConfigs()` | `useRootAnalysisConfig` |
 | `packages.router.{name,import,create}` | `loadPackageConfigs()` | `routerPackageConfig` |
+| `packages.theme.{name,import,create}` | `loadPackageConfigs()` | `themePackageConfig` |
 | `packages.network.{name,import,create}` | `loadPackageConfigs()` | `networkPackageConfig` |
 | `packages.network.module_name` / `.call_adapter_name` / `.auth_interceptor` | `loadPackageConfigs()` | `networkModuleNameConfig` / `callAdapterNameConfig` / `networkAuthInterceptorConfig` |
 
@@ -88,12 +89,12 @@ bin/clean_helper.dart → CleanHelperRunner.run(args)
 
 ## `init` sequence
 
-1. `ensurePubspec()`; `resolveUtilsPackage()`, `resolveLocalizationPackage()`, `resolveRouterPackage()`, `resolveSlangSettings()`
+1. `ensurePubspec()`; `resolveUtilsPackage()`, `resolveLocalizationPackage()`, `resolveRouterPackage()`, `resolveThemePackage()`, `resolveSlangSettings()`
 2. `fvmUse()` — skipped in a monorepo app
 3. `generateAnalysisOptions()`, `runFlutterPubGet()`
 4. `createDirectories()` — empty app folders, including the home feature's
 5. `generateFlutterGenFiles()` — `build.yaml`, `assets/colors/colors.xml`
-6. `generateCleanRouterPackage()`, `generateLocalizationPackage()`, `generateUtilsPackage()` — each only when its `create` is true
+6. `generateCleanRouterPackage()`, `generateThemePackage()`, `generateLocalizationPackage()`, `generateUtilsPackage()` — each only when its `create` is true
 7. `addPackagesWorkspace(created)` — lists the created packages under `workspace:`; adds nothing when none are created
 8. `generateCoreFiles()` — main, bootstrap, init service, app, DI (environment-aware, with `@test` modules), router
 9. `createFeatureStructure('lib/features/home', 'home', …)`

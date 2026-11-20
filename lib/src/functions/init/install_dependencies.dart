@@ -20,6 +20,7 @@ void installDependencies(List<String> workspacePackages) {
     'flutter_svg',
     'json_annotation',
     'logger',
+    'material_ui',
   ];
 
   final devDeps = [

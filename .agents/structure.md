@@ -61,13 +61,15 @@ clean_helper/
 | `sort_imports.dart` | `sortImports(imports)` | Join import directives alphabetically |
 | `ensure_pubspec.dart` | `ensurePubspec()` | First call of every command: config → monorepo → version check |
 | `load_package_configs.dart` | `loadPackageConfigs()` | Fill the config globals from the starting-directory pubspec |
-| `package_configs.dart` | `PackageConfig` typedef `(name, import, create)`; `packageConfigsLoaded`, `packageCreateConfig`, `overwriteAnalysisOptionsConfig`, `networkModuleNameConfig`, `networkAuthInterceptorConfig`, `useRootAnalysisConfig`, `monoRepoAppPath`, `utilsPackageConfig`, `networkPackageConfig`, `localizationPackageConfig`, `routerPackageConfig`, `utilsModuleNameConfig`, `callAdapterNameConfig`, `slangSettingsConfig` | Config globals |
+| `package_configs.dart` | `PackageConfig` typedef `(name, import, create)`; `packageConfigsLoaded`, `packageCreateConfig`, `overwriteAnalysisOptionsConfig`, `networkModuleNameConfig`, `networkAuthInterceptorConfig`, `useRootAnalysisConfig`, `monoRepoAppPath`, `utilsPackageConfig`, `networkPackageConfig`, `localizationPackageConfig`, `routerPackageConfig`, `utilsModuleNameConfig`, `callAdapterNameConfig`, `themePackageConfig`, `slangSettingsConfig` | Config globals |
 | `read_clean_helper_fields.dart` | `readCleanHelperFields(path)` | Scalar children of `clean-helper.<path…>` |
 | `read_package_config.dart` | `readPackageConfig(key)` | `packages.<key>` → `PackageConfig?` |
 | `resolve_utils_package.dart` | `resolveUtilsPackage()` | Configured utils package or `<app>_utils` |
 | `resolve_localization_package.dart` | `resolveLocalizationPackage()` | Configured localization package or `<app>_localization` |
 | `resolve_router_package.dart` | `resolveRouterPackage()` | Configured router package or `clean_router` |
 | `resolve_slang_settings.dart` | `resolveSlangSettings()` | slang defaults + `slangSettingsConfig` |
+| `resolve_theme_package.dart` | `resolveThemePackage()` | Configured theme package or `<app>_theme` |
+| `theme_base.dart` | `themeBase(theme)` | Theme package name without `_theme` — the `<Base>` of its classes and files |
 | `resolve_network_package.dart` | `resolveNetworkPackage()` | Configured network package or `<app>_network` |
 | `resolve_network_module_name.dart` | `resolveNetworkModuleName(network)` | `module_name` ?? `<NetworkPascal>Module` |
 | `resolve_utils_module_name.dart` | `resolveUtilsModuleName(utils)` | `module_name` ?? `<UtilsPascal>Module` |
@@ -104,11 +106,12 @@ clean_helper/
 | `generate_clean_router_package.dart` | `generateCleanRouterPackage(router, {parentDir})` — `lib/src/<name>_base.dart`, `<name>_refresh.dart` |
 | `generate_localization_package.dart` | `generateLocalizationPackage(localization, slangSettings, {parentDir})` |
 | `generate_utils_package.dart` | `generateUtilsPackage(utils, localization, {moduleName, parentDir})` |
+| `generate_theme_package.dart` | `generateThemePackage(theme, {parentDir})` |
 | `generate_network_package.dart` | `generateNetworkPackage(network, {moduleName, auth, parentDir})` |
 | `patch_package_pubspec.dart` | `patchPackagePubspec(packagePath, pubspecTail)` |
 | `add_packages_workspace.dart` | `addPackagesWorkspace(packagePaths)` — no-op for an empty list; then `warnStaleWorkspaceEntries` |
 | `warn_stale_workspace_entries.dart` | `warnStaleWorkspaceEntries(pubspec)` — warns about `workspace:` paths without a `pubspec.yaml` |
-| `generate_core_files.dart` | `generateCoreFiles({utils, localization, router})` — app skeleton, `<app>_router*.dart` |
+| `generate_core_files.dart` | `generateCoreFiles({utils, localization, router, theme})` — app skeleton, `<app>_router*.dart` |
 | `generate_tools_files.dart` | `generateToolsFiles({overwrite})` — no-op in a monorepo app |
 | `install_dependencies.dart` | `installDependencies(workspacePackages)` |
 | `update_gitignore.dart` | `updateGitignore()` |
@@ -155,7 +158,7 @@ Each file is `<name>_template.dart` → `<name>Template(...)`.
 
 | Area | Templates |
 |---|---|
-| App skeleton | `main_dart`, `main_app_dart`, `bootstrap_dart`, `init_service`, `di_container`, `di_initializer`, `app_module`, `core_module`, `test_environment_core_module`, `app_go_router`, `app_go_router_redirect`, `app_router_module_build` (via `buildRouterModule`) |
+| App skeleton | `main_dart`, `main_app_dart`, `bootstrap_dart`, `init_service`, `di_container`, `di_initializer`, `app_module`, `core_module`, `test_environment_core_module`, `app_theme`, `app_go_router`, `app_go_router_redirect`, `app_router_module_build` (via `buildRouterModule`) |
 | Feature | `feature_routes`, `feature_navigation`, `feature_navigation_impl`, `feature_router`, `feature_page`, `feature_page_provider`, `feature_bloc`, `feature_event`, `feature_state`, `feature_module` |
 | Repo | `domain_repo`, `data_source_base`, `data_repo`, `rest_data_source`, `feature_api_paths`, `request_model`, `response_model`, `get_use_case`, `post_use_case`, `get_use_case_params`, `post_use_case_params` |
 | Entity | `entity`, `model` |
@@ -163,6 +166,7 @@ Each file is `<name>_template.dart` → `<name>Template(...)`.
 | App network files | `core_api_paths`, `error_model`, `api_failure`, `app_call_adapter`, `network_config_module`, `test_environment_network_config_module`, `app_auth_interceptor`, `dio_lens_init` |
 | Utils package | `utils_lib_export`, `utils_pubspec_tail`, `context_utils`, `di_container` (shared with the app), `utils_module`, `micro_package_di_initializer` (shared with the network package), `app_logger`, `app_bloc_observer`, `debounce`, `failure`, `type_definitions`, `get_current_function_name`, `list_to_model_list`, `safe_cast`, `safe_execute`, `safe_execute_task`, `use_case_base` |
 | Localization package | `localization_lib_export`, `localization_pubspec_tail`, `localization_slang_yaml`, `string_extension`, `en_locale` |
+| Theme package | `theme_lib_export`, `theme_pubspec_tail`, `theme_adaptive_color`, `theme_resolver`, `theme_data`, `theme_scope`, `theme_widget`, `theme_material_theme` |
 | clean_router package | `clean_router_base`, `clean_router_refresh`, `clean_router_lib_export`, `clean_router_pubspec_tail` |
 | Project config | `analysis_options`, `analysis_options_include`, `build_yaml`, `colors_xml`, `gitignore` |
 | Tools | `tools_command_runner`, `tools_clean`, `tools_bootstrap`, `tools_write_key_properties`, `tools_build_android`, `tools_build_config` |
@@ -194,7 +198,10 @@ Templates that take configurable input:
 | `feature_router` | `routerImport`, `routerPrefix` |
 | `app_go_router_redirect` | `appName`, `routerPrefix` |
 | `app_router_module_build` | `appName`, `features` |
-| `main_app_dart` | `appName`, `localizationImport` |
+| `main_app_dart` | `appName`, `localizationImport`, `themeImport`, `themeBase` |
+| `app_theme` | `themeImport`, `base` |
+| `theme_lib_export` | `base`, barrel `prefix` |
+| `theme_data`, `theme_scope`, `theme_widget`, `theme_material_theme` | `base` (theme package name without `_theme`) |
 | `clean_router_base`, `clean_router_refresh` | class `prefix` (`<RouterPascal>`) |
 | `utils_lib_export` | barrel `prefix` |
 | `clean_router_lib_export` | package `name` (file names), barrel `prefix` |

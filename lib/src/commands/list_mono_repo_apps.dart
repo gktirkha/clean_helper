@@ -62,6 +62,9 @@ void listMonoRepoApps() {
     '  router:        ${describe('router', routerPackageConfig, 'clean_router (default)')}',
   );
   stdout.writeln(
+    '  theme:         ${describe('theme', themePackageConfig, '<app>_theme (default)')}',
+  );
+  stdout.writeln(
     '  network:       ${describe('network', networkPackageConfig, '<app>_network (default)')}',
   );
   stdout.writeln(

@@ -28,7 +28,7 @@ Hard constraints for changing clean_helper. `conventions.md` explains the reason
 
 - Every path is a plain relative string, relative to the **target project's** current directory. Don't use `path.join` or absolute paths.
 - Inside clean_helper, import shared helpers as `../shared/<file>.dart` and templates as `../../templates/<file>.dart`. Templates may import from `../functions/shared/` (`camelCase`, `sortImports`, …). No circular imports.
-- **Generated code** uses relative imports for files inside the app, and `package:` imports for other packages.
+- **Generated code** uses relative imports for files inside the app, and `package:` imports for other packages. Import `package:material_ui/material_ui.dart`, never `package:flutter/material.dart`.
 - Generated imports must satisfy `directives_ordering`. Build any import list containing a runtime value — a configured package or a user-derived name — with `sortImports([...])`, one call per section (`dart:`, then `package:`, then relative). A configured import may be either a package URI or a relative path, so check `startsWith('package:')` and put it in the matching section.
 
 ## Naming in generated code
@@ -41,7 +41,7 @@ Hard constraints for changing clean_helper. `conventions.md` explains the reason
 - Never add monorepo detection anywhere except `shared/resolve_mono_repo_project.dart`.
 - Anything read from the **root** pubspec must be read in `loadPackageConfigs()` — which `ensurePubspec()` calls before the directory change — and stored in a shared global in `shared/package_configs.dart`. Commands read the global; they never re-read the root pubspec.
 - New `clean-helper:` keys are parsed with `readCleanHelperFields(path)`. A missing key means the default behaviour.
-- Get workspace package names and imports from `resolveUtilsPackage()`, `resolveLocalizationPackage()`, `resolveRouterPackage()` and `resolveNetworkPackage()`. Never build `<app>_utils`, `<app>_localization`, `<app>_network` or `clean_router` by hand, and never hard-code `package:clean_router/…` in a template — take the import as a parameter.
+- Get workspace package names and imports from `resolveUtilsPackage()`, `resolveLocalizationPackage()`, `resolveRouterPackage()`, `resolveThemePackage()` and `resolveNetworkPackage()`. Never build `<app>_utils`, `<app>_localization`, `<app>_theme`, `<app>_network` or `clean_router` by hand, and never hard-code `package:clean_router/…` in a template — take the import as a parameter.
 - `loadPackageConfigs()` runs once per process (`packageConfigsLoaded`). Don't call it again after the monorepo `chdir`.
 - **Every config key is in the `add-config` template and the README sample.** Whenever you add, rename or remove a `clean-helper:` key, update `templates/clean_helper_config_template.dart` and the README's Sample configuration section in the same change. In both, every key gets a `##` comment above it saying what it does and its default. In the template, keys with a fixed default are active with that value, and app-dependent keys (names, imports, class names) are commented out with a single `#`. Never use inline comments, and keep every comment indented inside the block.
 

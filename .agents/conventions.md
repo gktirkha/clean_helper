@@ -89,7 +89,7 @@ The runner and `ensurePubspec()` fill shared globals before any command logic ru
 | `packageConfigsLoaded` (`package_configs.dart`) | `loadPackageConfigs()` | config already loaded — `ensurePubspec()` loads it only once per process, so nested commands (`init` → `add-network-module`) keep the root config after the monorepo `chdir` |
 | `packageCreateConfig` | `loadPackageConfigs()` | `packages.<key>.create` per key, read even without `name`/`import`; the `resolve*Package()` defaults use it |
 | `utilsPackageConfig` | `loadPackageConfigs()` | `packages.utils` as a `PackageConfig` `(name, import, create)`, or null |
-| `localizationPackageConfig`, `routerPackageConfig` | `loadPackageConfigs()` | `packages.localization` / `packages.router`, or null |
+| `localizationPackageConfig`, `routerPackageConfig`, `themePackageConfig` | `loadPackageConfigs()` | `packages.localization` / `packages.router` / `packages.theme`, or null |
 | `networkPackageConfig` | `loadPackageConfigs()` | `packages.network`, or null |
 | `networkModuleNameConfig`, `networkAuthInterceptorConfig` | `loadPackageConfigs()` | `packages.network.module_name` (or null) / `.auth_interceptor` (true unless `false`) |
 | `utilsModuleNameConfig` | `loadPackageConfigs()` | `packages.utils.module_name`, or null |
@@ -109,7 +109,7 @@ Resolution helpers turn config into decisions, so commands don't repeat the logi
 
 | Helper | Decides |
 |---|---|
-| `resolveUtilsPackage()`, `resolveLocalizationPackage()`, `resolveRouterPackage()`, `resolveNetworkPackage()` | the configured package, or the default `<app>_utils` / `<app>_localization` / `clean_router` / `<app>_network` with `create: true` — commands never build default names themselves |
+| `resolveUtilsPackage()`, `resolveLocalizationPackage()`, `resolveRouterPackage()`, `resolveThemePackage()`, `resolveNetworkPackage()` | the configured package, or the default `<app>_utils` / `<app>_localization` / `clean_router` / `<app>_theme` / `<app>_network` with `create: true` — commands never build default names themselves |
 | `resolveSlangSettings()` | the slang defaults overlaid with `slangSettingsConfig` |
 | `analysisOptionsInclude(dir)` | the `include:` path for the `analysis_options.yaml` at `dir` (`''` = the current project), or null for the full rules — `'../' × (depth(dir) + depth(monoRepoAppPath) with use_root_analysis)` |
 | `resolveNetworkModuleName(network)` | `module_name` ?? `<NetworkPascal>Module` |
