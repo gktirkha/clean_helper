@@ -280,13 +280,14 @@ lib/
     │       └── user_profile_page.dart           pure UI, takes navigation as a parameter
     └── router/
         ├── user_profile_routes.dart             route path constants
-        ├── user_profile_navigation.dart         goToUserProfile([BuildContext? context])
+        ├── user_profile_navigation.dart         where the feature navigates to: goBack([BuildContext? context])
         └── user_profile_router.dart             @lazySingleton, implements <RouterPascal>Base
 ```
 
 **Notes**
 
 - The router is registered in `lib/app/router/<app>_router_module.dart`. That file is tool-owned: `add-feature`, `remove-feature` and `regenerate-router` rewrite it, with features in alphabetical order.
+- A feature's navigation interface only lists where that feature can go (`goBack()` to start). To open another feature, add a method such as `goToCart()` to it and implement it in `lib/app/navigation/`, without importing the other feature.
 - Navigation takes an optional context. Without one, it falls back to `ContextUtils.currentContext` from the utils package, and logs an error if that's unavailable.
 - The bloc is `@injectable`, so each page gets a new instance, because `BlocProvider` closes the bloc when the page is disposed.
 

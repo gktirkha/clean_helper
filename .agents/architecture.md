@@ -158,7 +158,7 @@ lib/features/<f>/
 │   └── pages/<f>_page.dart                  pure UI, receives <F>Navigation
 ├── router/
 │   ├── <f>_routes.dart                      sealed class <F>Routes { static const <camel> = '/<kebab>'; }
-│   ├── <f>_navigation.dart                  abstract class <F>Navigation { goTo<F>([context]) }
+│   ├── <f>_navigation.dart                  abstract class <F>Navigation { goBack([context]) } — outgoing navigation only
 │   └── <f>_router.dart                      @lazySingleton, implements <RouterPascal>Base
 ├── domain/                                  add-repo / add-entity
 │   ├── entities/<r>_entity.dart
@@ -172,7 +172,7 @@ lib/features/<f>/
     └── repositories/<r>_repository_impl.dart
 ```
 
-`lib/app/navigation/<f>_navigation_impl.dart` is `@LazySingleton(as: <F>Navigation)`. `goTo<F>([BuildContext? context])` uses the given context or falls back to `ContextUtils.currentContext` (the root navigator's), logs through `AppLogger.error` and returns if neither exists, then calls `.go(<F>Routes.<camel>)`.
+`lib/app/navigation/<f>_navigation_impl.dart` is `@LazySingleton(as: <F>Navigation)`. `goBack([BuildContext? context])` uses the given context or falls back to `ContextUtils.currentContext` (the root navigator's), logs through `AppLogger.error` and returns if neither exists, then pops if it can. The interface only holds the feature's **outgoing** navigation: there is deliberately no `goTo<F>()` on a feature's own interface, because other features would have to import it to call it. To open `cart` from `home`, the user adds `goToCart()` to `HomeNavigation` and implements it in `home_navigation_impl.dart` with `CartRoutes`.
 
 ---
 

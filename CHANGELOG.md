@@ -1,3 +1,8 @@
+## 3.1.0
+
+- **Feature navigation is outgoing only.** A new feature's `<F>Navigation` has `goBack()` instead of `goTo<F>()`, so no feature has to import another to open it. To open `cart` from `home`, add `goToCart()` to `HomeNavigation` and implement it in `lib/app/navigation/home_navigation_impl.dart`. Existing features are unchanged.
+- The AI context (`add-agent-context`) describes the navigation interface as outgoing only.
+
 ## 3.0.1
 
 AI context (`add-agent-context`) only; no change to generated code.

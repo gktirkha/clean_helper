@@ -29,6 +29,8 @@ const agentCommandDocs = <AgentCommandDoc>[
 - `--di` also generates `di/<f>_module.dart`, an injectable `@module`.
 - Registers the router in `lib/app/router/<app>_router_module.dart`
   (tool-owned), then runs `dart format` and build_runner.
+- `<F>Navigation` lists where the feature can go (`goBack()` to start); it
+  has no `goTo<F>()`, because nothing else should import it.
 - Next: build the UI in the page, events/states in the bloc, and add
   navigation methods to `<F>Navigation` and its impl.
 - To open another feature, add a method to this feature's `<F>Navigation`
