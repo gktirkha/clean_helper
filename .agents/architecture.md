@@ -140,10 +140,10 @@ A recommendation for users with several apps. clean_helper does **not** create o
 |---|---|---|---|
 | `foundation/` | 1 | Primitives only: no other `<app>_*` / workspace packages | `food_theme`, `food_utils`, `food_network`, `food_localization`, `food_router` |
 | `core/` | 2 | `foundation/` only, no siblings in `core/` | `food_ui` (theme + l10n), `food_data` (network + utils) |
-| `features/` | 3 | Anything below, plus other features | `feature_menu`, `feature_cart`, `feature_auth` |
+| `modules/` | 3 | Anything below, plus other modules | `menu_module`, `cart_module`, `auth_module` |
 | `apps/` | 4 | Anything below; no app → app | `consumer` (later `restaurant`, `rider`, …) |
 
-Dependencies only point down the levels. The generated foundation packages already follow level 1: none depends on another workspace package.
+Dependencies only point down the levels; modules may also depend on each other. The layer is called `modules/`, not `features/`, so it isn't confused with an app's `lib/features/`, which must not depend on each other. The generated foundation packages already follow level 1: none depends on another workspace package.
 
 ---
 

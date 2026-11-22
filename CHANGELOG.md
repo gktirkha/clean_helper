@@ -1,3 +1,12 @@
+## 3.0.1
+
+AI context (`add-agent-context`) only; no change to generated code.
+
+- **App features are independent.** New rules: a feature never imports another feature, and can be removed without changing the others.
+- **Cross-feature navigation** goes through the feature's own navigation interface. For example, `home` gets `goToCart()` in `HomeNavigation`, implemented in `lib/app/navigation/`.
+- **Shared code** moves to `lib/core/` or a package instead of being imported from another feature.
+- **Recommended layering:** the root-level `features/` layer is now `modules/`, so it isn't confused with an app's features. Modules may depend on each other.
+
 ## 3.0.0
 
 ### Breaking

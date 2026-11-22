@@ -30,7 +30,11 @@ const agentCommandDocs = <AgentCommandDoc>[
 - Registers the router in `lib/app/router/<app>_router_module.dart`
   (tool-owned), then runs `dart format` and build_runner.
 - Next: build the UI in the page, events/states in the bloc, and add
-  navigation methods to `<F>Navigation` and its impl.''',
+  navigation methods to `<F>Navigation` and its impl.
+- To open another feature, add a method to this feature's `<F>Navigation`
+  (e.g. `goToCart()`) and implement it in
+  `lib/app/navigation/<f>_navigation_impl.dart`. Never import the other
+  feature.''',
   ),
   (
     name: 'add-repo',
@@ -91,7 +95,10 @@ const agentCommandDocs = <AgentCommandDoc>[
     details: '''
 - Removes the router from `<app>_router_module.dart`, deletes
   `lib/features/<f>/` and its navigation impl, then formats and runs
-  build_runner.''',
+  build_runner.
+- Afterwards, fix the other features' navigation impls in
+  `lib/app/navigation/` that pointed at it. Nothing under `lib/features/`
+  should need changing; if it does, a feature imported another one.''',
   ),
   (
     name: 'regenerate-router',

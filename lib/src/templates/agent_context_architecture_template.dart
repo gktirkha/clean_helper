@@ -52,6 +52,10 @@ lib/features/<f>/
 Data flows `page → bloc → use case → repository → datasource`, as
 `TaskEither<Failure, T>`.
 
+Features don't import each other. Cross-feature navigation is a method on the
+feature's own `<F>Navigation`, implemented in `lib/app/navigation/`, so any
+feature can be removed without changing the others (see `rules.md`).
+
 ## Foundation packages
 
 Workspace packages in $where. None depends on another.
@@ -78,13 +82,15 @@ start DI with `Environment.test` (import injectable with
 ## Recommended monorepo layering
 
 clean-helper only generates the foundation packages and the apps; this is
-the suggested way to grow beyond them. Dependencies only point down.
+the suggested way to grow beyond them. Dependencies only point down, except
+that modules may depend on each other. Modules are workspace packages, not the
+features inside an app, which must stay independent.
 
 | Layer | Level | May depend on | Examples |
 |---|---|---|---|
 | `foundation/` | 1 | Primitives only, no other workspace packages | theme, utils, network, localization, router |
 | `core/` | 2 | `foundation/` only, no siblings | ui (theme + l10n), data (network + utils) |
-| `features/` | 3 | Anything below, plus other features | menu, cart, auth |
+| `modules/` | 3 | Anything below, plus other modules | menu, cart, auth |
 | `apps/` | 4 | Anything below; no app → app | consumer, restaurant, rider |
 ''';
 }

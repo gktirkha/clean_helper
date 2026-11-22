@@ -9,6 +9,16 @@ String agentContextRulesTemplate(AgentContextInfo info) {
 - **Monorepo:** run clean-helper from the workspace root, with
   `--scope=<app>` before the command (`clean-helper --scope=${info.apps.first.split('/').last} add-feature orders`).
   The root must not have a `lib/` folder.''';
+  final appFeatures = info.apps.isEmpty
+      ? '`lib/features/`'
+      : '`<app>/lib/features/` (e.g. `${info.apps.first}/lib/features/`)';
+  final packageFeatures = info.apps.isEmpty
+      ? ''
+      : '''
+
+- **Modules are different.** Workspace packages in the root `modules/`
+  folder (see the layering in `architecture.md`) may depend on each other.
+  These rules only apply to features inside an app.''';
   return '''
 # Rules for AI agents
 
@@ -21,6 +31,26 @@ String agentContextRulesTemplate(AgentContextInfo info) {
   folders.$scope
 - Check how config resolves with `clean-helper list-mono-repo-apps` before
   generating code.
+
+## App features are independent
+
+App features live in $appFeatures. Each one must be deletable with
+`clean-helper remove-feature` without touching any other feature.
+
+- **A feature never imports another feature.** Nothing under
+  `lib/features/<a>/` imports from `lib/features/<b>/`: not its routes,
+  navigation, bloc, entities, models or use cases.
+- **Navigate through your own navigation interface.** If `home` needs to open
+  `cart`, add `goToCart()` to `HomeNavigation` (`features/home/router/`) and
+  implement it in `lib/app/navigation/home_navigation_impl.dart`, which may
+  use `CartRoutes`. Never import `CartNavigation` or `CartRoutes` in `home`.
+- **Only `lib/app/` knows every feature** (navigation impls, the router
+  module). When a feature is removed, only `lib/app/navigation/` impls that
+  pointed at it need changing; no file under `lib/features/` should.
+- **Share through `lib/core/` or a package.** Code two features need
+  (entities, models, widgets, use cases) moves to `lib/core/` or a
+  foundation package; don't reach into the other feature for it.
+- A feature's DI module only registers that feature's classes.$packageFeatures
 
 ## Never edit
 
