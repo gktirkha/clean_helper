@@ -15,9 +15,9 @@ clean-helper init -a
 
 - **Doesn't call `ensurePubspec()`**: the context describes the whole project, so it belongs in the current directory (the workspace root in a monorepo), and `ensurePubspec()` would switch into an app first. It checks for `pubspec.yaml` itself, then calls `loadPackageConfigs()`.
 - `generateAgentContext()` (`functions/agent_context/`) writes, relative to the current directory:
-  - `.agents/README.md`, `.agents/rules.md`, `.agents/architecture.md` and `.agents/commands/<command>.md` (one per entry in `agentCommandDocs`). Tool-owned: `overwriteFile` rewrites them every run.
+  - `.agents/README.md`, `.agents/rules.md`, `.agents/architecture.md` and `.agents/commands/<command>.md` (one per entry in `agentCommandDocs`). Written only when missing (`writeFile`) unless `--overwrite`; `README.md` is always rewritten.
   - `AGENTS.md` and `CLAUDE.md` via `writeAgentPointer()`: created from `agentsMdTemplate()` if missing; if present and not mentioning `.agents/`, `agentsMdPointerLine` is appended; otherwise left alone.
-- `--overwrite` → `addAgentContext(overwrite: true)` → `generateAgentContext(overwrite: true)`: deletes `.agents/` first (listing each removed file), so project rule files and stale command docs go too; `writeAgentPointer(path, overwrite: true)` replaces `AGENTS.md` / `CLAUDE.md` with `agentsMdTemplate()`. `init -a` never overwrites.
+- `--overwrite` → `generateAgentContext(overwrite: true)`: `rules.md`, `architecture.md` and the command docs use `overwriteFile` instead of `writeFile` (write-if-missing). Nothing is ever deleted; project rule files and `AGENTS.md` / `CLAUDE.md` content are never replaced. `README.md` always uses `overwriteFile`, because it indexes the project rule files.
 - `resolveAgentContextInfo()` builds the `AgentContextInfo` record the templates take: project name, `readMonoRepoApps()`, `resolvePackagesDir()`, package names, `resolveCallAdapterName()` and `networkAuthInterceptorConfig`. In a monorepo, packages without a configured `name` show as `<app>_<kind>`, since each app has its own default.
 - `init --agent-context` runs it last. In a monorepo app (`monoRepoAppPath` set) it changes `Directory.current` to the workspace root (`..` per path segment), generates, and changes back.
 

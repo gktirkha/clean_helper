@@ -472,13 +472,13 @@ The recommended extensions:
 Writes context for AI coding tools (Claude Code, Codex, Cursor, …) to the current directory, the workspace root in a monorepo. `init --agent-context` does the same at the end of `init`.
 
 ```bash
-clean-helper add-agent-context       # refresh; keeps your own files
-clean-helper add-agent-context -o    # overwrite everything
+clean-helper add-agent-context       # write missing files only
+clean-helper add-agent-context -o    # also rewrite the generated files
 ```
 
 | Option | Short | Effect |
 |---|---|---|
-| `--overwrite` | `-o` | Delete `.agents/` first, including your own rule files, and replace `AGENTS.md` / `CLAUDE.md` with the template |
+| `--overwrite` | `-o` | Rewrite the generated `.agents/` files that already exist. Your own files are never touched or deleted. |
 
 | File | Contents |
 |---|---|
@@ -488,9 +488,9 @@ clean-helper add-agent-context -o    # overwrite everything
 | `.agents/commands/<command>.md` | When and how to run each clean-helper command |
 | `AGENTS.md`, `CLAUDE.md` | A pointer to `.agents/` |
 
-- The `.agents/` files are owned by clean-helper and rewritten on every run. Rerun after changing the `clean-helper:` config instead of editing them; put your own rules in other files.
+- Generated files that already exist are kept, so a rerun doesn't undo your edits. Run with `--overwrite` after upgrading clean-helper or changing the `clean-helper:` config to refresh them. `README.md` is the exception: it's rewritten every run, because it lists your own rule files.
+- Any other `*.md` file in `.agents/` is yours. clean-helper never changes or deletes it.
 - `AGENTS.md` and `CLAUDE.md` are created if missing. An existing one gets the pointer line appended, unless it already mentions `.agents/`.
-- `--overwrite` throws all of that away and starts from scratch, so commit or back up your own rule files first.
 - It never prompts for an app.
 
 ---

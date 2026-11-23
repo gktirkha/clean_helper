@@ -9,9 +9,9 @@ class AddAgentContextCommand extends Command<void> {
       abbr: 'o',
       negatable: false,
       help:
-          'Overwrite everything: delete .agents/ (project rule files '
-          'included) before regenerating, and replace AGENTS.md / CLAUDE.md '
-          'with the template.',
+          'Rewrite the generated .agents/ files that already exist (rules, '
+          'architecture, command docs). Your own .agents/*.md files and '
+          'AGENTS.md / CLAUDE.md are never touched.',
     );
   }
 
@@ -21,7 +21,8 @@ class AddAgentContextCommand extends Command<void> {
   @override
   String get description =>
       'Write .agents/ (rules, architecture, one file per clean-helper command) '
-      'and AGENTS.md / CLAUDE.md pointers for AI coding tools.';
+      'and AGENTS.md / CLAUDE.md pointers for AI coding tools. Existing files '
+      'are kept unless --overwrite.';
 
   @override
   void run() => addAgentContext(overwrite: argResults!['overwrite'] as bool);

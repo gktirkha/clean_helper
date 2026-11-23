@@ -1,3 +1,8 @@
+## 3.3.1
+
+- **`add-agent-context --overwrite` no longer deletes anything.** It now only rewrites the generated `.agents/` files (`rules.md`, `architecture.md`, command docs). Your own `.agents/*.md` files and the content of `AGENTS.md` / `CLAUDE.md` are never removed or replaced.
+- **Without `--overwrite`, existing files are kept**, so your edits to the generated files survive a rerun. `README.md` is still refreshed every run, because it indexes your own rule files.
+
 ## 3.3.0
 
 - **`add-agent-context --overwrite` (`-o`)** regenerates everything from scratch: it deletes `.agents/` first (project rule files and stale command docs included) and replaces `AGENTS.md` / `CLAUDE.md` with the template instead of appending the pointer line. Without it, nothing changes.

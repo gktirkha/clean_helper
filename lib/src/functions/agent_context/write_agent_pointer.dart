@@ -5,10 +5,10 @@ import '../shared/write_file.dart';
 
 /// Points [path] (`AGENTS.md` / `CLAUDE.md`) at `.agents/`: creates it, or
 /// appends the pointer line when the file exists but doesn't mention
-/// `.agents/` yet. With [overwrite], the file is replaced with the template.
-void writeAgentPointer(String path, {bool overwrite = false}) {
+/// `.agents/` yet. Existing content is never replaced.
+void writeAgentPointer(String path) {
   final file = File(path);
-  if (overwrite || !file.existsSync()) {
+  if (!file.existsSync()) {
     overwriteFile(path, agentsMdTemplate());
     return;
   }
