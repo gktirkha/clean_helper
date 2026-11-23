@@ -1,3 +1,7 @@
+## 3.3.0
+
+- **`add-agent-context --overwrite` (`-o`)** regenerates everything from scratch: it deletes `.agents/` first (project rule files and stale command docs included) and replaces `AGENTS.md` / `CLAUDE.md` with the template instead of appending the pointer line. Without it, nothing changes.
+
 ## 3.2.0
 
 AI context (`add-agent-context`) only; no change to generated code.

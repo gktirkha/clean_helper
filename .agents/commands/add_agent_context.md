@@ -7,7 +7,7 @@
 ## Usage
 
 ```bash
-clean-helper add-agent-context
+clean-helper add-agent-context [--overwrite|-o]
 clean-helper init -a
 ```
 
@@ -17,6 +17,7 @@ clean-helper init -a
 - `generateAgentContext()` (`functions/agent_context/`) writes, relative to the current directory:
   - `.agents/README.md`, `.agents/rules.md`, `.agents/architecture.md` and `.agents/commands/<command>.md` (one per entry in `agentCommandDocs`). Tool-owned: `overwriteFile` rewrites them every run.
   - `AGENTS.md` and `CLAUDE.md` via `writeAgentPointer()`: created from `agentsMdTemplate()` if missing; if present and not mentioning `.agents/`, `agentsMdPointerLine` is appended; otherwise left alone.
+- `--overwrite` → `addAgentContext(overwrite: true)` → `generateAgentContext(overwrite: true)`: deletes `.agents/` first (listing each removed file), so project rule files and stale command docs go too; `writeAgentPointer(path, overwrite: true)` replaces `AGENTS.md` / `CLAUDE.md` with `agentsMdTemplate()`. `init -a` never overwrites.
 - `resolveAgentContextInfo()` builds the `AgentContextInfo` record the templates take: project name, `readMonoRepoApps()`, `resolvePackagesDir()`, package names, `resolveCallAdapterName()` and `networkAuthInterceptorConfig`. In a monorepo, packages without a configured `name` show as `<app>_<kind>`, since each app has its own default.
 - `init --agent-context` runs it last. In a monorepo app (`monoRepoAppPath` set) it changes `Directory.current` to the workspace root (`..` per path segment), generates, and changes back.
 

@@ -10,14 +10,15 @@ import '../functions/shared/load_package_configs.dart';
 
 /// Writes `.agents/` (rules, architecture and one file per clean-helper
 /// command) plus `AGENTS.md` / `CLAUDE.md` pointers, for AI coding tools.
-void addAgentContext() {
+/// [overwrite] also replaces project rule files and `AGENTS.md` / `CLAUDE.md`.
+void addAgentContext({bool overwrite = false}) {
   if (!File('pubspec.yaml').existsSync()) {
     abort('pubspec.yaml not found. Run this tool from the project root.');
   }
   loadPackageConfigs();
 
   stdout.writeln('🚀 Generating AI context...');
-  generateAgentContext();
+  generateAgentContext(overwrite: overwrite);
   stdout.writeln();
   stdout.writeln(
     '✅ Done. Rerun after changing the clean-helper: config to refresh it.',
