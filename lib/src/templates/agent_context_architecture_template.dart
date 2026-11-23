@@ -32,6 +32,7 @@ lib/
 │   ├── theme/app_theme.dart    appTheme(): the app's design tokens
 │   ├── data/models/            error_model.dart (backend error body)
 │   └── network/                api_paths, call adapter, ApiFailure, NetworkConfigModule, interceptors
+├── shared/<module>/            business areas two+ features use: data/, domain/, presentation/
 ├── features/<feature>/         see below
 └── generated/                  flutter_gen output — don't edit
 ```
@@ -55,6 +56,8 @@ Data flows `page → bloc → use case → repository → datasource`, as
 Features don't import each other. Cross-feature navigation is a method on the
 feature's own `<F>Navigation`, implemented in `lib/app/navigation/`, so any
 feature can be removed without changing the others (see `rules.md`).
+Code several features need lives in `lib/shared/<module>/`, never in
+`lib/core/` (infrastructure only).
 
 ## Foundation packages
 

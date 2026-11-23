@@ -1,3 +1,10 @@
+## 3.2.0
+
+AI context (`add-agent-context`) only; no change to generated code.
+
+- **Project rule files.** Any other `*.md` file directly in `.agents/` (not `README.md`, `rules.md`, `architecture.md` or `commands/`) is project-owned: `add-agent-context` never touches it, and the generated `README.md` lists it in the reading order after `architecture.md`, described by its first `# ` heading. Keep project-specific rules there so regenerating doesn't undo them.
+- **Shared layer.** Code two app features need now goes in `lib/shared/<module>/` (a business module split into `data/`, `domain/`, `presentation/`) or a workspace package. `lib/core/` is infrastructure only. `rules.md` and `architecture.md` (app tree) say so.
+
 ## 3.1.0
 
 - **Feature navigation is outgoing only.** A new feature's `<F>Navigation` has `goBack()` instead of `goTo<F>()`, so no feature has to import another to open it. To open `cart` from `home`, add `goToCart()` to `HomeNavigation` and implement it in `lib/app/navigation/home_navigation_impl.dart`. Existing features are unchanged.

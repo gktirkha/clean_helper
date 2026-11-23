@@ -47,9 +47,11 @@ App features live in $appFeatures. Each one must be deletable with
 - **Only `lib/app/` knows every feature** (navigation impls, the router
   module). When a feature is removed, only `lib/app/navigation/` impls that
   pointed at it need changing; no file under `lib/features/` should.
-- **Share through `lib/core/` or a package.** Code two features need
-  (entities, models, widgets, use cases) moves to `lib/core/` or a
-  foundation package; don't reach into the other feature for it.
+- **Share through `lib/shared/` or a package.** Code two features need
+  (entities, models, widgets, use cases) moves to a business module in
+  `lib/shared/<module>/` (split into `data/`, `domain/`, `presentation/`)
+  or a workspace package; don't reach into the other feature for it.
+  `lib/core/` is infrastructure only.
 - A feature's DI module only registers that feature's classes.$packageFeatures
 
 ## Never edit
