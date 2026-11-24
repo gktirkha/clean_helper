@@ -17,6 +17,8 @@ void createFeatureStructure(
   String utilsImport,
   PackageConfig router, {
   bool withDi = false,
+  String? blocName,
+  bool withBloc = true,
 }) {
   // The app's router is <AppPascal>Router; a feature with the app's name would
   // generate a second class with that name.
@@ -32,8 +34,9 @@ void createFeatureStructure(
   generateFeatureNavigation(featureName, basePath);
   generateFeatureNavigationImpl(featureName, utilsImport);
   generateFeaturePage(featureName, basePath);
-  generateFeaturePageProvider(featureName, basePath);
+  final bloc = withBloc ? (blocName ?? featureName) : null;
+  generateFeaturePageProvider(featureName, basePath, bloc: bloc);
   generateFeatureRouter(featureName, basePath, router);
-  generateFeatureBloc(featureName, basePath);
+  if (bloc != null) generateFeatureBloc(bloc, basePath);
   if (withDi) generateFeatureModule(featureName, basePath);
 }

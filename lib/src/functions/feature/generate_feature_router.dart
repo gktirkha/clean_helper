@@ -4,6 +4,7 @@ import '../shared/pascal_case.dart';
 import '../shared/write_file.dart';
 
 /// [router] is the router package: its import and `<RouterPascal>Base`.
+/// `home` gets the `shell` priority band, every other feature `feature`.
 void generateFeatureRouter(
   String feature,
   String basePath,
@@ -16,6 +17,7 @@ void generateFeatureRouter(
       pascalCase(feature),
       router.import,
       pascalCase(router.name),
+      band: feature == 'home' ? 'shell' : 'feature',
     ),
   );
 }

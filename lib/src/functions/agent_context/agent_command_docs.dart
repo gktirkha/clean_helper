@@ -14,11 +14,16 @@ typedef AgentCommandDoc = ({
 const agentCommandDocs = <AgentCommandDoc>[
   (
     name: 'add-feature',
-    usage: 'clean-helper add-feature <feature_name> [--di]',
+    usage:
+        'clean-helper add-feature <feature_name> [--di] '
+        '[--bloc-name=<name>] [--no-bloc]',
     summary: 'Adds a feature: router, navigation, bloc, page provider, page.',
     whenToUse: 'For every new screen or flow.',
     details: '''
 - snake_case name, not the app's name. `--di` adds `di/<f>_module.dart`.
+- `--bloc-name` names the bloc differently; `--no-bloc` makes a page
+  without one.
+- Set the router's `priority` from the router package's priority bands.
 - Makes `router/` and `presentation/` only; run `add-repo` for data.
 - Registers the router in the tool-owned router module.''',
   ),

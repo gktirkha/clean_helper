@@ -42,6 +42,7 @@ void loadPackageConfigs() {
   )..removeWhere((key, _) => const {'name', 'import', 'create'}.contains(key));
 
   final root = readCleanHelperFields([]);
+  rootToolVersionConfig = root['version'];
 
   overwriteAnalysisOptionsConfig =
       (readCleanHelperFields(['foundation'])['overwrite_analysis_options'] ??

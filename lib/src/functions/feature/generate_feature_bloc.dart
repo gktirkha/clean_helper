@@ -4,6 +4,8 @@ import '../../templates/feature_bloc_template.dart';
 import '../../templates/feature_event_template.dart';
 import '../../templates/feature_state_template.dart';
 
+/// [feature] is the bloc's snake_case name: the feature's name unless
+/// `add-feature --bloc-name` gave another.
 void generateFeatureBloc(String feature, String basePath) {
   final className = pascalCase(feature);
   final blocPath = '$basePath/presentation/bloc/$feature';

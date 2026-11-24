@@ -10,6 +10,18 @@ class AddFeatureCommand extends Command<void> {
       negatable: false,
       help: 'Also generate a di/{feature}_di.dart injectable di.',
     );
+    argParser.addOption(
+      'bloc-name',
+      valueHelp: 'name',
+      help:
+          'snake_case name for the generated bloc (default: the feature '
+          'name).',
+    );
+    argParser.addFlag(
+      'bloc',
+      defaultsTo: true,
+      help: 'Generate a bloc; --no-bloc makes a page without one.',
+    );
   }
 
   @override
@@ -27,5 +39,10 @@ class AddFeatureCommand extends Command<void> {
       'Generate a new feature with full clean architecture structure.\n\nUsage: ${runner?.executableName} $name <feature-name>';
 
   @override
-  void run() => addFeature(argResults!.rest, withDi: argResults!['di'] as bool);
+  void run() => addFeature(
+    argResults!.rest,
+    withDi: argResults!['di'] as bool,
+    blocName: argResults!['bloc-name'] as String?,
+    withBloc: argResults!['bloc'] as bool,
+  );
 }

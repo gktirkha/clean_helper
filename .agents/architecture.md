@@ -59,7 +59,7 @@ Names, barrel imports and whether each package is created come from `clean-helpe
 
 Files and classes are named after the package (`<name>` / `<NamePascal>`; defaults shown):
 
-- `lib/src/clean_router_base.dart` — `CleanRouterBase`, the interface for feature routers: `routes`, `refreshStreams`, `redirect(context, state)`, and `priority` (lower wins).
+- `lib/src/clean_router_base.dart` — `CleanRouterBase`, the interface for feature routers: `routes`, `refreshStreams`, `redirect(context, state)`, and `priority` (lower wins); `CleanRouterPriority` holds the bands a router picks from: `gate` 0, `shell` 100 (home), `feature` 200 (default), `fallback` 900.
 - `lib/src/clean_router_refresh.dart` — `CleanRouterRefresh`, a `ChangeNotifier` merging every router's `refreshStreams`, used as go_router's `refreshListenable`.
 
 `<AppPascal>Router` and feature routers use `<RouterPascal>Base` / `<RouterPascal>Refresh`.
@@ -172,7 +172,7 @@ lib/features/<f>/
     └── repositories/<r>_repository_impl.dart
 ```
 
-`lib/app/navigation/<f>_navigation_impl.dart` is `@LazySingleton(as: <F>Navigation)`. `goBack([BuildContext? context])` uses the given context or falls back to `ContextUtils.currentContext` (the root navigator's), logs through `AppLogger.error` and returns if neither exists, then pops if it can. The interface only holds the feature's **outgoing** navigation: there is deliberately no `goTo<F>()` on a feature's own interface, because other features would have to import it to call it. To open `cart` from `home`, the user adds `goToCart()` to `HomeNavigation` and implements it in `home_navigation_impl.dart` with `CartRoutes`.
+`lib/app/navigation/<f>_navigation_impl.dart` is `@LazySingleton(as: <F>Navigation)`. `goBack([BuildContext? context])` uses the given context or falls back to `ContextUtils.currentContext` (the root navigator's), logs through `AppLogger.error` and returns if neither exists, then pops if it can and otherwise goes to `HomeRoutes.home` (home's own impl only pops). The interface only holds the feature's **outgoing** navigation: there is deliberately no `goTo<F>()` on a feature's own interface, because other features would have to import it to call it. To open `cart` from `home`, the user adds `goToCart()` to `HomeNavigation` and implements it in `home_navigation_impl.dart` with `CartRoutes`.
 
 ---
 

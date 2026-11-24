@@ -5,8 +5,9 @@ String featureRouterTemplate(
   String feature,
   String className,
   String routerImport,
-  String routerPrefix,
-) =>
+  String routerPrefix, {
+  String band = 'feature',
+}) =>
     '''
 import 'dart:async';
 
@@ -32,8 +33,7 @@ class ${className}Router implements ${routerPrefix}Base {
   @override
   FutureOr<String?> redirect(BuildContext context, GoRouterState state) => null;
 
-  // TODO: set intended priority — lower number = higher precedence in router list
   @override
-  int get priority => 10;
+  int get priority => ${routerPrefix}Priority.$band;
 }
 ''';

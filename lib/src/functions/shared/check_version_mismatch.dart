@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package_configs.dart';
 import 'read_clean_helper_fields.dart';
 import 'tool_version.dart';
 
@@ -16,7 +17,8 @@ void checkVersionMismatch() {
   stderr.writeln('   Generated files may be out of date.');
   stderr.writeln(
     '   To suppress this warning, set '
-    'clean-helper.version: $toolVersion in pubspec.yaml.',
+    'clean-helper.version: $toolVersion in the '
+    '${monoRepoAppPath == null ? '' : 'root '}pubspec.yaml.',
   );
   stderr.writeln();
 }

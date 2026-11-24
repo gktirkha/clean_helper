@@ -13,11 +13,16 @@ void addFeature(
   List<String> args, {
   bool withDi = false,
   bool runBuildRunnerAfter = true,
+  String? blocName,
+  bool withBloc = true,
 }) {
   ensurePubspec();
 
   if (args.isEmpty) {
-    abort('Usage: clean-helper add-feature <feature_name> [--di]');
+    abort(
+      'Usage: clean-helper add-feature <feature_name> [--di] '
+      '[--bloc-name=<name>] [--no-bloc]',
+    );
   }
 
   final featureName = args.first.toLowerCase();
@@ -32,6 +37,8 @@ void addFeature(
     utils.import,
     resolveRouterPackage(),
     withDi: withDi,
+    blocName: blocName?.toLowerCase(),
+    withBloc: withBloc,
   );
   patchRouterModule(featureName);
   runDartFormat();

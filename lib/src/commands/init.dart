@@ -25,6 +25,7 @@ import '../functions/init/update_gitignore.dart';
 import '../functions/shared/ensure_pubspec.dart';
 import '../functions/shared/fvm_use.dart';
 import '../functions/shared/package_configs.dart';
+import '../functions/shared/tool_version.dart';
 import '../functions/shared/read_package_name.dart';
 import '../functions/shared/resolve_packages_dir.dart';
 import '../functions/shared/resolve_localization_package.dart';
@@ -126,7 +127,12 @@ Future<void> runInit({
   for (final p in created) {
     if (p != router) sortPubspecDeps('$packagesDir/${p.name}/pubspec.yaml');
   }
-  writeToolVersion();
+  // A monorepo app follows the root's version (see syncAppToolVersion).
+  writeToolVersion(
+    monoRepoAppPath == null
+        ? toolVersion
+        : rootToolVersionConfig ?? toolVersion,
+  );
   if (withAgentContext) _generateAgentContextAtRoot();
 
   stdout.writeln();

@@ -3,6 +3,12 @@
 - **Shorter, rule-first AI context.** `add-agent-context` now writes only what an agent needs. `rules.md` adds clean layers (`presentation → domain ← data`, only another module's `domain/` across modules, domain code in the lowest module that owns the data), data sub-folders and datasource naming, shared-module rules, package layering (foundation depends on no workspace package, core only on foundation), blocs (not cubits, one `on<Event>` with `when`) and freezed value types. `architecture.md` only says where code goes. The README and command docs are a line per command. Rerun with `--overwrite` to refresh them.
 - **`init` writes `test/architecture_test.dart`**, which checks those rules over the app and every workspace package. Declare shared modules in its `sharedModules` map. `path` is added as a dev dependency for it.
 - The generated feature bloc's `_onStarted` takes only the emitter: handlers get the event's values, not the event.
+- **Router priority bands.** The router package defines `<RouterPascal>Priority` (`gate` 0, `shell` 100, `feature` 200, `fallback` 900). New feature routers use `.feature` (home `.shell`) instead of a `TODO` and `10`. Packages created before 3.4.0 lack the class; add it or regenerate the router package.
+- **`goBack` falls back to home.** With nothing to pop, a feature's `goBack` goes to `HomeRoutes.home` (home's own only pops).
+- **`add-feature --bloc-name=<name>` / `--no-bloc`.** Name the bloc differently from the feature, or skip it; without a bloc the page provider builds the page directly.
+- **Generated files are excluded from analysis:** `**/*.g.dart` and `**/*.freezed.dart` in the app's `analysis_options.yaml`.
+- **The monorepo app's `clean-helper.version` follows the root's.** Every command copies the root pubspec's version into the app's, so you bump it in one place; `init` in a monorepo app stamps the root's version.
+- **`init` writes `test/helpers/test_di.dart`** with `testDi()`, which resets DI and starts it with `Environment.test`.
 
 ## 3.3.1
 

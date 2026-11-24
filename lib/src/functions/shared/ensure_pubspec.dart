@@ -5,6 +5,7 @@ import 'check_version_mismatch.dart';
 import 'load_package_configs.dart';
 import 'package_configs.dart';
 import 'resolve_mono_repo_project.dart';
+import 'sync_app_tool_version.dart';
 
 void ensurePubspec() {
   if (!File('pubspec.yaml').existsSync()) {
@@ -14,5 +15,6 @@ void ensurePubspec() {
   }
   if (!packageConfigsLoaded) loadPackageConfigs();
   resolveMonoRepoProject();
+  syncAppToolVersion();
   checkVersionMismatch();
 }

@@ -3,7 +3,8 @@ import 'dart:io';
 import '../shared/tool_version.dart';
 import '../shared/write_file.dart';
 
-void writeToolVersion() {
+/// Stamps `clean-helper.version: [version]` in the current pubspec.
+void writeToolVersion([String version = toolVersion]) {
   final file = File('pubspec.yaml');
   final lines = file.readAsStringSync().split('\n');
 
@@ -36,14 +37,14 @@ void writeToolVersion() {
   final updated = [...lines];
 
   if (cleanHelperIndex == -1) {
-    updated.addAll(['clean-helper:', '  version: $toolVersion', '']);
+    updated.addAll(['clean-helper:', '  version: $version', '']);
   } else if (versionIndex == -1) {
     final insertAt = lastContentLine != -1
         ? lastContentLine + 1
         : cleanHelperIndex + 1;
-    updated.insert(insertAt, '  version: $toolVersion');
+    updated.insert(insertAt, '  version: $version');
   } else {
-    updated[versionIndex] = '  version: $toolVersion';
+    updated[versionIndex] = '  version: $version';
   }
 
   overwriteFile('pubspec.yaml', updated.join('\n'));

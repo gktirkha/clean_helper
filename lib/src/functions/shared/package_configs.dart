@@ -82,3 +82,8 @@ bool overwriteAnalysisOptionsConfig = true;
 /// The monorepo app [resolveMonoRepoProject] switched into, relative to the
 /// starting directory (e.g. `apps/shop`). Null when no switch happened.
 String? monoRepoAppPath;
+
+/// `clean-helper.version` in the pubspec the command was started from (the
+/// workspace root in a monorepo), set by [loadPackageConfigs]. In a
+/// monorepo app, [syncAppToolVersion] copies it into the app's pubspec.
+String? rootToolVersionConfig;

@@ -41,9 +41,9 @@ API errors become `ApiFailure` in the app's call adapter
 
 ## DI environments
 
-`prod` in release builds, `dev` otherwise, `test` in tests. Tests start DI
-with `Environment.test`; import injectable with `show Environment`, since its
-`@test` clashes with `flutter_test`.
+`prod` in release builds, `dev` otherwise, `test` in tests. Start DI in tests
+with `testDi()` (`test/helpers/test_di.dart`). Import injectable with
+`show Environment`, since its `@test` clashes with `flutter_test`.
 
 ## Monorepo layering
 

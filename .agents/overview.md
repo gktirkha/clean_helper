@@ -49,7 +49,7 @@ Global flags, declared on `CleanHelperRunner` and handled in its `runCommand` ov
 
 | Key | Read by | Stored in |
 |---|---|---|
-| `version` | `checkVersionMismatch()` — **after** the monorepo directory change | — |
+| `version` | `loadPackageConfigs()` (root) and `checkVersionMismatch()` — **after** the monorepo directory change, once `syncAppToolVersion()` has copied the root's value into the app | `rootToolVersionConfig` |
 | `mono_repo_apps` | `readMonoRepoApps()` | — |
 | `foundation.dir` | `loadPackageConfigs()` | `packagesDirConfig` (resolved by `resolvePackagesDir()`, default `foundation`) |
 | `foundation.<key>.create` (each package) | `loadPackageConfigs()` | `packageCreateConfig` (also in the `PackageConfig` when `name`/`import` is set) |
@@ -64,7 +64,7 @@ Global flags, declared on `CleanHelperRunner` and handled in its `runCommand` ov
 | `foundation.network.{name,import,create}` | `loadPackageConfigs()` | `networkPackageConfig` |
 | `foundation.network.module_name` / `.call_adapter_name` / `.auth_interceptor` | `loadPackageConfigs()` | `networkModuleNameConfig` / `callAdapterNameConfig` / `networkAuthInterceptorConfig` |
 
-Everything except `version` is read from the pubspec in the starting directory — the monorepo root in a monorepo — before `resolveMonoRepoProject()` changes directory. The README's Configuration section documents each key's behaviour for users.
+Everything is read from the pubspec in the starting directory — the monorepo root in a monorepo — before `resolveMonoRepoProject()` changes directory. The README's Configuration section documents each key's behaviour for users.
 
 ---
 

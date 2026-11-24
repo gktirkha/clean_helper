@@ -20,6 +20,7 @@ import '../../templates/di_initializer_template.dart';
 import '../../templates/init_service_template.dart';
 import '../../templates/main_app_dart_template.dart';
 import '../../templates/main_dart_template.dart';
+import '../../templates/test_di_template.dart';
 import '../../templates/test_environment_core_module_template.dart';
 
 void generateCoreFiles({
@@ -76,6 +77,7 @@ void generateCoreFiles({
     'test/architecture_test.dart',
     architectureTestTemplate(appName, resolvePackagesDir(), theme.name),
   );
+  writeFile('test/helpers/test_di.dart', testDiTemplate(appName));
   stdout.writeln();
   stdout.writeln('⚙️  Core files generated');
   stdout.writeln();

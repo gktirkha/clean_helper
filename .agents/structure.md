@@ -88,6 +88,7 @@ clean_helper/
 | `prompt_project_selection.dart` | `promptProjectSelection(apps, {title})` | Numbered stdin prompt |
 | `scope_option.dart` | `resolveScope` | `--scope` value |
 | `check_version_mismatch.dart` | `checkVersionMismatch()` | Warn if `clean-helper.version` ≠ `toolVersion` |
+| `sync_app_tool_version.dart` | `syncAppToolVersion()` | In a monorepo app, copy the root's `clean-helper.version` into the app's pubspec |
 | `tool_version.dart` | `toolVersion` | Must equal pubspec `version:` |
 | `write_file.dart` | `writeFile`, `overwriteFile` | The only way to write target files |
 | `insert_sorted_import.dart` | `insertSortedImport(content, line)` | Patch helper — adds an import at its sorted place within its `dart:` / `package:` / relative section |
@@ -113,7 +114,7 @@ clean_helper/
 | `patch_package_pubspec.dart` | `patchPackagePubspec(packagePath, pubspecTail)` |
 | `add_packages_workspace.dart` | `addPackagesWorkspace(packagePaths)` — no-op for an empty list; then `warnStaleWorkspaceEntries` |
 | `warn_stale_workspace_entries.dart` | `warnStaleWorkspaceEntries(pubspec)` — warns about `workspace:` paths without a `pubspec.yaml` |
-| `generate_core_files.dart` | `generateCoreFiles({utils, localization, router, theme})` — app skeleton, `<app>_router*.dart`, `test/architecture_test.dart` |
+| `generate_core_files.dart` | `generateCoreFiles({utils, localization, router, theme})` — app skeleton, `<app>_router*.dart`, `test/architecture_test.dart`, `test/helpers/test_di.dart` |
 | `generate_tools_files.dart` | `generateToolsFiles({overwrite})` — no-op in a monorepo app |
 | `install_dependencies.dart` | `installDependencies(workspacePackages)` |
 | `update_gitignore.dart` | `updateGitignore()` |
@@ -122,7 +123,7 @@ clean_helper/
 | `run_build_runner.dart` | `runBuildRunner({workingDirectory})` |
 | `run_dart_format.dart` | `runDartFormat()` |
 | `sort_pubspec_deps.dart` | `sortPubspecDeps([path])` |
-| `write_tool_version.dart` | `writeToolVersion()` |
+| `write_tool_version.dart` | `writeToolVersion([version = toolVersion])` |
 
 ### `feature/` — `add-feature`
 
@@ -161,7 +162,7 @@ Each file is `<name>_template.dart` → `<name>Template(...)`.
 
 | Area | Templates |
 |---|---|
-| App skeleton | `main_dart`, `main_app_dart`, `bootstrap_dart`, `init_service`, `di_container`, `di_initializer`, `app_module`, `core_module`, `test_environment_core_module`, `app_theme`, `app_go_router`, `app_go_router_redirect`, `app_router_module_build` (via `buildRouterModule`), `architecture_test` |
+| App skeleton | `main_dart`, `main_app_dart`, `bootstrap_dart`, `init_service`, `di_container`, `di_initializer`, `app_module`, `core_module`, `test_environment_core_module`, `app_theme`, `app_go_router`, `app_go_router_redirect`, `app_router_module_build` (via `buildRouterModule`), `architecture_test`, `test_di` |
 | Feature | `feature_routes`, `feature_navigation`, `feature_navigation_impl`, `feature_router`, `feature_page`, `feature_page_provider`, `feature_bloc`, `feature_event`, `feature_state`, `feature_module` |
 | Repo | `domain_repo`, `data_source_base`, `data_repo`, `rest_data_source`, `feature_api_paths`, `request_model`, `response_model`, `get_use_case`, `post_use_case`, `get_use_case_params`, `post_use_case_params` |
 | Entity | `entity`, `model` |
@@ -198,6 +199,7 @@ Templates that take configurable input:
 | `init_service` | `utilsImport`, `localizationImport` (`init({environment})`) |
 | `test_environment_core_module` | `appName` |
 | `architecture_test` | `appName`, `foundationDir`, `themePackage` |
+| `test_di` | `appName` |
 | `test_environment_network_config_module` | `networkImport` |
 | `app_go_router` | `appName`, `routerImport`, `routerPrefix` (`<RouterPascal>`) |
 | `feature_router` | `routerImport`, `routerPrefix` |
