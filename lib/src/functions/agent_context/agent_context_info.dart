@@ -12,5 +12,4 @@ typedef AgentContextInfo = ({
   String theme,
   String network,
   String callAdapter,
-  bool auth,
 });

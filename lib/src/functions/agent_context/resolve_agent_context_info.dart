@@ -36,6 +36,5 @@ AgentContextInfo resolveAgentContextInfo() {
       resolveNetworkPackage().name,
     ),
     callAdapter: resolveCallAdapterName(),
-    auth: networkAuthInterceptorConfig,
   );
 }

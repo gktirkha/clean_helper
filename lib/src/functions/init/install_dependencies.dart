@@ -29,6 +29,7 @@ void installDependencies(List<String> workspacePackages) {
     'freezed',
     'flutter_gen_runner',
     'json_serializable',
+    'path',
   ];
 
   runCommand([

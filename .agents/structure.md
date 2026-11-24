@@ -113,7 +113,7 @@ clean_helper/
 | `patch_package_pubspec.dart` | `patchPackagePubspec(packagePath, pubspecTail)` |
 | `add_packages_workspace.dart` | `addPackagesWorkspace(packagePaths)` — no-op for an empty list; then `warnStaleWorkspaceEntries` |
 | `warn_stale_workspace_entries.dart` | `warnStaleWorkspaceEntries(pubspec)` — warns about `workspace:` paths without a `pubspec.yaml` |
-| `generate_core_files.dart` | `generateCoreFiles({utils, localization, router, theme})` — app skeleton, `<app>_router*.dart` |
+| `generate_core_files.dart` | `generateCoreFiles({utils, localization, router, theme})` — app skeleton, `<app>_router*.dart`, `test/architecture_test.dart` |
 | `generate_tools_files.dart` | `generateToolsFiles({overwrite})` — no-op in a monorepo app |
 | `install_dependencies.dart` | `installDependencies(workspacePackages)` |
 | `update_gitignore.dart` | `updateGitignore()` |
@@ -161,7 +161,7 @@ Each file is `<name>_template.dart` → `<name>Template(...)`.
 
 | Area | Templates |
 |---|---|
-| App skeleton | `main_dart`, `main_app_dart`, `bootstrap_dart`, `init_service`, `di_container`, `di_initializer`, `app_module`, `core_module`, `test_environment_core_module`, `app_theme`, `app_go_router`, `app_go_router_redirect`, `app_router_module_build` (via `buildRouterModule`) |
+| App skeleton | `main_dart`, `main_app_dart`, `bootstrap_dart`, `init_service`, `di_container`, `di_initializer`, `app_module`, `core_module`, `test_environment_core_module`, `app_theme`, `app_go_router`, `app_go_router_redirect`, `app_router_module_build` (via `buildRouterModule`), `architecture_test` |
 | Feature | `feature_routes`, `feature_navigation`, `feature_navigation_impl`, `feature_router`, `feature_page`, `feature_page_provider`, `feature_bloc`, `feature_event`, `feature_state`, `feature_module` |
 | Repo | `domain_repo`, `data_source_base`, `data_repo`, `rest_data_source`, `feature_api_paths`, `request_model`, `response_model`, `get_use_case`, `post_use_case`, `get_use_case_params`, `post_use_case_params` |
 | Entity | `entity`, `model` |
@@ -197,6 +197,7 @@ Templates that take configurable input:
 | `di_initializer` | `utilsImport`, `utilsPackageModule` |
 | `init_service` | `utilsImport`, `localizationImport` (`init({environment})`) |
 | `test_environment_core_module` | `appName` |
+| `architecture_test` | `appName`, `foundationDir`, `themePackage` |
 | `test_environment_network_config_module` | `networkImport` |
 | `app_go_router` | `appName`, `routerImport`, `routerPrefix` (`<RouterPascal>`) |
 | `feature_router` | `routerImport`, `routerPrefix` |

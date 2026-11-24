@@ -17,10 +17,10 @@ class ${className}Bloc extends Bloc<${className}Event, ${className}State> {
   }
 
   FutureOr<void> _handleEvents(${className}Event event, Emitter<${className}State> emit) {
-    event.when(started: () => _onStarted(event, emit));
+    event.when(started: () => _onStarted(emit));
   }
 
-  FutureOr<void> _onStarted(${className}Event event, Emitter<${className}State> emit) {
+  FutureOr<void> _onStarted(Emitter<${className}State> emit) {
     // TODO: handle started event
   }
 }

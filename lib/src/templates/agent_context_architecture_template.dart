@@ -1,99 +1,59 @@
 import '../functions/agent_context/agent_context_info.dart';
 
-/// `.agents/architecture.md`: the generated project's structure, with this
-/// project's configured package names.
+/// `.agents/architecture.md`: where code goes in the generated project, with
+/// this project's configured package names. Only what reading the code
+/// doesn't show.
 String agentContextArchitectureTemplate(AgentContextInfo info) {
   final where = info.apps.isEmpty
       ? '`${info.foundationDir}/` (next to `lib/`)'
-      : '`${info.foundationDir}/` at the workspace root (or per app, for '
-            'packages an app creates itself)';
-  final auth = info.auth
-      ? ' With the auth interceptor: an abstract `AuthInterceptor` (the app '
-            'implements `AppAuthInterceptor`) and a `noAuthDio` for refresh '
-            'calls.'
-      : '';
+      : '`${info.foundationDir}/` at the workspace root';
   return '''
 # Architecture
 
-## App layout
+## Where code goes
 
 ```
 lib/
-├── main.dart                   calls bootstrap()
-├── app/
-│   ├── bootstrap.dart          binding, InitService().init(), runApp
-│   ├── init_service.dart       locale, DI (environment), Bloc.observer, DioLens
-│   ├── main_app.dart           <Theme> → TranslationProvider → MaterialApp.router
-│   ├── di/                     di_container.dart (GetIt), di_initializer.dart (@InjectableInit)
-│   ├── navigation/             <feature>_navigation_impl.dart
-│   └── router/                 <app>_router.dart, <app>_router_redirect.dart, <app>_router_module.dart (tool-owned)
-├── core/
-│   ├── di/                     core_module.dart (@dev/@prod), test_environment_core_module.dart (@test)
-│   ├── theme/app_theme.dart    appTheme(): the app's design tokens
-│   ├── data/models/            error_model.dart (backend error body)
-│   └── network/                api_paths, call adapter, ApiFailure, NetworkConfigModule, interceptors
-├── shared/<module>/            business areas two+ features use: data/, domain/, presentation/
-├── features/<feature>/         see below
-└── generated/                  flutter_gen output — don't edit
+├── app/          knows every feature: router, navigation impls, DI
+├── features/<f>/ router/, presentation/ (+ domain/, data/ from add-repo)
+├── shared/<m>/   business modules two+ features use: data/, domain/, presentation/
+└── core/         infrastructure only: network, DI, theme
 ```
 
-## Feature layout
-
-```
-lib/features/<f>/
-├── presentation/
-│   ├── bloc/<f>/               <f>_bloc.dart (@injectable), freezed <f>_event / <f>_state
-│   ├── page_providers/         BlocProvider + navigation from DI
-│   └── pages/                  pure UI
-├── router/                     <f>_routes.dart, <f>_navigation.dart (interface), <f>_router.dart
-├── domain/                     entities, repository interfaces, params, use cases — no Flutter
-└── data/                       models (@freezed), datasources (Retrofit), repository implementations
-```
-
-Data flows `page → bloc → use case → repository → datasource`, as
-`TaskEither<Failure, T>`.
-
-Features don't import each other. Cross-feature navigation is a method on the
-feature's own `<F>Navigation`, implemented in `lib/app/navigation/`, so any
-feature can be removed without changing the others (see `rules.md`).
-Code several features need lives in `lib/shared/<module>/`, never in
-`lib/core/` (infrastructure only).
+Imports point down: `app → features → shared → core`. Inside each module:
+`presentation → domain ← data`, and
+`page → bloc → use case → repository → datasource`.
 
 ## Foundation packages
 
-Workspace packages in $where. None depends on another.
+In $where; they depend on no workspace package.
 
-| Package | Contents |
+| Package | Holds |
 |---|---|
-| `${info.utils}` | `Failure`, `UseCaseBase`, `AppLogger`, `ContextUtils`, `safeCast`, `safeExecute`, `safeExecuteTask`, `Debouncer`; micro-package DI module |
+| `${info.utils}` | `Failure`, `UseCaseBase`, `AppLogger`, `safeExecute`, `safeExecuteTask` |
 | `${info.localization}` | slang translations, `String.tr` |
-| `${info.router}` | the router interface every feature router implements, and the refresh notifier |
-| `${info.theme}` | design tokens (`…ThemeData`, `AdaptiveColor`), the theme widget above `MaterialApp`, `ThemeResolver` |
-| `${info.network}` | `NetworkConfig`, Dio instances (named `BaseOptions`, `noBaseOptionsDio`), `RetrofitLogger`; micro-package DI module.$auth |
+| `${info.router}` | the interface every feature router implements |
+| `${info.theme}` | design tokens and the theme widget |
+| `${info.network}` | Dio instances, `NetworkConfig`, `RetrofitLogger` |
 
-API errors are turned into failures by the app's call adapter
-(`${info.callAdapter}`), not by an interceptor.
+API errors become `ApiFailure` in the app's call adapter
+(`${info.callAdapter}`), not in an interceptor.
 
-## DI and environments
+## DI environments
 
-`diInitializer(getIt, environment:)` registers untagged registrations plus
-those tagged with the environment (`dev`, `prod`, `test`).
-`InitService.init` uses `prod` in release builds and `dev` otherwise. Tests
-start DI with `Environment.test` (import injectable with
-`show Environment`; its `@test` clashes with `flutter_test`).
+`prod` in release builds, `dev` otherwise, `test` in tests. Tests start DI
+with `Environment.test`; import injectable with `show Environment`, since its
+`@test` clashes with `flutter_test`.
 
-## Recommended monorepo layering
+## Monorepo layering
 
-clean-helper only generates the foundation packages and the apps; this is
-the suggested way to grow beyond them. Dependencies only point down, except
-that modules may depend on each other. Modules are workspace packages, not the
-features inside an app, which must stay independent.
+Dependencies point down; modules may also depend on each other.
 
-| Layer | Level | May depend on | Examples |
-|---|---|---|---|
-| `foundation/` | 1 | Primitives only, no other workspace packages | theme, utils, network, localization, router |
-| `core/` | 2 | `foundation/` only, no siblings | ui (theme + l10n), data (network + utils) |
-| `modules/` | 3 | Anything below, plus other modules | menu, cart, auth |
-| `apps/` | 4 | Anything below; no app → app | consumer, restaurant, rider |
+| Layer | May depend on | Examples |
+|---|---|---|
+| `foundation/` | no workspace package | theme, utils, network |
+| `core/` | `foundation/` only | ui, data |
+| `modules/` | anything below, other modules | menu, cart, auth |
+| `apps/` | anything below; never another app | consumer, rider |
 ''';
 }

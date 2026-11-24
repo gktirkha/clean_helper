@@ -5,12 +5,14 @@ import '../shared/package_configs.dart';
 import '../shared/app_router_module_path.dart';
 import '../shared/pascal_case.dart';
 import '../shared/read_package_name.dart';
+import '../shared/resolve_packages_dir.dart';
 import '../shared/theme_base.dart';
 import '../shared/write_file.dart';
 import '../../templates/app_go_router_redirect_template.dart';
 import '../../templates/app_go_router_template.dart';
 import '../../templates/app_module_template.dart';
 import '../../templates/app_theme_template.dart';
+import '../../templates/architecture_test_template.dart';
 import '../../templates/bootstrap_dart_template.dart';
 import '../../templates/core_module_template.dart';
 import '../../templates/di_container_template.dart';
@@ -69,6 +71,10 @@ void generateCoreFiles({
   writeFile(
     'lib/core/di/test_environment_core_module.dart',
     testEnvironmentCoreModuleTemplate(appName),
+  );
+  writeFile(
+    'test/architecture_test.dart',
+    architectureTestTemplate(appName, resolvePackagesDir(), theme.name),
   );
   stdout.writeln();
   stdout.writeln('⚙️  Core files generated');

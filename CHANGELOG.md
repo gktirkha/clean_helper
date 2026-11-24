@@ -1,3 +1,9 @@
+## 3.4.0
+
+- **Shorter, rule-first AI context.** `add-agent-context` now writes only what an agent needs. `rules.md` adds clean layers (`presentation → domain ← data`, only another module's `domain/` across modules, domain code in the lowest module that owns the data), data sub-folders and datasource naming, shared-module rules, package layering (foundation depends on no workspace package, core only on foundation), blocs (not cubits, one `on<Event>` with `when`) and freezed value types. `architecture.md` only says where code goes. The README and command docs are a line per command. Rerun with `--overwrite` to refresh them.
+- **`init` writes `test/architecture_test.dart`**, which checks those rules over the app and every workspace package. Declare shared modules in its `sharedModules` map. `path` is added as a dev dependency for it.
+- The generated feature bloc's `_onStarted` takes only the emitter: handlers get the event's values, not the event.
+
 ## 3.3.1
 
 - **`add-agent-context --overwrite` no longer deletes anything.** It now only rewrites the generated `.agents/` files (`rules.md`, `architecture.md`, command docs). Your own `.agents/*.md` files and the content of `AGENTS.md` / `CLAUDE.md` are never removed or replaced.

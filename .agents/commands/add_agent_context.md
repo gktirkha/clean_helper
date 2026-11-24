@@ -23,6 +23,6 @@ clean-helper init -a
 
 ## Content
 
-The generated docs are for AI agents in the **generated** project, not in this repo: they explain the generated layout, the rules (scaffold with clean-helper, app features never import each other and navigate through their own navigation interface, never edit generated or tool-owned files, `material_ui`, `TaskEither`, DI tags) and when to run each user-facing command. Commands only useful when setting a project up for humans (`init`, `add-config`, `add-melos-config`, `add-vscode-extensions`, `generate-tools`, `add-agent-context`) are not in `agentCommandDocs`.
+The generated docs are for AI agents in the **generated** project, not in this repo: they are short and rule-first, and don't restate what the code or a command's output already shows. `rules.md` carries the rules (scaffold with clean-helper, independent features, clean layers, data sub-folders, shared modules, package layering, blocs, freezed, never-edit files); `architecture.md` only says where code goes; each command doc is a line on when to run it. Most rules are checked by the `test/architecture_test.dart` that `init` generates (`architectureTestTemplate`): change a rule in both. Commands only useful when setting a project up for humans (`init`, `add-config`, `add-melos-config`, `add-vscode-extensions`, `generate-tools`, `add-agent-context`) are not in `agentCommandDocs`.
 
 When a command's behaviour, the generated layout or the rules change, update `agent_command_docs.dart` and the `agent_context_*` templates in the same change.
